@@ -48,54 +48,24 @@
         <finalName>smartestgift</finalName>
         <resources>
             <resource>
-                <directory>${project.basedir}/webapps/smartestgift</directory>
+                <directory>${project.basedir}/src/main/java</directory>
+                <includes>
+                    <include>**/*.java</include>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                </includes>
+            </resource>
+
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <includes>
+                    <include>**/*.java</include>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                </includes>
             </resource>
         </resources>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>${java-version}</source>
-                    <target>${java-version}</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <warName>ContactManager</warName>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>install</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>sources</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <junitArtifactName>junit:junit</junitArtifactName>
-                    <excludes>
-                        <exclude>**/*_Roo_*</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>tomcat-maven-plugin</artifactId>
-                <version>1.0-beta-1</version>
-            </plugin>
-
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -114,14 +84,6 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>sql-maven-plugin</artifactId>
                 <version>1.5</version>
-
-                <dependencies>
-                    <dependency>
-                        <groupId>postgresql</groupId>
-                        <artifactId>postgresql</artifactId>
-                        <version>9.1-901.jdbc4</version>
-                    </dependency>
-                </dependencies>
 
                 <configuration>
                     <driver>org.postgresql.Driver</driver>
@@ -147,22 +109,20 @@ CREATE DATABASE ${db.name}${db.name.postfix} WITH TEMPLATE = template0 ENCODING 
                             <onError>continue</onError>
                         </configuration>
                     </execution>
-                    <!--Создание базы из файла-->
-                    <!--                    <execution>
-                                            <id>create-schema</id>
-                                            <phase>compile</phase>
-                                            <goals>
-                                                <goal>execute</goal>
-                                            </goals>
-                                            <configuration>
-                                                <url>jdbc:postgresql://localhost:5432/${db.name}${db.name.postfix}</url>
-                                                <autocommit>true</autocommit>
-                                                <srcFiles>
-                                                    <srcFile>${db.dir}/schema.sql</srcFile>
-                                                </srcFiles>
-                                            </configuration>
-                                        </execution>-->
-                    <!--Добавление информации в базу из файла
+                    <execution>
+                        <id>create-schema</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <url>jdbc:postgresql://localhost:5432/${db.name}${db.name.postfix}</url>
+                            <autocommit>true</autocommit>
+                            <srcFiles>
+                                <srcFile>${db.dir}/schema.sql</srcFile>
+                            </srcFiles>
+                        </configuration>
+                    </execution>
                     <execution>
                         <id>create-data</id>
                         <phase>compile</phase>
@@ -179,34 +139,54 @@ CREATE DATABASE ${db.name}${db.name.postfix} WITH TEMPLATE = template0 ENCODING 
                                 </includes>
                             </fileset>
                         </configuration>
-                    </execution>-->
+                    </execution>
                 </executions>
             </plugin>
         </plugins>
-        <sourceDirectory>
-            ${project.basedir}/src
-        </sourceDirectory>
     </build>
 
     <dependencies>
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>9.2-1003-jdbc4</version>
+            <version>9.2-1002-jdbc4</version>
         </dependency>
 
         <!-- Spring -->
         <dependency>
             <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
             <version>${spring.version}</version>
-            <exclusions>
-                <!-- Exclude Commons Logging in favor of SLF4j -->
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -214,59 +194,38 @@ CREATE DATABASE ${db.name}${db.name.postfix} WITH TEMPLATE = template0 ENCODING 
             <version>${spring.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-            <version>3.2.4.RELEASE</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-web</artifactId>
-            <version>3.1.4.RELEASE</version>
+            <version>3.2.0.CI-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-config</artifactId>
-            <version>3.1.4.RELEASE</version>
+            <version>3.2.0.CI-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
-            <version>3.1.4.RELEASE</version>
+            <version>3.2.0.CI-SNAPSHOT</version>
         </dependency>
 
-
-        <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>persistence-api</artifactId>
-            <version>1.0</version>
-        </dependency>
+        <!-- Hibernate -->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>3.6.10.Final</version>
+            <version>4.2.2.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.0-api</artifactId>
+            <version>1.0.0.Final</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-annotations</artifactId>
-            <version>3.5.6-Final</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-commons-annotations</artifactId>
-            <version>3.3.0.ga</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-tx</artifactId>
-            <version>${spring.version}</version>
+            <artifactId>hibernate-validator</artifactId>
+            <version>5.0.1.Final</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-orm</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
 
         <!-- Logging -->
         <dependency>
@@ -318,18 +277,46 @@ CREATE DATABASE ${db.name}${db.name.postfix} WITH TEMPLATE = template0 ENCODING 
             <version>1</version>
         </dependency>
 
-        <!-- Servlet -->
+
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.2.4</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>persistence-api</artifactId>
+            <version>1.0</version>
+        </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <version>2.5</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>javax.servlet.jsp</groupId>
-            <artifactId>jsp-api</artifactId>
-            <version>2.1</version>
-            <scope>provided</scope>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>1.1.0.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-cli</groupId>
+            <artifactId>commons-cli</artifactId>
+            <version>1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>1.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.2</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -337,12 +324,6 @@ CREATE DATABASE ${db.name}${db.name.postfix} WITH TEMPLATE = template0 ENCODING 
             <version>1.2</version>
         </dependency>
 
-        <!-- Test -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.7</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
+
 </project>
