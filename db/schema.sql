@@ -27,7 +27,7 @@ SET default_with_oids = false;
 
 CREATE TABLE public.gift
 (
-    uuid uuid UNIQUE PRIMARY KEY NOT NULL,
+    uuid UUID UNIQUE PRIMARY KEY NOT NULL,
     name varchar (255) NOT NULL,
     description text,
     priceid INT NOT NULL,
