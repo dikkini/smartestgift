@@ -49,12 +49,26 @@ CREATE TABLE public."user"
   PRIMARY KEY ( uuid, login )
 );
 
-CREATE TABLE usergift
+CREATE TABLE public.usergift
 (
   id SERIAL UNIQUE NOT NULL,
   useruuid uuid REFERENCES "user"(uuid) NOT NULL,
   giftuuid uuid REFERENCES "gift"(uuid) NOT NULL,
     PRIMARY KEY ( id )
+);
+
+CREATE TABLE public.giftcategory
+(
+  id SERIAL PRIMARY KEY,
+  name varchar(255) NOT NULL,
+  description varchar (255) NOT NULL
+);
+
+CREATE TABLE public.shop
+(
+  id SERIAL PRIMARY KEY,
+  name varchar (255) NOT NULL,
+  description varchar(255) NOT NULL
 );
 
 

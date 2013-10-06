@@ -9,12 +9,12 @@ import javax.persistence.Table;
  * Created with IntelliJ IDEA.
  * User: dikkini
  * Date: 10/6/13
- * Time: 2:07 PM
+ * Time: 5:44 PM
  */
 
 @Entity
-@Table(name = "shop")
-public class Shop {
+@Table(name = "giftcategory")
+public class GiftCategory {
 
     @Id
     @Column(nullable = false, insertable = false, unique = true)

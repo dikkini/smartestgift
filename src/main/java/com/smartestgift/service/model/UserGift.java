@@ -1,29 +1,27 @@
 package com.smartestgift.service.model;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
  * Created with IntelliJ IDEA.
  * User: dikkini
  * Date: 10/6/13
- * Time: 2:07 PM
+ * Time: 11:00 PM
  */
 
-@Entity
-@Table(name = "shop")
-public class Shop {
+@Table(name = "usergift")
+public class UserGift {
 
     @Id
     @Column(nullable = false, insertable = false, unique = true)
     private Long id;
 
-    @Column(nullable = true, insertable = false, unique = false)
-    private String name;
+    @ManyToOne
+    private User user;
 
-    @Column(nullable = true, insertable = false, unique = false)
-    private String description;
-
+    @ManyToOne
+    private Gift gift;
 }
