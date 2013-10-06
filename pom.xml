@@ -85,6 +85,14 @@
                 <artifactId>sql-maven-plugin</artifactId>
                 <version>1.5</version>
 
+                <dependencies>
+                    <dependency>
+                        <groupId>postgresql</groupId>
+                        <artifactId>postgresql</artifactId>
+                        <version>9.1-901.jdbc4</version>
+                    </dependency>
+                </dependencies>
+
                 <configuration>
                     <driver>org.postgresql.Driver</driver>
                     <url>jdbc:postgresql://localhost:5432</url>
@@ -147,9 +155,9 @@ CREATE DATABASE ${db.name}${db.name.postfix} WITH TEMPLATE = template0 ENCODING 
 
     <dependencies>
         <dependency>
-            <groupId>org.postgresql</groupId>
+            <groupId>postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>9.2-1002-jdbc4</version>
+            <version>9.1-901.jdbc4</version>
         </dependency>
 
         <!-- Spring -->
