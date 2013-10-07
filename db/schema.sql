@@ -66,9 +66,16 @@ CREATE TABLE public.giftcategory
 
 CREATE TABLE public.shop
 (
-  id SERIAL PRIMARY KEY,
+  uuid UUID UNIQUE PRIMARY KEY NOT NULL,
   name varchar (255) NOT NULL,
   description varchar(255) NOT NULL
+);
+
+CREATE TABLE public.transaction
+(
+  uuid UUID UNIQUE PRIMARY KEY NOT NULL,
+  useruuid UUID REFERENCES user(uuid),
+  gift
 );
 
 
