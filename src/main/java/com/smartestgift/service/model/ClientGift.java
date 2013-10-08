@@ -13,14 +13,14 @@ import javax.persistence.Table;
  */
 
 @Table(name = "usergift")
-public class UserGift {
+public class ClientGift {
 
     @Id
     @Column(nullable = false, insertable = false, unique = true)
     private Long id;
 
     @ManyToOne
-    private User user;
+    private Client client;
 
     @ManyToOne
     private Gift gift;

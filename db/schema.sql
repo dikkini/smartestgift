@@ -35,7 +35,7 @@ CREATE TABLE public.gift
 );
 
 
-CREATE TABLE public."user"
+CREATE TABLE public.client
 (
   uuid UUID UNIQUE NOT NULL,
   login VARCHAR (16) NOT NULL,
@@ -49,11 +49,11 @@ CREATE TABLE public."user"
   PRIMARY KEY ( uuid, login )
 );
 
-CREATE TABLE public.usergift
+CREATE TABLE public.clientgift
 (
   id SERIAL UNIQUE NOT NULL,
-  useruuid uuid REFERENCES "user"(uuid) NOT NULL,
-  giftuuid uuid REFERENCES "gift"(uuid) NOT NULL,
+  clientuuid uuid REFERENCES client(uuid) NOT NULL,
+  giftuuid uuid REFERENCES gift(uuid) NOT NULL,
     PRIMARY KEY ( id )
 );
 
@@ -74,8 +74,9 @@ CREATE TABLE public.shop
 CREATE TABLE public.transaction
 (
   uuid UUID UNIQUE PRIMARY KEY NOT NULL,
-  useruuid UUID REFERENCES user(uuid),
-  gift
+  clientuuid UUID REFERENCES client(uuid),
+  giftuuid UUID REFERENCES gift(uuid),
+  status BOOLEAN NOT NULL
 );
 
 

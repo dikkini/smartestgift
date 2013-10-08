@@ -1,5 +1,7 @@
 package com.smartestgift.service.model;
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
 import java.util.UUID;
 
@@ -13,9 +15,9 @@ import java.util.UUID;
 @Entity
 @Table(name = "gift")
 public class Gift {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, insertable = false, unique = true)
+    @Type(type = "pg-uuid")
     private UUID uuid;
 
     @Column(nullable = false, insertable = true, unique = false)

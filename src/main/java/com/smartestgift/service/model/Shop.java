@@ -1,9 +1,12 @@
 package com.smartestgift.service.model;
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.UUID;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,8 +20,8 @@ import javax.persistence.Table;
 public class Shop {
 
     @Id
-    @Column(nullable = false, insertable = false, unique = true)
-    private Long id;
+    @Type(type = "pg-uuid")
+    private UUID uuid;
 
     @Column(nullable = true, insertable = false, unique = false)
     private String name;
