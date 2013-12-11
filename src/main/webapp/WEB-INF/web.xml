@@ -1,9 +1,9 @@
 <web-app version="2.4"
-	xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
+         xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
 	http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
-	<display-name>SmartestGift - best gift ever!</display-name>
+    <display-name>SmartestGift</display-name>
 
     <!-- Описание корневого контейнера, разделяемого всеми сервлетами и фильтрами -->
     <context-param>
@@ -35,11 +35,11 @@
     </servlet-mapping>
 
     <servlet-mapping>
-        <servlet-name>default</servlet-name>
+        <servlet-name>appServlet</servlet-name>
         <url-pattern>*.js</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>default</servlet-name>
+        <servlet-name>appServlet</servlet-name>
         <url-pattern>*.css</url-pattern>
     </servlet-mapping>
 
@@ -79,4 +79,31 @@
             <page-encoding>UTF-8</page-encoding>
         </jsp-property-group>
     </jsp-config>
+
+    <!-- erros pages -->
+    <!--    <error-page>
+            &lt;!&ndash; Missing login &ndash;&gt;
+            <error-code>401</error-code>
+            <location>/general-error.html</location>
+        </error-page>
+        <error-page>
+            &lt;!&ndash; Forbidden directory listing &ndash;&gt;
+            <error-code>403</error-code>
+            <location>/general-error.html</location>
+        </error-page>-->
+    <!--<error-page>-->
+        <!--&lt;!&ndash; Page not found&ndash;&gt;-->
+        <!--<error-code>404</error-code>-->
+        <!--<location>/404.jsp</location>-->
+    <!--</error-page>-->
+    <!--    <error-page>
+            &lt;!&ndash; Uncaught exception &ndash;&gt;
+            <error-code>500</error-code>
+            <location>/general-error.html</location>
+        </error-page>
+        <error-page>
+            &lt;!&ndash; Unsupported servlet method &ndash;&gt;
+            <error-code>503</error-code>
+            <location>/general-error.html</location>
+        </error-page>-->
 </web-app>

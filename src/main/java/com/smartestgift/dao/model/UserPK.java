@@ -1,4 +1,4 @@
-package com.smartestgift.service.model;
+package com.smartestgift.dao.model;
 
 import org.hibernate.annotations.Type;
 
@@ -13,7 +13,7 @@ import java.util.UUID;
  * Date: 10/8/13
  * Time: 4:09 PM
  */
-public class ClientPK implements Serializable {
+public class UserPK implements Serializable {
     @Id
     @Type(type = "pg-uuid")
     protected UUID uuid;
@@ -22,9 +22,9 @@ public class ClientPK implements Serializable {
     @Column(nullable = false, insertable = false, unique = true)
     protected String login;
 
-    public ClientPK() {}
+    public UserPK() {}
 
-    public ClientPK(UUID uuid, String login) {
+    public UserPK(UUID uuid, String login) {
         this.uuid = uuid;
         this.login = login;
     }

@@ -1,8 +1,8 @@
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SET check_function_bodies = false;
-SET client_min_messages = warning;
+SET standard_conforming_strings = ON;
+SET check_function_bodies = FALSE;
+SET client_min_messages = WARNING;
 
 --
 -- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
@@ -18,65 +18,47 @@ CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 
 
-SET search_path = public, pg_catalog;
+SET search_path = PUBLIC, pg_catalog;
 
 SET default_tablespace = '';
 
-SET default_with_oids = false;
+SET default_with_oids = FALSE;
 
 
 CREATE TABLE public.gift
 (
-    uuid UUID UNIQUE PRIMARY KEY NOT NULL,
-    name varchar (255) NOT NULL,
-    description text,
-    priceid INT NOT NULL,
-    categoryid INT NOT NULL
+  uuid        UUID UNIQUE PRIMARY KEY NOT NULL,
+  name        VARCHAR(255)            NOT NULL,
+  description TEXT,
+  categoryId  INT                     NOT NULL
 );
 
 
-CREATE TABLE public.client
+CREATE TABLE public.user
 (
-  uuid UUID UNIQUE NOT NULL,
-  login VARCHAR (16) NOT NULL,
-  passwordmd5 text NOT NULL,
-  firstname varchar (255) NOT NULL,
-  lastname varchar (255) NOT NULL,
-  middlename varchar (255),
-  birthdate timestamp NOT NULL,
-  photo bytea,
-  regdate timestamp  NOT NULL,
-  PRIMARY KEY ( uuid, login )
+  uuid             UUID UNIQUE  NOT NULL,
+  login            VARCHAR(16)  NOT NULL,
+  passwordMd5      VARCHAR(32)  NOT NULL,
+  firstName        VARCHAR(255) NOT NULL,
+  lastName         VARCHAR(255) NOT NULL,
+  middleName       VARCHAR(255),
+  birthDate        TIMESTAMP    NOT NULL,
+  registrationDate TIMESTAMP    NOT NULL,
+  PRIMARY KEY (uuid, login)
 );
 
-CREATE TABLE public.clientgift
+CREATE TABLE public.userGift
 (
-  id SERIAL UNIQUE NOT NULL,
-  clientuuid uuid REFERENCES client(uuid) NOT NULL,
-  giftuuid uuid REFERENCES gift(uuid) NOT NULL,
-    PRIMARY KEY ( id )
+  userUuid UUID REFERENCES "user" (uuid) NOT NULL,
+  giftUuid UUID REFERENCES gift (uuid)   NOT NULL,
+  PRIMARY KEY (userUuid, giftUuid)
 );
 
-CREATE TABLE public.giftcategory
+CREATE TABLE public.giftCategory
 (
-  id SERIAL PRIMARY KEY,
-  name varchar(255) NOT NULL,
-  description varchar (255) NOT NULL
-);
-
-CREATE TABLE public.shop
-(
-  uuid UUID UNIQUE PRIMARY KEY NOT NULL,
-  name varchar (255) NOT NULL,
-  description varchar(255) NOT NULL
-);
-
-CREATE TABLE public.transaction
-(
-  uuid UUID UNIQUE PRIMARY KEY NOT NULL,
-  clientuuid UUID REFERENCES client(uuid),
-  giftuuid UUID REFERENCES gift(uuid),
-  status BOOLEAN NOT NULL
+  id          SERIAL PRIMARY KEY,
+  name        VARCHAR(255) NOT NULL,
+  description VARCHAR(255) NOT NULL
 );
 
 

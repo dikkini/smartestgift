@@ -11,7 +11,7 @@
         <java-version>1.7</java-version>
         <spring.version>3.2.4.RELEASE</spring.version>
 
-        <db.name>smartestgift</db.name>
+        <db.name>smartestgiftdb</db.name>
         <db.name.postfix></db.name.postfix>
         <!--PostgreSQL 9.1 and below-->
         <db.pid>procpid</db.pid>
@@ -57,7 +57,7 @@
             </resource>
 
             <resource>
-                <directory>${project.basedir}/src/main/resources</directory>
+                <directory>src/main/webapp/resources</directory>
                 <includes>
                     <include>**/*.java</include>
                     <include>**/*.properties</include>
@@ -81,6 +81,11 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.1.1</version>
+            </plugin>
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>sql-maven-plugin</artifactId>
                 <version>1.5</version>
@@ -97,7 +102,7 @@
                     <driver>org.postgresql.Driver</driver>
                     <url>jdbc:postgresql://localhost:5432</url>
                     <username>postgres</username>
-                    <password>postgres</password>
+                    <password>90s3a30K!</password>
                 </configuration>
 
                 <executions>
@@ -216,6 +221,29 @@ CREATE DATABASE ${db.name}${db.name.postfix} WITH TEMPLATE = template0 ENCODING 
             <artifactId>spring-security-core</artifactId>
             <version>3.2.0.CI-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-taglibs</artifactId>
+            <version>3.2.0.CI-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>spring-aop</artifactId>
+                    <groupId>org.springframework</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- Facebook auth -->
+        <dependency>
+            <groupId>com.google.code.facebookapi</groupId>
+            <artifactId>facebook-java-api</artifactId>
+            <version>2.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.social</groupId>
+            <artifactId>spring-social-facebook</artifactId>
+            <version>1.0.3.RELEASE</version>
+        </dependency>
 
         <!-- Hibernate -->
         <dependency>
@@ -285,7 +313,6 @@ CREATE DATABASE ${db.name}${db.name.postfix} WITH TEMPLATE = template0 ENCODING 
             <version>1</version>
         </dependency>
 
-
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
@@ -330,6 +357,18 @@ CREATE DATABASE ${db.name}${db.name.postfix} WITH TEMPLATE = template0 ENCODING 
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
             <version>1.2</version>
+        </dependency>
+
+        <!-- file upload deps -->
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-core-asl</artifactId>
+            <version>1.9.12</version>
         </dependency>
 
     </dependencies>
