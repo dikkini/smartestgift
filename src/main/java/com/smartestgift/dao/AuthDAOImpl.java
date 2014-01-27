@@ -29,7 +29,7 @@ public class AuthDAOImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String login)
             throws UsernameNotFoundException {
 
-        com.smartestgift.dao.model.User domainUser = userDAO.findUserByUserName(login);
+            com.smartestgift.dao.model.User domainUser = userDAO.findUserByUserName(login);
 
         boolean enabled = true;
         boolean accountNonExpired = true;

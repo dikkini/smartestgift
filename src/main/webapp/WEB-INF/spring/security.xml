@@ -13,7 +13,7 @@ http://www.springframework.org/schema/security/spring-security-3.2.xsd">
 		<intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" />
 
         <form-login login-page="/signin" default-target-url="/" authentication-failure-url="/signin-failure"/>
-        <logout logout-url="/logout" success-handler-ref="customLogoutSuccessHandler"/>
+        <logout logout-url="/logout" success-handler-ref="logoutHandler"/>
 
 		<remember-me user-service-ref="authDAOImpl"/>
 
@@ -24,8 +24,8 @@ http://www.springframework.org/schema/security/spring-security-3.2.xsd">
 
     <!-- Настройки глобальной секурити. Разрешение использовать аннотации. -->
     <global-method-security secured-annotations="enabled">
-        <protect-pointcut expression="execution(* com.smartestgift.dao.*DAO.*(..))"
-                          access="ROLE_USER"/>
+        <!--<protect-pointcut expression="execution(* com.smartestgift.dao.*DAO.*(..))"
+                          access="ROLE_USER"/>-->
     </global-method-security>
 
     <authentication-manager>

@@ -20,7 +20,7 @@ CREATE TABLE public.gift
 CREATE TABLE public.user
 (
   uuid             UUID UNIQUE  NOT NULL,
-  login            VARCHAR(16)  NOT NULL,
+  login            VARCHAR(20)  NOT NULL,
   passwordMd5      VARCHAR(32)  NOT NULL,
   firstName        VARCHAR(255) NOT NULL,
   lastName         VARCHAR(255) NOT NULL,
@@ -44,27 +44,22 @@ CREATE TABLE public.giftCategory
   description VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE public.roles (
+CREATE TABLE public.role (
   id   SERIAL PRIMARY KEY,
   role VARCHAR(20) NOT NULL
 );
 
-CREATE TABLE public.users (
-  id       SERIAL PRIMARY KEY,
-  login    VARCHAR(20) NOT NULL,
-  passwordMd5 VARCHAR(32) NOT NULL
+CREATE TABLE public.user_role (
+  id     SERIAL PRIMARY KEY,
+  userUuid UUID REFERENCES public.user (uuid) NOT NULL,
+  roleId INT REFERENCES role (id) NOT NULL
 );
 
-CREATE TABLE public.user_roles (
-  id   SERIAL PRIMARY KEY,
-  userId INT REFERENCES users(id) NOT NULL,
-  roleId INT REFERENCES roles(id) NOT NULL
-);
+INSERT INTO role (role) VALUES ('admin'), ('user');
 
-INSERT INTO roles (role) VALUES ('admin'), ('user');
+INSERT INTO public.user (login, passwordMd5)
+VALUES ('admin', '21232f297a57a5a743894a0e4a801fc3'), ('user', 'ee11cbb19052e40b07aac0ca060c23ee');
 
-INSERT INTO users (login, passwordMd5) VALUES ('admin', '21232f297a57a5a743894a0e4a801fc3'), ('user', 'ee11cbb19052e40b07aac0ca060c23ee');
-
-INSERT INTO user_roles (userId, roleId) VALUES (1, 1), (2, 2);
+INSERT INTO user_role (userUuid, roleId) VALUES (1, 1), (2, 2);
 
 
