@@ -47,9 +47,9 @@
 		<property name="configLocation" value="classpath:hibernate.cfg.xml"/>
 		<property name="hibernateProperties">
 			<props>
-				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.show_sql">${jdbc.show_sql}</prop>
 				<prop key="hibernate.dialect">${jdbc.dialect}</prop>
-				<prop key="hibernate.connection.charSet">UTF-8</prop>
+				<prop key="hibernate.connection.charSet">${jdbc.connectCharSet}</prop>
 			</props>
 		</property>
 	</bean>
