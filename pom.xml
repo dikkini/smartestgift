@@ -100,9 +100,9 @@
 
                 <configuration>
                     <driver>org.postgresql.Driver</driver>
-                    <url>jdbc:postgresql://localhost:5432</url>
-                    <username>postgres</username>
-                    <password>90s3a30K!</password>
+                    <url>jdbc:postgresql://109.120.165.66:5432/smartestgiftdb</url>
+                    <username>smartestgiftdbadmin</username>
+                    <password>smartestgiftdbadmin</password>
                 </configuration>
 
                 <executions>
@@ -129,7 +129,7 @@ CREATE DATABASE ${db.name}${db.name.postfix} WITH TEMPLATE = template0 ENCODING 
                             <goal>execute</goal>
                         </goals>
                         <configuration>
-                            <url>jdbc:postgresql://localhost:5432/${db.name}${db.name.postfix}</url>
+                            <url>jdbc:postgresql://109.120.165.66:5432/${db.name}${db.name.postfix}</url>
                             <autocommit>true</autocommit>
                             <srcFiles>
                                 <srcFile>${db.dir}/schema.sql</srcFile>
@@ -143,7 +143,7 @@ CREATE DATABASE ${db.name}${db.name.postfix} WITH TEMPLATE = template0 ENCODING 
                             <goal>execute</goal>
                         </goals>
                         <configuration>
-                            <url>jdbc:postgresql://localhost:5432/${db.name}${db.name.postfix}</url>
+                            <url>jdbc:postgresql://109.120.165.66:5432/${db.name}${db.name.postfix}</url>
                             <orderFile>ascending</orderFile>
                             <fileset>
                                 <basedir>${project.basedir}</basedir>

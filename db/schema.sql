@@ -3,25 +3,8 @@ SET client_encoding = 'UTF8';
 SET standard_conforming_strings = ON;
 SET check_function_bodies = FALSE;
 SET client_min_messages = WARNING;
-
---
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
-
-
---
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
---
-
-COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
-
-
 SET search_path = PUBLIC, pg_catalog;
-
 SET default_tablespace = '';
-
 SET default_with_oids = FALSE;
 
 
