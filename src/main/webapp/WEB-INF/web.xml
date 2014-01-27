@@ -10,12 +10,20 @@
         <param-name>contextConfigLocation</param-name>
         <param-value>
             /WEB-INF/spring/root-context.xml
+            /WEB-INF/spring/security.xml
         </param-value>
     </context-param>
 
     <!-- Создаёт контейнер Spring, разделяемый всеми сервлетами и фильтрами -->
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+
+    <!-- Получение информации о сессиях пользователей -->
+    <listener>
+        <listener-class>
+            org.springframework.security.web.session.HttpSessionEventPublisher
+        </listener-class>
     </listener>
 
     <!-- Базовый сервлет, обрабатывает все запросы к приложению -->
