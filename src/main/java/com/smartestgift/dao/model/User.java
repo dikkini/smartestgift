@@ -47,8 +47,8 @@ public class User implements Serializable {
     protected Date registrationDate;
 
     @OneToOne(cascade=CascadeType.ALL)
-    @JoinTable(name="user_roles",
-            joinColumns = {@JoinColumn(name="userId", referencedColumnName="id")},
+    @JoinTable(name="user_role",
+            joinColumns = {@JoinColumn(name="useruuid", referencedColumnName="uuid")},
             inverseJoinColumns = {@JoinColumn(name="roleId", referencedColumnName="id")}
     )
     private Role role;

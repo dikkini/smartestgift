@@ -9,7 +9,7 @@ import java.util.Set;
  * Email: dikkini@gmail.com
  */
 @Entity
-@Table(name = "roles")
+@Table(name = "role")
 public class Role implements Serializable {
 
     @Id
@@ -20,9 +20,9 @@ public class Role implements Serializable {
     private String role;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "user_roles",
+    @JoinTable(name = "user_role",
             joinColumns = {@JoinColumn(name = "roleId", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "userId", referencedColumnName = "id")}
+            inverseJoinColumns = {@JoinColumn(name = "userUuid", referencedColumnName = "uuid")}
     )
     private Set<User> userRoles;
 
