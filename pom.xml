@@ -14,6 +14,8 @@
         <db.name>smartestgiftdb</db.name>
         <db.host>172.25.29.197</db.host>
         <db.port>5432</db.port>
+        <db.username>postgres</db.username>
+        <db.password>90s3a30K</db.password>
         <db.name.postfix></db.name.postfix>
         <!--PostgreSQL 9.1 and below-->
         <db.pid>procpid</db.pid>
@@ -103,8 +105,8 @@
                 <configuration>
                     <driver>org.postgresql.Driver</driver>
                     <url>jdbc:postgresql://${db.host}:${db.port}/${db.name}</url>
-                    <username>smartestgiftdbadmin</username>
-                    <password>smartestgiftdbadmin</password>
+                    <username>${db.username}</username>
+                    <password>${db.password}</password>
                 </configuration>
 
                 <executions>
