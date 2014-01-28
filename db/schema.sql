@@ -7,6 +7,12 @@ SET search_path = PUBLIC, pg_catalog;
 SET default_tablespace = '';
 SET default_with_oids = FALSE;
 
+DROP TABLE public.userGift;
+DROP TABLE public.user_role;
+DROP TABLE public.gift;
+DROP TABLE public.role;
+DROP TABLE public.user;
+DROP TABLE public.giftCategory;
 
 CREATE TABLE public.gift
 (
@@ -51,15 +57,9 @@ CREATE TABLE public.role (
 
 CREATE TABLE public.user_role (
   id     SERIAL PRIMARY KEY,
-  userUuid UUID REFERENCES public.user (uuid) NOT NULL,
+  userUuid UUID REFERENCES "user" (uuid) NOT NULL,
   roleId INT REFERENCES role (id) NOT NULL
 );
 
-INSERT INTO role (role) VALUES ('admin'), ('user');
-
-INSERT INTO public.user (login, passwordMd5)
-VALUES ('admin', '21232f297a57a5a743894a0e4a801fc3'), ('user', 'ee11cbb19052e40b07aac0ca060c23ee');
-
-INSERT INTO user_role (userUuid, roleId) VALUES (1, 1), (2, 2);
 
 

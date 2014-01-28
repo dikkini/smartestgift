@@ -14,8 +14,8 @@
         <db.name>smartestgiftdb</db.name>
         <db.host>172.25.29.197</db.host>
         <db.port>5432</db.port>
-        <db.username>postgres</db.username>
-        <db.password>90s3a30K</db.password>
+        <db.username>dikkini</db.username>
+        <db.password>asddsa</db.password>
         <db.name.postfix></db.name.postfix>
         <!--PostgreSQL 9.1 and below-->
         <db.pid>procpid</db.pid>
@@ -110,22 +110,6 @@
                 </configuration>
 
                 <executions>
-                    <execution>
-                        <id>default-cli</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>execute</goal>
-                        </goals>
-                        <configuration>
-                            <autocommit>true</autocommit>
-                            <sqlCommand>
-SELECT pg_terminate_backend(${db.pid}) FROM pg_stat_activity WHERE datname = '${db.name}${db.name.postfix}';
-DROP DATABASE IF EXISTS ${db.name}${db.name.postfix};
-CREATE DATABASE ${db.name}${db.name.postfix} WITH TEMPLATE = template0 ENCODING = 'UTF8';
-                            </sqlCommand>
-                            <onError>continue</onError>
-                        </configuration>
-                    </execution>
                     <execution>
                         <id>create-schema</id>
                         <phase>compile</phase>
