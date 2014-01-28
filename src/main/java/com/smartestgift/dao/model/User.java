@@ -15,7 +15,6 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "user")
-@IdClass(UserPK.class)
 public class User implements Serializable {
 
     @Id
@@ -46,10 +45,9 @@ public class User implements Serializable {
     @Column
     protected Date registrationDate;
 
-    @OneToOne(cascade=CascadeType.ALL)
-    @JoinTable(name="user_role",
-            joinColumns = {@JoinColumn(name="useruuid", referencedColumnName="uuid")},
-            inverseJoinColumns = {@JoinColumn(name="roleId", referencedColumnName="id")}
+    @ManyToOne(cascade=CascadeType.ALL)
+    @JoinTable(name="role",
+            joinColumns = {@JoinColumn(name="id", referencedColumnName="roleId")}
     )
     private Role role;
 

@@ -20,9 +20,8 @@ public class Role implements Serializable {
     private String role;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "user_role",
-            joinColumns = {@JoinColumn(name = "roleId", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "userUuid", referencedColumnName = "uuid")}
+    @JoinTable(name = "user",
+            joinColumns = {@JoinColumn(name = "roleId", referencedColumnName = "id")}
     )
     private Set<User> userRoles;
 

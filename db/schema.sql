@@ -7,12 +7,11 @@ SET search_path = PUBLIC, pg_catalog;
 SET default_tablespace = '';
 SET default_with_oids = FALSE;
 
-DROP TABLE public.userGift;
-DROP TABLE public.user_role;
-DROP TABLE public.gift;
-DROP TABLE public.role;
-DROP TABLE public.user;
-DROP TABLE public.giftCategory;
+DROP TABLE public.userGift CASCADE;
+DROP TABLE public.giftCategory CASCADE;
+DROP TABLE public.gift CASCADE;
+DROP TABLE public.role CASCADE;
+DROP TABLE public.user CASCADE;
 
 CREATE TABLE public.gift
 (
@@ -22,18 +21,22 @@ CREATE TABLE public.gift
   categoryId  INT                     NOT NULL
 );
 
+CREATE TABLE public.role (
+  id   SERIAL PRIMARY KEY,
+  role VARCHAR(20) NOT NULL
+);
 
 CREATE TABLE public.user
 (
-  uuid             UUID UNIQUE  NOT NULL,
-  login            VARCHAR(20)  NOT NULL,
-  passwordMd5      VARCHAR(32)  NOT NULL,
-  firstName        VARCHAR(255) NOT NULL,
-  lastName         VARCHAR(255) NOT NULL,
+  uuid             UUID PRIMARY KEY         NOT NULL,
+  login            VARCHAR(20)              NOT NULL,
+  passwordMd5      VARCHAR(32)              NOT NULL,
+  firstName        VARCHAR(255)             NOT NULL,
+  lastName         VARCHAR(255)             NOT NULL,
   middleName       VARCHAR(255),
-  birthDate        TIMESTAMP    NOT NULL,
-  registrationDate TIMESTAMP    NOT NULL,
-  PRIMARY KEY (uuid, login)
+  birthDate        TIMESTAMP                NOT NULL,
+  registrationDate TIMESTAMP                NOT NULL,
+  roleId           INT REFERENCES role (id) NOT NULL
 );
 
 CREATE TABLE public.userGift
@@ -48,17 +51,6 @@ CREATE TABLE public.giftCategory
   id          SERIAL PRIMARY KEY,
   name        VARCHAR(255) NOT NULL,
   description VARCHAR(255) NOT NULL
-);
-
-CREATE TABLE public.role (
-  id   SERIAL PRIMARY KEY,
-  role VARCHAR(20) NOT NULL
-);
-
-CREATE TABLE public.user_role (
-  id     SERIAL PRIMARY KEY,
-  userUuid UUID REFERENCES "user" (uuid) NOT NULL,
-  roleId INT REFERENCES role (id) NOT NULL
 );
 
 
