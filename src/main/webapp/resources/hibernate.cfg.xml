@@ -6,5 +6,9 @@
 <hibernate-configuration>
 	<session-factory>
         <mapping package="com.smartestgift.dao.model"/>
+        <mapping class="com.smartestgift.dao.model.Gift"/>
+        <mapping class="com.smartestgift.dao.model.GiftCategory"/>
+        <mapping class="com.smartestgift.dao.model.Person"/>
+        <mapping class="com.smartestgift.dao.model.Role"/>
 	</session-factory>
 </hibernate-configuration>
