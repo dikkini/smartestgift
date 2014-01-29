@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
- /**
+/**
  * Created by dikkini on 10.06.13.
  * Email: dikkini@gmail.com
  */
@@ -16,14 +16,10 @@ import java.util.UUID;
 public class Person implements Serializable {
 
     @Id
-    @GeneratedValue(generator="system-uuid")
-    @GenericGenerator(name="system-uuid", strategy = "uuid")
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid")
     @Column(name = "uuid", unique = true)
     protected UUID uuid;
-
-    @Id
-    @Column
-    protected String login;
 
     @Column
     protected Date birthDate;
@@ -37,15 +33,8 @@ public class Person implements Serializable {
     @Column
     protected String middleName;
 
-    @Column
-    protected String passwordMd5;
-
-    @Column
-    protected Date registrationDate;
-
-    @ManyToOne
-    @JoinColumn(name="roleid")
-    private Role role;
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "person", cascade = CascadeType.ALL)
+    protected PersonAuthDetails authDetails;
 
     public UUID getUuid() {
         return uuid;
@@ -53,14 +42,6 @@ public class Person implements Serializable {
 
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
     }
 
     public Date getBirthDate() {
@@ -95,27 +76,7 @@ public class Person implements Serializable {
         this.middleName = middleName;
     }
 
-    public String getPasswordMd5() {
-        return passwordMd5;
-    }
+    public PersonAuthDetails getAuthDetails() { return authDetails; }
 
-    public void setPasswordMd5(String passwordMd5) {
-        this.passwordMd5 = passwordMd5;
-    }
-
-    public Date getRegistrationDate() {
-        return registrationDate;
-    }
-
-    public void setRegistrationDate(Date registrationDate) {
-        this.registrationDate = registrationDate;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
+    public void setAuthDetails(PersonAuthDetails authDetails) { this.authDetails = authDetails; }
 }

@@ -1,6 +1,7 @@
-package com.smartestgift.dao;
+package com.smartestgift.security;
 
-import com.smartestgift.dao.model.Person;
+import com.smartestgift.dao.PersonDAO;
+import com.smartestgift.dao.model.PersonAuthDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,7 +23,7 @@ import java.util.List;
 
 @Service
 @Transactional(readOnly=true)
-public class AuthDAOImpl implements UserDetailsService {
+public class AuthUserDetailsService implements UserDetailsService {
 
     @Autowired
     private PersonDAO personDAO;
@@ -30,30 +31,26 @@ public class AuthDAOImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String login)
             throws UsernameNotFoundException {
 
-        Person domainPerson = personDAO.findPersonByLogin(login);
-
-        boolean enabled = true;
-        boolean accountNonExpired = true;
-        boolean credentialsNonExpired = true;
-        boolean accountNonLocked = true;
+        PersonAuthDetails domainPerson = personDAO.findPersonAuthDetailsByLogin(login);
 
         return new User(
                 domainPerson.getLogin(),
                 domainPerson.getPasswordMd5(),
-                enabled,
-                accountNonExpired,
-                credentialsNonExpired,
-                accountNonLocked,
+                domainPerson.isEnabled(),
+                domainPerson.isAccountNonLocked(),
+                domainPerson.isCredentialsNonExpired(),
+                domainPerson.isAccountNonLocked(),
                 getAuthorities(domainPerson.getRole().getId().intValue())
         );
     }
 
     public Collection<? extends GrantedAuthority> getAuthorities(Integer role) {
+        // TODO продумать как раздавать и какие могут быть права у каждой роли
         return getGrantedAuthorities(getRoles(role));
     }
 
     public List<String> getRoles(Integer role) {
-
+        // TODO продумать определение роли. enumerate ?
         List<String> roles = new ArrayList<>();
 
         if (role == 1) {

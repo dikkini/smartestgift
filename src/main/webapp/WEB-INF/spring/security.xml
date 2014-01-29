@@ -9,7 +9,7 @@
           http://www.springframework.org/schema/context
           http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <!--<context:component-scan base-package="com.smartestgift.security"/>-->
+    <context:component-scan base-package="com.smartestgift.security"/>
 
     <security:http pattern="/resources/**" security="none" />
 	<security:http auto-config="false" use-expressions="true">
@@ -28,7 +28,7 @@
             <security:concurrency-control max-sessions="10" error-if-maximum-exceeded="true" />
         </security:session-management>
 
-        <security:remember-me user-service-ref="authDAOImpl" />
+        <security:remember-me user-service-ref="authUserDetailsService" />
 	</security:http>
 
     <!-- Настройки глобальной секурити. Разрешение использовать аннотации. -->
@@ -37,7 +37,7 @@
     </security:global-method-security>
 
     <security:authentication-manager alias="authenticationManager">
-        <security:authentication-provider user-service-ref="authDAOImpl">
+        <security:authentication-provider user-service-ref="authUserDetailsService">
             <security:password-encoder hash="md5"/>
         </security:authentication-provider>
     </security:authentication-manager>

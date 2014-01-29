@@ -10,5 +10,6 @@
         <mapping class="com.smartestgift.dao.model.GiftCategory"/>
         <mapping class="com.smartestgift.dao.model.Person"/>
         <mapping class="com.smartestgift.dao.model.Role"/>
+        <mapping class="com.smartestgift.dao.model.PersonAuthDetails"/>
 	</session-factory>
 </hibernate-configuration>

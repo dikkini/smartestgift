@@ -19,8 +19,8 @@ public class Role implements Serializable {
 
     private String role;
 
-    @OneToMany(mappedBy="role")
-    private Set<Person> personRoles;
+    @OneToMany(mappedBy = "role")
+    private Set<PersonAuthDetails> personRoles;
 
     public Long getId() {
         return id;
@@ -38,11 +38,11 @@ public class Role implements Serializable {
         this.role = role;
     }
 
-    public Set<Person> getPersonRoles() {
+    public Set<PersonAuthDetails> getPersonRoles() {
         return personRoles;
     }
 
-    public void setPersonRoles(Set<Person> personRoles) {
+    public void setPersonRoles(Set<PersonAuthDetails> personRoles) {
         this.personRoles = personRoles;
     }
 

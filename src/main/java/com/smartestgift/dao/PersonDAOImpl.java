@@ -1,8 +1,8 @@
 package com.smartestgift.dao;
 
 import com.smartestgift.dao.model.Person;
+import com.smartestgift.dao.model.PersonAuthDetails;
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.CriteriaSpecification;
@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by dikkini on 27.01.14.
@@ -24,7 +25,7 @@ public class PersonDAOImpl implements PersonDAO {
     SessionFactory sessionFactory;
 
     @Override
-    public Person find(Long id) {
+    public Person find(UUID id) {
         return (Person) sessionFactory.getCurrentSession().get(Person.class, id);
     }
 
@@ -49,9 +50,9 @@ public class PersonDAOImpl implements PersonDAO {
     }
 
     @Override
-    public Person findPersonByLogin(String login) {
-        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Person.class);
+    public PersonAuthDetails findPersonAuthDetailsByLogin(String login) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(PersonAuthDetails.class);
         criteria.add(Restrictions.eq("login", login));
-        return (Person) criteria.uniqueResult();
+        return (PersonAuthDetails) criteria.uniqueResult();
     }
 }
