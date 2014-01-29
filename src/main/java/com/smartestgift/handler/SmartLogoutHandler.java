@@ -10,6 +10,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 import org.springframework.stereotype.Service;
 
@@ -19,21 +20,22 @@ import org.springframework.stereotype.Service;
  */
 
 @Service
-public class LogoutHandler extends SimpleUrlLogoutSuccessHandler{
+public class SmartLogoutHandler implements LogoutHandler {
 
     @Override
-    @Secured("IS_AUTHENTICATED_ANONYMOUSLY")
-    public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response,
-                                Authentication authentication) throws IOException, ServletException{
-
+    public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         Object principal = authentication.getPrincipal();
-        if (principal instanceof User) {
-            User user = (User) principal;
-            if( user.getUsername().equals("user") ){
-                response.sendRedirect( request.getContextPath() + "/logout/user" );
+        try {
+            if (principal instanceof User) {
+                User user = (User) principal;
+                if (user.getUsername().equals("user")) {
+                    response.sendRedirect(request.getContextPath() + "/logout/user");
+                    return;
+                }
             }
+            response.sendRedirect(request.getContextPath() + "/");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        response.sendRedirect(  request.getContextPath() + "/" );
-
     }
 }
