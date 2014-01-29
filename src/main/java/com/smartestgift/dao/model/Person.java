@@ -7,15 +7,13 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
-/**
- * Created with IntelliJ IDEA.
- * User: dikkini
- * Date: 10/6/13
- * Time: 2:06 PM
+ /**
+ * Created by dikkini on 10.06.13.
+ * Email: dikkini@gmail.com
  */
 @Entity
-@Table(name = "user")
-public class User implements Serializable {
+@Table(name = "person")
+public class Person implements Serializable {
 
     @Id
     @GeneratedValue(generator="system-uuid")
@@ -45,10 +43,8 @@ public class User implements Serializable {
     @Column
     protected Date registrationDate;
 
-    @ManyToOne(cascade=CascadeType.ALL)
-    @JoinTable(name="role",
-            joinColumns = {@JoinColumn(name="id", referencedColumnName="roleId")}
-    )
+    @ManyToOne
+    @JoinColumn(name="roleid")
     private Role role;
 
     public UUID getUuid() {

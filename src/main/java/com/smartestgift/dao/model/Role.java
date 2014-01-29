@@ -19,11 +19,8 @@ public class Role implements Serializable {
 
     private String role;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "user",
-            joinColumns = {@JoinColumn(name = "roleId", referencedColumnName = "id")}
-    )
-    private Set<User> userRoles;
+    @OneToMany(mappedBy="role")
+    private Set<Person> personRoles;
 
     public Long getId() {
         return id;
@@ -41,12 +38,12 @@ public class Role implements Serializable {
         this.role = role;
     }
 
-    public Set<User> getUserRoles() {
-        return userRoles;
+    public Set<Person> getPersonRoles() {
+        return personRoles;
     }
 
-    public void setUserRoles(Set<User> UserRoles) {
-        this.userRoles = UserRoles;
+    public void setPersonRoles(Set<Person> personRoles) {
+        this.personRoles = personRoles;
     }
 
 }

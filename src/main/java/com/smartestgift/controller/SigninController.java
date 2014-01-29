@@ -19,5 +19,4 @@ public class SigninController {
     public String signinFailure() {
         return "signin_failure";
     }
-
 }

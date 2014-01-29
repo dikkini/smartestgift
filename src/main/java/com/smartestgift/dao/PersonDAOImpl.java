@@ -1,7 +1,8 @@
 package com.smartestgift.dao;
 
-import com.smartestgift.dao.model.User;
+import com.smartestgift.dao.model.Person;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.CriteriaSpecification;
@@ -18,24 +19,24 @@ import java.util.List;
  */
 @Service
 @Transactional
-public class UserDAOImpl implements UserDAO {
+public class PersonDAOImpl implements PersonDAO {
     @Autowired
     SessionFactory sessionFactory;
 
     @Override
-    public User find(Long id) {
-        return (User) sessionFactory.getCurrentSession().get(User.class, id);
+    public Person find(Long id) {
+        return (Person) sessionFactory.getCurrentSession().get(Person.class, id);
     }
 
     @Override
-    public List<User> findAll() {
-        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(User.class);
+    public List<Person> findAll() {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Person.class);
         criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
         return criteria.list();
     }
 
     @Override
-    public void store(User dmodel) {
+    public void store(Person dmodel) {
         Session session = sessionFactory.getCurrentSession();
         session.saveOrUpdate(dmodel);
         session.flush();
@@ -43,16 +44,14 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public void delete(User dmodel) {
+    public void delete(Person dmodel) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public User findUserByUserName(String login) {
-        Session currentSession = sessionFactory.getCurrentSession();
-        Criteria criteria = currentSession.createCriteria(User.class);
+    public Person findPersonByLogin(String login) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Person.class);
         criteria.add(Restrictions.eq("login", login));
-        List list = criteria.list();
-        return (User) list.get(0);
+        return (Person) criteria.uniqueResult();
     }
 }

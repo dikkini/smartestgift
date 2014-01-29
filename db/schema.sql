@@ -11,14 +11,14 @@ DROP TABLE public.userGift CASCADE;
 DROP TABLE public.giftCategory CASCADE;
 DROP TABLE public.gift CASCADE;
 DROP TABLE public.role CASCADE;
-DROP TABLE public.user CASCADE;
+DROP TABLE public.person CASCADE;
 
 CREATE TABLE public.gift
 (
-  uuid        UUID UNIQUE PRIMARY KEY NOT NULL,
-  name        VARCHAR(255)            NOT NULL,
+  uuid        UUID PRIMARY KEY NOT NULL,
+  name        VARCHAR(255)     NOT NULL,
   description TEXT,
-  categoryId  INT                     NOT NULL
+  categoryId  INT              NOT NULL
 );
 
 CREATE TABLE public.role (
@@ -26,7 +26,7 @@ CREATE TABLE public.role (
   role VARCHAR(20) NOT NULL
 );
 
-CREATE TABLE public.user
+CREATE TABLE public.person
 (
   uuid             UUID PRIMARY KEY         NOT NULL,
   login            VARCHAR(20)              NOT NULL,
@@ -41,9 +41,9 @@ CREATE TABLE public.user
 
 CREATE TABLE public.userGift
 (
-  userUuid UUID REFERENCES "user" (uuid) NOT NULL,
-  giftUuid UUID REFERENCES gift (uuid)   NOT NULL,
-  PRIMARY KEY (userUuid, giftUuid)
+  personUuid UUID REFERENCES person (uuid) NOT NULL,
+  giftUuid   UUID REFERENCES gift (uuid)   NOT NULL,
+  PRIMARY KEY (personUuid, giftUuid)
 );
 
 CREATE TABLE public.giftCategory

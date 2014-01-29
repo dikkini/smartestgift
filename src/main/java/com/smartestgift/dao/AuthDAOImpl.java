@@ -1,5 +1,6 @@
 package com.smartestgift.dao;
 
+import com.smartestgift.dao.model.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,12 +25,12 @@ import java.util.List;
 public class AuthDAOImpl implements UserDetailsService {
 
     @Autowired
-    private UserDAO userDAO;
+    private PersonDAO personDAO;
 
     public UserDetails loadUserByUsername(String login)
             throws UsernameNotFoundException {
 
-        com.smartestgift.dao.model.User domainUser = userDAO.findUserByUserName(login);
+        Person domainPerson = personDAO.findPersonByLogin(login);
 
         boolean enabled = true;
         boolean accountNonExpired = true;
@@ -37,13 +38,13 @@ public class AuthDAOImpl implements UserDetailsService {
         boolean accountNonLocked = true;
 
         return new User(
-                domainUser.getLogin(),
-                domainUser.getPasswordMd5(),
+                domainPerson.getLogin(),
+                domainPerson.getPasswordMd5(),
                 enabled,
                 accountNonExpired,
                 credentialsNonExpired,
                 accountNonLocked,
-                getAuthorities(domainUser.getRole().getId().intValue())
+                getAuthorities(domainPerson.getRole().getId().intValue())
         );
     }
 
