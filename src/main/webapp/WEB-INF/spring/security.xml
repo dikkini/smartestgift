@@ -1,37 +1,75 @@
-<beans:beans xmlns="http://www.springframework.org/schema/security"
-	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans
-http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
-http://www.springframework.org/schema/security
-http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+          http://www.springframework.org/schema/security
+          http://www.springframework.org/schema/security/spring-security-3.2.xsd
+          http://www.springframework.org/schema/context
+          http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <http pattern="/resources/**" security="none" />
-    <http pattern="/logout/user/" security="none" />
-	<http auto-config="false" use-expressions="true">
-        <intercept-url pattern="/signin" access="isAnonymous()"/>
-		<intercept-url pattern="/**" access="hasRole('ROLE_USER')" />
-		<intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" />
+    <context:component-scan base-package="com.smartestgift.security"/>
 
-        <form-login login-page="/signin" default-target-url="/" authentication-failure-url="/signin-failure"/>
+    <security:http pattern="/resources/**" security="none" />
+	<security:http auto-config="false" use-expressions="true">
+        <security:intercept-url pattern="/signin" access="permitAll" requires-channel="http"/>
 
-		<remember-me user-service-ref="authDAOImpl"/>
+		<security:intercept-url pattern="/**" access="isAuthenticated()" requires-channel="http"/>
+		<security:intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" requires-channel="http"/>
 
-        <custom-filter position="LOGOUT_FILTER" ref="logoutFilter" />
+        <security:form-login login-page="/signin"
+                             default-target-url="/"
+                             authentication-failure-url="/signin?error=true"/>
 
-        <session-management>
-            <concurrency-control max-sessions="1" error-if-maximum-exceeded="true" />
-        </session-management>
-	</http>
+        <security:custom-filter position="LOGOUT_FILTER" ref="logoutFilter" />
+
+        <security:session-management>
+            <security:concurrency-control max-sessions="10" error-if-maximum-exceeded="true" />
+        </security:session-management>
+
+        <security:remember-me user-service-ref="authDAOImpl" />
+	</security:http>
 
     <!-- Настройки глобальной секурити. Разрешение использовать аннотации. -->
-    <global-method-security secured-annotations="enabled">
-        <protect-pointcut expression="execution(* com.smartestgift.service.*Service.*(..) )" access="ROLE_USER"/>
-    </global-method-security>
+    <security:global-method-security secured-annotations="enabled" pre-post-annotations="enabled">
+        <security:protect-pointcut expression="execution(* com.smartestgift.service.*Service.*(..) )" access="ROLE_USER"/>
+    </security:global-method-security>
 
-    <authentication-manager>
-        <authentication-provider user-service-ref="authDAOImpl">
-            <password-encoder hash="md5"/>
-        </authentication-provider>
-    </authentication-manager>
+    <security:authentication-manager alias="authenticationManager">
+        <security:authentication-provider user-service-ref="authDAOImpl">
+            <security:password-encoder hash="md5"/>
+        </security:authentication-provider>
+    </security:authentication-manager>
 
-</beans:beans>
+    <bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
+        <constructor-arg index="0" value="256"/>
+    </bean>
+
+<!--    <bean id="rememberMeServices"
+          class="org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices">
+        <constructor-arg value="127roseQ"/>
+        <constructor-arg ref="authDAOImpl"/>
+        <constructor-arg ref="tokenRepository"/>
+        <property name="cookieName" value="remember-me"/>
+        <property name="tokenLength" value="32"/>
+        <property name="parameter" value="remember-me-parameter"/>
+    </bean>-->
+
+<!--    <bean id="tokenRepository"
+          class="org.springframework.security.web.authentication.rememberme.InMemoryTokenRepositoryImpl">
+    </bean>-->
+
+    <bean id="logoutFilter" class="org.springframework.security.web.authentication.logout.LogoutFilter">
+        <constructor-arg index="0" value="/login" />
+        <constructor-arg index="1">
+            <list>
+<!--                <ref bean="rememberMeServices" />-->
+                <bean id="securityContextLogoutHandler" class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler" />
+                <bean id="smartLogoutHandler" class="com.smartestgift.handler.SmartLogoutHandler" />
+            </list>
+        </constructor-arg>
+        <property name="filterProcessesUrl" value="/logout" />
+    </bean>
+
+</beans>

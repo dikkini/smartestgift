@@ -29,10 +29,11 @@ public class SmartLogoutHandler implements LogoutHandler {
             if (principal instanceof User) {
                 User user = (User) principal;
                 if (user.getUsername().equals("user")) {
-                    response.sendRedirect(request.getContextPath() + "/logout/user");
+                    response.sendRedirect(request.getContextPath() + "/");
                     return;
                 }
             }
+            authentication.setAuthenticated(false);
             response.sendRedirect(request.getContextPath() + "/");
         } catch (IOException e) {
             e.printStackTrace();
