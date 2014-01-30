@@ -11,7 +11,7 @@ import java.util.Date;
  * Email: dikkini@gmail.com
  */
 @Entity
-@Table(name = "persistentLogins")
+@Table(name = "persistent_login")
 public class Token implements Serializable {
     @Column
     private String username;

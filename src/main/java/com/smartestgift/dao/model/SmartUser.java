@@ -11,7 +11,7 @@ import java.util.Date;
  * Email: dikkini@gmail.com
  */
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public class SmartUser implements Serializable {
 
     @Id
@@ -33,7 +33,7 @@ public class SmartUser implements Serializable {
     protected String middleName;
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "smartUser", cascade = CascadeType.ALL)
-    protected SmartUserDetails authDetails;
+    protected SmartUserDetails smartUserDetails;
 
     public String getUuid() {
         return uuid;
@@ -75,7 +75,7 @@ public class SmartUser implements Serializable {
         this.middleName = middleName;
     }
 
-    public SmartUserDetails getAuthDetails() { return authDetails; }
+    public SmartUserDetails getSmartUserDetails() { return smartUserDetails; }
 
-    public void setAuthDetails(SmartUserDetails authDetails) { this.authDetails = authDetails; }
+    public void setSmartUserDetails(SmartUserDetails authDetails) { this.smartUserDetails = authDetails; }
 }

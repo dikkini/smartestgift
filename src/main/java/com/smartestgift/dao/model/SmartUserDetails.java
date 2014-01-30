@@ -19,7 +19,7 @@ public class SmartUserDetails implements Serializable {
     @Id
     @GeneratedValue(generator = "generator")
     @Column(name = "useruuid", unique = true, nullable = false)
-    protected String personUuid;
+    protected String userUuid;
 
     @OneToOne(fetch = FetchType.LAZY)
     @PrimaryKeyJoinColumn
@@ -41,18 +41,18 @@ public class SmartUserDetails implements Serializable {
     protected boolean credentialsNonExpired;
 
     @Column
-    protected boolean accountNonLocked;;
+    protected boolean accountNonLocked;
 
     @ManyToOne
     @JoinColumn(name="roleId")
     private Role role;
 
-    public String getPersonUuid() {
-        return personUuid;
+    public String getUserUuid() {
+        return userUuid;
     }
 
-    public void setPersonUuid(String personUuid) {
-        this.personUuid = personUuid;
+    public void setUserUuid(String personUuid) {
+        this.userUuid = personUuid;
     }
 
     @Column

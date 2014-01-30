@@ -31,7 +31,7 @@ public class UserAuthProvider implements UserDetailsService {
     public UserDetails loadUserByUsername(String login)
             throws UsernameNotFoundException {
 
-        SmartUserDetails domainPerson = smartUserDAO.findSmartUserDetailsByEmail(login);
+        SmartUserDetails domainPerson = smartUserDAO.findSmartUserDetailsByLogin(login);
 
         return new User(
                 domainPerson.getEmail(),
