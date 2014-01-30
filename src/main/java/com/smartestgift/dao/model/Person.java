@@ -19,7 +19,7 @@ public class Person implements Serializable {
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid")
     @Column(name = "uuid", unique = true)
-    protected UUID uuid;
+    protected String uuid;
 
     @Column
     protected Date birthDate;
@@ -36,11 +36,11 @@ public class Person implements Serializable {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "person", cascade = CascadeType.ALL)
     protected PersonAuthDetails authDetails;
 
-    public UUID getUuid() {
+    public String getUuid() {
         return uuid;
     }
 
-    public void setUuid(UUID uuid) {
+    public void setUuid(String uuid) {
         this.uuid = uuid;
     }
 

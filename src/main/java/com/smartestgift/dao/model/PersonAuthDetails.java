@@ -20,7 +20,7 @@ public class PersonAuthDetails implements Serializable {
     @Id
     @GeneratedValue(generator = "generator")
     @Column(name = "personuuid", unique = true, nullable = false)
-    protected UUID personUuid;
+    protected String personUuid;
 
     @OneToOne(fetch = FetchType.LAZY)
     @PrimaryKeyJoinColumn
@@ -48,11 +48,11 @@ public class PersonAuthDetails implements Serializable {
     @JoinColumn(name="roleId")
     private Role role;
 
-    public UUID getPersonUuid() {
+    public String getPersonUuid() {
         return personUuid;
     }
 
-    public void setPersonUuid(UUID personUuid) {
+    public void setPersonUuid(String personUuid) {
         this.personUuid = personUuid;
     }
 

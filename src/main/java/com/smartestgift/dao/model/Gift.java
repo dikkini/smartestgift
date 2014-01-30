@@ -21,7 +21,7 @@ public class Gift implements Serializable {
     @GeneratedValue(generator="system-uuid")
     @GenericGenerator(name="system-uuid", strategy = "uuid")
     @Column(name = "uuid", unique = true)
-    protected UUID uuid;
+    protected String uuid;
 
     @Column
     protected String name;
