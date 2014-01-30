@@ -24,15 +24,8 @@ public class SmartLogoutHandler implements LogoutHandler {
 
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        Object principal = authentication.getPrincipal();
         try {
-            if (principal instanceof User) {
-                User user = (User) principal;
-                if (user.getUsername().equals("user")) {
-                    response.sendRedirect(request.getContextPath() + "/");
-                    return;
-                }
-            }
+            // TODO очистка cookies и прочие непотребства
             authentication.setAuthenticated(false);
             response.sendRedirect(request.getContextPath() + "/");
         } catch (IOException e) {

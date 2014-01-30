@@ -28,7 +28,7 @@
             <security:concurrency-control max-sessions="10" error-if-maximum-exceeded="true" />
         </security:session-management>
 
-        <security:remember-me user-service-ref="authUserDetailsService" />
+        <security:remember-me services-ref="rememberMeServices" key="127roseQ" />
 	</security:http>
 
     <!-- Настройки глобальной секурити. Разрешение использовать аннотации. -->
@@ -37,7 +37,7 @@
     </security:global-method-security>
 
     <security:authentication-manager alias="authenticationManager">
-        <security:authentication-provider user-service-ref="authUserDetailsService">
+        <security:authentication-provider user-service-ref="authUserDetails">
             <security:password-encoder hash="md5"/>
         </security:authentication-provider>
     </security:authentication-manager>
@@ -46,19 +46,12 @@
         <constructor-arg index="0" value="256"/>
     </bean>
 
-<!--    <bean id="rememberMeServices"
+    <bean id="rememberMeServices"
           class="org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices">
-        <constructor-arg value="127roseQ"/>
-        <constructor-arg ref="authDAOImpl"/>
-        <constructor-arg ref="tokenRepository"/>
-        <property name="cookieName" value="remember-me"/>
-        <property name="tokenLength" value="32"/>
-        <property name="parameter" value="remember-me-parameter"/>
-    </bean>-->
-
-<!--    <bean id="tokenRepository"
-          class="org.springframework.security.web.authentication.rememberme.InMemoryTokenRepositoryImpl">
-    </bean>-->
+        <property name="tokenRepository" ref="smartTokenRepository" />
+        <property name="userDetailsService" ref="authUserDetails" />
+        <property name="key" value="127roseQ" />
+    </bean>
 
     <bean id="logoutFilter" class="org.springframework.security.web.authentication.logout.LogoutFilter">
         <constructor-arg index="0" value="/login" />

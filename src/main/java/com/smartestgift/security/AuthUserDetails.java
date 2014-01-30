@@ -23,7 +23,7 @@ import java.util.List;
 
 @Service
 @Transactional(readOnly=true)
-public class AuthUserDetailsService implements UserDetailsService {
+public class AuthUserDetails implements UserDetailsService {
 
     @Autowired
     private PersonDAO personDAO;
