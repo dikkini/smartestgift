@@ -6,6 +6,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.smartestgift.dao.TokenDAO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -21,6 +23,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SmartLogoutHandler implements LogoutHandler {
+
+    @Autowired
+    TokenDAO tokenDAO;
 
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {

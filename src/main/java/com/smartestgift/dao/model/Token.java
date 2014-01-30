@@ -19,18 +19,18 @@ public class Token implements Serializable {
     @Id
     private String series;
 
-    @Column
+    @Column(name = "token")
     private String tokenValue;
 
     @Column
-    private Date date;
+    private Date lastUsed;
 
     public Token() {}
 
     public Token(PersistentRememberMeToken persistentRememberMeToken) {
         this.username = persistentRememberMeToken.getUsername();
         this.series = persistentRememberMeToken.getSeries();
-        this.date = persistentRememberMeToken.getDate();
+        this.lastUsed = persistentRememberMeToken.getDate();
         this.tokenValue = persistentRememberMeToken.getTokenValue();
     }
 
@@ -58,11 +58,11 @@ public class Token implements Serializable {
         this.tokenValue = tokenValue;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getLastUsed() {
+        return lastUsed;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setLastUsed(Date date) {
+        this.lastUsed = date;
     }
 }

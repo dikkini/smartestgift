@@ -66,10 +66,10 @@ CREATE TABLE public.giftCategory
 
 CREATE TABLE public.persistentLogins
 (
-  username  VARCHAR(64) DEFAULT NULL,
-  series    VARCHAR(64) PRIMARY KEY NOT NULL,
-  token     VARCHAR(64) DEFAULT NULL,
-  last_used TIMESTAMP               NOT NULL
+  username VARCHAR(64) DEFAULT NULL,
+  series   VARCHAR(64) PRIMARY KEY NOT NULL,
+  token    VARCHAR(64) DEFAULT NULL,
+  lastUsed TIMESTAMP               NOT NULL
 );
 
 

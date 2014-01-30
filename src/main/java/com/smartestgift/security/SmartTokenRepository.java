@@ -33,8 +33,11 @@ public class SmartTokenRepository implements PersistentTokenRepository {
     @Override
     public PersistentRememberMeToken getTokenForSeries(String seriesId) {
         Token token = tokenDao.getTokenForSeries(seriesId);
+        if (token == null) {
+            return null;
+        }
         return new PersistentRememberMeToken(token.getUsername(),
-                token.getSeries(), token.getTokenValue(), token.getDate());
+                token.getSeries(), token.getTokenValue(), token.getLastUsed());
     }
 
     @Override

@@ -19,7 +19,7 @@ import java.util.Date;
 public class TokenDAO {
 
     @Resource
-    private  SessionFactory sessionFactory;
+    private SessionFactory sessionFactory;
 
     public void createNewToken(Token token) {
         sessionFactory.getCurrentSession().save(token);
@@ -29,7 +29,7 @@ public class TokenDAO {
 
         Token existingToken = (Token) sessionFactory.getCurrentSession().get(Token.class, series);
         existingToken.setTokenValue(tokenValue);
-        existingToken.setDate(lastUsed);
+        existingToken.setLastUsed(lastUsed);
         sessionFactory.getCurrentSession().merge(existingToken);
     }
 
@@ -38,10 +38,11 @@ public class TokenDAO {
     }
 
     public void removeUserTokens(final String username) {
-
         Token token =
                 (Token) sessionFactory.getCurrentSession().createCriteria(Token.class)
                         .add(Restrictions.eq("username", username)).uniqueResult();
-        sessionFactory.getCurrentSession().delete(token);
+        if (token != null) {
+            sessionFactory.getCurrentSession().delete(token);
+        }
     }
 }

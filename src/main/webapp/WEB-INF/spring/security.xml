@@ -57,7 +57,7 @@
         <constructor-arg index="0" value="/login" />
         <constructor-arg index="1">
             <list>
-<!--                <ref bean="rememberMeServices" />-->
+                <ref bean="rememberMeServices" />
                 <bean id="securityContextLogoutHandler" class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler" />
                 <bean id="smartLogoutHandler" class="com.smartestgift.handler.SmartLogoutHandler" />
             </list>
