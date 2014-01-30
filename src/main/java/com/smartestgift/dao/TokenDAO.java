@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by dikkini on 30.01.14.
@@ -38,11 +39,12 @@ public class TokenDAO {
     }
 
     public void removeUserTokens(final String username) {
-        Token token =
-                (Token) sessionFactory.getCurrentSession().createCriteria(Token.class)
-                        .add(Restrictions.eq("username", username)).uniqueResult();
-        if (token != null) {
-            sessionFactory.getCurrentSession().delete(token);
+        List<Token> tokens = sessionFactory.getCurrentSession().createCriteria(Token.class)
+                        .add(Restrictions.eq("username", username)).list();
+        if (tokens.size() > 0) {
+            for (Token token : tokens) {
+                sessionFactory.getCurrentSession().delete(token);
+            }
         }
     }
 }
