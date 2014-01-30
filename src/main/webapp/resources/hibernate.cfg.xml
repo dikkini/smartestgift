@@ -8,9 +8,9 @@
         <mapping package="com.smartestgift.dao.model"/>
         <mapping class="com.smartestgift.dao.model.Gift"/>
         <mapping class="com.smartestgift.dao.model.GiftCategory"/>
-        <mapping class="com.smartestgift.dao.model.Person"/>
+        <mapping class="com.smartestgift.dao.model.SmartUser"/>
         <mapping class="com.smartestgift.dao.model.Role"/>
-        <mapping class="com.smartestgift.dao.model.PersonAuthDetails"/>
+        <mapping class="com.smartestgift.dao.model.SmartUserDetails"/>
         <mapping class="com.smartestgift.dao.model.Token"/>
 	</session-factory>
 </hibernate-configuration>

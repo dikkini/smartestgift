@@ -6,28 +6,27 @@ import org.hibernate.annotations.Parameter;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * Created by dikkini on 1/29/14.
  * Email: dikkini@gmail.com
  */
 @Entity
-@Table(name = "personAuthDetails")
-public class PersonAuthDetails implements Serializable {
+@Table(name = "user_details")
+public class SmartUserDetails implements Serializable {
     @GenericGenerator(name = "generator", strategy = "foreign",
-            parameters = @Parameter(name = "property", value = "person"))
+            parameters = @Parameter(name = "property", value = "smartUser"))
     @Id
     @GeneratedValue(generator = "generator")
-    @Column(name = "personuuid", unique = true, nullable = false)
+    @Column(name = "useruuid", unique = true, nullable = false)
     protected String personUuid;
 
     @OneToOne(fetch = FetchType.LAZY)
     @PrimaryKeyJoinColumn
-    protected Person person;
+    protected SmartUser smartUser;
 
     @Column
-    protected String login;
+    protected String email;
 
     @Column
     protected String passwordMd5;
@@ -59,20 +58,20 @@ public class PersonAuthDetails implements Serializable {
     @Column
     protected Date registrationDate;
 
-    public Person getPerson() {
-        return person;
+    public SmartUser getSmartUser() {
+        return smartUser;
     }
 
-    public void setPerson(Person person) {
-        this.person = person;
+    public void setSmartUser(SmartUser smartUser) {
+        this.smartUser = smartUser;
     }
 
-    public String getLogin() {
-        return login;
+    public String getEmail() {
+        return email;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setEmail(String login) {
+        this.email = login;
     }
 
     public String getPasswordMd5() {

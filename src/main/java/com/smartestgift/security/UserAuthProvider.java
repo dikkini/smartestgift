@@ -1,7 +1,7 @@
 package com.smartestgift.security;
 
-import com.smartestgift.dao.PersonDAO;
-import com.smartestgift.dao.model.PersonAuthDetails;
+import com.smartestgift.dao.SmartUserDAO;
+import com.smartestgift.dao.model.SmartUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,18 +23,18 @@ import java.util.List;
 
 @Service
 @Transactional(readOnly=true)
-public class AuthUserDetails implements UserDetailsService {
+public class UserAuthProvider implements UserDetailsService {
 
     @Autowired
-    private PersonDAO personDAO;
+    private SmartUserDAO smartUserDAO;
 
     public UserDetails loadUserByUsername(String login)
             throws UsernameNotFoundException {
 
-        PersonAuthDetails domainPerson = personDAO.findPersonAuthDetailsByLogin(login);
+        SmartUserDetails domainPerson = smartUserDAO.findSmartUserDetailsByEmail(login);
 
         return new User(
-                domainPerson.getLogin(),
+                domainPerson.getEmail(),
                 domainPerson.getPasswordMd5(),
                 domainPerson.isEnabled(),
                 domainPerson.isAccountNonLocked(),
