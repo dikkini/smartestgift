@@ -34,7 +34,7 @@ public class UserAuthProvider implements UserDetailsService {
         SmartUserDetails domainPerson = smartUserDAO.findSmartUserDetailsByLogin(login);
 
         return new User(
-                domainPerson.getEmail(),
+                domainPerson.getLogin(),
                 domainPerson.getPasswordMd5(),
                 domainPerson.isEnabled(),
                 domainPerson.isAccountNonLocked(),

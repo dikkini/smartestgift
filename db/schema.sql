@@ -41,7 +41,7 @@ CREATE TABLE public.user_details
 
 CREATE TABLE public.persistent_login
 (
-  username    VARCHAR(64) REFERENCES public.user_details (login) NOT NULL,
+  login    VARCHAR(64) REFERENCES public.user_details (login) NOT NULL,
   series   VARCHAR(64) PRIMARY KEY                            NOT NULL,
   token    VARCHAR(64) DEFAULT NULL,
   lastUsed TIMESTAMP                                          NOT NULL

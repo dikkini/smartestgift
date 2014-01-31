@@ -26,7 +26,7 @@ public class SmartUserDetails implements Serializable {
     protected SmartUser smartUser;
 
     @Column
-    protected String email;
+    protected String login;
 
     @Column
     protected String passwordMd5;
@@ -66,12 +66,10 @@ public class SmartUserDetails implements Serializable {
         this.smartUser = smartUser;
     }
 
-    public String getEmail() {
-        return email;
-    }
+    public String getLogin() { return login; }
 
-    public void setEmail(String login) {
-        this.email = login;
+    public void setLogin(String login) {
+        this.login = login;
     }
 
     public String getPasswordMd5() {
