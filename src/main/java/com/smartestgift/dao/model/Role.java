@@ -21,7 +21,7 @@ public class Role implements Serializable {
     private String role;
 
     @OneToMany(mappedBy = "role")
-    private Set<PersonAuthDetails> personRoles;
+    private Set<SmartUserDetails> personRoles;
 
     public Long getId() {
         return id;
@@ -39,11 +39,11 @@ public class Role implements Serializable {
         this.role = role;
     }
 
-    public Set<PersonAuthDetails> getPersonRoles() {
+    public Set<SmartUserDetails> getPersonRoles() {
         return personRoles;
     }
 
-    public void setPersonRoles(Set<PersonAuthDetails> personRoles) {
+    public void setPersonRoles(Set<SmartUserDetails> personRoles) {
         this.personRoles = personRoles;
     }
 

@@ -5,15 +5,14 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * Created by dikkini on 10.06.13.
  * Email: dikkini@gmail.com
  */
 @Entity
-@Table(name = "person")
-public class Person implements Serializable {
+@Table(name = "users")
+public class SmartUser implements Serializable {
 
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -33,8 +32,8 @@ public class Person implements Serializable {
     @Column
     protected String middleName;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "person", cascade = CascadeType.ALL)
-    protected PersonAuthDetails authDetails;
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "smartUser", cascade = CascadeType.ALL)
+    protected SmartUserDetails smartUserDetails;
 
     public String getUuid() {
         return uuid;
@@ -76,7 +75,7 @@ public class Person implements Serializable {
         this.middleName = middleName;
     }
 
-    public PersonAuthDetails getAuthDetails() { return authDetails; }
+    public SmartUserDetails getSmartUserDetails() { return smartUserDetails; }
 
-    public void setAuthDetails(PersonAuthDetails authDetails) { this.authDetails = authDetails; }
+    public void setSmartUserDetails(SmartUserDetails authDetails) { this.smartUserDetails = authDetails; }
 }

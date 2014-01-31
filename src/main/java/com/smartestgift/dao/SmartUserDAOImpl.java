@@ -1,7 +1,7 @@
 package com.smartestgift.dao;
 
-import com.smartestgift.dao.model.Person;
-import com.smartestgift.dao.model.PersonAuthDetails;
+import com.smartestgift.dao.model.SmartUser;
+import com.smartestgift.dao.model.SmartUserDetails;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -20,24 +20,24 @@ import java.util.UUID;
  */
 @Service
 @Transactional
-public class PersonDAOImpl implements PersonDAO {
+public class SmartUserDAOImpl implements SmartUserDAO {
     @Autowired
     SessionFactory sessionFactory;
 
     @Override
-    public Person find(UUID id) {
-        return (Person) sessionFactory.getCurrentSession().get(Person.class, id);
+    public SmartUser find(UUID id) {
+        return (SmartUser) sessionFactory.getCurrentSession().get(SmartUser.class, id);
     }
 
     @Override
-    public List<Person> findAll() {
-        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Person.class);
+    public List<SmartUser> findAll() {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
         criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
         return criteria.list();
     }
 
     @Override
-    public void store(Person dmodel) {
+    public void store(SmartUser dmodel) {
         Session session = sessionFactory.getCurrentSession();
         session.saveOrUpdate(dmodel);
         session.flush();
@@ -45,14 +45,14 @@ public class PersonDAOImpl implements PersonDAO {
     }
 
     @Override
-    public void delete(Person dmodel) {
+    public void delete(SmartUser dmodel) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public PersonAuthDetails findPersonAuthDetailsByLogin(String login) {
-        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(PersonAuthDetails.class);
+    public SmartUserDetails findSmartUserDetailsByLogin(String login) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUserDetails.class);
         criteria.add(Restrictions.eq("login", login));
-        return (PersonAuthDetails) criteria.uniqueResult();
+        return (SmartUserDetails) criteria.uniqueResult();
     }
 }

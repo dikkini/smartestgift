@@ -6,25 +6,24 @@ import org.hibernate.annotations.Parameter;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * Created by dikkini on 1/29/14.
  * Email: dikkini@gmail.com
  */
 @Entity
-@Table(name = "personAuthDetails")
-public class PersonAuthDetails implements Serializable {
+@Table(name = "user_details")
+public class SmartUserDetails implements Serializable {
     @GenericGenerator(name = "generator", strategy = "foreign",
-            parameters = @Parameter(name = "property", value = "person"))
+            parameters = @Parameter(name = "property", value = "smartUser"))
     @Id
     @GeneratedValue(generator = "generator")
-    @Column(name = "personuuid", unique = true, nullable = false)
-    protected String personUuid;
+    @Column(name = "useruuid", unique = true, nullable = false)
+    protected String userUuid;
 
     @OneToOne(fetch = FetchType.LAZY)
     @PrimaryKeyJoinColumn
-    protected Person person;
+    protected SmartUser smartUser;
 
     @Column
     protected String login;
@@ -42,34 +41,32 @@ public class PersonAuthDetails implements Serializable {
     protected boolean credentialsNonExpired;
 
     @Column
-    protected boolean accountNonLocked;;
+    protected boolean accountNonLocked;
 
     @ManyToOne
     @JoinColumn(name="roleId")
     private Role role;
 
-    public String getPersonUuid() {
-        return personUuid;
+    public String getUserUuid() {
+        return userUuid;
     }
 
-    public void setPersonUuid(String personUuid) {
-        this.personUuid = personUuid;
+    public void setUserUuid(String personUuid) {
+        this.userUuid = personUuid;
     }
 
     @Column
     protected Date registrationDate;
 
-    public Person getPerson() {
-        return person;
+    public SmartUser getSmartUser() {
+        return smartUser;
     }
 
-    public void setPerson(Person person) {
-        this.person = person;
+    public void setSmartUser(SmartUser smartUser) {
+        this.smartUser = smartUser;
     }
 
-    public String getLogin() {
-        return login;
-    }
+    public String getLogin() { return login; }
 
     public void setLogin(String login) {
         this.login = login;
