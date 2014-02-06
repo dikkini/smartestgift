@@ -11,10 +11,10 @@ import org.springframework.web.servlet.ModelAndView;
  * Email: dikkini@gmail.com
  */
 @Controller
-public class SigninController {
-    @RequestMapping(value = "/signin", method = RequestMethod.GET)
+public class LoginController {
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
     public ModelAndView signin(@RequestParam(required = false, value = "error") boolean error) {
-        ModelAndView mav = new ModelAndView("signin");
+        ModelAndView mav = new ModelAndView("login");
         mav.addObject("error", error);
         return mav;
     }
