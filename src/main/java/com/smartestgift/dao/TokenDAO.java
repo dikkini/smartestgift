@@ -38,9 +38,9 @@ public class TokenDAO {
         return (Token) sessionFactory.getCurrentSession().get(Token.class, seriesId);
     }
 
-    public void removeUserTokens(final String login) {
+    public void removeUserTokens(final String username) {
         List<Token> tokens = sessionFactory.getCurrentSession().createCriteria(Token.class)
-                        .add(Restrictions.eq("login", login)).list();
+                        .add(Restrictions.eq("username", username)).list();
         if (tokens.size() > 0) {
             for (Token token : tokens) {
                 sessionFactory.getCurrentSession().delete(token);

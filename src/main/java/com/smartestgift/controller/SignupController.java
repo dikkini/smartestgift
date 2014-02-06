@@ -6,14 +6,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
- * Created by dikkini on 29.01.14.
+ * Created by dikkini on 06.02.14.
  * Email: dikkini@gmail.com
  */
 @Controller
-public class IndexController {
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+public class SignupController {
+    @RequestMapping(value = "/signup", method = RequestMethod.GET)
     public ModelAndView signin() {
-        ModelAndView mav = new ModelAndView("index");
+        ModelAndView mav = new ModelAndView("signup");
         return mav;
     }
 }

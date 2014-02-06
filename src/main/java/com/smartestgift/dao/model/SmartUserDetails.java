@@ -3,9 +3,16 @@ package com.smartestgift.dao.model;
 import org.hibernate.annotations.GenericGenerator;
 
 import org.hibernate.annotations.Parameter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by dikkini on 1/29/14.
@@ -13,7 +20,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "user_details")
-public class SmartUserDetails implements Serializable {
+public class SmartUserDetails implements Serializable, UserDetails {
     @GenericGenerator(name = "generator", strategy = "foreign",
             parameters = @Parameter(name = "property", value = "smartUser"))
     @Id
@@ -26,10 +33,10 @@ public class SmartUserDetails implements Serializable {
     protected SmartUser smartUser;
 
     @Column
-    protected String login;
+    protected String username;
 
     @Column
-    protected String passwordMd5;
+    protected String password;
 
     @Column
     protected boolean enabled;
@@ -51,10 +58,6 @@ public class SmartUserDetails implements Serializable {
         return userUuid;
     }
 
-    public void setUserUuid(String personUuid) {
-        this.userUuid = personUuid;
-    }
-
     @Column
     protected Date registrationDate;
 
@@ -62,69 +65,41 @@ public class SmartUserDetails implements Serializable {
         return smartUser;
     }
 
-    public void setSmartUser(SmartUser smartUser) {
-        this.smartUser = smartUser;
+    public String getUsername() { return username; }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // TODO сделать много ролей
+        Set<GrantedAuthority> authorities = new HashSet<>();
+        authorities.add(new SimpleGrantedAuthority(getRole().getRole()));
+        return authorities;
     }
 
-    public String getLogin() { return login; }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getPasswordMd5() {
-        return passwordMd5;
-    }
-
-    public void setPasswordMd5(String passwordMd5) {
-        this.passwordMd5 = passwordMd5;
+    public String getPassword() {
+        return password;
     }
 
     public boolean isEnabled() {
         return enabled;
     }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
     public boolean isAccountNonExpired() {
         return accountNonExpired;
-    }
-
-    public void setAccountNonExpired(boolean accountNonExpired) {
-        this.accountNonExpired = accountNonExpired;
     }
 
     public boolean isCredentialsNonExpired() {
         return credentialsNonExpired;
     }
 
-    public void setCredentialsNonExpired(boolean credentialsNonExpired) {
-        this.credentialsNonExpired = credentialsNonExpired;
-    }
-
     public boolean isAccountNonLocked() {
         return accountNonLocked;
-    }
-
-    public void setAccountNonLocked(boolean accountNonLocked) {
-        this.accountNonLocked = accountNonLocked;
     }
 
     public Role getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
     public Date getRegistrationDate() {
         return registrationDate;
-    }
-
-    public void setRegistrationDate(Date registrationDate) {
-        this.registrationDate = registrationDate;
     }
 }

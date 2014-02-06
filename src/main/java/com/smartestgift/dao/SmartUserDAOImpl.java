@@ -50,9 +50,9 @@ public class SmartUserDAOImpl implements SmartUserDAO {
     }
 
     @Override
-    public SmartUserDetails findSmartUserDetailsByLogin(String login) {
+    public SmartUserDetails findSmartUserDetailsByUserName(String login) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUserDetails.class);
-        criteria.add(Restrictions.eq("login", login));
+        criteria.add(Restrictions.eq("username", login));
         return (SmartUserDetails) criteria.uniqueResult();
     }
 }

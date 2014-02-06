@@ -36,7 +36,7 @@ public class SmartTokenRepository implements PersistentTokenRepository {
         if (token == null) {
             return null;
         }
-        return new PersistentRememberMeToken(token.getLogin(),
+        return new PersistentRememberMeToken(token.getUsername(),
                 token.getSeries(), token.getTokenValue(), token.getLastUsed());
     }
 

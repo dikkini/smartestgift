@@ -29,8 +29,8 @@ CREATE TABLE public.role (
 CREATE TABLE public.user_details
 (
   userUuid              VARCHAR(36) PRIMARY KEY  REFERENCES public.users (uuid) NOT NULL,
-  login                 VARCHAR(64) UNIQUE                                     NOT NULL,
-  passwordMd5           VARCHAR(32)                                            NOT NULL,
+  username              VARCHAR(64) UNIQUE                                     NOT NULL,
+  password              VARCHAR(32)                                            NOT NULL,
   enabled               BOOLEAN DEFAULT FALSE                                  NOT NULL,
   roleId                INT REFERENCES public.role (id)                        NOT NULL,
   accountNonExpired     BOOLEAN DEFAULT TRUE                                   NOT NULL,
@@ -41,7 +41,7 @@ CREATE TABLE public.user_details
 
 CREATE TABLE public.persistent_login
 (
-  login    VARCHAR(64) REFERENCES public.user_details (login) NOT NULL,
+  username    VARCHAR(64) REFERENCES public.user_details (username) NOT NULL,
   series   VARCHAR(64) PRIMARY KEY                            NOT NULL,
   token    VARCHAR(64) DEFAULT NULL,
   lastUsed TIMESTAMP                                          NOT NULL

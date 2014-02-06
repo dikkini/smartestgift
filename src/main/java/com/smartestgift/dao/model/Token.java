@@ -14,7 +14,7 @@ import java.util.Date;
 @Table(name = "persistent_login")
 public class Token implements Serializable {
     @Column
-    private String login;
+    private String username;
 
     @Id
     private String series;
@@ -28,18 +28,18 @@ public class Token implements Serializable {
     public Token() {}
 
     public Token(PersistentRememberMeToken persistentRememberMeToken) {
-        this.login = persistentRememberMeToken.getUsername();
+        this.username = persistentRememberMeToken.getUsername();
         this.series = persistentRememberMeToken.getSeries();
         this.lastUsed = persistentRememberMeToken.getDate();
         this.tokenValue = persistentRememberMeToken.getTokenValue();
     }
 
-    public String getLogin() {
-        return login;
+    public String getUsername() {
+        return username;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setUsername(String login) {
+        this.username = login;
     }
 
     public String getSeries() {

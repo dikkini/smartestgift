@@ -1,33 +1,45 @@
-
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <fmt:requestEncoding value="utf-8" />
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-    <!-- meta -->
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <!-- css -- >
-    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" type="text/css" href="resources/ext/bootstrap/css/bootstrap.css">
-    <!-- js -->
-    <script type="text/javascript" charset="utf-8" src="resources/ext/jquery/jquery-2.0.3.js"></script>
-    <script type="text/javascript" charset="utf-8" src="resources/ext/bootstrap/js/bootstrap.js"></script>
-</head>
-<body>
-<p class="one">Hello World!</p>
-<sec:authorize access="isAuthenticated()">
-    <a href="<c:url value="/logout"/>">Logout</a>
-</sec:authorize>
-</body>
-</html>
+<jsp:include page="template/top.jsp"/>
 
-<script type="text/javascript">
-    $(document).ready(function() {
-        $(".one").append("<p class='two'> GoodBye World! </p>");
-    });
-</script>
+<div class="container">
+    <div class="well well-lg">
+        <div class="row">
+            <div class="col-md-8">
+                <h1 class="text-center"><strong>What gift your friend from Los-Angles want?</strong></h1>
+            </div>
+            <div class="col-md-4">
+                <h1 class="text-center"><strong>CHOOSE</strong></h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <h1 class="text-center"><strong>PRESENT</strong></h1>
+            </div>
+            <div class="col-md-4">
+                <img height="150px" src="http://ionizerresearch.com/images/which_to_choose.jpg" class="img-rounded">
+            </div>
+            <div class="col-md-4">
+                <h1 class="text-center"><strong>How do u can to surprise your girlfriend?</strong></h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <h1 class="text-center"><strong>Don't know friends wishes?</strong></h1>
+            </div>
+            <div class="col-md-4">
+                <h1 class="text-center"><strong>WITH SMART</strong></h1>
+            </div>
+            <div class="col-md-4">
+                <h1 class="text-center"><strong>Help your sister complete her dream!</strong></h1>
+            </div>
+        </div>
+    </div>
+    <button class="btn btn-default btn-lg btn-block">SIGN UP AND WANT SOME PRESENT</button>
+</div>
+
+<jsp:include page="template/bottom.jsp"/>
