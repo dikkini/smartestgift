@@ -11,34 +11,36 @@
         <div class="col-xs-2">
             <img height="250px" src="http://upload.wikimedia.org/wikipedia/commons/b/bd/Dts_news_bill_gates_wikipedia.JPG">
         </div>
-        <div class="col-xs-7">
+        <div class="col-xs-6">
             <p><strong>Bill Gates</strong><img height="15" src="http://icons.iconarchive.com/icons/visualpharm/must-have/256/Edit-icon.png"></p>
             <p>Age: 58</p>
             <p>Some other information</p>
         </div>
-        <div class="col-xs-3">
-            <h3>My gifts</h3>
+        <div class="col-xs-4">
+            <h3>My wishlist</h3>
             <ul class="list-group">
                 <li class="list-group-item">
                     <blockquote>
-                        <p><a href="/gift.html?id=5&owner=1">iPhone 4</a></p>
+                        <p><a href="/gift.html?id=5&owner=1">iPhone 4</a> - 1000$</p>
                         Some description
-                        <small>
-                            <p>Cost: 1000$</p>
-                            <p>Got: 100$</p>
-                            <p>Left: 1000$ - 100$ = 900$</p>
-                        </small>
+                        <small>Got: 100$</small>
+                        <small>Left: 900$</small>
                     </blockquote>
                 </li>
                 <li class="list-group-item">
                     <blockquote>
-                        <p><a href="/gift.html?id=5&owner=1">Samsung Galaxy S4</a></p>
+                        <p><a href="/gift.html?id=5&owner=1">Samsung Galaxy S4</a> - 1000$</p>
                         Some description
-                        <small>
-                            <p>Cost: 1000$</p>
-                            <p>Got: 100$</p>
-                            <p>Left: 1000$ - 100$ = 900$</p>
-                        </small>
+                        <small>Got: 100$</small>
+                        <small>Left: 900$</small>
+                    </blockquote>
+                </li>
+                <li class="list-group-item">
+                    <blockquote>
+                        <p><a href="/gift.html?id=5&owner=1">Грязные носки Билли</a> - 1000$</p>
+                        Some description
+                        <small>Got: 100$</small>
+                        <small>Left: 900$</small>
                     </blockquote>
                 </li>
             </ul>

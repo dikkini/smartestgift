@@ -32,4 +32,44 @@ public class Gift implements Serializable {
     @ManyToOne
     @JoinColumn(name="categoryid")
     protected GiftCategory category;
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public BigDecimal getCost() {
+        return cost;
+    }
+
+    public void setCost(BigDecimal cost) {
+        this.cost = cost;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public GiftCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(GiftCategory category) {
+        this.category = category;
+    }
 }
