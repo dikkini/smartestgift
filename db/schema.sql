@@ -11,6 +11,9 @@ DROP TABLE public.users CASCADE;
 DROP TABLE public.role CASCADE;
 DROP TABLE public.user_details CASCADE;
 DROP TABLE public.persistent_login CASCADE;
+DROP TABLE public.gift CASCADE;
+DROP TABLE public.user_gift CASCADE;
+DROP TABLE public.gift_category CASCADE;
 
 CREATE TABLE public.users
 (
@@ -29,20 +32,44 @@ CREATE TABLE public.role (
 CREATE TABLE public.user_details
 (
   userUuid              VARCHAR(36) PRIMARY KEY  REFERENCES public.users (uuid) NOT NULL,
-  username              VARCHAR(64) UNIQUE                                     NOT NULL,
-  password              VARCHAR(32)                                            NOT NULL,
-  enabled               BOOLEAN DEFAULT FALSE                                  NOT NULL,
-  roleId                INT REFERENCES public.role (id)                        NOT NULL,
-  accountNonExpired     BOOLEAN DEFAULT TRUE                                   NOT NULL,
-  credentialsNonExpired BOOLEAN DEFAULT TRUE                                   NOT NULL,
-  accountNonLocked      BOOLEAN DEFAULT TRUE                                   NOT NULL,
-  registrationDate      TIMESTAMP DEFAULT now()                                NOT NULL
+  username              VARCHAR(64) UNIQUE                                      NOT NULL,
+  password              VARCHAR(32)                                             NOT NULL,
+  enabled               BOOLEAN DEFAULT FALSE                                   NOT NULL,
+  roleId                INT REFERENCES public.role (id)                         NOT NULL,
+  accountNonExpired     BOOLEAN DEFAULT TRUE                                    NOT NULL,
+  credentialsNonExpired BOOLEAN DEFAULT TRUE                                    NOT NULL,
+  accountNonLocked      BOOLEAN DEFAULT TRUE                                    NOT NULL,
+  registrationDate      TIMESTAMP DEFAULT now()                                 NOT NULL
 );
 
 CREATE TABLE public.persistent_login
 (
-  username    VARCHAR(64) REFERENCES public.user_details (username) NOT NULL,
-  series   VARCHAR(64) PRIMARY KEY                            NOT NULL,
+  username VARCHAR(64) REFERENCES public.user_details (username) NOT NULL,
+  series   VARCHAR(64) PRIMARY KEY                               NOT NULL,
   token    VARCHAR(64) DEFAULT NULL,
-  lastUsed TIMESTAMP                                          NOT NULL
+  lastUsed TIMESTAMP                                             NOT NULL
+);
+
+CREATE TABLE public.gift
+(
+  uuid        VARCHAR(36) UNIQUE PRIMARY KEY NOT NULL,
+  name        VARCHAR(255)            NOT NULL,
+  cost        INT                     NOT NULL,
+  description TEXT,
+  categoryId  INT                     NOT NULL
+);
+
+CREATE TABLE public.user_gift
+(
+  userUuid VARCHAR(36) REFERENCES public.users (uuid)  NOT NULL,
+  giftUuid VARCHAR(36) REFERENCES public.gift (uuid)   NOT NULL,
+  moneyCollect INT NOT NULL,
+  PRIMARY KEY (userUuid, giftUuid)
+);
+
+CREATE TABLE public.gift_category
+(
+  id          SERIAL PRIMARY KEY,
+  name        VARCHAR(255) NOT NULL,
+  description VARCHAR(255) NOT NULL
 );
