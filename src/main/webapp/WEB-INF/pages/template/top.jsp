@@ -31,10 +31,7 @@
     <header>
         <div class="row">
             <div class="col-md-2">
-                <img height="200px" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTu8S30WqUcPVIR_NY5bn08wlm1dUjK-oEDKtEItr3O8OFm_codsQ" class="img-circle">
-            </div>
-            <div class="col-md-10">
-                <h1>SMART GIFT</h1>
+                <img src="/resources/ext/main/images/logo.png">
             </div>
         </div>
         <div class="navbar navbar-inverse">

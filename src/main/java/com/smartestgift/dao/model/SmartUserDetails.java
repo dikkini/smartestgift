@@ -102,4 +102,44 @@ public class SmartUserDetails implements Serializable, UserDetails {
     public Date getRegistrationDate() {
         return registrationDate;
     }
+
+    public void setUserUuid(String userUuid) {
+        this.userUuid = userUuid;
+    }
+
+    public void setSmartUser(SmartUser smartUser) {
+        this.smartUser = smartUser;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public void setAccountNonExpired(boolean accountNonExpired) {
+        this.accountNonExpired = accountNonExpired;
+    }
+
+    public void setCredentialsNonExpired(boolean credentialsNonExpired) {
+        this.credentialsNonExpired = credentialsNonExpired;
+    }
+
+    public void setAccountNonLocked(boolean accountNonLocked) {
+        this.accountNonLocked = accountNonLocked;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public void setRegistrationDate(Date registrationDate) {
+        this.registrationDate = registrationDate;
+    }
 }

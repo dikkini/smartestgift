@@ -12,13 +12,13 @@
         <spring.version>3.2.4.RELEASE</spring.version>
 
         <db.name>smartestgiftdb</db.name>
-        <db.host>172.25.29.197</db.host>
-        <!--<db.host>109.120.165.66</db.host>-->
+<!--        <db.host>172.25.29.197</db.host>-->
+        <db.host>109.120.165.66</db.host>
         <db.port>5432</db.port>
-        <!--<db.username>smartestgiftdbadmin</db.username>-->
-        <!--<db.password>smartestgiftdbadmin</db.password>-->
-        <db.username>dikkini</db.username>
-        <db.password>asddsa</db.password>
+        <db.username>smartestgiftdbadmin</db.username>
+        <db.password>smartestgiftdbadmin</db.password>
+<!--        <db.username>dikkini</db.username>
+        <db.password>asddsa</db.password>-->
         <db.name.postfix></db.name.postfix>
         <!--PostgreSQL 9.1 and below-->
         <db.pid>procpid</db.pid>
@@ -224,11 +224,6 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-taglibs</artifactId>
-            <version>3.2.0.CI-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib</artifactId>
             <version>2.2.2</version>
@@ -249,6 +244,26 @@
             <groupId>org.springframework.social</groupId>
             <artifactId>spring-social-facebook</artifactId>
             <version>1.0.3.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security.oauth</groupId>
+            <artifactId>spring-security-oauth</artifactId>
+            <version>2.0.0.BUILD-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security.oauth</groupId>
+            <artifactId>spring-security-oauth2</artifactId>
+            <version>2.0.0.BUILD-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.restfb</groupId>
+            <artifactId>restfb</artifactId>
+            <version>1.6.12</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
         </dependency>
 
         <!-- Hibernate -->
