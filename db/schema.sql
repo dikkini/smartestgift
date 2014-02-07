@@ -19,9 +19,9 @@ CREATE TABLE public.users
 (
   uuid       VARCHAR(36) PRIMARY KEY NOT NULL,
   firstName  VARCHAR(255)            NOT NULL,
-  lastName   VARCHAR(255)            NOT NULL,
+  lastName   VARCHAR(255),
   middleName VARCHAR(255),
-  birthDate  TIMESTAMP               NOT NULL
+  birthDate  TIMESTAMP
 );
 
 CREATE TABLE public.role (
@@ -33,7 +33,7 @@ CREATE TABLE public.user_details
 (
   userUuid              VARCHAR(36) PRIMARY KEY  REFERENCES public.users (uuid) NOT NULL,
   username              VARCHAR(64) UNIQUE                                      NOT NULL,
-  password              VARCHAR(32)                                             NOT NULL,
+  password              VARCHAR(32),
   enabled               BOOLEAN DEFAULT FALSE                                   NOT NULL,
   roleId                INT REFERENCES public.role (id)                         NOT NULL,
   accountNonExpired     BOOLEAN DEFAULT TRUE                                    NOT NULL,

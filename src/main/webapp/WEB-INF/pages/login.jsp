@@ -31,6 +31,13 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <div class="col-sm-offset-2 col-xs-4">
+                        <a href="/facebookLogin">
+                            <img height="25px" src="/resources/ext/main/images/fb_login.png" alt="Login with Facebook" />
+                        </a>
+                    </div>
+                </div>
+                <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
                         <input type="submit" value="Login" class="btn btn-default"/>
                         <c:if test="${error}">
