@@ -9,8 +9,3 @@ body {
 small {
     font-size: 100%;
 }
-
-.container {
-    border-right: 10px outset #000000;
-    border-left: 10px outset #000000;
-}
