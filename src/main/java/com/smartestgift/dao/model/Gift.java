@@ -5,6 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Set;
 
 /**
  * Created by dikkini on 06.02.14.
@@ -32,6 +33,9 @@ public class Gift implements Serializable {
     @ManyToOne
     @JoinColumn(name="categoryid")
     protected GiftCategory category;
+
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "gifts")
+    protected Set<SmartUser> smartUsers;
 
     public String getUuid() {
         return uuid;
@@ -71,5 +75,13 @@ public class Gift implements Serializable {
 
     public void setCategory(GiftCategory category) {
         this.category = category;
+    }
+
+    public Set<SmartUser> getSmartUsers() {
+        return smartUsers;
+    }
+
+    public void setSmartUsers(Set<SmartUser> smartUsers) {
+        this.smartUsers = smartUsers;
     }
 }

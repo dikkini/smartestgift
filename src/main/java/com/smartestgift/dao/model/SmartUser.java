@@ -5,6 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
 /**
  * Created by dikkini on 10.06.13.
@@ -34,6 +35,13 @@ public class SmartUser implements Serializable {
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "smartUser", cascade = CascadeType.ALL)
     protected SmartUserDetails smartUserDetails;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "user_gift", catalog = "smartestgiftdb", joinColumns = {
+            @JoinColumn(name = "useruuid", nullable = false, updatable = false) },
+            inverseJoinColumns = { @JoinColumn(name = "giftuuid",
+                    nullable = false, updatable = false) })
+    protected Set<Gift> gifts;
 
     public String getUuid() {
         return uuid;
@@ -78,4 +86,12 @@ public class SmartUser implements Serializable {
     public SmartUserDetails getSmartUserDetails() { return smartUserDetails; }
 
     public void setSmartUserDetails(SmartUserDetails authDetails) { this.smartUserDetails = authDetails; }
+
+    public Set<Gift> getGifts() {
+        return gifts;
+    }
+
+    public void setGifts(Set<Gift> gifts) {
+        this.gifts = gifts;
+    }
 }
