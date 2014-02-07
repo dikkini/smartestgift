@@ -1,30 +1,18 @@
 package com.smartestgift.security;
 
-import com.smartestgift.dao.SmartUserDAO;
 import com.smartestgift.dao.model.SmartUserDetails;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
- * Created by dikkini on 27.01.14.
+ * Created by dikkini on 2/8/14.
  * Email: dikkini@gmail.com
  */
+public interface UserAuthProvider extends UserDetailsService {
 
-@Service
-@Transactional(readOnly=true)
-public class UserAuthProvider implements UserDetailsService {
-
-    @Autowired
-    private SmartUserDAO smartUserDAO;
-
-    public UserDetails loadUserByUsername(String login)
-            throws UsernameNotFoundException {
-
-        SmartUserDetails smartUserDetails = smartUserDAO.findSmartUserDetailsByUserName(login);
-        return smartUserDetails;
-    }
+    /**
+     * Authenticate custom user from facebook, vkontakte and so on.
+      */
+    public void authenticateUser(SmartUserDetails smartUserDetails, HttpServletRequest request);
 }

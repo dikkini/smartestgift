@@ -41,7 +41,7 @@
     </security:global-method-security>
 
     <security:authentication-manager alias="authenticationManager">
-        <security:authentication-provider user-service-ref="userAuthProvider">
+        <security:authentication-provider user-service-ref="userAuthProviderImpl">
             <security:password-encoder hash="md5"/>
         </security:authentication-provider>
     </security:authentication-manager>
@@ -53,7 +53,7 @@
     <bean id="rememberMeServices"
           class="org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices">
         <property name="tokenRepository" ref="smartTokenRepository" />
-        <property name="userDetailsService" ref="userAuthProvider" />
+        <property name="userDetailsService" ref="userAuthProviderImpl" />
         <property name="key" value="127roseQ" />
     </bean>
 

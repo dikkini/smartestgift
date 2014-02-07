@@ -6,11 +6,13 @@ import com.restfb.types.User;
 import com.smartestgift.dao.model.Role;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserDetails;
+import com.smartestgift.security.UserAuthProvider;
 import com.smartestgift.utils.ApplicationConstants;
 import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.methods.*;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -37,6 +39,9 @@ import java.util.Date;
  */
 @Controller
 public class LoginController {
+
+    @Autowired
+    private UserAuthProvider userAuthProvider;
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public ModelAndView signin(@RequestParam(required = false, value = "error") boolean error) {
@@ -112,6 +117,8 @@ public class LoginController {
                     //now we have the access token :)
                     //Great. Now we have the access token, I have used restfb to get the user details here
                     FacebookClient facebookClient = new DefaultFacebookClient(accesstoken);
+
+                    // TODO сделать проверку на валидность юзера
                     User user = facebookClient.fetchObject("me", User.class);
                     //In this user object, you will have the details you want from Facebook,  Since we have    the  access token with us, can play around and see what more can be done
                     //CAME UP TO HERE AND WE KNOW THE USER HAS BEEN AUTHENTICATED BY FACEBOOK, LETS AUTHENTICATE HIM IN OUR APPLICATION
@@ -122,17 +129,17 @@ public class LoginController {
                     smartUser.setLastName(user.getLastName());
                     smartUser.setMiddleName(user.getMiddleName());
 
+                    //TODO разобраться с ролью
                     Role role = new Role();
                     role.setId(1L);
                     role.setRole("ROLE_USER");
 
                     SmartUserDetails smartUserDetails = new SmartUserDetails();
-                    smartUserDetails.setRegistrationDate(new Date());
                     smartUserDetails.setUsername(user.getEmail());
                     smartUserDetails.setSmartUser(smartUser);
                     smartUserDetails.setRole(role);
 
-                    doAutoLogin(smartUserDetails, request);
+                    userAuthProvider.authenticateUser(smartUserDetails, request);
 
                     return "redirect:/";
                 } else {
@@ -157,19 +164,5 @@ public class LoginController {
             return "redirect:login";
         }
         return code;
-    }
-
-    private void doAutoLogin(SmartUserDetails smartUserDetails, HttpServletRequest request) {
-        Authentication authRequest = new UsernamePasswordAuthenticationToken(smartUserDetails, null,
-                smartUserDetails.getAuthorities());
-
-        // Authenticate the user
-        //Authentication authentication = authenticationManager.authenticate(authRequest);
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        securityContext.setAuthentication(authRequest);
-
-        // Create a new session and add the security context.
-        HttpSession session = request.getSession(true);
-        session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
     }
 }

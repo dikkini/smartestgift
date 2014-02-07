@@ -25,19 +25,19 @@ public class SmartUserDAOImpl implements SmartUserDAO {
     SessionFactory sessionFactory;
 
     @Override
-    public SmartUser find(UUID id) {
-        return (SmartUser) sessionFactory.getCurrentSession().get(SmartUser.class, id);
+    public SmartUserDetails find(UUID id) {
+        return (SmartUserDetails) sessionFactory.getCurrentSession().get(SmartUserDetails.class, id);
     }
 
     @Override
-    public List<SmartUser> findAll() {
-        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
+    public List<SmartUserDetails> findAll() {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUserDetails.class);
         criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
         return criteria.list();
     }
 
     @Override
-    public void store(SmartUser dmodel) {
+    public void store(SmartUserDetails dmodel) {
         Session session = sessionFactory.getCurrentSession();
         session.saveOrUpdate(dmodel);
         session.flush();
@@ -45,7 +45,7 @@ public class SmartUserDAOImpl implements SmartUserDAO {
     }
 
     @Override
-    public void delete(SmartUser dmodel) {
+    public void delete(SmartUserDetails dmodel) {
         throw new UnsupportedOperationException();
     }
 

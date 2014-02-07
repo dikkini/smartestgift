@@ -39,16 +39,16 @@ public class SmartUserDetails implements Serializable, UserDetails {
     protected String password;
 
     @Column
-    protected boolean enabled;
+    protected boolean enabled = true;
 
     @Column
-    protected boolean accountNonExpired;
+    protected boolean accountNonExpired = true;
 
     @Column
-    protected boolean credentialsNonExpired;
+    protected boolean credentialsNonExpired = true;
 
     @Column
-    protected boolean accountNonLocked;
+    protected boolean accountNonLocked = true;
 
     @ManyToOne
     @JoinColumn(name="roleId")
