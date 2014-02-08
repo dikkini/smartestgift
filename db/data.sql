@@ -14,3 +14,5 @@ VALUES ('f81d4fae-7dec-11d0-a765-00a0c91e6bf4', 'Admin', '', '', '19990-11-11 00
 INSERT INTO public.user_details (useruuid, username, password, enabled, roleid, accountnonexpired, credentialsnonexpired, accountnonlocked, registrationdate)
 VALUES ('f81d4fae-7dec-11d0-a765-00a0c91e6bf4', 'admin@sg.com', '21232f297a57a5a743894a0e4a801fc3', TRUE, 1, TRUE, TRUE, TRUE,
         '1990-11-11 00:00:00');
+
+INSERT INTO public.file_type (id, name, path) VALUES (1, 'USER_IMAGE', 'C:\\temp\\');

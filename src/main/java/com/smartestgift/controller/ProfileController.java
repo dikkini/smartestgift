@@ -1,6 +1,7 @@
 package com.smartestgift.controller;
 
 import com.smartestgift.dao.SmartUserDAO;
+import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -21,8 +22,11 @@ public class ProfileController {
     SmartUserDAO smartUserDAO;
 
     @RequestMapping(value = "/profile", method = RequestMethod.GET)
-    public ModelAndView signin() {
+    public ModelAndView signin(@RequestParam(value = "id", required = true) String userUuid) {
         ModelAndView mav = new ModelAndView("profile");
+        SmartUserDetails smartUserDetails = smartUserDAO.find(userUuid);
+        SmartUser smartUser = smartUserDetails.getSmartUser();
+        mav.addObject("smartUser", smartUser);
         return mav;
     }
 }

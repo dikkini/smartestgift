@@ -36,12 +36,16 @@ public class SmartUser implements Serializable {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "smartUser", cascade = CascadeType.ALL)
     protected SmartUserDetails smartUserDetails;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "user_gift", catalog = "smartestgiftdb", joinColumns = {
-            @JoinColumn(name = "useruuid", nullable = false, updatable = false) },
-            inverseJoinColumns = { @JoinColumn(name = "giftuuid",
-                    nullable = false, updatable = false) })
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "user_gift", joinColumns = {
+            @JoinColumn(name = "useruuid", nullable = false, updatable = false)},
+            inverseJoinColumns = {@JoinColumn(name = "giftuuid",
+                    nullable = false, updatable = false)})
     protected Set<Gift> gifts;
+
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name="fileid")
+    protected File file;
 
     public String getUuid() {
         return uuid;
@@ -83,9 +87,13 @@ public class SmartUser implements Serializable {
         this.middleName = middleName;
     }
 
-    public SmartUserDetails getSmartUserDetails() { return smartUserDetails; }
+    public SmartUserDetails getSmartUserDetails() {
+        return smartUserDetails;
+    }
 
-    public void setSmartUserDetails(SmartUserDetails authDetails) { this.smartUserDetails = authDetails; }
+    public void setSmartUserDetails(SmartUserDetails authDetails) {
+        this.smartUserDetails = authDetails;
+    }
 
     public Set<Gift> getGifts() {
         return gifts;
@@ -93,5 +101,13 @@ public class SmartUser implements Serializable {
 
     public void setGifts(Set<Gift> gifts) {
         this.gifts = gifts;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
     }
 }

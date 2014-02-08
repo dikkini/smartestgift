@@ -14,6 +14,29 @@ DROP TABLE public.persistent_login CASCADE;
 DROP TABLE public.gift CASCADE;
 DROP TABLE public.user_gift CASCADE;
 DROP TABLE public.gift_category CASCADE;
+DROP TABLE public.file_type CASCADE;
+DROP TABLE public.file CASCADE;
+DROP TABLE public.gift_file CASCADE;
+
+CREATE TABLE public.file_type
+(
+  id   SERIAL PRIMARY KEY,
+  name VARCHAR NOT NULL,
+  path VARCHAR NOT NULL
+);
+
+CREATE TABLE public.role (
+  id   SERIAL PRIMARY KEY,
+  role VARCHAR(20) NOT NULL
+);
+
+CREATE TABLE public.file
+(
+  id     SERIAL PRIMARY KEY,
+  name   VARCHAR                              NOT NULL,
+  size   VARCHAR                              NOT NULL,
+  typeId INT REFERENCES public.file_type (id) NOT NULL
+);
 
 CREATE TABLE public.users
 (
@@ -21,12 +44,8 @@ CREATE TABLE public.users
   firstName  VARCHAR(255)            NOT NULL,
   lastName   VARCHAR(255),
   middleName VARCHAR(255),
-  birthDate  TIMESTAMP
-);
-
-CREATE TABLE public.role (
-  id   SERIAL PRIMARY KEY,
-  role VARCHAR(20) NOT NULL
+  birthDate  TIMESTAMP,
+  fileId     INT REFERENCES public.file (id)
 );
 
 CREATE TABLE public.user_details
@@ -53,17 +72,25 @@ CREATE TABLE public.persistent_login
 CREATE TABLE public.gift
 (
   uuid        VARCHAR(36) UNIQUE PRIMARY KEY NOT NULL,
-  name        VARCHAR(255)            NOT NULL,
-  cost        INT                     NOT NULL,
+  name        VARCHAR(255)                   NOT NULL,
+  cost        INT                            NOT NULL,
   description TEXT,
-  categoryId  INT                     NOT NULL
+  categoryId  INT                            NOT NULL
+);
+
+
+CREATE TABLE public.gift_file
+(
+  id       SERIAL PRIMARY KEY,
+  fileId   INT REFERENCES public.file (id)       NOT NULL,
+  giftUuid VARCHAR REFERENCES public.gift (uuid) NOT NULL
 );
 
 CREATE TABLE public.user_gift
 (
-  userUuid VARCHAR(36) REFERENCES public.users (uuid)  NOT NULL,
-  giftUuid VARCHAR(36) REFERENCES public.gift (uuid)   NOT NULL,
-  moneyCollect INT NOT NULL,
+  userUuid     VARCHAR(36) REFERENCES public.users (uuid)  NOT NULL,
+  giftUuid     VARCHAR(36) REFERENCES public.gift (uuid)   NOT NULL,
+  moneyCollect INT                                         NOT NULL,
   PRIMARY KEY (userUuid, giftUuid)
 );
 

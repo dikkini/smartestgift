@@ -138,6 +138,7 @@ public class LoginController {
                     smartUserDetails.setUsername(user.getEmail());
                     smartUserDetails.setSmartUser(smartUser);
                     smartUserDetails.setRole(role);
+                    smartUserDetails.setRegistrationDate(new Date());
 
                     userAuthProvider.authenticateUser(smartUserDetails, request);
 

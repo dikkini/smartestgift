@@ -35,12 +35,17 @@ public class UserAuthProviderImpl implements UserAuthProvider {
 
     @Override
     public void authenticateUser(SmartUserDetails smartUserDetails, HttpServletRequest request) {
+        //TODO сейчас я апдейтю или создаю юзера в базе. продумать логику, если она нужна
         SmartUserDetails registeredSmartUserDetails = smartUserDAO.findSmartUserDetailsByUserName(smartUserDetails.getUsername());
+        Authentication authRequest;
         if (registeredSmartUserDetails == null) {
             smartUserDAO.store(smartUserDetails);
+            authRequest = new UsernamePasswordAuthenticationToken(smartUserDetails, null,
+                    smartUserDetails.getAuthorities());
+        } else {
+            authRequest = new UsernamePasswordAuthenticationToken(registeredSmartUserDetails, null,
+                    smartUserDetails.getAuthorities());
         }
-        Authentication authRequest = new UsernamePasswordAuthenticationToken(smartUserDetails, null,
-                smartUserDetails.getAuthorities());
 
         // Authenticate the user
         SecurityContext securityContext = SecurityContextHolder.getContext();

@@ -37,6 +37,17 @@ public class Gift implements Serializable {
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "gifts")
     protected Set<SmartUser> smartUsers;
 
+    @ManyToMany(fetch = FetchType.EAGER,  cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "gift_file",
+            joinColumns = {
+                    @JoinColumn(name = "giftuuid", nullable = false, updatable = false)
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "fileId", nullable = false, updatable = false)
+            }
+    )
+    protected Set<File> files;
+
     public String getUuid() {
         return uuid;
     }
@@ -83,5 +94,13 @@ public class Gift implements Serializable {
 
     public void setSmartUsers(Set<SmartUser> smartUsers) {
         this.smartUsers = smartUsers;
+    }
+
+    public Set<File> getFiles() {
+        return files;
+    }
+
+    public void setFiles(Set<File> files) {
+        this.files = files;
     }
 }

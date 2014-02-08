@@ -4,45 +4,46 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <fmt:requestEncoding value="utf-8" />
 
+<jsp:useBean id="smartUser" class="com.smartestgift.dao.model.SmartUser" scope="request"/>
+
 <jsp:include page="template/top.jsp"/>
 
 <div class="container">
     <div class="row">
-        <div class="col-xs-2">
-            <img height="250px" src="http://upload.wikimedia.org/wikipedia/commons/b/bd/Dts_news_bill_gates_wikipedia.JPG">
+        <div class="col-xs-3">
+            <c:choose>
+                <c:when test="${smartUser.file.id == null}">
+                    <img height="250px" src=/resources/ext/main/images/no_photo.jpg>
+                </c:when>
+                <c:otherwise>
+                    <img height="250px" src="/file/get/${smartUser.file.id}">
+                </c:otherwise>
+            </c:choose>
+            <button type="button" class="btn btn-default">Find gift</button>
+            <button type="button" class="btn btn-default">Look who wants something</button>
+            <button type="button" class="btn btn-default">Tell about it!</button>
         </div>
-        <div class="col-xs-6">
-            <p><strong>Bill Gates</strong><img height="15" src="http://icons.iconarchive.com/icons/visualpharm/must-have/256/Edit-icon.png"></p>
-            <p>Age: 58</p>
-            <p>Some other information</p>
+        <div class="col-xs-5">
+            <p>
+                <strong> <c:out value="${smartUser.lastName} ${smartUser.firstName} ${smartUser.middleName}"/> </strong>
+                <img height="25px" src="http://icons.iconarchive.com/icons/visualpharm/must-have/256/Edit-icon.png">
+            </p>
+            <p>Birth Date: <c:out value="${smartUser.birthDate}"/></p>
         </div>
         <div class="col-xs-4">
             <h3>My wishlist</h3>
             <ul class="list-group">
-                <li class="list-group-item">
-                    <blockquote>
-                        <p><a href="/gift.html?id=5&owner=1">iPhone 4</a> - 1000$</p>
-                        Some description
-                        <small>Got: 100$</small>
-                        <small>Left: 900$</small>
-                    </blockquote>
-                </li>
-                <li class="list-group-item">
-                    <blockquote>
-                        <p><a href="/gift.html?id=5&owner=1">Samsung Galaxy S4</a> - 1000$</p>
-                        Some description
-                        <small>Got: 100$</small>
-                        <small>Left: 900$</small>
-                    </blockquote>
-                </li>
-                <li class="list-group-item">
-                    <blockquote>
-                        <p><a href="/gift.html?id=5&owner=1">Грязные носки Билли</a> - 1000$</p>
-                        Some description
-                        <small>Got: 100$</small>
-                        <small>Left: 900$</small>
-                    </blockquote>
-                </li>
+                <c:forEach items="${smartUser.gifts}" var="gift">
+                    <li class="list-group-item">
+                        <blockquote>
+                            <p>
+                                <a href="/gift?id=<c:out value="${gift.uuid}"/>&userUuid=<c:out value="${smartUser.uuid}"/>"><c:out value="${gift.name}"/></a>
+                                - <c:out value="${gift.cost}"/>
+                            </p>
+                            <c:out value="${gift.description}"/>
+                        </blockquote>
+                    </li>
+                </c:forEach>
             </ul>
         </div>
     </div>

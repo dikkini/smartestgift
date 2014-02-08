@@ -11,6 +11,6 @@ import java.util.UUID;
  * Date: 10/6/13
  * Time: 2:06 PM
  */
-public interface SmartUserDAO extends Repository<SmartUserDetails, UUID> {
+public interface SmartUserDAO extends Repository<SmartUserDetails, String> {
     public SmartUserDetails findSmartUserDetailsByUserName(String login);
 }

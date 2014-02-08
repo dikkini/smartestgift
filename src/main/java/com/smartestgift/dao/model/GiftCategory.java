@@ -2,6 +2,7 @@ package com.smartestgift.dao.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Set;
 
 /**
  * Created by dikkini on 06.02.14.
@@ -20,6 +21,9 @@ public class GiftCategory implements Serializable {
 
     @Column
     protected String description;
+
+    @OneToMany(mappedBy = "category")
+    private Set<Gift> gifts;
 
     public Integer getId() {
         return id;

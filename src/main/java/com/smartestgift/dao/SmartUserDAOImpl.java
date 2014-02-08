@@ -1,6 +1,5 @@
 package com.smartestgift.dao;
 
-import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserDetails;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by dikkini on 27.01.14.
@@ -25,8 +23,8 @@ public class SmartUserDAOImpl implements SmartUserDAO {
     SessionFactory sessionFactory;
 
     @Override
-    public SmartUserDetails find(UUID id) {
-        return (SmartUserDetails) sessionFactory.getCurrentSession().get(SmartUserDetails.class, id);
+    public SmartUserDetails find(String uuid) {
+        return (SmartUserDetails) sessionFactory.getCurrentSession().get(SmartUserDetails.class, uuid);
     }
 
     @Override
