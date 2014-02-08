@@ -54,12 +54,28 @@ public class SmartUserDetails implements Serializable, UserDetails {
     @JoinColumn(name="roleId")
     private Role role;
 
+    @Column
+    protected Date registrationDate;
+
+    public SmartUserDetails() {}
+
+    /**
+     *
+     * @param username Username
+     * @param password Password with Salt
+     * @param smartUser User model
+     */
+    public SmartUserDetails(String username, String password, Date registrationDate, SmartUser smartUser, Role role) {
+        this.username = username;
+        this.password = password;
+        this.smartUser = smartUser;
+        this.role = role;
+        this.registrationDate = registrationDate;
+    }
+
     public String getUserUuid() {
         return userUuid;
     }
-
-    @Column
-    protected Date registrationDate;
 
     public SmartUser getSmartUser() {
         return smartUser;

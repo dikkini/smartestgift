@@ -15,7 +15,7 @@ public class Role implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "roles_seq_gen")
     @SequenceGenerator(name = "roles_seq_gen", sequenceName = "roles_id_seq")
-    private Long id;
+    private Integer id;
 
     @Column
     private String role;
@@ -23,11 +23,18 @@ public class Role implements Serializable {
     @OneToMany(mappedBy = "role")
     private Set<SmartUserDetails> personRoles;
 
-    public Long getId() {
+    public Role() {}
+
+    public Role(Integer id, String role) {
+        this.id = id;
+        this.role = role;
+    }
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

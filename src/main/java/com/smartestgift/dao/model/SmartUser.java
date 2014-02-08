@@ -1,6 +1,7 @@
 package com.smartestgift.dao.model;
 
 import org.hibernate.annotations.GenericGenerator;
+import sun.net.www.content.image.gif;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -46,6 +47,15 @@ public class SmartUser implements Serializable {
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name="fileid")
     protected File file;
+
+    public SmartUser() {}
+
+    public SmartUser(Date birthDate, String firstName, String lastName, String middleName) {
+        this.birthDate = birthDate;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.middleName = middleName;
+    }
 
     public String getUuid() {
         return uuid;

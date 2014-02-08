@@ -52,7 +52,7 @@ CREATE TABLE public.user_details
 (
   userUuid              VARCHAR(36) PRIMARY KEY  REFERENCES public.users (uuid) NOT NULL,
   username              VARCHAR(64) UNIQUE                                      NOT NULL,
-  password              VARCHAR(32),
+  password              TEXT,
   enabled               BOOLEAN DEFAULT FALSE                                   NOT NULL,
   roleId                INT REFERENCES public.role (id)                         NOT NULL,
   accountNonExpired     BOOLEAN DEFAULT TRUE                                    NOT NULL,

@@ -3,6 +3,7 @@ package com.smartestgift.controller;
 import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
 import com.restfb.types.User;
+import com.smartestgift.dao.RoleDAO;
 import com.smartestgift.dao.model.Role;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserDetails;
@@ -42,6 +43,9 @@ public class LoginController {
 
     @Autowired
     private UserAuthProvider userAuthProvider;
+
+    @Autowired
+    private RoleDAO roleDAO;
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public ModelAndView signin(@RequestParam(required = false, value = "error") boolean error) {
@@ -129,15 +133,10 @@ public class LoginController {
                     smartUser.setLastName(user.getLastName());
                     smartUser.setMiddleName(user.getMiddleName());
 
-                    //TODO разобраться с ролью
-                    Role role = new Role();
-                    role.setId(1L);
-                    role.setRole("ROLE_USER");
-
                     SmartUserDetails smartUserDetails = new SmartUserDetails();
                     smartUserDetails.setUsername(user.getEmail());
                     smartUserDetails.setSmartUser(smartUser);
-                    smartUserDetails.setRole(role);
+                    smartUserDetails.setRole(roleDAO.findUserRole());
                     smartUserDetails.setRegistrationDate(new Date());
 
                     userAuthProvider.authenticateUser(smartUserDetails, request);

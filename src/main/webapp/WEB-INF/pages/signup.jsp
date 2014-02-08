@@ -9,32 +9,32 @@
 <div class="container">
     <div class="well well-lg">
         <div>
-            <form class="form-horizontal" method="post">
+            <form class="form-horizontal" action="/sign" method="post">
                 <div class="form-group">
-                    <label for="input_firstname" class="col-sm-2 control-label">First Name<span class="required">*</span>
+                    <label for="firstname" class="col-sm-2 control-label">First Name<span class="required">*</span>
                     </label>
                     <div class="col-xs-4">
-                        <input type="text" class="form-control" id="input_firstname" placeholder="FirstName">
+                        <input type="text" name="firstName" class="form-control" id="firstname" placeholder="FirstName">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="input_lastname" class="col-sm-2 control-label">Last Name</label>
+                    <label for="lastname" class="col-sm-2 control-label">Last Name</label>
                     <div class="col-xs-4">
-                        <input type="text" class="form-control" id="input_lastname" placeholder="LastName">
+                        <input type="text" name="lastName" class="form-control" id="lastname" placeholder="LastName">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="input_email" class="col-sm-2 control-label">Email<span class="required">*</span>
+                    <label for="username" class="col-sm-2 control-label">Email<span class="required">*</span>
                     </label>
                     <div class="col-xs-4">
-                        <input type="email" class="form-control" id="input_email" placeholder="Email">
+                        <input type="email" name="username" class="form-control" id="username" placeholder="Email">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="input_password" class="col-sm-2 control-label">Password<span class="required">*</span>
+                    <label for="password" class="col-sm-2 control-label">Password<span class="required">*</span>
                     </label>
                     <div class="col-xs-4">
-                        <input type="password" class="form-control " id="input_password" placeholder="Password">
+                        <input type="password" name="password" class="form-control" id="password" placeholder="Password">
                     </div>
                 </div>
                 <div class="form-group">
@@ -48,3 +48,9 @@
 </div>
 
 <jsp:include page="template/bottom.jsp"/>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+
+    });
+</script>

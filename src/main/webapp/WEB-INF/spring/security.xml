@@ -11,62 +11,63 @@
 
     <context:component-scan base-package="com.smartestgift.security"/>
 
-    <security:http pattern="/resources/**" security="none" />
-	<security:http auto-config="false" use-expressions="true">
+    <security:http pattern="/resources/**" security="none"/>
+    <security:http auto-config="false" use-expressions="true">
         <security:intercept-url pattern="/" access="permitAll" requires-channel="http"/>
         <security:intercept-url pattern="/login" access="isAnonymous()" requires-channel="http"/>
         <security:intercept-url pattern="/facebookLogin" access="isAnonymous()" requires-channel="http"/>
         <security:intercept-url pattern="/facebookAuthentication" access="isAnonymous()" requires-channel="http"/>
         <security:intercept-url pattern="/signup" access="isAnonymous()" requires-channel="http"/>
+        <security:intercept-url pattern="/sign" access="isAnonymous()" requires-channel="http"/>
 
-		<security:intercept-url pattern="/**" access="isAuthenticated()" requires-channel="http"/>
-		<security:intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" requires-channel="http"/>
+        <security:intercept-url pattern="/**" access="isAuthenticated()" requires-channel="http"/>
+        <security:intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" requires-channel="http"/>
 
         <security:form-login login-page="/login"
                              default-target-url="/"
                              authentication-failure-url="/login?error=true"/>
 
-        <security:custom-filter position="LOGOUT_FILTER" ref="logoutFilter" />
+        <security:custom-filter position="LOGOUT_FILTER" ref="logoutFilter"/>
 
         <security:session-management>
-            <security:concurrency-control max-sessions="10" error-if-maximum-exceeded="true" />
+            <security:concurrency-control max-sessions="10" error-if-maximum-exceeded="true"/>
         </security:session-management>
 
-        <security:remember-me services-ref="rememberMeServices" key="127roseQ" />
-	</security:http>
+        <security:remember-me services-ref="rememberMeServices" key="127roseQ"/>
+    </security:http>
 
     <!-- Настройки глобальной секурити. Разрешение использовать аннотации. -->
     <security:global-method-security secured-annotations="enabled" pre-post-annotations="enabled">
-        <security:protect-pointcut expression="execution(* com.smartestgift.service.*Service.*(..) )" access="ROLE_USER"/>
+        <security:protect-pointcut expression="execution(* com.smartestgift.service.*Service.*(..) )"
+                                   access="ROLE_USER"/>
     </security:global-method-security>
 
     <security:authentication-manager alias="authenticationManager">
         <security:authentication-provider user-service-ref="userAuthProviderImpl">
-            <security:password-encoder hash="md5"/>
+            <security:password-encoder ref="encoder"/>
         </security:authentication-provider>
     </security:authentication-manager>
 
-    <bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
-        <constructor-arg index="0" value="256"/>
-    </bean>
+    <bean id="encoder" class="org.springframework.security.crypto.password.StandardPasswordEncoder"/>
 
     <bean id="rememberMeServices"
           class="org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices">
-        <property name="tokenRepository" ref="smartTokenRepository" />
-        <property name="userDetailsService" ref="userAuthProviderImpl" />
-        <property name="key" value="127roseQ" />
+        <property name="tokenRepository" ref="smartTokenRepository"/>
+        <property name="userDetailsService" ref="userAuthProviderImpl"/>
+        <property name="key" value="127roseQ"/>
     </bean>
 
     <bean id="logoutFilter" class="org.springframework.security.web.authentication.logout.LogoutFilter">
-        <constructor-arg index="0" value="/login" />
+        <constructor-arg index="0" value="/login"/>
         <constructor-arg index="1">
             <list>
-                <ref bean="rememberMeServices" />
-                <bean id="securityContextLogoutHandler" class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler" />
-                <bean id="smartLogoutHandler" class="com.smartestgift.handler.SmartLogoutHandler" />
+                <ref bean="rememberMeServices"/>
+                <bean id="securityContextLogoutHandler"
+                      class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler"/>
+                <bean id="smartLogoutHandler" class="com.smartestgift.handler.SmartLogoutHandler"/>
             </list>
         </constructor-arg>
-        <property name="filterProcessesUrl" value="/logout" />
+        <property name="filterProcessesUrl" value="/logout"/>
     </bean>
 
 </beans>
