@@ -45,7 +45,7 @@
                     <ul class="nav navbar-nav">
                         <sec:authorize access="isAuthenticated()">
                             <li>
-                                <a href="<c:url value="/profile?id=${user.smartUser.uuid}"/>">Profile</a>
+                                <a href="<c:url value="/profile"/>">Profile</a>
                             </li>
                             <li>
                                 <a href="<c:url value="/mygifts"/>">My Gifts</a>
@@ -60,7 +60,7 @@
                     <ul id="login_signup_logged" class="nav navbar-nav navbar-right">
                         <sec:authorize access="isAuthenticated()">
                             <li>
-                                <a href="<c:url value="/profile?id=${user.smartUser.uuid}"/>"><c:out value="${user.smartUser.firstName}"/> </a>
+                                <a href="<c:url value="/profile"/>"><c:out value="${user.smartUser.firstName}"/> </a>
                             </li>
                             <li>
                                 <a href="<c:url value="/logout"/>">Logout</a>
