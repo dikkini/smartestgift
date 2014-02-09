@@ -1,7 +1,6 @@
 package com.smartestgift.dao;
 
-import com.smartestgift.dao.SmartUserDAO;
-import com.smartestgift.dao.model.SmartUser;
+import com.smartestgift.dao.model.SmartUserDetails;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -19,24 +18,24 @@ import java.util.List;
  */
 @Service
 @Transactional
-public class SmartUserDAOImpl implements SmartUserDAO {
+public class SmartUserDetailsDAOImpl implements SmartUserDetailsDAO {
     @Autowired
     SessionFactory sessionFactory;
 
     @Override
-    public SmartUser find(String uuid) {
-        return (SmartUser) sessionFactory.getCurrentSession().get(SmartUser.class, uuid);
+    public SmartUserDetails find(String uuid) {
+        return (SmartUserDetails) sessionFactory.getCurrentSession().get(SmartUserDetails.class, uuid);
     }
 
     @Override
-    public List<SmartUser> findAll() {
-        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
+    public List<SmartUserDetails> findAll() {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUserDetails.class);
         criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
         return criteria.list();
     }
 
     @Override
-    public void store(SmartUser dmodel) {
+    public void store(SmartUserDetails dmodel) {
         Session session = sessionFactory.getCurrentSession();
         session.saveOrUpdate(dmodel);
         session.flush();
@@ -44,14 +43,14 @@ public class SmartUserDAOImpl implements SmartUserDAO {
     }
 
     @Override
-    public void delete(SmartUser dmodel) {
+    public void delete(SmartUserDetails dmodel) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public SmartUser findSmartUserByUserName(String login) {
-        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
+    public SmartUserDetails findSmartUserDetailsByUserName(String login) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUserDetails.class);
         criteria.add(Restrictions.eq("username", login));
-        return (SmartUser) criteria.uniqueResult();
+        return (SmartUserDetails) criteria.uniqueResult();
     }
 }

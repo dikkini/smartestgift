@@ -1,8 +1,7 @@
 package com.smartestgift.controller;
 
 import com.smartestgift.dao.RoleDAO;
-import com.smartestgift.dao.SmartUserDAO;
-import com.smartestgift.dao.model.Role;
+import com.smartestgift.dao.SmartUserDetailsDAO;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserDetails;
 import com.smartestgift.security.UserAuthProvider;
@@ -25,7 +24,7 @@ import java.util.Date;
 public class SignupController {
 
     @Autowired
-    SmartUserDAO smartUserDAO;
+    SmartUserDetailsDAO smartUserDetailsDAO;
 
     @Autowired
     RoleDAO roleDAO;
@@ -53,7 +52,7 @@ public class SignupController {
         SmartUser smartUser = new SmartUser(null, firstName, lastName, null);
         SmartUserDetails smartUserDetails = new SmartUserDetails(username, passwordEncoded, new Date(),
                 smartUser, roleDAO.findUserRole());
-        smartUserDAO.store(smartUserDetails);
+        smartUserDetailsDAO.store(smartUserDetails);
 
         authProvider.authenticateUser(smartUserDetails, request);
 

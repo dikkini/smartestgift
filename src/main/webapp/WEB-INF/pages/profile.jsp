@@ -4,7 +4,7 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <fmt:requestEncoding value="utf-8" />
 
-<jsp:useBean id="smartUserDetails" class="com.smartestgift.dao.model.SmartUserDetails" scope="request"/>
+<jsp:useBean id="smartUser" class="com.smartestgift.dao.model.SmartUser" scope="request"/>
 
 <jsp:include page="template/top.jsp"/>
 
@@ -12,11 +12,11 @@
     <div class="row">
         <div class="col-xs-3">
             <c:choose>
-                <c:when test="${smartUserDetails.smartUser.file.id == null}">
+                <c:when test="${smartUser.file.id == null}">
                     <img height="250px" src=/resources/ext/main/images/no_photo.jpg>
                 </c:when>
                 <c:otherwise>
-                    <img height="250px" src="/file/get/${smartUserDetails.smartUser.file.id}">
+                    <img height="250px" src="/file/get/${smartUser.file.id}">
                 </c:otherwise>
             </c:choose>
             <button type="button" class="btn btn-default">Find gift</button>
@@ -25,19 +25,19 @@
         </div>
         <div class="col-xs-5">
             <p>
-                <strong> <c:out value="${smartUserDetails.smartUser.lastName} ${smartUserDetails.smartUser.firstName} ${smartUserDetails.smartUser.middleName}"/> </strong>
-                <img id="edit-profile" height="25px" src="http://icons.iconarchive.com/icons/visualpharm/must-have/256/Edit-icon.png">
+                <strong> <c:out value="${smartUser.lastName} ${smartUser.firstName} ${smartUser.middleName}"/> </strong>
+                <a href="/profile/edit"><img id="edit-profile" height="25px" src="http://icons.iconarchive.com/icons/visualpharm/must-have/256/Edit-icon.png"></a>
             </p>
-            <p>Birth Date: <c:out value="${smartUserDetails.smartUser.birthDate}"/></p>
+            <p>Birth Date: <c:out value="${smartUser.birthDate}"/></p>
         </div>
         <div class="col-xs-4">
             <h3>My wishlist</h3>
             <ul class="list-group">
-                <c:forEach items="${smartUserDetails.smartUser.gifts}" var="gift">
+                <c:forEach items="${smartUser.gifts}" var="gift">
                     <li class="list-group-item">
                         <blockquote>
                             <p>
-                                <a href="/gift?id=<c:out value="${gift.uuid}"/>"><c:out value="${gift.name}"/></a>
+                                <a href="gift?id=<c:out value="${gift.uuid}"/>"><c:out value="${gift.name}"/></a>
                                 - <c:out value="${gift.cost}"/>
                             </p>
                             <c:out value="${gift.description}"/>

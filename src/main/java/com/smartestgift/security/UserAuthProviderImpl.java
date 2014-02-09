@@ -1,6 +1,6 @@
 package com.smartestgift.security;
 
-import com.smartestgift.dao.SmartUserDAO;
+import com.smartestgift.dao.SmartUserDetailsDAO;
 import com.smartestgift.dao.model.SmartUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -8,7 +8,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,20 +25,20 @@ import javax.servlet.http.HttpSession;
 public class UserAuthProviderImpl implements UserAuthProvider {
 
     @Autowired
-    private SmartUserDAO smartUserDAO;
+    private SmartUserDetailsDAO smartUserDetailsDAO;
 
     public UserDetails loadUserByUsername(String username)
             throws UsernameNotFoundException {
-        return smartUserDAO.findSmartUserDetailsByUserName(username);
+        return smartUserDetailsDAO.findSmartUserDetailsByUserName(username);
     }
 
     @Override
     public void authenticateUser(SmartUserDetails smartUserDetails, HttpServletRequest request) {
         //TODO сейчас я апдейтю или создаю юзера в базе. продумать логику, если она нужна
-        SmartUserDetails registeredSmartUserDetails = smartUserDAO.findSmartUserDetailsByUserName(smartUserDetails.getUsername());
+        SmartUserDetails registeredSmartUserDetails = smartUserDetailsDAO.findSmartUserDetailsByUserName(smartUserDetails.getUsername());
         Authentication authRequest;
         if (registeredSmartUserDetails == null) {
-            smartUserDAO.store(smartUserDetails);
+            smartUserDetailsDAO.store(smartUserDetails);
             authRequest = new UsernamePasswordAuthenticationToken(smartUserDetails, null,
                     smartUserDetails.getAuthorities());
         } else {
