@@ -10,7 +10,13 @@
 
     <mvc:interceptors>
         <mvc:interceptor>
-            <mvc:mapping path="/*"/>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/login"/>
+            <mvc:exclude-mapping path="/facebookLogin"/>
+            <mvc:exclude-mapping path="/facebookAuthentication"/>
+            <mvc:exclude-mapping path="/signup"/>
+            <mvc:exclude-mapping path="/sign"/>
+            <mvc:exclude-mapping path="/"/>
             <bean class="com.smartestgift.handler.UserInterceptor"/>
         </mvc:interceptor>
     </mvc:interceptors>

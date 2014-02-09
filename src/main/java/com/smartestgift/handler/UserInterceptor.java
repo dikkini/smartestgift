@@ -1,5 +1,6 @@
 package com.smartestgift.handler;
 
+import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserDetails;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -24,7 +25,9 @@ public class UserInterceptor implements HandlerInterceptor {
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object o, ModelAndView mav)
             throws Exception {
         if (mav != null) {
-            mav.addObject("smartUserDetails", SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+            SmartUserDetails user = (SmartUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            SmartUser smartUser = user.getSmartUser();
+            mav.addObject("smartUser", smartUser);
         }
     }
 
