@@ -45,6 +45,12 @@ CREATE TABLE public.users
   lastName   VARCHAR(255),
   middleName VARCHAR(255),
   birthDate  TIMESTAMP,
+  gender     BOOLEAN,
+  address    TEXT,
+  addressVisible BOOLEAN DEFAULT FALSE NOT NULL,
+  profileVisible BOOLEAN DEFAULT TRUE NOT NULL,
+  cellphone VARCHAR(255),
+  cellphoneVisible BOOLEAN DEFAULT FALSE NOT NULL,
   fileId     INT REFERENCES public.file (id)
 );
 

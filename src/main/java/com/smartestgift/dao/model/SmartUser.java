@@ -34,6 +34,28 @@ public class SmartUser implements Serializable {
     @Column
     protected String middleName;
 
+    /**
+     * TRUE - man
+     * FALSE - women
+     */
+    @Column
+    protected Boolean gender;
+
+    @Column
+    protected String address;
+
+    @Column
+    protected boolean addressVisible = false;
+
+    @Column
+    protected boolean profileVisible = true;
+
+    @Column
+    protected String cellPhone;
+
+    @Column
+    protected boolean cellPhoneVisible = false;
+
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "smartUser", cascade = CascadeType.ALL)
     protected SmartUserDetails smartUserDetails;
 
@@ -95,6 +117,54 @@ public class SmartUser implements Serializable {
 
     public void setMiddleName(String middleName) {
         this.middleName = middleName;
+    }
+
+    public Boolean getGender() {
+        return gender;
+    }
+
+    public void setGender(Boolean gender) {
+        this.gender = gender;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public boolean isAddressVisible() {
+        return addressVisible;
+    }
+
+    public void setAddressVisible(boolean addressVisible) {
+        this.addressVisible = addressVisible;
+    }
+
+    public boolean isProfileVisible() {
+        return profileVisible;
+    }
+
+    public void setProfileVisible(boolean profileVisible) {
+        this.profileVisible = profileVisible;
+    }
+
+    public String getCellPhone() {
+        return cellPhone;
+    }
+
+    public void setCellPhone(String cellPhone) {
+        this.cellPhone = cellPhone;
+    }
+
+    public boolean isCellPhoneVisible() {
+        return cellPhoneVisible;
+    }
+
+    public void setCellPhoneVisible(boolean cellPhoneVisible) {
+        this.cellPhoneVisible = cellPhoneVisible;
     }
 
     public SmartUserDetails getSmartUserDetails() {

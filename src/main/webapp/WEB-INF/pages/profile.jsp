@@ -19,16 +19,19 @@
                     <img height="250px" src="/file/get/${smartUser.file.id}">
                 </c:otherwise>
             </c:choose>
-            <button type="button" class="btn btn-default">Find gift</button>
-            <button type="button" class="btn btn-default">Look who wants something</button>
-            <button type="button" class="btn btn-default">Tell about it!</button>
+            <ul class="nav nav-pills nav-stacked">
+                <li><a href="#">Find Gift</a></li>
+                <li><a href="#">Messages</a></li>
+            </ul>
         </div>
         <div class="col-xs-5">
             <p>
                 <strong> <c:out value="${smartUser.lastName} ${smartUser.firstName} ${smartUser.middleName}"/> </strong>
-                <a href="/profile/edit"><img id="edit-profile" height="25px" src="http://icons.iconarchive.com/icons/visualpharm/must-have/256/Edit-icon.png"></a>
+                <a href="/settings"><img id="edit-profile" height="25px" src="http://icons.iconarchive.com/icons/visualpharm/must-have/256/Edit-icon.png"></a>
             </p>
-            <p>Birth Date: <c:out value="${smartUser.birthDate}"/></p>
+            <p><strong>Birth Date:</strong> <fmt:formatDate value="${smartUser.birthDate}" pattern="dd.MM.yyyy" /></p>
+            <p><strong>Cellphone:</strong> <c:out value="${smartUser.cellPhone}"/></p>
+            <p><strong>Address:</strong> <c:out value="${smartUser.address}"/></p>
         </div>
         <div class="col-xs-4">
             <h3>My wishlist</h3>

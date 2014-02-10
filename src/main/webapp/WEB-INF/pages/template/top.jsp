@@ -20,9 +20,9 @@
 <head>
     <title>Smart Gift - help your friend take an advantage!</title>
     <meta name="viewport" content="width=device-width">
-    <link rel="stylesheet" href="/resources/ext/main/css/style.css">
     <link rel="stylesheet" href="/resources/ext/jquery/datepicker/css/pickmeup.min.css">
     <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/resources/ext/main/css/style.css">
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
     <script type="text/javascript" src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/resources/ext/jquery/datepicker/jquery.pickmeup.min.js"></script>
@@ -70,7 +70,7 @@
                                 </p>
                             </li>
                             <li>
-                                <a href="<c:url value="/profile/settings"/>">Settings</a>
+                                <a href="<c:url value="/settings"/>">Settings</a>
                             </li>
                             <li>
                                 <a href="<c:url value="/logout"/>">Logout</a>
