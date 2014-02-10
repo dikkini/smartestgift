@@ -62,7 +62,12 @@
                     <ul id="login_signup_logged" class="nav navbar-nav navbar-right">
                         <sec:authorize access="isAuthenticated()">
                             <li>
-                                <a href="/profile/"><c:out value="${user.smartUser.firstName}"/> </a>
+                                <p class="navbar-text navbar-right">Signed in as
+                                    <a href="/profile" class="navbar-link">
+                                        <c:out value="${user.smartUser.firstName}"/>
+                                        <c:out value="${user.smartUser.lastName}"/>
+                                    </a>
+                                </p>
                             </li>
                             <li>
                                 <a href="<c:url value="/profile/settings"/>">Settings</a>
