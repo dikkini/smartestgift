@@ -50,7 +50,7 @@
                             </div>
                             <div class="col-xs-4">
                                 <div class="checkbox">
-                                    <input id="input-address-visible" name="addressVisible" type="checkbox" <c:if test="${smartUser.addressVisible}">checked</c:if> > Show to all
+                                    <input id="input-address-visible" name="addressVisible" type="checkbox"  <c:if test="${smartUser.addressVisible}">checked</c:if> > Show to all
                                 </div>
                             </div>
                         </div>

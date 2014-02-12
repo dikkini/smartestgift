@@ -38,10 +38,10 @@ public class SettingsController {
             @RequestParam(required = true, value = "middleName") String middleName,
             @RequestParam(required = true, value = "birthdate") String birthDate,
             @RequestParam(required = true, value = "address") String address,
-            @RequestParam(required = true, value = "addressVisible") boolean addressVisible,
-            @RequestParam(required = true, value = "profileVisible") boolean profileVisible,
+            @RequestParam(required = false, value = "addressVisible") boolean addressVisible,
+            @RequestParam(required = false, value = "profileVisible") boolean profileVisible,
             @RequestParam(required = true, value = "cellphone") String cellPhone,
-            @RequestParam(required = true, value = "cellphoneVisible") boolean cellphoneVisible) {
+            @RequestParam(required = false, value = "cellphoneVisible") boolean cellphoneVisible) {
         SmartUserDetails smartUserDetails = (SmartUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         SmartUser smartUser = smartUserDetails.getSmartUser();
         smartUser.setFirstName(firstName);

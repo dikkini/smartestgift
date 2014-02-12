@@ -11,18 +11,26 @@
 <div class="container">
     <div class="row">
         <div class="col-xs-3">
+            <div class="panel">
             <c:choose>
                 <c:when test="${smartUser.file.id == null}">
-                    <img height="250px" src=/resources/ext/main/images/no_photo.jpg>
+                    <img src=/resources/ext/main/images/no_photo.jpg>
                 </c:when>
                 <c:otherwise>
-                    <img height="250px" src="/file/get/${smartUser.file.id}">
+                    <img src="/file/get/${smartUser.file.id}">
                 </c:otherwise>
             </c:choose>
-            <ul class="nav nav-pills nav-stacked">
-                <li><a href="#">Find Gift</a></li>
-                <li><a href="#">Messages</a></li>
-            </ul>
+            </div>
+            <div class="panel panel-primary">
+                <div class="panel-heading">Actions</div>
+                <div class="panel-body">
+                    <ul class="nav nav-pills nav-stacked">
+                        <li><a href="#">Find Gift</a></li>
+                        <li><a href="#">Messages</a></li>
+                    </ul>
+                </div>
+            </div>
+
         </div>
         <div class="col-xs-5">
             <p>
