@@ -3,6 +3,7 @@ package com.smartestgift.controller;
 import com.smartestgift.dao.SmartUserDAO;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserDetails;
+import com.smartestgift.utils.ApplicationConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -54,7 +55,7 @@ public class SettingsController {
         smartUser.setProfileVisible(profileVisible);
         try {
 
-            SimpleDateFormat simpledateformat = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat simpledateformat = new SimpleDateFormat(ApplicationConstants.INPUT_DATE_FORMAT_PATTERN);
             Date tempDate = simpledateformat.parse(birthDate);
             smartUser.setBirthDate(tempDate);
         } catch (ParseException e) {
