@@ -56,6 +56,6 @@ public class SignupController {
 
         authProvider.authenticateUser(smartUserDetails, request);
 
-        return "redirect:/";
+        return "redirect:/profile";
     }
 }
