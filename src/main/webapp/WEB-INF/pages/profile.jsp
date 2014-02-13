@@ -21,11 +21,21 @@
                 </c:otherwise>
             </c:choose>
             </div>
+
             <div class="panel panel-primary">
-                <div class="panel-heading">Actions</div>
+                <div class="panel-heading">Gift</div>
                 <div class="panel-body">
                     <ul class="nav nav-pills nav-stacked">
                         <li><a href="#">Find Gift</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="panel panel-primary">
+                <div class="panel-heading">Social</div>
+                <div class="panel-body">
+                    <ul class="nav nav-pills nav-stacked">
+                        <li><a href="#">My Helpers</a></li>
                         <li><a href="#">Messages</a></li>
                     </ul>
                 </div>
