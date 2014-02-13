@@ -16,6 +16,7 @@
             <mvc:exclude-mapping path="/facebookAuthentication"/>
             <mvc:exclude-mapping path="/signup"/>
             <mvc:exclude-mapping path="/sign"/>
+            <mvc:exclude-mapping path="/user"/>
             <mvc:exclude-mapping path="/"/>
             <bean class="com.smartestgift.handler.UserInterceptor"/>
         </mvc:interceptor>
