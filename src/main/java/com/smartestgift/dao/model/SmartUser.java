@@ -23,6 +23,9 @@ public class SmartUser implements Serializable {
     protected String uuid;
 
     @Column
+    protected String username;
+
+    @Column
     protected Date birthDate;
 
     @Column
@@ -81,6 +84,14 @@ public class SmartUser implements Serializable {
 
     public String getUuid() {
         return uuid;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public void setUuid(String uuid) {

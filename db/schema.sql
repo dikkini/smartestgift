@@ -40,18 +40,19 @@ CREATE TABLE public.file
 
 CREATE TABLE public.users
 (
-  uuid       VARCHAR(36) PRIMARY KEY NOT NULL,
-  firstName  VARCHAR(255)            NOT NULL,
-  lastName   VARCHAR(255),
-  middleName VARCHAR(255),
-  birthDate  TIMESTAMP,
-  gender     BOOLEAN,
-  address    TEXT,
-  addressVisible BOOLEAN DEFAULT FALSE NOT NULL,
-  profileVisible BOOLEAN DEFAULT TRUE NOT NULL,
-  cellphone VARCHAR(255),
-  cellphoneVisible BOOLEAN DEFAULT FALSE NOT NULL,
-  fileId     INT REFERENCES public.file (id)
+  uuid             VARCHAR(36) PRIMARY KEY NOT NULL,
+  username         VARCHAR UNIQUE          NOT NULL,
+  firstName        VARCHAR(255)            NOT NULL,
+  lastName         VARCHAR(255),
+  middleName       VARCHAR(255),
+  birthDate        TIMESTAMP,
+  gender           BOOLEAN,
+  address          TEXT,
+  addressVisible   BOOLEAN DEFAULT FALSE   NOT NULL,
+  profileVisible   BOOLEAN DEFAULT TRUE    NOT NULL,
+  cellphone        VARCHAR(255),
+  cellphoneVisible BOOLEAN DEFAULT FALSE   NOT NULL,
+  fileId           INT REFERENCES public.file (id)
 );
 
 CREATE TABLE public.user_details
