@@ -9,7 +9,7 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-xs-10">
+        <div class="col-xs-9">
             <input type="text" class="form-control" placeholder="<spring:message code="label.searchGiftPlaceHolder"/>">
         </div>
         <button type="submit" class="btn btn-default"><spring:message code="label.find"/></button>
