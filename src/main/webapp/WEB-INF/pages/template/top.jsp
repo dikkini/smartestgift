@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: akarapetov
-  Date: 06.02.14
-  Time: 13:47
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
@@ -32,8 +25,15 @@
 <div class="header">
     <header>
         <div class="row">
-            <div class="col-md-2">
+            <div class="col-md-11">
                 <img src="/resources/ext/main/images/logo.png">
+            </div>
+            <div class="col-md-1">
+                <span style="float: right">
+                    <a href="?lang=en">en</a>
+                    |
+                    <a href="?lang=ru">ru</a>
+                </span>
             </div>
         </div>
         <div class="navbar navbar-inverse">

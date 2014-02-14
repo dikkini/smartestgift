@@ -20,7 +20,35 @@
             <mvc:exclude-mapping path="/"/>
             <bean class="com.smartestgift.handler.UserInterceptor"/>
         </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+                <property name="paramName" value="lang" />
+            </bean>
+        </mvc:interceptor>
     </mvc:interceptors>
+
+    <!-- Бины и настройки локализации -->
+    <bean id="messageSource"
+          class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="basename" value="classpath:label" />
+        <property name="defaultEncoding" value="UTF-8"/>
+    </bean>
+
+    <bean id="localeChangeInterceptor"
+          class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+        <property name="paramName" value="lang" />
+    </bean>
+
+    <bean id="localeResolver"
+          class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
+        <property name="defaultLocale" value="en"/>
+    </bean>
+
+    <bean id="handlerMapping"
+          class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+        <property name="interceptors" ref="localeChangeInterceptor"/>
+    </bean>
 
 	<!-- DispatcherServlet Context: определяет настройки одного сервлета; бины,
 		которые доступны только ему -->
