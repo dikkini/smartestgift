@@ -2,6 +2,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <fmt:requestEncoding value="utf-8" />
 
 <jsp:include page="template/top.jsp"/>
@@ -11,29 +12,29 @@
         <div>
             <form class="form-horizontal login-form" action="j_spring_security_check" method="post">
                 <div class="form-group">
-                    <label for="j_username" class="col-sm-2 control-label">Email</label>
+                    <label for="j_username" class="col-sm-2 control-label"><spring:message code="label.email"/></label>
                     <div class="col-xs-4">
-                        <input id="j_username" name="j_username" type="email" class="form-control" placeholder="Email">
+                        <input id="j_username" name="j_username" type="email" class="form-control" placeholder="<spring:message code="label.email"/>">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="j_password" class="col-sm-2 control-label">Password</label>
+                    <label for="j_password" class="col-sm-2 control-label"><spring:message code="label.password"/></label>
                     <div class="col-xs-4">
-                        <input id="j_password" name="j_password" type="password" class="form-control" placeholder="Password">
+                        <input id="j_password" name="j_password" type="password" class="form-control" placeholder="<spring:message code="label.password"/>">
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-xs-4">
                         <div class="checkbox">
                             <label>
-                                <input id="_spring_security_remember_me" name="_spring_security_remember_me" type="checkbox">Remember me</label>
+                                <input id="_spring_security_remember_me" name="_spring_security_remember_me" type="checkbox"><spring:message code="label.remember"/></label>
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-xs-4">
                         <a href="/facebookLogin">
-                            <img height="25px" src="/resources/ext/main/images/fb_login.png" alt="Login with Facebook" />
+                            <img height="25px" src="/resources/ext/main/images/fb_login.png" alt="<spring:message code="label.facebooklogin"/>" />
                         </a>
                     </div>
                 </div>
@@ -42,7 +43,7 @@
                         <input type="submit" value="Login" class="btn btn-default"/>
                         <c:if test="${error}">
                             <div style="color: red">
-                                <c:out value="Ошибка авторизации"/>
+                                <spring:message code="label.loginerror"/>
                             </div>
                         </c:if>
                     </div>
