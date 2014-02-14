@@ -24,8 +24,8 @@ public class GiftController {
         return mav;
     }
 
-    @RequestMapping(value = "/gifts/categories", method = RequestMethod.GET)
-    public ModelAndView giftCategories() {
+    @RequestMapping(value = "/gifts/gifts", method = RequestMethod.GET)
+    public ModelAndView gifts() {
         ModelAndView mav = new ModelAndView("gifts/categories");
         return mav;
     }

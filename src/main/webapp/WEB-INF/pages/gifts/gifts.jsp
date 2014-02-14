@@ -9,7 +9,7 @@
 <div class="container">
     <div class="alert alert-dismissable alert-info">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <b>Warning!</b> You best check yourself, you're not looking so good.
+        <b>Try to choose random gift!</b> The best gift - it is a random gift!
     </div>
     <div class="row">
         <div class="col-xs-10">
@@ -24,7 +24,7 @@
                 <div class="panel-heading">Categories</div>
                 <div class="panel-body">
                     <div class="row">
-                        Тут категории
+                        There are categories
                     </div>
                 </div>
             </div>
