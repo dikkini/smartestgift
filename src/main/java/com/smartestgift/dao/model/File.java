@@ -5,10 +5,8 @@ import java.io.Serializable;
 import java.util.Set;
 
 /**
- * Created with IntelliJ IDEA.
- * User: dikkini
- * Date: 11/19/13
- * Time: 1:28 PM
+ * Created by dikkini on 19.11.13.
+ * Email: dikkini@gmail.com
  */
 @Entity
 @Table (name = "file")

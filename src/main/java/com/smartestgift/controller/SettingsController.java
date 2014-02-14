@@ -29,7 +29,7 @@ public class SettingsController {
 
     @RequestMapping(value = "/settings", method = RequestMethod.GET)
     public ModelAndView settings() {
-        return new ModelAndView("settings");
+        return new ModelAndView("users/settings");
     }
 
     @RequestMapping(value = "/settings/save", method = RequestMethod.POST)

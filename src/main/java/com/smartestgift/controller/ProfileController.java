@@ -23,6 +23,6 @@ public class ProfileController {
 
     @RequestMapping(value = "/profile", method = RequestMethod.GET)
     public ModelAndView profile() {
-        return new ModelAndView("profile");
+        return new ModelAndView("users/profile");
     }
 }

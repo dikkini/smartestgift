@@ -12,10 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
- * User: dikkini
- * Date: 11/19/13
- * Time: 1:38 PM
+ * Created by dikkini on 19.11.13.
+ * Email: dikkini@gmail.com
  */
 @Service
 @Transactional

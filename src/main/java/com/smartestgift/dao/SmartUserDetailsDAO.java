@@ -6,10 +6,8 @@ import com.smartestgift.dao.model.SmartUserDetails;
 import java.util.UUID;
 
 /**
- * Created with IntelliJ IDEA.
- * SmartUser: dikkini
- * Date: 10/6/13
- * Time: 2:06 PM
+ * Created by dikkini on 06.10.13
+ * Email: dikkini@gmail.com
  */
 public interface SmartUserDetailsDAO extends Repository<SmartUserDetails, String> {
     public SmartUserDetails findSmartUserDetailsByUserName(String login);

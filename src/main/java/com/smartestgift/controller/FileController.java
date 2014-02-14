@@ -1,10 +1,8 @@
 package com.smartestgift.controller;
 
 /**
- * Created with IntelliJ IDEA.
- * User: dikkini
- * Date: 11/17/13
- * Time: 12:15 PM
+ * Created by dikkini on 17.11.13.
+ * Email: dikkini@gmail.com
  */
 
 import com.google.gson.Gson;

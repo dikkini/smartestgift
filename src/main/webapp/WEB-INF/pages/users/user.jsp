@@ -6,7 +6,7 @@
 
 <jsp:useBean id="smartUser" class="com.smartestgift.dao.model.SmartUser" scope="request"/>
 
-<jsp:include page="template/top.jsp"/>
+<jsp:include page="../template/top.jsp"/>
 
 <div class="container">
     <div class="row">
@@ -14,18 +14,28 @@
             <div class="panel">
             <c:choose>
                 <c:when test="${smartUser.file.id == null}">
-                    <img src=/resources/ext/main/images/no_photo.jpg>
+                    <img src=/ext/main/images/no_photo.jpg>
                 </c:when>
                 <c:otherwise>
                     <img src="/file/get/${smartUser.file.id}">
                 </c:otherwise>
             </c:choose>
             </div>
+
             <div class="panel panel-primary">
-                <div class="panel-heading">Actions</div>
+                <div class="panel-heading">Gift</div>
                 <div class="panel-body">
                     <ul class="nav nav-pills nav-stacked">
-                        <li><a href="#">Find Gift</a></li>
+                        <li><a href="/gifts/categories">Find Gift</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="panel panel-primary">
+                <div class="panel-heading">Social</div>
+                <div class="panel-body">
+                    <ul class="nav nav-pills nav-stacked">
+                        <li><a href="#">My Helpers</a></li>
                         <li><a href="#">Messages</a></li>
                     </ul>
                 </div>
@@ -65,7 +75,7 @@
     </div>
 </div>
 
-<jsp:include page="template/bottom.jsp"/>
+<jsp:include page="../template/bottom.jsp"/>
 
 <script type="text/javascript">
     $(document).ready(function(){

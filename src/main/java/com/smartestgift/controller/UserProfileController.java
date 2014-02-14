@@ -21,7 +21,7 @@ public class UserProfileController {
 
     @RequestMapping(value = "/user", method = RequestMethod.GET)
     public ModelAndView userProfile(@RequestParam(required = true, value = "uuid") String userUuid) {
-        ModelAndView mav = new ModelAndView("user");
+        ModelAndView mav = new ModelAndView("users/user");
         SmartUser smartUser = smartUserDAO.find(userUuid);
         mav.addObject("smartUser", smartUser);
         return mav;

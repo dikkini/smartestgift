@@ -50,7 +50,7 @@
                                 <a href="/profile">Profile</a>
                             </li>
                             <li>
-                                <a href="<c:url value="/mygifts"/>">My Gifts</a>
+                                <a href="<c:url value="/profile/gifts"/>">My Gifts</a>
                             </li>
                         </sec:authorize>
                         <sec:authorize access="isAnonymous()">

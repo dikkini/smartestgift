@@ -8,6 +8,7 @@ import java.security.NoSuchAlgorithmException;
 
 /**
  * Created by dikkini on 29.01.14.
+ * Email: dikkini@gmail.com
  */
 public class PasswordMd5Encoder implements PasswordEncoder {
     @Override

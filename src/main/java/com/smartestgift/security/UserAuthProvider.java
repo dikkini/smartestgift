@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Created by dikkini on 2/8/14.
+ * Created by dikkini on 02.08.14.
  * Email: dikkini@gmail.com
  */
 public interface UserAuthProvider extends UserDetailsService {

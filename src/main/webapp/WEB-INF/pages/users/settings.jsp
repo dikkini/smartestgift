@@ -6,14 +6,14 @@
 
 <jsp:useBean id="smartUser" class="com.smartestgift.dao.model.SmartUser" scope="request"/>
 
-<jsp:include page="template/top.jsp"/>
+<jsp:include page="../template/top.jsp"/>
 
 <div class="container">
     <div class="row">
         <div class="col-xs-3">
             <c:choose>
                 <c:when test="${smartUser.file.id == null}">
-                    <img height="250px" src=/resources/ext/main/images/no_photo.jpg>
+                    <img height="250px" src=/ext/main/images/no_photo.jpg>
                 </c:when>
                 <c:otherwise>
                     <img height="250px" src="/file/get/${smartUser.file.id}">
@@ -97,7 +97,7 @@
     </div>
 </div>
 
-<jsp:include page="template/bottom.jsp"/>
+<jsp:include page="../template/bottom.jsp"/>
 
 <script type="text/javascript">
     $(document).ready(function(){
