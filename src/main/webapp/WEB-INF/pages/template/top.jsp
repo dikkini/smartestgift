@@ -2,6 +2,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <fmt:requestEncoding value="utf-8" />
 
 <sec:authentication var="user" property="principal" />
@@ -11,7 +12,7 @@
 <html lang="en">
 
 <head>
-    <title>Smart Gift - help your friend take an advantage!</title>
+    <title><spring:message code="label.title"/></title>
     <meta name="viewport" content="width=device-width">
     <link rel="stylesheet" href="/resources/ext/jquery/datepicker/css/pickmeup.min.css">
     <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
@@ -47,22 +48,22 @@
                     <ul class="nav navbar-nav">
                         <sec:authorize access="isAuthenticated()">
                             <li>
-                                <a href="/profile">Profile</a>
+                                <a href="/profile"><spring:message code="label.profile"/></a>
                             </li>
                             <li>
-                                <a href="<c:url value="/gifts/mygifts"/>">My Gifts</a>
+                                <a href="<c:url value="/gifts/mygifts"/>"><spring:message code="label.mygifts"/></a>
                             </li>
                         </sec:authorize>
                         <sec:authorize access="isAnonymous()">
                             <li>
-                                <a href="/">Home</a>
+                                <a href="/"><spring:message code="label.home"/></a>
                             </li>
                         </sec:authorize>
                     </ul>
                     <ul id="login_signup_logged" class="nav navbar-nav navbar-right">
                         <sec:authorize access="isAuthenticated()">
                             <li>
-                                <p class="navbar-text navbar-right">Signed in as
+                                <p class="navbar-text navbar-right"><spring:message code="label.signed"/>
                                     <a href="/profile" class="navbar-link">
                                         <c:out value="${user.smartUser.firstName}"/>
                                         <c:out value="${user.smartUser.lastName}"/>
@@ -70,18 +71,18 @@
                                 </p>
                             </li>
                             <li>
-                                <a href="<c:url value="/settings"/>">Settings</a>
+                                <a href="<c:url value="/settings"/>"><spring:message code="label.settings"/></a>
                             </li>
                             <li>
-                                <a href="<c:url value="/logout"/>">Logout</a>
+                                <a href="<c:url value="/logout"/>"><spring:message code="label.logout"/></a>
                             </li>
                         </sec:authorize>
                         <sec:authorize access="isAnonymous()">
                             <li>
-                                <a href="<c:url value="/login"/>">Login</a>
+                                <a href="<c:url value="/login"/>"><spring:message code="label.login"/></a>
                             </li>
                             <li>
-                                <a href="<c:url value="/signup"/>"><p class="navbar-right">SignUp</p></a>
+                                <a href="<c:url value="/signup"/>"><p class="navbar-right"><spring:message code="label.signup"/></p></a>
                             </li>
                         </sec:authorize>
                     </ul>

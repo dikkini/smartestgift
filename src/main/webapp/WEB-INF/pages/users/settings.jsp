@@ -2,6 +2,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <fmt:requestEncoding value="utf-8" />
 
 <jsp:useBean id="smartUser" class="com.smartestgift.dao.model.SmartUser" scope="request"/>
@@ -19,64 +20,64 @@
                     <img height="250px" src="/file/get/${smartUser.file.id}">
                 </c:otherwise>
             </c:choose>
-            <button type="button" class="btn btn-default">Choose Photo</button>
+            <button type="button" class="btn btn-default"><spring:message code="label.choosephoto"/></button>
         </div>
         <div class="col-xs-9">
             <form class="form-horizontal login-form" action="/settings/save" method="post">
                 <fieldset class="personal-information">
-                    <legend>Personal Information</legend>
+                    <legend><spring:message code="label.personalinfo"/></legend>
                     <div class="form-group">
-                        <label for="input-lastname" class="col-sm-4 control-label">Last Name</label>
+                        <label for="input-lastname" class="col-sm-4 control-label"><spring:message code="label.lastname"/></label>
                         <div class="col-xs-4">
-                            <input id="input-lastname" name="lastName" type="text" class="form-control" placeholder="Last Name" value="${smartUser.lastName}">
+                            <input id="input-lastname" name="lastName" type="text" class="form-control" placeholder="<spring:message code="label.lastname"/>" value="${smartUser.lastName}">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="input-firstname" class="col-sm-4 control-label">First Name</label>
+                        <label for="input-firstname" class="col-sm-4 control-label"><spring:message code="label.firstname"/></label>
                         <div class="col-xs-4">
-                            <input id="input-firstname" name="firstName" type="text" class="form-control" placeholder="First Name" value="${smartUser.firstName}">
+                            <input id="input-firstname" name="firstName" type="text" class="form-control" placeholder="<spring:message code="label.firstname"/>" value="${smartUser.firstName}">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="input-middlename" class="col-sm-4 control-label">Middle Name</label>
+                        <label for="input-middlename" class="col-sm-4 control-label"><spring:message code="label.middlename"/></label>
                         <div class="col-xs-4">
-                            <input id="input-middlename" name="middleName" type="text" class="form-control" placeholder="Middle Name" value="${smartUser.middleName}">
+                            <input id="input-middlename" name="middleName" type="text" class="form-control" placeholder="<spring:message code="label.middlename"/>" value="${smartUser.middleName}">
                         </div>
                     </div>
                     <div class="form-group">
-                    <label for="input-address" class="col-sm-4 control-label">Address</label>
+                    <label for="input-address" class="col-sm-4 control-label"><spring:message code="label.address"/></label>
                         <div class="col-xs-4">
-                            <input id="input-address" name="address" type="text" class="form-control" placeholder="Address" value="${smartUser.address}">
+                            <input id="input-address" name="address" type="text" class="form-control" placeholder="<spring:message code="label.address"/>" value="${smartUser.address}">
                         </div>
                         <div class="col-xs-4">
                             <div class="checkbox">
-                                <input id="input-address-visible" name="addressVisible" type="checkbox"  <c:if test="${smartUser.addressVisible}">checked</c:if> > Show to all
+                                <input id="input-address-visible" name="addressVisible" type="checkbox"  <c:if test="${smartUser.addressVisible}">checked</c:if> > <spring:message code="label.showtoall"/>
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="input-cellphone" class="col-sm-4 control-label">Cellphone</label>
+                        <label for="input-cellphone" class="col-sm-4 control-label"><spring:message code="label.mobilephone"/></label>
                         <div class="col-xs-4">
-                            <input id="input-cellphone" name="cellphone" type="tel" class="form-control" placeholder="Cellphone" value="${smartUser.cellPhone}"  >
+                            <input id="input-cellphone" name="cellphone" type="tel" class="form-control" placeholder="<spring:message code="label.mobilephone"/>" value="${smartUser.cellPhone}"  >
                         </div>
                         <div class="col-xs-4">
                             <div class="checkbox">
-                                <input id="input-cellphone-visible"  type="checkbox" name="cellphoneVisible" <c:if test="${smartUser.cellPhoneVisible}">checked</c:if> > Show to all
+                                <input id="input-cellphone-visible"  type="checkbox" name="cellphoneVisible" <c:if test="${smartUser.cellPhoneVisible}">checked</c:if> > <spring:message code="label.showtoall"/>
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="input-birthdate" class="col-sm-4 control-label">Birth Date</label>
                         <div class="col-xs-4">
-                            <input id="input-birthdate" name="birthdate" type="date" class="form-control" placeholder="Birth Date" value="<fmt:formatDate value="${smartUser.birthDate}" pattern="yyyy-MM-dd" />">
+                            <input id="input-birthdate" name="birthdate" type="date" class="form-control" placeholder="<spring:message code="label.birthdate"/>" value="<fmt:formatDate value="${smartUser.birthDate}" pattern="yyyy-MM-dd" />">
                         </div>
                     </div>
 
                 </fieldset>
                 <fieldset class="private-settings">
-                    <legend>Private settings</legend>
+                    <legend><spring:message code="label.privatesettings"/></legend>
                     <div class="form-group">
-                        <label for="input-profile-visible" class="col-sm-4 control-label">Public profile</label>
+                        <label for="input-profile-visible" class="col-sm-4 control-label"><spring:message code="label.publicprofile"/></label>
                         <div class="col-xs-4">
                             <div class="checkbox">
                                 <input id="input-profile-visible" name="profileVisible" type="checkbox" <c:if test="${smartUser.profileVisible}">checked</c:if> >
