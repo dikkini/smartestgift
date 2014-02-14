@@ -98,6 +98,7 @@ public class LoginController {
                 // Execute the method.
                 int statusCode = client.executeMethod(method);
                 if (statusCode != HttpStatus.SC_OK) {
+                    // TODO обработать исключение
                     System.err.println("Method failed: " + method.getStatusLine());
                 }
                 // Read the response body.
@@ -138,6 +139,7 @@ public class LoginController {
                     smartUserDetails.setSmartUser(smartUser);
                     smartUserDetails.setRole(roleDAO.findUserRole());
                     smartUserDetails.setRegistrationDate(new Date());
+                    // TODO проверить наличие никнейма от фейсбука
 
                     userAuthProvider.authenticateUser(smartUserDetails, request);
 
@@ -153,6 +155,7 @@ public class LoginController {
             } catch (IOException e) {
                 System.err.println("Fatal transport error: " + e.getMessage());
                 e.printStackTrace();
+                return "redirect:login";
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
