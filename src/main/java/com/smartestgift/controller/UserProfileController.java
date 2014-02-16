@@ -4,6 +4,7 @@ import com.smartestgift.dao.SmartUserDAO;
 import com.smartestgift.dao.model.SmartUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,10 +20,10 @@ public class UserProfileController {
     @Autowired
     SmartUserDAO smartUserDAO;
 
-    @RequestMapping(value = "/user", method = RequestMethod.GET)
-    public ModelAndView userProfile(@RequestParam(required = true, value = "uuid") String userUuid) {
+    @RequestMapping(value = "/user/{username}", method = RequestMethod.GET)
+    public ModelAndView userProfile(@PathVariable String username) {
         ModelAndView mav = new ModelAndView("users/user");
-        SmartUser smartUser = smartUserDAO.find(userUuid);
+        SmartUser smartUser = smartUserDAO.findSmartUserByUsername(username);
         mav.addObject("smartUser", smartUser);
         return mav;
     }

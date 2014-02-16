@@ -52,7 +52,7 @@
                 <p><strong><spring:message code="label.mobilephone"/>:</strong> <c:out value="${smartUser.cellPhone}"/></p>
             </c:if>
             <c:if test="${smartUser.addressVisible}">
-                <p><strong><spring:message code="label.address"/>::</strong> <c:out value="${smartUser.address}"/></p>
+                <p><strong><spring:message code="label.address"/>:</strong> <c:out value="${smartUser.address}"/></p>
             </c:if>
         </div>
         <div class="col-xs-4">
