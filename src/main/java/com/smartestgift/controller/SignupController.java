@@ -1,7 +1,10 @@
 package com.smartestgift.controller;
 
+import com.smartestgift.dao.AuthProviderDAO;
 import com.smartestgift.dao.RoleDAO;
 import com.smartestgift.dao.SmartUserDetailsDAO;
+import com.smartestgift.dao.model.AuthProvider;
+import com.smartestgift.dao.model.Role;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserDetails;
 import com.smartestgift.security.UserAuthProvider;
@@ -30,6 +33,9 @@ public class SignupController {
     RoleDAO roleDAO;
 
     @Autowired
+    AuthProviderDAO authProviderDAO;
+
+    @Autowired
     UserAuthProvider authProvider;
 
 
@@ -39,19 +45,22 @@ public class SignupController {
         return mav;
     }
 
-    @RequestMapping(value = "/sign", method = RequestMethod.POST)
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
     public String signUpUser(HttpServletRequest request,
             @RequestParam (required = true, value = "username") String username,
+            @RequestParam (required = true, value = "email") String email,
             @RequestParam (required = true, value = "password") String password,
             @RequestParam (required = true, value = "firstName") String firstName,
             @RequestParam (required = false, value = "lastName") String lastName) {
 
+        // TODO проверка всех входных данных
+
         StandardPasswordEncoder encoder = new StandardPasswordEncoder();
         String passwordEncoded = encoder.encode(password);
 
-        SmartUser smartUser = new SmartUser(null, firstName, lastName, null);
-        SmartUserDetails smartUserDetails = new SmartUserDetails(username, passwordEncoded, new Date(),
-                smartUser, roleDAO.findUserRole());
+        SmartUser smartUser = new SmartUser(null, email, username, firstName, lastName, null);
+        SmartUserDetails smartUserDetails = new SmartUserDetails(smartUser, passwordEncoded, new Date(),
+                roleDAO.findUserRole(), authProviderDAO.findApplicationProvider());
         smartUserDetailsDAO.store(smartUserDetails);
 
         authProvider.authenticateUser(smartUserDetails, request);

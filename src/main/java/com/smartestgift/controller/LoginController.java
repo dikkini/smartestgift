@@ -3,8 +3,9 @@ package com.smartestgift.controller;
 import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
 import com.restfb.types.User;
+import com.smartestgift.dao.AuthProviderDAO;
 import com.smartestgift.dao.RoleDAO;
-import com.smartestgift.dao.model.Role;
+import com.smartestgift.dao.SmartUserDetailsDAO;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserDetails;
 import com.smartestgift.security.UserAuthProvider;
@@ -14,14 +15,6 @@ import org.apache.commons.httpclient.methods.*;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,7 +23,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Date;
 
@@ -43,6 +35,12 @@ public class LoginController {
 
     @Autowired
     private UserAuthProvider userAuthProvider;
+
+    @Autowired
+    private AuthProviderDAO authProviderDAO;
+
+    @Autowired
+    private SmartUserDetailsDAO smartUserDetailsDAO;
 
     @Autowired
     private RoleDAO roleDAO;
@@ -128,20 +126,21 @@ public class LoginController {
                     //In this user object, you will have the details you want from Facebook,  Since we have    the  access token with us, can play around and see what more can be done
                     //CAME UP TO HERE AND WE KNOW THE USER HAS BEEN AUTHENTICATED BY FACEBOOK, LETS AUTHENTICATE HIM IN OUR APPLICATION
                     //NOW I WILL CALL MY doAutoLogin METHOD TO AUTHENTICATE THE USER IN MY SPRING SECURITY CONTEXT
-                    SmartUser smartUser = new SmartUser();
-                    smartUser.setBirthDate(user.getBirthdayAsDate());
-                    smartUser.setFirstName(user.getFirstName());
-                    smartUser.setLastName(user.getLastName());
-                    smartUser.setMiddleName(user.getMiddleName());
 
-                    SmartUserDetails smartUserDetails = new SmartUserDetails();
-                    smartUserDetails.setUsername(user.getEmail());
-                    smartUserDetails.setSmartUser(smartUser);
-                    smartUserDetails.setRole(roleDAO.findUserRole());
-                    smartUserDetails.setRegistrationDate(new Date());
-                    // TODO проверить наличие никнейма от фейсбука
+                    SmartUserDetails facebookUserBySocialId = smartUserDetailsDAO.findFacebookUserBySocialId(user.getId());
+                    // creating new user
+                    if (facebookUserBySocialId == null) {
+                        // TODO сделать проверку на занятость email и username и отправлять пользователя на доп страницу продолжения регистрации с информацией о том что email и username заняты
 
-                    userAuthProvider.authenticateUser(smartUserDetails, request);
+                        SmartUser authSmartUser = new SmartUser(user.getBirthdayAsDate(), user.getEmail(), user.getUsername(), user.getFirstName(),
+                                user.getLastName(), user.getMiddleName());
+                        authSmartUser.setAddress(user.getHometownName());
+
+                        facebookUserBySocialId = new SmartUserDetails(authSmartUser, null, new Date(),
+                                roleDAO.findUserRole(), authProviderDAO.findFacebookProvider());
+                    }
+
+                    userAuthProvider.authenticateUser(facebookUserBySocialId, request);
 
                     return "redirect:/";
                 } else {
@@ -152,12 +151,15 @@ public class LoginController {
             } catch (HttpException e) {
                 System.err.println("Fatal protocol violation: " + e.getMessage());
                 e.printStackTrace();
+                return "redirect:login";
             } catch (IOException e) {
                 System.err.println("Fatal transport error: " + e.getMessage());
                 e.printStackTrace();
                 return "redirect:login";
             } catch (Exception e) {
                 e.printStackTrace();
+                System.err.println("Common Exception: " + e.getMessage());
+                return "redirect:login";
             } finally {
                 // Release the connection.
                 method.releaseConnection();
@@ -166,6 +168,5 @@ public class LoginController {
             //failed
             return "redirect:login";
         }
-        return code;
     }
 }

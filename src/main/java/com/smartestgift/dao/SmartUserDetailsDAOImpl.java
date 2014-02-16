@@ -1,6 +1,8 @@
 package com.smartestgift.dao;
 
+import com.smartestgift.dao.model.AuthProvider;
 import com.smartestgift.dao.model.SmartUserDetails;
+import com.smartestgift.enums.AuthProviderEnum;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -48,9 +50,10 @@ public class SmartUserDetailsDAOImpl implements SmartUserDetailsDAO {
     }
 
     @Override
-    public SmartUserDetails findSmartUserDetailsByUserName(String login) {
+    public SmartUserDetails findFacebookUserBySocialId(String socialId) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUserDetails.class);
-        criteria.add(Restrictions.eq("username", login));
+        criteria.add(Restrictions.eq("socialId", socialId));
+        criteria.add(Restrictions.eq("authProviderId", AuthProviderEnum.FACEBOOK.getId()));
         return (SmartUserDetails) criteria.uniqueResult();
     }
 }

@@ -10,5 +10,5 @@ import java.util.UUID;
  * Email: dikkini@gmail.com
  */
 public interface SmartUserDetailsDAO extends Repository<SmartUserDetails, String> {
-    public SmartUserDetails findSmartUserDetailsByUserName(String login);
+    public SmartUserDetails findFacebookUserBySocialId(String socialId);
 }

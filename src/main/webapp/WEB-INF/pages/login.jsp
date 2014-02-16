@@ -12,9 +12,9 @@
         <div>
             <form class="form-horizontal login-form" action="j_spring_security_check" method="post">
                 <div class="form-group">
-                    <label for="j_username" class="col-sm-2 control-label"><spring:message code="label.email"/></label>
+                    <label for="j_username" class="col-sm-2 control-label"><spring:message code="label.emailorusername"/></label>
                     <div class="col-xs-4">
-                        <input id="j_username" name="j_username" type="email" class="form-control" placeholder="<spring:message code="label.email"/>">
+                        <input id="j_username" name="j_username" type="text" class="form-control" placeholder="<spring:message code="label.emailorusername"/>">
                     </div>
                 </div>
                 <div class="form-group">

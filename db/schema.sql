@@ -8,6 +8,7 @@ SET default_tablespace = '';
 SET default_with_oids = FALSE;
 
 DROP TABLE public.users CASCADE;
+DROP TABLE public.auth_provider CASCADE;
 DROP TABLE public.role CASCADE;
 DROP TABLE public.user_details CASCADE;
 DROP TABLE public.persistent_login CASCADE;
@@ -17,6 +18,12 @@ DROP TABLE public.gift_category CASCADE;
 DROP TABLE public.file_type CASCADE;
 DROP TABLE public.file CASCADE;
 DROP TABLE public.gift_file CASCADE;
+
+CREATE TABLE public.auth_provider
+(
+  id SERIAL PRIMARY KEY,
+  name VARCHAR NOT NULL
+);
 
 CREATE TABLE public.file_type
 (
@@ -41,7 +48,8 @@ CREATE TABLE public.file
 CREATE TABLE public.users
 (
   uuid             VARCHAR(36) PRIMARY KEY NOT NULL,
-  username         VARCHAR UNIQUE          NOT NULL,
+  username         VARCHAR(64) UNIQUE      NOT NULL,
+  email            VARCHAR UNIQUE          NOT NULL,
   firstName        VARCHAR(255)            NOT NULL,
   lastName         VARCHAR(255),
   middleName       VARCHAR(255),
@@ -58,9 +66,11 @@ CREATE TABLE public.users
 CREATE TABLE public.user_details
 (
   userUuid              VARCHAR(36) PRIMARY KEY  REFERENCES public.users (uuid) NOT NULL,
-  username              VARCHAR(64) UNIQUE                                      NOT NULL,
+  username              VARCHAR(64) UNIQUE REFERENCES public.users (username)   NOT NULL,
   password              TEXT,
   enabled               BOOLEAN DEFAULT FALSE                                   NOT NULL,
+  socialId              VARCHAR,
+  authProviderId        INT REFERENCES public.auth_provider (id)                NOT NULL,
   roleId                INT REFERENCES public.role (id)                         NOT NULL,
   accountNonExpired     BOOLEAN DEFAULT TRUE                                    NOT NULL,
   credentialsNonExpired BOOLEAN DEFAULT TRUE                                    NOT NULL,
@@ -70,7 +80,7 @@ CREATE TABLE public.user_details
 
 CREATE TABLE public.persistent_login
 (
-  username VARCHAR(64) REFERENCES public.user_details (username) NOT NULL,
+  username VARCHAR(64) UNIQUE REFERENCES public.users (username) NOT NULL,
   series   VARCHAR(64) PRIMARY KEY                               NOT NULL,
   token    VARCHAR(64) DEFAULT NULL,
   lastUsed TIMESTAMP                                             NOT NULL

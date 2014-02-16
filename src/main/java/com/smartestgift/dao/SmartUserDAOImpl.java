@@ -2,6 +2,7 @@ package com.smartestgift.dao;
 
 import com.smartestgift.dao.SmartUserDAO;
 import com.smartestgift.dao.model.SmartUser;
+import com.smartestgift.dao.model.SmartUserDetails;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -49,9 +50,16 @@ public class SmartUserDAOImpl implements SmartUserDAO {
     }
 
     @Override
-    public SmartUser findSmartUserByUserName(String login) {
+    public SmartUser findSmartUserByEmail(String email) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
-        criteria.add(Restrictions.eq("username", login));
+        criteria.add(Restrictions.eq("email", email));
+        return (SmartUser) criteria.uniqueResult();
+    }
+
+    @Override
+    public SmartUser findSmartUserByUsername(String username) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
+        criteria.add(Restrictions.eq("username", username));
         return (SmartUser) criteria.uniqueResult();
     }
 }

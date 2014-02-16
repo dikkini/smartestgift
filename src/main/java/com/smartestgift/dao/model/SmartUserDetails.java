@@ -42,6 +42,9 @@ public class SmartUserDetails implements Serializable, UserDetails {
     protected boolean enabled = true;
 
     @Column
+    protected String socialId;
+
+    @Column
     protected boolean accountNonExpired = true;
 
     @Column
@@ -54,19 +57,18 @@ public class SmartUserDetails implements Serializable, UserDetails {
     @JoinColumn(name="roleId")
     private Role role;
 
+    @ManyToOne
+    @JoinColumn(name="authProviderId")
+    private AuthProvider authProvider;
+
     @Column
     protected Date registrationDate;
 
     public SmartUserDetails() {}
 
-    /**
-     *
-     * @param username Username
-     * @param password Password with Salt
-     * @param smartUser User model
-     */
-    public SmartUserDetails(String username, String password, Date registrationDate, SmartUser smartUser, Role role) {
-        this.username = username;
+    public SmartUserDetails(SmartUser smartUser, String password, Date registrationDate,  Role role, AuthProvider authProvider) {
+        this.authProvider = authProvider;
+        this.username = smartUser.getUsername();
         this.password = password;
         this.smartUser = smartUser;
         this.role = role;
@@ -85,7 +87,7 @@ public class SmartUserDetails implements Serializable, UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // TODO сделать много ролей
+        // TODO сделать много ролей (?)
         Set<GrantedAuthority> authorities = new HashSet<>();
         authorities.add(new SimpleGrantedAuthority(getRole().getRole()));
         return authorities;
@@ -97,6 +99,10 @@ public class SmartUserDetails implements Serializable, UserDetails {
 
     public boolean isEnabled() {
         return enabled;
+    }
+
+    public String getSocialId() {
+        return socialId;
     }
 
     public boolean isAccountNonExpired() {
@@ -119,22 +125,6 @@ public class SmartUserDetails implements Serializable, UserDetails {
         return registrationDate;
     }
 
-    public void setUserUuid(String userUuid) {
-        this.userUuid = userUuid;
-    }
-
-    public void setSmartUser(SmartUser smartUser) {
-        this.smartUser = smartUser;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
@@ -151,11 +141,15 @@ public class SmartUserDetails implements Serializable, UserDetails {
         this.accountNonLocked = accountNonLocked;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
     public void setRegistrationDate(Date registrationDate) {
         this.registrationDate = registrationDate;
+    }
+
+    public AuthProvider getAuthProvider() {
+        return authProvider;
+    }
+
+    public void setAuthProvider(AuthProvider authProvider) {
+        this.authProvider = authProvider;
     }
 }

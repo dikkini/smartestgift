@@ -10,7 +10,14 @@
 <div class="container">
     <div class="well well-lg">
         <div>
-            <form class="form-horizontal" action="/sign" method="post">
+            <form class="form-horizontal" action="/register" method="post">
+                <div class="form-group">
+                    <label for="username" class="col-sm-2 control-label"><spring:message code="label.username"/><span class="required">*</span>
+                    </label>
+                    <div class="col-xs-4">
+                        <input type="text" name="username" class="form-control" id="username" placeholder="<spring:message code="label.username"/>">
+                    </div>
+                </div>
                 <div class="form-group">
                     <label for="firstname" class="col-sm-2 control-label"><spring:message code="label.firstname"/><span class="required">*</span>
                     </label>
@@ -25,10 +32,10 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="username" class="col-sm-2 control-label"><spring:message code="label.email"/><span class="required">*</span>
+                    <label for="email" class="col-sm-2 control-label"><spring:message code="label.email"/><span class="required">*</span>
                     </label>
                     <div class="col-xs-4">
-                        <input type="email" name="username" class="form-control" id="username" placeholder="<spring:message code="label.email"/>">
+                        <input type="email" name="email" class="form-control" id="email" placeholder="<spring:message code="label.email"/>">
                     </div>
                 </div>
                 <div class="form-group">
