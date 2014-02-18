@@ -26,9 +26,6 @@ public class SmartUser implements Serializable {
     protected String username;
 
     @Column
-    protected String email;
-
-    @Column
     protected Date birthDate;
 
     @Column
@@ -78,8 +75,7 @@ public class SmartUser implements Serializable {
 
     public SmartUser() {}
 
-    public SmartUser(Date birthDate, String email, String username, String firstName, String lastName, String middleName) {
-        this.email = email;
+    public SmartUser(Date birthDate, String username, String firstName, String lastName, String middleName) {
         this.username = username;
         this.birthDate = birthDate;
         this.firstName = firstName;
@@ -93,10 +89,6 @@ public class SmartUser implements Serializable {
 
     public String getUsername() {
         return username;
-    }
-
-    public String getEmail() {
-        return email;
     }
 
     public Date getBirthDate() {

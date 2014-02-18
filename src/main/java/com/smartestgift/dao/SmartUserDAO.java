@@ -9,12 +9,6 @@ import com.smartestgift.dao.model.SmartUserDetails;
  * Email: dikkini@gmail.com
  */
 public interface SmartUserDAO extends Repository<SmartUser, String> {
-    /**
-     * Поиск пользователя по email
-     * @param email email
-     * @return модель пользователя с деталями
-     */
-    public SmartUser findSmartUserByEmail(String email);
 
     /**
      * Поиск пользователя по username

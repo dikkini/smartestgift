@@ -10,7 +10,7 @@
 <div class="container">
     <div class="well well-lg">
         <div>
-            <form class="form-horizontal" action="/register" method="post">
+            <form class="form-horizontal" action="/signup/register" method="post">
                 <div class="form-group">
                     <label for="username" class="col-sm-2 control-label"><spring:message code="label.username"/><span class="required">*</span>
                     </label>

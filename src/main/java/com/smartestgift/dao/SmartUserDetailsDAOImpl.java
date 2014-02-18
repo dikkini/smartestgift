@@ -1,6 +1,7 @@
 package com.smartestgift.dao;
 
 import com.smartestgift.dao.model.AuthProvider;
+import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserDetails;
 import com.smartestgift.enums.AuthProviderEnum;
 import org.hibernate.Criteria;
@@ -47,6 +48,20 @@ public class SmartUserDetailsDAOImpl implements SmartUserDetailsDAO {
     @Override
     public void delete(SmartUserDetails dmodel) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public SmartUserDetails findSmartUserDetailsByEmail(String email) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUserDetails.class);
+        criteria.add(Restrictions.eq("email", email));
+        return (SmartUserDetails) criteria.uniqueResult();
+    }
+
+    @Override
+    public SmartUserDetails findSmartUserDetailsByUsername(String username) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUserDetails.class);
+        criteria.add(Restrictions.eq("username", username));
+        return (SmartUserDetails) criteria.uniqueResult();
     }
 
     @Override

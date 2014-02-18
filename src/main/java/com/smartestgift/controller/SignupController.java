@@ -3,8 +3,6 @@ package com.smartestgift.controller;
 import com.smartestgift.dao.AuthProviderDAO;
 import com.smartestgift.dao.RoleDAO;
 import com.smartestgift.dao.SmartUserDetailsDAO;
-import com.smartestgift.dao.model.AuthProvider;
-import com.smartestgift.dao.model.Role;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserDetails;
 import com.smartestgift.security.UserAuthProvider;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
@@ -40,12 +37,11 @@ public class SignupController {
 
 
     @RequestMapping(value = "/signup", method = RequestMethod.GET)
-    public ModelAndView signin() {
-        ModelAndView mav = new ModelAndView("signup");
-        return mav;
+    public ModelAndView signUpPage() {
+        return new ModelAndView("signup");
     }
 
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    @RequestMapping(value = "/signup/register", method = RequestMethod.POST)
     public String signUpUser(HttpServletRequest request,
             @RequestParam (required = true, value = "username") String username,
             @RequestParam (required = true, value = "email") String email,
@@ -58,9 +54,38 @@ public class SignupController {
         StandardPasswordEncoder encoder = new StandardPasswordEncoder();
         String passwordEncoded = encoder.encode(password);
 
-        SmartUser smartUser = new SmartUser(null, email, username, firstName, lastName, null);
-        SmartUserDetails smartUserDetails = new SmartUserDetails(smartUser, passwordEncoded, new Date(),
+        SmartUser smartUser = new SmartUser(null, username, firstName, lastName, null);
+        SmartUserDetails smartUserDetails = new SmartUserDetails(smartUser, passwordEncoded, email, null, new Date(),
                 roleDAO.findUserRole(), authProviderDAO.findApplicationProvider());
+        smartUserDetailsDAO.store(smartUserDetails);
+
+        authProvider.authenticateUser(smartUserDetails, request);
+
+        return "redirect:/profile";
+    }
+
+    @RequestMapping(value = "/signup/social", method = RequestMethod.GET)
+    public ModelAndView socialSignUpPage(HttpServletRequest request,
+                                         @RequestParam(required = true, value = "errors") String[] errors) {
+        SmartUserDetails smartUserDetails = (SmartUserDetails) request.getParameterMap().get("smartUserDetails");
+        ModelAndView mav = new ModelAndView("signupSocial");
+        mav.addObject("smartUserDetails", smartUserDetails);
+        mav.addObject("errors", errors);
+        return mav;
+    }
+
+    @RequestMapping(value = "/signup/socialRegister", method = RequestMethod.POST)
+    public String sociaRegister(HttpServletRequest request,
+                                      @RequestParam (required = true, value = "username") String username,
+                                      @RequestParam (required = true, value = "email") String email,
+                                      @RequestParam (required = true, value = "firstName") String firstName,
+                                      @RequestParam (required = false, value = "lastName") String lastName) {
+
+        // TODO проверка всех входных данных
+        SmartUserDetails smartUserDetails = (SmartUserDetails) request.getParameterMap().get("smartUserDetails");
+        SmartUser smartUser = new SmartUser(null, username, firstName, lastName, null);
+        smartUserDetails = new SmartUserDetails(smartUser, null, email, null, new Date(),
+                smartUserDetails.getRole(), smartUserDetails.getAuthProvider());
         smartUserDetailsDAO.store(smartUserDetails);
 
         authProvider.authenticateUser(smartUserDetails, request);

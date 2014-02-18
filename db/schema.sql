@@ -21,7 +21,7 @@ DROP TABLE public.gift_file CASCADE;
 
 CREATE TABLE public.auth_provider
 (
-  id SERIAL PRIMARY KEY,
+  id   SERIAL PRIMARY KEY,
   name VARCHAR NOT NULL
 );
 
@@ -49,7 +49,6 @@ CREATE TABLE public.users
 (
   uuid             VARCHAR(36) PRIMARY KEY NOT NULL,
   username         VARCHAR(64) UNIQUE      NOT NULL,
-  email            VARCHAR UNIQUE          NOT NULL,
   firstName        VARCHAR(255)            NOT NULL,
   lastName         VARCHAR(255),
   middleName       VARCHAR(255),
@@ -68,7 +67,8 @@ CREATE TABLE public.user_details
   userUuid              VARCHAR(36) PRIMARY KEY  REFERENCES public.users (uuid) NOT NULL,
   username              VARCHAR(64) UNIQUE REFERENCES public.users (username)   NOT NULL,
   password              TEXT,
-  enabled               BOOLEAN DEFAULT FALSE                                   NOT NULL,
+  email                 VARCHAR UNIQUE                                          NOT NULL,
+  enabled               BOOLEAN DEFAULT TRUE                                    NOT NULL,
   socialId              VARCHAR,
   authProviderId        INT REFERENCES public.auth_provider (id)                NOT NULL,
   roleId                INT REFERENCES public.role (id)                         NOT NULL,

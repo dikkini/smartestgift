@@ -50,13 +50,6 @@ public class SmartUserDAOImpl implements SmartUserDAO {
     }
 
     @Override
-    public SmartUser findSmartUserByEmail(String email) {
-        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
-        criteria.add(Restrictions.eq("email", email));
-        return (SmartUser) criteria.uniqueResult();
-    }
-
-    @Override
     public SmartUser findSmartUserByUsername(String username) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
         criteria.add(Restrictions.eq("username", username));

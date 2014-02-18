@@ -2,6 +2,7 @@ package com.smartestgift.security;
 
 import com.smartestgift.dao.SmartUserDAO;
 import com.smartestgift.dao.SmartUserDetailsDAO;
+import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,14 +29,14 @@ import static com.smartestgift.utils.Utils.isEmail;
 public class UserAuthProviderImpl implements UserAuthProvider {
 
     @Autowired
-    private SmartUserDAO smartUserDAO;
+    private SmartUserDetailsDAO smartUserDetailsDAO;
 
     public UserDetails loadUserByUsername(String login)
             throws UsernameNotFoundException {
         if (isEmail(login)) {
-            return smartUserDAO.findSmartUserByEmail(login).getSmartUserDetails();
+            return smartUserDetailsDAO.findSmartUserDetailsByEmail(login);
         } else {
-            return smartUserDAO.findSmartUserByUsername(login).getSmartUserDetails();
+            return smartUserDetailsDAO.findSmartUserDetailsByUsername(login);
         }
     }
 

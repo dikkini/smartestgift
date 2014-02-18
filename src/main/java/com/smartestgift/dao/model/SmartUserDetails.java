@@ -39,6 +39,9 @@ public class SmartUserDetails implements Serializable, UserDetails {
     protected String password;
 
     @Column
+    protected String email;
+
+    @Column
     protected boolean enabled = true;
 
     @Column
@@ -66,13 +69,15 @@ public class SmartUserDetails implements Serializable, UserDetails {
 
     public SmartUserDetails() {}
 
-    public SmartUserDetails(SmartUser smartUser, String password, Date registrationDate,  Role role, AuthProvider authProvider) {
+    public SmartUserDetails(SmartUser smartUser, String password, String email, String socialId, Date registrationDate,  Role role, AuthProvider authProvider) {
+        this.smartUser = smartUser;
+        this.password = password;
+        this.email = email;
+        this.socialId = socialId;
+        this.registrationDate = registrationDate;
+        this.role = role;
         this.authProvider = authProvider;
         this.username = smartUser.getUsername();
-        this.password = password;
-        this.smartUser = smartUser;
-        this.role = role;
-        this.registrationDate = registrationDate;
     }
 
     public String getUserUuid() {
@@ -127,6 +132,10 @@ public class SmartUserDetails implements Serializable, UserDetails {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public void setAccountNonExpired(boolean accountNonExpired) {

@@ -3,28 +3,22 @@ package com.smartestgift.controller;
 import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
 import com.restfb.types.User;
-import com.smartestgift.dao.AuthProviderDAO;
-import com.smartestgift.dao.RoleDAO;
-import com.smartestgift.dao.SmartUserDetailsDAO;
-import com.smartestgift.dao.model.SmartUser;
-import com.smartestgift.dao.model.SmartUserDetails;
-import com.smartestgift.security.UserAuthProvider;
+import com.smartestgift.service.SmartUserService;
 import com.smartestgift.utils.ApplicationConstants;
 import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.methods.*;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
 
 /**
  * Created by dikkini on 27.01.14.
@@ -34,16 +28,7 @@ import java.util.Date;
 public class LoginController {
 
     @Autowired
-    private UserAuthProvider userAuthProvider;
-
-    @Autowired
-    private AuthProviderDAO authProviderDAO;
-
-    @Autowired
-    private SmartUserDetailsDAO smartUserDetailsDAO;
-
-    @Autowired
-    private RoleDAO roleDAO;
+    SmartUserService smartUserService;
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public ModelAndView signin(@RequestParam(required = false, value = "error") boolean error) {
@@ -127,22 +112,7 @@ public class LoginController {
                     //CAME UP TO HERE AND WE KNOW THE USER HAS BEEN AUTHENTICATED BY FACEBOOK, LETS AUTHENTICATE HIM IN OUR APPLICATION
                     //NOW I WILL CALL MY doAutoLogin METHOD TO AUTHENTICATE THE USER IN MY SPRING SECURITY CONTEXT
 
-                    SmartUserDetails facebookUserBySocialId = smartUserDetailsDAO.findFacebookUserBySocialId(user.getId());
-                    // creating new user
-                    if (facebookUserBySocialId == null) {
-                        // TODO сделать проверку на занятость email и username и отправлять пользователя на доп страницу продолжения регистрации с информацией о том что email и username заняты
-
-                        SmartUser authSmartUser = new SmartUser(user.getBirthdayAsDate(), user.getEmail(), user.getUsername(), user.getFirstName(),
-                                user.getLastName(), user.getMiddleName());
-                        authSmartUser.setAddress(user.getHometownName());
-
-                        facebookUserBySocialId = new SmartUserDetails(authSmartUser, null, new Date(),
-                                roleDAO.findUserRole(), authProviderDAO.findFacebookProvider());
-                    }
-
-                    userAuthProvider.authenticateUser(facebookUserBySocialId, request);
-
-                    return "redirect:/";
+                    return smartUserService.authFacebookUser(user, request);
                 } else {
                     //failed
                     return "redirect:login";
