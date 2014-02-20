@@ -21,6 +21,6 @@ public class RoleDAOImpl implements RoleDAO {
 
     @Override
     public Role findUserRole() {
-        return (Role) sessionFactory.getCurrentSession().get(Role.class, RolesEnum.USER_IMAGE.getId());
+        return (Role) sessionFactory.getCurrentSession().get(Role.class, RolesEnum.USER_ROLE.getId());
     }
 }

@@ -5,8 +5,8 @@ package com.smartestgift.enums;
  * Email: dikkini@gmail.com
  */
 public enum RolesEnum {
-    USER_IMAGE(1, "ROLE_USER"),
-    GIFT_IMAGE(2, "ROLE_ADMIN");
+    USER_ROLE(2, "ROLE_USER"),
+    ADMIN_ROLE(1, "ROLE_ADMIN");
 
     private int id;
     private String role;

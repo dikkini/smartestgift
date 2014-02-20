@@ -7,6 +7,7 @@ import com.smartestgift.dao.model.Role;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -17,7 +18,8 @@ import static junit.framework.Assert.assertTrue;
  * Email: dikkini@gmail.com
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"classpath:root-context.xml"})
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@ContextConfiguration(locations={"classpath:spring/root-context.xml"})
 public class RoleDAOTest {
     @Autowired
     RoleDAO roleDAO;
@@ -25,7 +27,7 @@ public class RoleDAOTest {
     @Test
     public void testRoleDAO() throws Exception {
         Role userRole = roleDAO.findUserRole();
-        assertTrue(userRole.getRole().equals("USER_ROLE"));
-
+        assertTrue(userRole.getRole().equals("admin"));
+        userRole.getPersonRoles();
     }
 }
