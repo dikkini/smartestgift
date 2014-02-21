@@ -18,6 +18,7 @@
         <security:intercept-url pattern="/facebookLogin" access="isAnonymous()" requires-channel="http"/>
         <security:intercept-url pattern="/facebookAuthentication" access="isAnonymous()" requires-channel="http"/>
         <security:intercept-url pattern="/signup" access="isAnonymous()" requires-channel="http"/>
+        <security:intercept-url pattern="/signup/social" access="isAnonymous()" requires-channel="http"/>
         <security:intercept-url pattern="/register" access="isAnonymous()" requires-channel="http"/>
 
         <security:intercept-url pattern="/**" access="isAuthenticated()" requires-channel="http"/>
@@ -37,10 +38,10 @@
     </security:http>
 
     <!-- Настройки глобальной секурити. Разрешение использовать аннотации. -->
-    <security:global-method-security secured-annotations="enabled" pre-post-annotations="enabled">
-        <security:protect-pointcut expression="execution(* com.smartestgift.service.*Service.*(..) )"
-                                   access="ROLE_USER"/>
-    </security:global-method-security>
+    <!--<security:global-method-security secured-annotations="enabled" pre-post-annotations="enabled">-->
+        <!--<security:protect-pointcut expression="execution(* com.smartestgift.service.*Service.*(..) )"-->
+                                   <!--access="ROLE_USER"/>-->
+    <!--</security:global-method-security>-->
 
     <security:authentication-manager alias="authenticationManager">
         <security:authentication-provider user-service-ref="userAuthProviderImpl">

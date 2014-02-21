@@ -1,6 +1,5 @@
 package com.smartestgift.dao;
 
-import com.smartestgift.dao.SmartUserDetailsDAO;
 import com.smartestgift.dao.model.SmartUserDetails;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -20,8 +19,12 @@ import static junit.framework.Assert.assertTrue;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"classpath:root-context.xml"})
 public class SmartUserDetailsDAOTest {
+
     @Autowired
     SmartUserDetailsDAO smartUserDetailsDAO;
+
+    @Autowired
+    AuthProviderDAO authProviderDAO;
 
     String testUsername = "dikkini";
     String testEmail ="dikkini@gmail.com";
@@ -43,7 +46,7 @@ public class SmartUserDetailsDAOTest {
     @Test
     @Ignore
     public void testFindFacebookUserBySocialId() throws Exception {
-        SmartUserDetails facebookUserBySocialId = smartUserDetailsDAO.findFacebookUserBySocialId(testSocialId);
+        SmartUserDetails facebookUserBySocialId = smartUserDetailsDAO.findUserBySocialIdAndAuthProvider(testSocialId, authProviderDAO.findFacebookProvider());
         assertTrue(facebookUserBySocialId != null);
     }
 

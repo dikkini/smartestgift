@@ -15,6 +15,7 @@
             <mvc:exclude-mapping path="/facebookLogin"/>
             <mvc:exclude-mapping path="/facebookAuthentication"/>
             <mvc:exclude-mapping path="/signup"/>
+            <mvc:exclude-mapping path="/signup/social"/>
             <mvc:exclude-mapping path="/sign"/>
             <mvc:exclude-mapping path="/user/**"/>
             <mvc:exclude-mapping path="/"/>

@@ -67,7 +67,7 @@ public class SignupController {
     @RequestMapping(value = "/signup/social", method = RequestMethod.GET)
     public ModelAndView socialSignUpPage(HttpServletRequest request,
                                          @RequestParam(required = true, value = "errors") String[] errors) {
-        SmartUserDetails smartUserDetails = (SmartUserDetails) request.getParameterMap().get("smartUserDetails");
+        SmartUserDetails smartUserDetails = (SmartUserDetails) request.getSession().getAttribute("smartUserDetails");
         ModelAndView mav = new ModelAndView("signupSocial");
         mav.addObject("smartUserDetails", smartUserDetails);
         mav.addObject("errors", errors);

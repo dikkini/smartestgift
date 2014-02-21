@@ -6,10 +6,8 @@ import com.smartestgift.dao.RoleDAO;
 import com.smartestgift.dao.SmartUserDetailsDAO;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserDetails;
-import com.smartestgift.enums.AuthProviderEnum;
 import com.smartestgift.security.UserAuthProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,7 +37,7 @@ public class SmartUserServiceImpl implements SmartUserService {
         boolean emailOccupied = false;
         boolean usernameOccupied = false;
 
-        SmartUserDetails existFacebookUser = smartUserDetailsDAO.findFacebookUserBySocialId(facebookUser.getId());
+        SmartUserDetails existFacebookUser = smartUserDetailsDAO.findUserBySocialIdAndAuthProvider(facebookUser.getId(), authProviderDAO.findFacebookProvider());
 
         // create new user
         if (existFacebookUser == null) {
@@ -61,12 +59,12 @@ public class SmartUserServiceImpl implements SmartUserService {
             }
 
             if (emailOccupied || usernameOccupied) {
-                request.getParameterMap().put("smartUserDetails", existFacebookUser);
-                return "redirect:/signup/social?errors=" + (emailOccupied ? "" : "email,") + (usernameOccupied ? "" : "username");
+                request.getSession().setAttribute("smartUserDetails", existFacebookUser);
+                return "redirect:signup/social?errors=" + (emailOccupied ? "" : "email") + (usernameOccupied ? "" : ",username");
             }
         }
 
         userAuthProvider.authenticateUser(existFacebookUser, request);
-        return "redirect:/profile";
+        return "redirect:profile";
     }
 }

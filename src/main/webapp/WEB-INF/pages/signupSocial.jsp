@@ -7,22 +7,19 @@
 <fmt:requestEncoding value="utf-8" />
 
 <jsp:useBean id="smartUserDetails" class="com.smartestgift.dao.model.SmartUserDetails" scope="request"/>
-<jsp:useBean id="errors" class="java.lang.String" scope="request"/>
+<jsp:useBean id="errors" type="java.lang.String[]" scope="request"/>
 
 <jsp:include page="template/top.jsp"/>
-
-<div class="alert alert-warning alert-dismissable">
-    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-    <c:if test="${fn:contains(errors, 'email')}">
-        <strong><spring:message code="label.error"/></strong> <spring:message code="label.signupSocialEmailError"/>
-    </c:if>
-    <c:if test="${fn:contains(errors, 'username')}">
-        <strong><spring:message code="label.error"/></strong> <spring:message code="label.signupSocialUsernameError"/>
-    </c:if>
-</div>
-
-
 <div class="container">
+    <div class="alert alert-warning alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <c:if test="${fn:contains(errors, 'email')}">
+            <strong><spring:message code="label.error"/></strong> <spring:message code="label.signupSocialEmailError"/>
+        </c:if>
+        <c:if test="${fn:contains(errors, 'username')}">
+            <strong><spring:message code="label.error"/></strong> <spring:message code="label.signupSocialUsernameError"/>
+        </c:if>
+    </div>
     <div class="well well-lg">
         <div>
             <form class="form-horizontal" action="/signup/socialRegister" method="post">
