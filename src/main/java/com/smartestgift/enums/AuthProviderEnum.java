@@ -5,7 +5,7 @@ package com.smartestgift.enums;
  * Email: dikkini@gmail.com
  */
 public enum AuthProviderEnum {
-    APPLICATION(1, "appliaction"),
+    APPLICATION(1, "application"),
     FACEBOOK(2, "facebook");
 
     private int id;
