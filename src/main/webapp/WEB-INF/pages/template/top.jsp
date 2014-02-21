@@ -71,7 +71,7 @@
                                 </p>
                             </li>
                             <li>
-                                <a href="<c:url value="/settings"/>"><spring:message code="label.settings"/></a>
+                                <a href="<c:url value="/profile/settings"/>"><spring:message code="label.settings"/></a>
                             </li>
                             <li>
                                 <a href="<c:url value="/logout"/>"><spring:message code="label.logout"/></a>

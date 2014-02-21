@@ -37,7 +37,7 @@ public class LoginController {
         return mav;
     }
 
-    @RequestMapping(value = "/facebookLogin")
+    @RequestMapping(value = "/facebookLogin", method = RequestMethod.GET)
     public void getFacebookLogin(HttpServletResponse response) {
         String url = "https://www.facebook.com/dialog/oauth/?"
                 + "client_id=" + ApplicationConstants.FACEBOOK_APP_ID

@@ -161,4 +161,12 @@ public class SmartUserDetails implements Serializable, UserDetails {
     public void setAuthProvider(AuthProvider authProvider) {
         this.authProvider = authProvider;
     }
+
+    public boolean equals(Object o) {
+        return (o instanceof SmartUserDetails) && (((SmartUserDetails) o).getEmail()).equals(this.getEmail());
+    }
+
+    public int hashCode() {
+        return email.hashCode();
+    }
 }

@@ -46,7 +46,9 @@ public class SmartUserDAOImpl implements SmartUserDAO {
 
     @Override
     public void delete(SmartUser dmodel) {
-        throw new UnsupportedOperationException();
+        Session session = sessionFactory.getCurrentSession();
+        session.delete(dmodel);
+        session.flush();
     }
 
     @Override
