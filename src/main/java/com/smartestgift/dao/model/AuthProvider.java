@@ -1,6 +1,7 @@
 package com.smartestgift.dao.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Set;
 
 /**
@@ -9,7 +10,7 @@ import java.util.Set;
  */
 @Entity
 @Table (name = "auth_provider")
-public class AuthProvider {
+public class AuthProvider implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "auth_provider_seq_gen")
     @SequenceGenerator(name = "auth_provider_seq_gen", sequenceName = "auth_provider_id_seq")
