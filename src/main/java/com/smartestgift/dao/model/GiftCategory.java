@@ -22,6 +22,10 @@ public class GiftCategory implements Serializable {
     @Column
     protected String description;
 
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name="fileid")
+    protected File file;
+
     @OneToMany(mappedBy = "category")
     private Set<Gift> gifts;
 
@@ -47,5 +51,21 @@ public class GiftCategory implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
+    }
+
+    public Set<Gift> getGifts() {
+        return gifts;
+    }
+
+    public void setGifts(Set<Gift> gifts) {
+        this.gifts = gifts;
     }
 }
