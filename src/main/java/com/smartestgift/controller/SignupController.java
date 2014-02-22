@@ -66,8 +66,9 @@ public class SignupController {
 
     @RequestMapping(value = "/signup/social", method = RequestMethod.GET)
     public ModelAndView socialSignUpPage(HttpServletRequest request,
+                                         @RequestParam (required = true, value = "id") String socialId,
                                          @RequestParam(required = true, value = "errors") String[] errors) {
-        SmartUserDetails smartUserDetails = (SmartUserDetails) request.getSession().getAttribute("smartUserDetails");
+        SmartUserDetails smartUserDetails = (SmartUserDetails) request.getSession().getAttribute(socialId);
         ModelAndView mav = new ModelAndView("signupSocial");
         mav.addObject("smartUserDetails", smartUserDetails);
         mav.addObject("errors", errors);
@@ -75,14 +76,15 @@ public class SignupController {
     }
 
     @RequestMapping(value = "/signup/socialRegister", method = RequestMethod.POST)
-    public String sociaRegister(HttpServletRequest request,
+    public String socialRegister(HttpServletRequest request,
+                                      @RequestParam (required = true, value = "id") String socialId,
                                       @RequestParam (required = true, value = "username") String username,
                                       @RequestParam (required = true, value = "email") String email,
                                       @RequestParam (required = true, value = "firstName") String firstName,
                                       @RequestParam (required = false, value = "lastName") String lastName) {
 
         // TODO проверка всех входных данных
-        SmartUserDetails smartUserDetails = (SmartUserDetails) request.getParameterMap().get("smartUserDetails");
+        SmartUserDetails smartUserDetails = (SmartUserDetails) request.getSession().getAttribute(socialId);
         SmartUser smartUser = new SmartUser(null, username, firstName, lastName, null);
         smartUserDetails = new SmartUserDetails(smartUser, null, email, null, new Date(),
                 smartUserDetails.getRole(), smartUserDetails.getAuthProvider());

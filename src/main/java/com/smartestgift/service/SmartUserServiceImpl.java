@@ -59,8 +59,8 @@ public class SmartUserServiceImpl implements SmartUserService {
             }
 
             if (emailOccupied || usernameOccupied) {
-                request.getSession().setAttribute("smartUserDetails", existFacebookUser);
-                return "redirect:signup/social?errors=" + (emailOccupied ? "" : "email") + (usernameOccupied ? "" : ",username");
+                request.getSession().setAttribute(facebookUser.getId(), existFacebookUser);
+                return "redirect:signup/social?id=" + facebookUser.getId() +"&errors=" + (emailOccupied ? "" : "email") + (usernameOccupied ? "" : ",username");
             }
         }
 
