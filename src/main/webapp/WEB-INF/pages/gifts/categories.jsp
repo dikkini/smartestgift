@@ -37,7 +37,6 @@
             </div>
         </div>
     </div>
-    ${giftCategory}
     <c:if test="${giftCategory != null}">
         <div class="row top-buffer">
             <div class="col-xs-12">
@@ -48,11 +47,14 @@
                             <div class="col-xs-12">
                                 <c:forEach items="${giftCategory.gifts}" var="gift">
                                         <span class="gift">
-                                            ${gift.name}
-                                            ${gift.description}
-                                            ${gift.category}
-                                            ${gift.cost}
-                                            ${gift.uuid}
+                                            <p>${gift.name}</p>
+                                            <c:forEach items="${gift.files}" var="giftFiles">
+                                                <img height="100" src="/file/get/${giftFiles.id}">
+                                            </c:forEach>
+                                            <p>${gift.description}</p>
+                                            <p>${gift.category.name}</p>
+                                            <p>${gift.cost}</p>
+                                            <p>${gift.uuid}</p>
                                         </span>
                                 </c:forEach>
                             </div>
