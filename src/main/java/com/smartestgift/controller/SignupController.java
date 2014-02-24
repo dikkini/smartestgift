@@ -6,12 +6,16 @@ import com.smartestgift.dao.SmartUserDetailsDAO;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserDetails;
 import com.smartestgift.security.UserAuthProvider;
+import com.smartestgift.service.SmartUserService;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
@@ -34,6 +38,9 @@ public class SignupController {
 
     @Autowired
     UserAuthProvider authProvider;
+
+    @Autowired
+    SmartUserService smartUserService;
 
 
     @RequestMapping(value = "/signup", method = RequestMethod.GET)
@@ -93,5 +100,18 @@ public class SignupController {
         authProvider.authenticateUser(smartUserDetails, request);
 
         return "redirect:/profile";
+    }
+
+    @RequestMapping(value = "/login/check", method = RequestMethod.POST)
+    public @ResponseBody
+    String checkLogin(@RequestParam(value = "login", required = true) String login) {
+        boolean free = smartUserService.checkOccupiedUserLogin(login);
+        JSONObject result = new JSONObject();
+        try {
+            result.put("free", free);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return result.toString();
     }
 }

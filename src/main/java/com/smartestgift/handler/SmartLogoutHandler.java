@@ -32,7 +32,7 @@ public class SmartLogoutHandler implements LogoutHandler {
         try {
             // TODO очистка cookies и прочие непотребства
             authentication.setAuthenticated(false);
-            response.sendRedirect(request.getContextPath() + "/");
+            response.sendRedirect(request.getContextPath() + "/login");
         } catch (IOException e) {
             e.printStackTrace();
         }

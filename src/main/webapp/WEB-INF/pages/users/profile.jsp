@@ -27,7 +27,7 @@
                 <div class="panel-heading"><spring:message code="label.gift"/></div>
                 <div class="panel-body">
                     <ul class="nav nav-pills nav-stacked">
-                        <li><a href="/gifts/categories/0"><spring:message code="label.find_gift"/></a></li>
+                        <li><a href="/gifts/categories"><spring:message code="label.find_gift"/></a></li>
                     </ul>
                 </div>
             </div>
@@ -59,7 +59,7 @@
                     <li class="list-group-item">
                         <blockquote>
                             <p>
-                                <a href="gift?id=<c:out value="${gift.uuid}"/>"><c:out value="${gift.name}"/></a>
+                                <a href="/gifts/gift/<c:out value="${gift.uuid}"/>"><c:out value="${gift.name}"/></a>
                                 - <c:out value="${gift.cost}"/>
                             </p>
                             <c:out value="${gift.description}"/>

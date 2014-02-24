@@ -59,6 +59,22 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-
+        $('#j_username').on(
+                'keyup focusout', function (e) {
+                    $.ajax({
+                        type: "post",
+                        url: "/login/check",
+                        cache: false,
+                        data: "login=" + $('#j_username').val(),
+                        success: function (response) {
+                            alert(response.status)
+                        },
+                        error: function (response) {
+                            response = JSON.parse(response);
+                            alert(response.status);
+                        }
+                    });
+                }
+        );
     });
 </script>
