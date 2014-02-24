@@ -48,13 +48,12 @@
                                 <c:forEach items="${giftCategory.gifts}" var="gift">
                                         <span class="gift">
                                             <p>${gift.name}</p>
-                                            <c:forEach items="${gift.files}" var="giftFiles">
+                                            <c:forEach items="${gift.files}" var="giftFiles" end="0">
                                                 <img height="100" src="/file/get/${giftFiles.id}">
                                             </c:forEach>
-                                            <p>${gift.description}</p>
-                                            <p>${gift.category.name}</p>
+                                            <p class="ellipses">${gift.description}</p>
                                             <p>${gift.cost}</p>
-                                            <p>${gift.uuid}</p>
+                                            <button class="btn btn-default"><spring:message code="label.wanttogift"/></button>
                                         </span>
                                 </c:forEach>
                             </div>
