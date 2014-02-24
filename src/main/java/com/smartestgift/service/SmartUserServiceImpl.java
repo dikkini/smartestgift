@@ -3,10 +3,12 @@ package com.smartestgift.service;
 import com.restfb.types.User;
 import com.smartestgift.dao.AuthProviderDAO;
 import com.smartestgift.dao.RoleDAO;
+import com.smartestgift.dao.SmartUserDAO;
 import com.smartestgift.dao.SmartUserDetailsDAO;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserDetails;
 import com.smartestgift.security.UserAuthProvider;
+import com.smartestgift.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -66,5 +68,12 @@ public class SmartUserServiceImpl implements SmartUserService {
 
         userAuthProvider.authenticateUser(existFacebookUser, request);
         return "redirect:profile";
+    }
+
+    @Override
+    public boolean checkOccupiedUserLogin(String login) {
+        SmartUserDetails userDetailsByUsername = smartUserDetailsDAO.findSmartUserDetailsByUsername(login);
+        SmartUserDetails smartUserDetailsByEmail = smartUserDetailsDAO.findSmartUserDetailsByEmail(login);
+        return userDetailsByUsername == null && smartUserDetailsByEmail == null;
     }
 }

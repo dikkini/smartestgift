@@ -12,4 +12,11 @@ public interface SmartUserService {
      *
      */
     public String authFacebookUser(User fbuser, HttpServletRequest request);
+
+    /**
+     *
+     * @param login
+     * @return
+     */
+    public boolean checkOccupiedUserLogin(String login);
 }
