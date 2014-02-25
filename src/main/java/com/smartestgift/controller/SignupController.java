@@ -25,6 +25,7 @@ import java.util.Date;
  * Email: dikkini@gmail.com
  */
 @Controller
+@RequestMapping("/signup")
 public class SignupController {
 
     @Autowired
@@ -43,12 +44,12 @@ public class SignupController {
     SmartUserService smartUserService;
 
 
-    @RequestMapping(value = "/signup", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public ModelAndView signUpPage() {
         return new ModelAndView("signup");
     }
 
-    @RequestMapping(value = "/signup/register", method = RequestMethod.POST)
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
     public String signUpUser(HttpServletRequest request,
             @RequestParam (required = true, value = "username") String username,
             @RequestParam (required = true, value = "email") String email,
@@ -71,7 +72,7 @@ public class SignupController {
         return "redirect:/profile";
     }
 
-    @RequestMapping(value = "/signup/social", method = RequestMethod.GET)
+    @RequestMapping(value = "/social", method = RequestMethod.GET)
     public ModelAndView socialSignUpPage(HttpServletRequest request,
                                          @RequestParam (required = true, value = "id") String socialId,
                                          @RequestParam(required = true, value = "errors") String[] errors) {
@@ -82,7 +83,7 @@ public class SignupController {
         return mav;
     }
 
-    @RequestMapping(value = "/signup/socialRegister", method = RequestMethod.POST)
+    @RequestMapping(value = "/social/register", method = RequestMethod.POST)
     public String socialRegister(HttpServletRequest request,
                                       @RequestParam (required = true, value = "id") String socialId,
                                       @RequestParam (required = true, value = "username") String username,
@@ -102,7 +103,7 @@ public class SignupController {
         return "redirect:/profile";
     }
 
-    @RequestMapping(value = "/login/check", method = RequestMethod.POST)
+    @RequestMapping(value = "/checkLogin", method = RequestMethod.POST)
     public @ResponseBody
     String checkLogin(@RequestParam(value = "login", required = true) String login) {
         boolean free = smartUserService.checkOccupiedUserLogin(login);

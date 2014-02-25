@@ -14,12 +14,8 @@
     <security:http pattern="/resources/**" security="none"/>
     <security:http auto-config="false" use-expressions="true">
         <security:intercept-url pattern="/" access="permitAll" requires-channel="http"/>
-        <security:intercept-url pattern="/login" access="isAnonymous()" requires-channel="http"/>
-        <security:intercept-url pattern="/facebookLogin" access="isAnonymous()" requires-channel="http"/>
-        <security:intercept-url pattern="/facebookAuthentication" access="isAnonymous()" requires-channel="http"/>
-        <security:intercept-url pattern="/signup" access="isAnonymous()" requires-channel="http"/>
-        <security:intercept-url pattern="/signup/social" access="isAnonymous()" requires-channel="http"/>
-        <security:intercept-url pattern="/register" access="isAnonymous()" requires-channel="http"/>
+        <security:intercept-url pattern="/login/**" access="isAnonymous()" requires-channel="http"/>
+        <security:intercept-url pattern="/signup/**" access="isAnonymous()" requires-channel="http"/>
 
         <security:intercept-url pattern="/**" access="isAuthenticated()" requires-channel="http"/>
         <security:intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" requires-channel="http"/>

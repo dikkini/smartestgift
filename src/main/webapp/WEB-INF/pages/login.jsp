@@ -33,7 +33,7 @@
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-xs-4">
-                        <a href="/facebookLogin">
+                        <a href="/login/facebookLogin">
                             <img height="25px" src="/resources/ext/main/images/fb_login.png" alt="<spring:message code="label.facebooklogin"/>" />
                         </a>
                     </div>

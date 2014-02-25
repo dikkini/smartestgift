@@ -28,20 +28,21 @@ import java.io.IOException;
  * Email: dikkini@gmail.com
  */
 @Controller
+@RequestMapping("/login")
 public class LoginController {
 
     @Autowired
     SmartUserService smartUserService;
 
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public ModelAndView signin(@RequestParam(required = false, value = "error") boolean error) {
+    @RequestMapping(method = RequestMethod.GET)
+    public ModelAndView login(@RequestParam(required = false, value = "error") boolean error) {
         ModelAndView mav = new ModelAndView("login");
         mav.addObject("error", error);
         return mav;
     }
 
     @RequestMapping(value = "/facebookLogin", method = RequestMethod.GET)
-    public void getFacebookLogin(HttpServletResponse response) {
+    public void facebookLogin(HttpServletResponse response) {
         String url = "https://www.facebook.com/dialog/oauth/?"
                 + "client_id=" + ApplicationConstants.FACEBOOK_APP_ID
                 + "&redirect_uri=" + ApplicationConstants.FACEBOOK_REDIRECT_URL
@@ -118,28 +119,28 @@ public class LoginController {
                     return smartUserService.authFacebookUser(user, request);
                 } else {
                     //failed
-                    return "redirect:login";
+                    return "redirect:/login";
                 }
 
             } catch (HttpException e) {
                 System.err.println("Fatal protocol violation: " + e.getMessage());
                 e.printStackTrace();
-                return "redirect:login";
+                return "redirect:/login";
             } catch (IOException e) {
                 System.err.println("Fatal transport error: " + e.getMessage());
                 e.printStackTrace();
-                return "redirect:login";
+                return "redirect:/login";
             } catch (Exception e) {
                 e.printStackTrace();
                 System.err.println("Common Exception: " + e.getMessage());
-                return "redirect:login";
+                return "redirect:/login";
             } finally {
                 // Release the connection.
                 method.releaseConnection();
             }
         } else {
             //failed
-            return "redirect:login";
+            return "redirect:/login";
         }
     }
 }

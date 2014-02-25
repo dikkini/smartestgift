@@ -26,7 +26,7 @@
     </div>
     <div class="well well-lg">
         <div>
-            <form class="form-horizontal" action="/signup/socialRegister" method="post">
+            <form class="form-horizontal" action="/signup/social/register" method="post">
                 <div class="form-group <c:if test="${errorUsername}"> has-error </c:if>">
                     <label for="username" class="col-sm-2 control-label"><spring:message code="label.username"/><span class="required">*</span>
                     </label>

@@ -62,12 +62,12 @@ public class SmartUserServiceImpl implements SmartUserService {
 
             if (emailOccupied || usernameOccupied) {
                 request.getSession().setAttribute(facebookUser.getId(), existFacebookUser);
-                return "redirect:signup/social?id=" + facebookUser.getId() +"&errors=" + (emailOccupied ? "" : "email") + (usernameOccupied ? "" : ",username");
+                return "redirect:/signup/social?id=" + facebookUser.getId() +"&errors=" + (emailOccupied ? "" : "email") + (usernameOccupied ? "" : ",username");
             }
         }
 
         userAuthProvider.authenticateUser(existFacebookUser, request);
-        return "redirect:profile";
+        return "redirect:/profile";
     }
 
     @Override
