@@ -8,15 +8,23 @@
 <jsp:include page="template/top.jsp"/>
 
 <div class="container">
+    <div class="alert alert-danger alert-dismissable" hidden>
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <p class="erros">
+
+        </p>
+    </div>
     <div class="well well-lg">
         <div>
-            <form class="form-horizontal" action="/signup/register" method="post">
+            <form class="form-horizontal" method="post">
                 <div class="form-group">
                     <label for="username" class="col-sm-2 control-label"><spring:message code="label.username"/><span class="required">*</span>
                     </label>
                     <div class="col-xs-4">
                         <input type="text" name="username" class="form-control" id="username" placeholder="<spring:message code="label.username"/>">
                     </div>
+                    <span id="loading-username" class="loading"></span>
+                    <img id="username-status" height="25" src="" hidden>
                 </div>
                 <div class="form-group">
                     <label for="firstname" class="col-sm-2 control-label"><spring:message code="label.firstname"/><span class="required">*</span>
@@ -47,7 +55,8 @@
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-default"><spring:message code="label.signup"/></button>
+                        <button id="sign-up-btn" type="submit" class="btn btn-default"><spring:message code="label.signup"/></button>
+                        <span id="loading-sign-up" class="loading"></span>
                     </div>
                 </div>
             </form>
@@ -59,22 +68,52 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        $('#j_username').on(
-                'keyup focusout', function (e) {
-                    $.ajax({
-                        type: "post",
-                        url: "/login/check",
-                        cache: false,
-                        data: "login=" + $('#j_username').val(),
-                        success: function (response) {
-                            alert(response.status)
-                        },
-                        error: function (response) {
-                            response = JSON.parse(response);
-                            alert(response.status);
-                        }
-                    });
+        $(".loading").loading({width:'25', text: 'Waiting...'});
+
+        $("#username").on('keyup focusout', function (e) {
+            $("#loading-username").loading('start');
+            $.ajax({
+                type: "post",
+                url: "/signup/checkLogin",
+                cache: false,
+                data: "login=" + $('#username').val(),
+                success: function (response) {
+                    response = JSON.parse(response);
+                    var imageSelector = $("#username-status");
+                    if (response.loginFree) {
+                        imageSelector.attr("src", "/resources/ext/main/images/ok.png");
+                    } else {
+                        imageSelector.attr("src", "/resources/ext/main/images/not_ok.png");
+                    }
+                    $("#loading-username").loading('stop');
+                    imageSelector.show();
+                },
+                error: function (response) {
+                    response = JSON.parse(response);
+                    alert(response.error);
                 }
-        );
+            });
+        });
+
+        $("#sign-up-btn").click(function() {
+            $("#loading-sign-up").loading('start');
+            $.ajax({
+                type: "post",
+                url: "/signup/register",
+                cache: false,
+                success: function (response) {
+                    response = JSON.parse(response);
+                    if (response.status) {
+                        window.location = "/profile";
+                    } else {
+
+                    }
+                },
+                error: function (response) {
+                    response = JSON.parse(response);
+                    alert(response.error);
+                }
+            });
+        });
     });
 </script>

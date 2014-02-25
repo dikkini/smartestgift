@@ -50,13 +50,14 @@ public class SignupController {
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public String signUpUser(HttpServletRequest request,
+    public @ResponseBody JSONObject signUpUser(HttpServletRequest request,
             @RequestParam (required = true, value = "username") String username,
             @RequestParam (required = true, value = "email") String email,
             @RequestParam (required = true, value = "password") String password,
             @RequestParam (required = true, value = "firstName") String firstName,
             @RequestParam (required = false, value = "lastName") String lastName) {
 
+        JSONObject result = new JSONObject();
         // TODO проверка всех входных данных
 
         StandardPasswordEncoder encoder = new StandardPasswordEncoder();
@@ -69,7 +70,13 @@ public class SignupController {
 
         authProvider.authenticateUser(smartUserDetails, request);
 
-        return "redirect:/profile";
+        try {
+            result.put("status", true);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 
     @RequestMapping(value = "/social", method = RequestMethod.GET)
@@ -106,10 +113,10 @@ public class SignupController {
     @RequestMapping(value = "/checkLogin", method = RequestMethod.POST)
     public @ResponseBody
     String checkLogin(@RequestParam(value = "login", required = true) String login) {
-        boolean free = smartUserService.checkOccupiedUserLogin(login);
+        boolean loginFree = smartUserService.checkOccupiedUserLogin(login);
         JSONObject result = new JSONObject();
         try {
-            result.put("free", free);
+            result.put("loginFree", loginFree);
         } catch (JSONException e) {
             e.printStackTrace();
         }
