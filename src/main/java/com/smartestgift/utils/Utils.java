@@ -1,5 +1,6 @@
 package com.smartestgift.utils;
 
+import com.smartestgift.security.PasswordMd5Encoder;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
@@ -20,5 +21,10 @@ public class Utils {
         Pattern p = Pattern.compile("^/.+@.+\\..+/i$");
         Matcher m = p.matcher(var);
         return m.matches();
+    }
+
+    public static String getHashFacebookAuth(String word) {
+        PasswordMd5Encoder encoder = new PasswordMd5Encoder();
+        return encoder.encode(word);
     }
 }

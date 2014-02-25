@@ -5,9 +5,11 @@ import com.restfb.FacebookClient;
 import com.restfb.types.User;
 import com.smartestgift.service.SmartUserService;
 import com.smartestgift.utils.ApplicationConstants;
+import com.smartestgift.utils.Utils;
 import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.methods.*;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Random;
 
 /**
  * Created by dikkini on 27.01.14.
@@ -42,19 +45,29 @@ public class LoginController {
     }
 
     @RequestMapping(value = "/facebookLogin", method = RequestMethod.GET)
-    public void facebookLogin(HttpServletResponse response) {
-        String url = "https://www.facebook.com/dialog/oauth/?"
-                + "client_id=" + ApplicationConstants.FACEBOOK_APP_ID
-                + "&redirect_uri=" + ApplicationConstants.FACEBOOK_REDIRECT_URL
-                + "&scope=email,publish_stream,user_about_me,friends_about_me"
-                + "&state=" + ApplicationConstants.FACEBOOK_EXCHANGE_KEY
-                + "&display=page"
-                + "&response_type=code";
-        try {
-            response.sendRedirect(url);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+    public void facebookLogin(HttpServletResponse response, HttpServletRequest request,
+                              @RequestParam (required = false, value = "auth") String auth) {
+        if (auth == null) {
+            String hashFacebookAuth = Utils.getHashFacebookAuth(RandomStringUtils.random(new Random().nextInt()));
+            request.getSession().setAttribute(ApplicationConstants.FACEBOOK_KEY_WORD, hashFacebookAuth);
+            String url = "https://www.facebook.com/dialog/oauth/?"
+                    + "client_id=" + ApplicationConstants.FACEBOOK_APP_ID
+                    + "&redirect_uri=" + ApplicationConstants.FACEBOOK_REDIRECT_URL + hashFacebookAuth
+                    + "&scope=email,publish_stream,user_about_me,friends_about_me"
+                    + "&state=" + ApplicationConstants.FACEBOOK_EXCHANGE_KEY
+                    + "&display=page"
+                    + "&response_type=code";
+            try {
+                response.sendRedirect(url);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } else {
+            String hashFacebookAuth = (String) request.getSession().getAttribute(ApplicationConstants.FACEBOOK_KEY_WORD);
+            if (auth.equals(hashFacebookAuth)) {
+
+            }
         }
     }
 
