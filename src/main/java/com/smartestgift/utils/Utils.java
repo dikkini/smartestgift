@@ -1,7 +1,8 @@
 package com.smartestgift.utils;
 
-import com.smartestgift.security.PasswordMd5Encoder;
-import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +25,7 @@ public class Utils {
     }
 
     public static String getHashFacebookAuth(String word) {
-        PasswordMd5Encoder encoder = new PasswordMd5Encoder();
+        PasswordEncoder encoder = new StandardPasswordEncoder();
         return encoder.encode(word);
     }
 }

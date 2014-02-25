@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -45,34 +46,33 @@ public class LoginController {
     }
 
     @RequestMapping(value = "/facebookLogin", method = RequestMethod.GET)
-    public void facebookLogin(HttpServletResponse response, HttpServletRequest request,
-                              @RequestParam (required = false, value = "auth") String auth) {
-        if (auth == null) {
-            String hashFacebookAuth = Utils.getHashFacebookAuth(RandomStringUtils.random(new Random().nextInt()));
-            request.getSession().setAttribute(ApplicationConstants.FACEBOOK_KEY_WORD, hashFacebookAuth);
-            String url = "https://www.facebook.com/dialog/oauth/?"
-                    + "client_id=" + ApplicationConstants.FACEBOOK_APP_ID
-                    + "&redirect_uri=" + ApplicationConstants.FACEBOOK_REDIRECT_URL + hashFacebookAuth
-                    + "&scope=email,publish_stream,user_about_me,friends_about_me"
-                    + "&state=" + ApplicationConstants.FACEBOOK_EXCHANGE_KEY
-                    + "&display=page"
-                    + "&response_type=code";
-            try {
-                response.sendRedirect(url);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        } else {
-            String hashFacebookAuth = (String) request.getSession().getAttribute(ApplicationConstants.FACEBOOK_KEY_WORD);
-            if (auth.equals(hashFacebookAuth)) {
+    public void facebookLogin(HttpServletResponse response, HttpServletRequest request) {
+        String hashFacebookAuth = Utils.getHashFacebookAuth(RandomStringUtils.randomAlphabetic(10));
+        request.getSession().setAttribute(ApplicationConstants.FACEBOOK_KEY_WORD, hashFacebookAuth);
 
-            }
+        String url = "https://www.facebook.com/dialog/oauth/?"
+                + "client_id=" + ApplicationConstants.FACEBOOK_APP_ID
+                + "&redirect_uri=" + ApplicationConstants.FACEBOOK_REDIRECT_URL + hashFacebookAuth
+                + "&scope=email,publish_stream,user_about_me,friends_about_me"
+                + "&state=" + ApplicationConstants.FACEBOOK_EXCHANGE_KEY
+                + "&display=page"
+                + "&response_type=code";
+        try {
+            response.sendRedirect(url);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 
     @RequestMapping(value = "/facebookAuthentication", method = RequestMethod.GET)
-    public String facebookAuthentication(HttpServletRequest request, HttpServletResponse response) {
+    public String facebookAuthentication(HttpServletRequest request,
+                                         @RequestParam (required = true, value = "authCode") String authCode) {
+        // internal test
+        String hashFacebookAuth = (String) request.getSession().getAttribute(ApplicationConstants.FACEBOOK_KEY_WORD);
+        if (!hashFacebookAuth.equals(authCode)) {
+            return "redirect:/";
+        }
         //Get the parameter "code" from the request
         String code = request.getParameter("code");
         //Check if its null or blank or empty
@@ -84,7 +84,7 @@ public class LoginController {
             // above, code-the code we just got
             String url = "https://graph.facebook.com/oauth/access_token?"
                     + "client_id=" + ApplicationConstants.FACEBOOK_APP_ID
-                    + "&redirect_uri=" + ApplicationConstants.FACEBOOK_REDIRECT_URL
+                    + "&redirect_uri=" + ApplicationConstants.FACEBOOK_REDIRECT_URL + hashFacebookAuth
                     + "&client_secret=" + ApplicationConstants.FACEBOOK_SECRET_KEY
                     + "&code=" + code;
             // Create an instance of HttpClient.
@@ -103,23 +103,22 @@ public class LoginController {
                 }
                 // Read the response body.
                 byte[] responseBody = method.getResponseBody();
-                // Deal with the response.Use caution: ensure correct character encoding and is
-                // not binary data
+                // Deal with the response.
+                // Use caution: ensure correct character encoding and is not binary data
                 String responseBodyString = new String(responseBody);
                 //will be like below,                                 //access_token=AAADD1QFhDlwBADrKkn87ZABAz6ZCBQZ//DZD&expires=5178320
                 //now get the access_token from the response
                 if (responseBodyString.contains("access_token")) {
                     //success
                     String[] mainResponseArray = responseBodyString.split("&");
-                    //like //{"access_token= AAADD1QFhDlwBADrKkn87ZABAz6ZCBQZ//DZD ","expires=5178320"}
+                    //like
+                    // {"access_token= AAADD1QFhDlwBADrKkn87ZABAz6ZCBQZ//DZD ","expires=5178320"}
                     String accesstoken = "";
                     for (String string : mainResponseArray) {
                         if (string.contains("access_token")) {
                             accesstoken = string.replace("access_token=", "").trim();
                         }
                     }
-
-                    //now we have the access token :)
                     //Great. Now we have the access token, I have used restfb to get the user details here
                     FacebookClient facebookClient = new DefaultFacebookClient(accesstoken);
 

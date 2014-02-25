@@ -6,7 +6,7 @@ package com.smartestgift.utils;
  */
 public class ApplicationConstants {
     public static final String FACEBOOK_APP_ID = "563611490386461";
-    public static final String FACEBOOK_REDIRECT_URL = "http://localhost:8080/login/facebookLogin?auth=";
+    public static final String FACEBOOK_REDIRECT_URL = "http://localhost:8080/login/facebookAuthentication?authCode=";
     public static final String FACEBOOK_SECRET_KEY = "334901bd51d0aab8fc45a4785413a576";
     public static final String FACEBOOK_EXCHANGE_KEY = "";
     public static final String FACEBOOK_KEY_WORD = "facebook-auth-key";
