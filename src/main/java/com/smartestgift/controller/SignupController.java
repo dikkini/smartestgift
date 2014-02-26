@@ -51,7 +51,7 @@ public class SignupController {
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public AjaxResponse signUpUser(HttpServletRequest request,
+    public @ResponseBody AjaxResponse signUpUser(HttpServletRequest request,
             @RequestParam (required = true, value = "username") String username,
             @RequestParam (required = true, value = "email") String email,
             @RequestParam (required = true, value = "password") String password,

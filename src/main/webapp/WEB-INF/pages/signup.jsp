@@ -16,7 +16,7 @@
     </div>
     <div class="well well-lg">
         <div>
-            <form class="form-horizontal" method="post">
+            <form class="form-horizontal">
                 <div class="form-group">
                     <label for="username" class="col-sm-2 control-label"><spring:message code="label.username"/><span class="required">*</span>
                     </label>
@@ -55,7 +55,7 @@
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <button id="sign-up-btn" type="submit" class="btn btn-default"><spring:message code="label.signup"/></button>
+                        <button id="sign-up-btn" class="btn btn-default"><spring:message code="label.signup"/></button>
                         <span id="loading-sign-up" class="loading"></span>
                     </div>
                 </div>
@@ -97,12 +97,18 @@
 
         $("#sign-up-btn").click(function() {
             $("#loading-sign-up").loading('start');
+
+            var data = {};
+            $('input').each(function() {
+                data[$(this).attr('name')] = $(this).val();
+            });
+
             $.ajax({
                 type: "post",
                 url: "/signup/register",
                 cache: false,
+                data: data,
                 success: function (response) {
-                    response = JSON.parse(response);
                     if (response.status) {
                         window.location = "/profile";
                     } else {
@@ -110,7 +116,6 @@
                     }
                 },
                 error: function (response) {
-                    response = JSON.parse(response);
                     alert(response.error);
                 }
             });
