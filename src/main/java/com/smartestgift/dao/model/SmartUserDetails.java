@@ -1,5 +1,8 @@
 package com.smartestgift.dao.model;
 
+import com.restfb.types.User;
+import com.smartestgift.enums.AuthProviderEnum;
+import com.smartestgift.enums.RolesEnum;
 import org.hibernate.annotations.GenericGenerator;
 
 import org.hibernate.annotations.Parameter;
@@ -57,11 +60,11 @@ public class SmartUserDetails implements Serializable, UserDetails {
     protected boolean accountNonLocked = true;
 
     @ManyToOne
-    @JoinColumn(name="roleId")
+    @JoinColumn(name = "roleId")
     private Role role;
 
     @ManyToOne
-    @JoinColumn(name="authProviderId")
+    @JoinColumn(name = "authProviderId")
     private AuthProvider authProvider;
 
     @Column
@@ -69,7 +72,21 @@ public class SmartUserDetails implements Serializable, UserDetails {
 
     public SmartUserDetails() {}
 
-    public SmartUserDetails(SmartUser smartUser, String password, String email, String socialId, Date registrationDate,  Role role, AuthProvider authProvider) {
+    /**
+     * Creating SmartUser from Facebook user
+     * @param user facebook user
+     */
+    public SmartUserDetails(User user) {
+        this.smartUser = new SmartUser(user.getBirthdayAsDate(), user.getUsername(), user.getFirstName(),
+                user.getLastName(), user.getMiddleName(), user.getHometownName());
+        this.socialId = user.getId();
+        this.registrationDate = new Date();
+        this.email = user.getEmail();
+        this.role = new Role(RolesEnum.USER_ROLE.getId(), RolesEnum.USER_ROLE.getRole());
+        this.authProvider = new AuthProvider(AuthProviderEnum.FACEBOOK.getId(), AuthProviderEnum.FACEBOOK.getName());
+    }
+
+    public SmartUserDetails(SmartUser smartUser, String password, String email, String socialId, Date registrationDate, Role role, AuthProvider authProvider) {
         this.smartUser = smartUser;
         this.password = password;
         this.email = email;
@@ -88,7 +105,9 @@ public class SmartUserDetails implements Serializable, UserDetails {
         return smartUser;
     }
 
-    public String getUsername() { return username; }
+    public String getUsername() {
+        return username;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

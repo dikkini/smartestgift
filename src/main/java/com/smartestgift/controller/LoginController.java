@@ -3,6 +3,9 @@ package com.smartestgift.controller;
 import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
 import com.restfb.types.User;
+import com.smartestgift.controller.model.AjaxResponse;
+import com.smartestgift.dao.model.SmartUserDetails;
+import com.smartestgift.enums.AuthProviderEnum;
 import com.smartestgift.service.SmartUserService;
 import com.smartestgift.utils.ApplicationConstants;
 import com.smartestgift.utils.Utils;
@@ -11,21 +14,18 @@ import org.apache.commons.httpclient.methods.*;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Random;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by dikkini on 27.01.14.
@@ -66,12 +66,18 @@ public class LoginController {
     }
 
     @RequestMapping(value = "/facebookAuthentication", method = RequestMethod.GET)
-    public String facebookAuthentication(HttpServletRequest request,
+    public AjaxResponse facebookAuthentication(HttpServletRequest request,
                                          @RequestParam (required = true, value = "authCode") String authCode) {
-        // internal test
+        AjaxResponse result = new AjaxResponse();
+        List<String> errors = new ArrayList<>();
+
+        // internal test truly facebook auth
         String hashFacebookAuth = (String) request.getSession().getAttribute(ApplicationConstants.FACEBOOK_KEY_WORD);
         if (!hashFacebookAuth.equals(authCode)) {
-            return "redirect:/";
+            result.setSuccess(false);
+            errors.add("social_err");
+            result.setErrors(errors);
+            return result;
         }
         //Get the parameter "code" from the request
         String code = request.getParameter("code");
@@ -98,15 +104,19 @@ public class LoginController {
                 // Execute the method.
                 int statusCode = client.executeMethod(method);
                 if (statusCode != HttpStatus.SC_OK) {
-                    // TODO обработать исключение
                     System.err.println("Method failed: " + method.getStatusLine());
+                    result.setSuccess(false);
+                    errors.add("internal_error");
+                    result.setErrors(errors);
+                    return result;
                 }
                 // Read the response body.
                 byte[] responseBody = method.getResponseBody();
                 // Deal with the response.
                 // Use caution: ensure correct character encoding and is not binary data
                 String responseBodyString = new String(responseBody);
-                //will be like below,                                 //access_token=AAADD1QFhDlwBADrKkn87ZABAz6ZCBQZ//DZD&expires=5178320
+                //will be like below,
+                // access_token=AAADD1QFhDlwBADrKkn87ZABAz6ZCBQZ//DZD&expires=5178320
                 //now get the access_token from the response
                 if (responseBodyString.contains("access_token")) {
                     //success
@@ -123,36 +133,62 @@ public class LoginController {
                     FacebookClient facebookClient = new DefaultFacebookClient(accesstoken);
 
                     // TODO сделать проверку на валидность юзера
-                    User user = facebookClient.fetchObject("me", User.class);
-                    //In this user object, you will have the details you want from Facebook,  Since we have    the  access token with us, can play around and see what more can be done
-                    //CAME UP TO HERE AND WE KNOW THE USER HAS BEEN AUTHENTICATED BY FACEBOOK, LETS AUTHENTICATE HIM IN OUR APPLICATION
-                    //NOW I WILL CALL MY doAutoLogin METHOD TO AUTHENTICATE THE USER IN MY SPRING SECURITY CONTEXT
+                    User facebookUser = facebookClient.fetchObject("me", User.class);
+                    //In this user object, you will have the details you want from Facebook, Since we have the access token with us, can play around and see what more can be done
 
-                    return smartUserService.authFacebookUser(user, request);
+                    SmartUserDetails existSocialUser = smartUserService.findExistSocialUser(facebookUser.getId(), AuthProviderEnum.FACEBOOK.getId());
+
+                    if (existSocialUser != null) {
+                        smartUserService.authenticateUser(existSocialUser, request);
+                    } else {
+                        errors = smartUserService.checkOccupiedEmailAndUsername(facebookUser.getUsername(), facebookUser.getEmail());
+                        SmartUserDetails smartUserDetails = new SmartUserDetails(facebookUser);
+                        if (errors.isEmpty()) {
+                            smartUserService.createSmartUserDetails(smartUserDetails);
+                            smartUserService.authenticateUser(smartUserDetails, request);
+                            result.setSuccess(true);
+                        } else {
+                            request.getSession().setAttribute(smartUserDetails.getSocialId(), smartUserDetails);
+                            result.setSuccess(false);
+                            result.setErrors(errors);
+                        }
+                    }
                 } else {
-                    //failed
-                    return "redirect:/login";
+                    result.setSuccess(false);
+                    errors.add("social_err");
+                    result.setErrors(errors);
+                    return result;
                 }
 
             } catch (HttpException e) {
                 System.err.println("Fatal protocol violation: " + e.getMessage());
                 e.printStackTrace();
-                return "redirect:/login";
+                result.setSuccess(false);
+                errors.add("internal_error");
+                result.setErrors(errors);
             } catch (IOException e) {
                 System.err.println("Fatal transport error: " + e.getMessage());
                 e.printStackTrace();
-                return "redirect:/login";
+                result.setSuccess(false);
+                errors.add("internal_error");
+                result.setErrors(errors);
             } catch (Exception e) {
                 e.printStackTrace();
                 System.err.println("Common Exception: " + e.getMessage());
-                return "redirect:/login";
-            } finally {
-                // Release the connection.
-                method.releaseConnection();
+                result.setSuccess(false);
+                errors.add("internal_error");
+                result.setErrors(errors);
             }
+
+            // Release the connection.
+            method.releaseConnection();
+
+            return result;
         } else {
-            //failed
-            return "redirect:/login";
+            result.setSuccess(false);
+            errors.add("internal_error");
+            result.setErrors(errors);
+            return result;
         }
     }
 }

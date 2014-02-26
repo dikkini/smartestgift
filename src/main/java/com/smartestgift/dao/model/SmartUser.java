@@ -75,12 +75,13 @@ public class SmartUser implements Serializable {
 
     public SmartUser() {}
 
-    public SmartUser(Date birthDate, String username, String firstName, String lastName, String middleName) {
+    public SmartUser(Date birthDate, String username, String firstName, String lastName, String middleName, String address) {
         this.username = username;
         this.birthDate = birthDate;
         this.firstName = firstName;
         this.lastName = lastName;
         this.middleName = middleName;
+        this.address = address;
     }
 
     public String getUuid() {
