@@ -24,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,18 +67,12 @@ public class LoginController {
     }
 
     @RequestMapping(value = "/facebookAuthentication", method = RequestMethod.GET)
-    public AjaxResponse facebookAuthentication(HttpServletRequest request,
+    public String facebookAuthentication(HttpServletRequest request,
                                          @RequestParam (required = true, value = "authCode") String authCode) {
-        AjaxResponse result = new AjaxResponse();
-        List<String> errors = new ArrayList<>();
-
-        // internal test truly facebook auth
+        // internal test
         String hashFacebookAuth = (String) request.getSession().getAttribute(ApplicationConstants.FACEBOOK_KEY_WORD);
         if (!hashFacebookAuth.equals(authCode)) {
-            result.setSuccess(false);
-            errors.add("social_err");
-            result.setErrors(errors);
-            return result;
+            return "redirect:/login?errors=social_network_error";
         }
         //Get the parameter "code" from the request
         String code = request.getParameter("code");
@@ -105,10 +100,7 @@ public class LoginController {
                 int statusCode = client.executeMethod(method);
                 if (statusCode != HttpStatus.SC_OK) {
                     System.err.println("Method failed: " + method.getStatusLine());
-                    result.setSuccess(false);
-                    errors.add("internal_error");
-                    result.setErrors(errors);
-                    return result;
+                    return "redirect:/login?errors=external_error";
                 }
                 // Read the response body.
                 byte[] responseBody = method.getResponseBody();
@@ -141,54 +133,42 @@ public class LoginController {
                     if (existSocialUser != null) {
                         smartUserService.authenticateUser(existSocialUser, request);
                     } else {
-                        errors = smartUserService.checkOccupiedEmailAndUsername(facebookUser.getUsername(), facebookUser.getEmail());
+                        List<String> errors = smartUserService.checkOccupiedEmailAndUsername(facebookUser.getUsername(), facebookUser.getEmail());
                         SmartUserDetails smartUserDetails = new SmartUserDetails(facebookUser);
                         if (errors.isEmpty()) {
                             smartUserService.createSmartUserDetails(smartUserDetails);
                             smartUserService.authenticateUser(smartUserDetails, request);
-                            result.setSuccess(true);
+                            return "redirect:/profile";
                         } else {
                             request.getSession().setAttribute(smartUserDetails.getSocialId(), smartUserDetails);
-                            result.setSuccess(false);
-                            result.setErrors(errors);
+                            return "redirect:/signup/social?id=" + smartUserDetails.getSocialId() + "&errors="
+                                    + (errors.contains("username") ? "username_error," : "")
+                                    + (errors.contains("email") ? "email_error" : "");
                         }
                     }
                 } else {
-                    result.setSuccess(false);
-                    errors.add("social_err");
-                    result.setErrors(errors);
-                    return result;
+                    return "redirect:/login?errors=internal_error";
                 }
 
             } catch (HttpException e) {
                 System.err.println("Fatal protocol violation: " + e.getMessage());
                 e.printStackTrace();
-                result.setSuccess(false);
-                errors.add("internal_error");
-                result.setErrors(errors);
+                return "redirect:/login?errors=internal_error";
             } catch (IOException e) {
                 System.err.println("Fatal transport error: " + e.getMessage());
                 e.printStackTrace();
-                result.setSuccess(false);
-                errors.add("internal_error");
-                result.setErrors(errors);
+                return "redirect:/login?errors=internal_error";
             } catch (Exception e) {
                 e.printStackTrace();
                 System.err.println("Common Exception: " + e.getMessage());
-                result.setSuccess(false);
-                errors.add("internal_error");
-                result.setErrors(errors);
+                return "redirect:/login?errors=internal_error";
             }
-
             // Release the connection.
             method.releaseConnection();
 
-            return result;
+            return "redirect:/login?errors=internal_error";
         } else {
-            result.setSuccess(false);
-            errors.add("internal_error");
-            result.setErrors(errors);
-            return result;
+            return "redirect:/login?errors=internal_error";
         }
     }
 }
