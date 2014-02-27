@@ -93,3 +93,11 @@
         </div>
     </header>
 </div>
+
+<div class="container">
+    <jsp:include page="../notifications-block.jsp">
+        <jsp:param name="errors" value="${param.errors}"/>
+        <jsp:param name="warnings" value="${param.warnings}"/>
+        <jsp:param name="information" value="${param.information}"/>
+        <jsp:param name="successes" value="${param.successes}"/>
+    </jsp:include>

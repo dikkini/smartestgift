@@ -7,59 +7,54 @@
 
 <jsp:include page="template/top.jsp"/>
 
-<div class="container">
-    <jsp:include page="errors-block.jsp">
-        <jsp:param name="errors" value="${param.errors}"/>
-    </jsp:include>
-    <div class="well well-lg">
-        <div>
-            <form class="form-horizontal">
-                <div class="form-group">
-                    <label for="username" class="col-sm-2 control-label"><spring:message code="label.username"/><span class="required">*</span>
-                    </label>
-                    <div class="col-xs-4">
-                        <input type="text" name="username" class="form-control" id="username" pattern=".{5,255}" placeholder="<spring:message code="label.username"/>">
-                    </div>
-                    <img id="username-status" height="25" src="" hidden>
-                    <span id="loading-username" class="loading"></span>
+<div class="well well-lg">
+    <div>
+        <form class="form-horizontal">
+            <div class="form-group">
+                <label for="username" class="col-sm-2 control-label"><spring:message code="label.username"/><span class="required">*</span>
+                </label>
+                <div class="col-xs-4">
+                    <input type="text" name="username" class="form-control" id="username" pattern=".{5,255}" placeholder="<spring:message code="label.username"/>">
                 </div>
-                <div class="form-group">
-                    <label for="firstname" class="col-sm-2 control-label"><spring:message code="label.firstname"/><span class="required">*</span>
-                    </label>
-                    <div class="col-xs-4">
-                        <input type="text" name="firstName" class="form-control" id="firstname" pattern=".{5,255}" placeholder="<spring:message code="label.firstname"/>">
-                    </div>
+                <img id="username-status" height="25" src="" hidden>
+                <span id="loading-username" class="loading"></span>
+            </div>
+            <div class="form-group">
+                <label for="firstname" class="col-sm-2 control-label"><spring:message code="label.firstname"/><span class="required">*</span>
+                </label>
+                <div class="col-xs-4">
+                    <input type="text" name="firstName" class="form-control" id="firstname" pattern=".{5,255}" placeholder="<spring:message code="label.firstname"/>">
                 </div>
-                <div class="form-group">
-                    <label for="lastname" class="col-sm-2 control-label"><spring:message code="label.lastname"/></label>
-                    <div class="col-xs-4">
-                        <input type="text" name="lastName" class="form-control" id="lastname" pattern=".{5,255}" placeholder="<spring:message code="label.lastname"/>">
-                    </div>
+            </div>
+            <div class="form-group">
+                <label for="lastname" class="col-sm-2 control-label"><spring:message code="label.lastname"/></label>
+                <div class="col-xs-4">
+                    <input type="text" name="lastName" class="form-control" id="lastname" pattern=".{5,255}" placeholder="<spring:message code="label.lastname"/>">
                 </div>
-                <div class="form-group">
-                    <label for="email" class="col-sm-2 control-label"><spring:message code="label.email"/><span class="required">*</span>
-                    </label>
-                    <div class="col-xs-4">
-                        <input type="email" name="email" class="form-control" id="email" pattern=".{5,10}" placeholder="<spring:message code="label.email"/>">
-                    </div>
-                    <img id="email-status" height="25" src="" hidden>
-                    <span id="loading-email" class="loading"></span>
+            </div>
+            <div class="form-group">
+                <label for="email" class="col-sm-2 control-label"><spring:message code="label.email"/><span class="required">*</span>
+                </label>
+                <div class="col-xs-4">
+                    <input type="email" name="email" class="form-control" id="email" pattern=".{5,10}" placeholder="<spring:message code="label.email"/>">
                 </div>
-                <div class="form-group">
-                    <label for="password" class="col-sm-2 control-label"><spring:message code="label.password"/><span class="required">*</span>
-                    </label>
-                    <div class="col-xs-4">
-                        <input type="password" name="password" class="form-control" id="password" min="6" pattern=".{5,255}" placeholder="<spring:message code="label.password"/>">
-                    </div>
+                <img id="email-status" height="25" src="" hidden>
+                <span id="loading-email" class="loading"></span>
+            </div>
+            <div class="form-group">
+                <label for="password" class="col-sm-2 control-label"><spring:message code="label.password"/><span class="required">*</span>
+                </label>
+                <div class="col-xs-4">
+                    <input type="password" name="password" class="form-control" id="password" min="6" pattern=".{5,255}" placeholder="<spring:message code="label.password"/>">
                 </div>
-                <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
-                        <button id="sign-up-btn" class="btn btn-default"><spring:message code="label.signup"/></button>
-                        <span id="loading-sign-up" class="loading"></span>
-                    </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button id="sign-up-btn" class="btn btn-default"><spring:message code="label.signup"/></button>
+                    <span id="loading-sign-up" class="loading"></span>
                 </div>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
 </div>
 

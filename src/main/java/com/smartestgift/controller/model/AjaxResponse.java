@@ -17,6 +17,8 @@ public class AjaxResponse {
 
     protected List<String> information = new ArrayList<>();
 
+    protected List<String> successes = new ArrayList<>();
+
     public boolean isSuccess() {
         return success;
     }
@@ -49,15 +51,27 @@ public class AjaxResponse {
         this.information = information;
     }
 
-    public void addError(String error) {
-        this.errors.add(error);
+    public List<String> getSuccesses() {
+        return successes;
     }
 
-    public void addWarning(String warning) {
-        this.warnings.add(warning);
+    public void setSuccesses(List<String> successes) {
+        this.successes = successes;
     }
 
-    public void addInformation(String information) {
-        this.information.add(information);
+    public void addError(String errorMessage) {
+        this.errors.add(errorMessage);
+    }
+
+    public void addWarning(String warningMessage) {
+        this.warnings.add(warningMessage);
+    }
+
+    public void addInformation(String informationMessage) {
+        this.information.add(informationMessage);
+    }
+
+    public void addSuccessMessage(String successMessage) {
+        this.information.add(successMessage);
     }
 }
