@@ -15,7 +15,7 @@
             <div class="panel">
             <c:choose>
                 <c:when test="${smartUser.file.id == null}">
-                    <img src=/resources/ext/main/images/no_photo.jpg>
+                    <img src=/resources/main/images/no_photo.jpg>
                 </c:when>
                 <c:otherwise>
                     <img src="/file/get/${smartUser.file.id}">

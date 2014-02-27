@@ -71,6 +71,12 @@ public class SmartUserServiceImpl implements SmartUserService {
     }
 
     @Override
+    public boolean checkOccupiedEmail(String email) {
+        SmartUserDetails smartUserDetailsByEmail = smartUserDetailsDAO.findSmartUserDetailsByEmail(email);
+        return smartUserDetailsByEmail == null;
+    }
+
+    @Override
     public void authenticateUser(SmartUserDetails smartUserDetails, HttpServletRequest request) {
         userAuthProvider.authenticateUser(smartUserDetails, request);
     }

@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by dikkini on 06.02.14.
@@ -72,7 +74,6 @@ public class SignupController {
         authProvider.authenticateUser(smartUserDetails, request);
 
         result.setSuccess(true);
-
         return result;
     }
 
@@ -111,15 +112,18 @@ public class SignupController {
     }
 
     @RequestMapping(value = "/checkLogin", method = RequestMethod.POST)
-    public @ResponseBody
-    String checkLogin(@RequestParam(value = "login", required = true) String login) {
+    public @ResponseBody AjaxResponse checkLogin(@RequestParam(value = "login", required = true) String login) {
         boolean loginFree = smartUserService.checkOccupiedUserLogin(login);
-        JSONObject result = new JSONObject();
-        try {
-            result.put("loginFree", loginFree);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return result.toString();
+        AjaxResponse result = new AjaxResponse();
+        result.setSuccess(loginFree);
+        return result;
+    }
+
+    @RequestMapping(value = "/checkEmail", method = RequestMethod.POST)
+    public @ResponseBody AjaxResponse checkEmail(@RequestParam(value = "email", required = true) String email) {
+        boolean emailFree = smartUserService.checkOccupiedEmail(email);
+        AjaxResponse result = new AjaxResponse();
+        result.setSuccess(emailFree);
+        return result;
     }
 }

@@ -29,6 +29,13 @@ public interface SmartUserService {
     public List<String> checkOccupiedEmailAndUsername(String username, String email);
 
     /**
+     *
+     * @param email
+     * @return true - free
+     */
+    public boolean checkOccupiedEmail(String email);
+
+    /**
      * Creating user
      */
     public void createSmartUserDetails(SmartUserDetails smartUserDetails);
@@ -36,7 +43,7 @@ public interface SmartUserService {
     /**
      *
      * @param login
-     * @return
+     * @return true - free
      */
     public boolean checkOccupiedUserLogin(String login);
 
