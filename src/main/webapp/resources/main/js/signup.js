@@ -62,12 +62,9 @@ $(document).ready(function() {
             data: data,
             success: function (response) {
                 if (response.success) {
-                    window.location = "/profile";
+                    window.location = "/profile?successes=signup_success";
                 } else {
-                    var a = window.location.url;
-                    var b = window.location.href;
-                    var c = window.location;
-                    window.location = $.updateQueryStringParameter(b, "errors", response.errors);
+                    window.location = $.updateQueryStringParameter(window.location.href, "errors", response.errors);
                 }
                 $("#loading-sign-up").loading('stop');
             },
