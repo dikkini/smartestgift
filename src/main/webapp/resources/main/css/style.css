@@ -64,7 +64,30 @@ css for link design
     width: 200px;
     white-space: nowrap;
     overflow: hidden;
-
-    /* for good looks */
-    padding: 10px;
 }
+
+.gift {
+    margin-bottom: 20px; !important;
+}
+
+.gift-price {
+    text-align: center;
+}
+
+.want-gift-btn {
+
+}
+
+.gift-new-label {
+    float: left;
+    position: relative;
+}
+
+.gift-new-label::after {
+    content: url("/resources/main/images/gift_label-new.png");
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(255,255,255,.3);
+    border-radius: 0.5em;
+}​

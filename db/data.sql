@@ -34,10 +34,10 @@ INSERT INTO public.gift_category (id, name, description, fileid) VALUES (4, 'Д�
 INSERT INTO public.gift_category (id, name, description, fileid) VALUES (5, 'Дорого и бесценно', 'Подарок бесценнен, а дорогой подарок еще дороже', 5);
 
 
-INSERT INTO public.gift (uuid, name, cost, description, categoryid) VALUES ('2c948591412a325ac14g2a91333d0000', 'iPhone 4', 2000, 'Супер новмодный телефон - будь как все!', 1);
-INSERT INTO public.gift (uuid, name, cost, description, categoryid) VALUES ('2c948591412a325ac15g2a91333d0000', 'iPhone 4s', 2000, 'Супер новмодный телефон - будь как все!', 1);
-INSERT INTO public.gift (uuid, name, cost, description, categoryid) VALUES ('2c948591412a325ac16g2a91333d0000', 'iPhone 5c', 2000, 'Супер новмодный телефон - будь как все!', 1);
-INSERT INTO public.gift (uuid, name, cost, description, categoryid) VALUES ('2c948591412a325ac17g2a91333d0000', 'iPhone 5s', 2000, 'Супер новмодный телефон - будь как все!', 1);
+INSERT INTO public.gift (uuid, name, cost, description, addDate, categoryid) VALUES ('2c948591412a325ac14g2a91333d0000', 'iPhone 4', 2000, 'Супер новмодный телефон - будь как все!', now(), 1);
+INSERT INTO public.gift (uuid, name, cost, description, addDate, categoryid) VALUES ('2c948591412a325ac15g2a91333d0000', 'iPhone 4s', 2000, 'Супер новмодный телефон - будь как все!', '2014-01-13 13:29:14', 1);
+INSERT INTO public.gift (uuid, name, cost, description, addDate, categoryid) VALUES ('2c948591412a325ac16g2a91333d0000', 'iPhone 5c', 2000, 'Супер новмодный телефон - будь как все!', '2013-02-13 13:29:14', 1);
+INSERT INTO public.gift (uuid, name, cost, description, addDate, categoryid) VALUES ('2c948591412a325ac17g2a91333d0000', 'iPhone 5s', 2000, 'Супер новмодный телефон - будь как все!', '2012-02-13 13:29:14', 1);
 
 
 INSERT INTO public.gift_file (id, fileid, giftuuid) VALUES (1, 6, '2c948591412a325ac14g2a91333d0000');

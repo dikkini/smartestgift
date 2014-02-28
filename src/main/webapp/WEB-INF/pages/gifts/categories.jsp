@@ -1,3 +1,4 @@
+<%@ page import="java.util.Date" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -7,6 +8,8 @@
 
 <jsp:useBean id="allGiftCategories" type="java.util.List<com.smartestgift.dao.model.GiftCategory>" scope="request"/>
 <jsp:useBean id="giftCategory" class="com.smartestgift.dao.model.GiftCategory" scope="request"/>
+
+<c:set var="weekAgo" value="<%=new Date(new Date().getTime() - 60*60*24*1000*7)%>"/>
 
 <jsp:include page="../template/top.jsp"/>
 
@@ -40,22 +43,25 @@
     <div class="row top-buffer">
         <div class="col-xs-12">
             <div class="panel panel-primary">
-                <div class="panel-heading"><spring:message code="label.gifts"/> - <c:out value="${giftCategory.name}"/> </div>
+                <div class="panel-heading">
+                    <spring:message code="label.gifts"/> - <c:out value="${giftCategory.name}"/>
+                </div>
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-xs-12">
-                            <c:forEach items="${giftCategory.gifts}" var="gift">
-                                    <span class="gift">
-                                        <p>${gift.name}</p>
-                                        <c:forEach items="${gift.files}" var="giftFiles" end="0">
-                                            <img height="100" src="/file/get/${giftFiles.id}">
-                                        </c:forEach>
-                                        <p class="ellipses">${gift.description}</p>
-                                        <p>${gift.cost}</p>
-                                        <button class="btn btn-default"><spring:message code="label.wanttogift"/></button>
-                                    </span>
-                            </c:forEach>
-                        </div>
+                        <c:forEach items="${giftCategory.gifts}" var="gift">
+                            <div class="gift col-xs-3">
+                                <c:forEach items="${gift.files}" var="giftFiles" end="0">
+                                    <c:if test="${gift.addDate < weekAgo}">
+                                        <span class="gift-new-label">
+                                    </c:if>
+                                        <img height="200" src="/file/get/${giftFiles.id}">
+                                </c:forEach>
+                                <p>${gift.name}</p>
+                                <p class="ellipses small">${gift.description}</p>
+                                <p class="gift-price small">${gift.cost}</p>
+                                <button data-gift-uuid="<c:out value="${gift.uuid}"/>" class="btn btn-default want-gift-btn"><spring:message code="label.wanttogift"/></button>
+                            </div>
+                        </c:forEach>
                     </div>
                 </div>
             </div>

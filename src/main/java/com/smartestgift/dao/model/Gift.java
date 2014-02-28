@@ -5,6 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -29,6 +30,9 @@ public class Gift implements Serializable {
 
     @Column
     protected String description;
+
+    @Column
+    protected Date addDate;
 
     @ManyToOne
     @JoinColumn(name="categoryid")
@@ -78,6 +82,14 @@ public class Gift implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Date getAddDate() {
+        return addDate;
+    }
+
+    public void setAddDate(Date addDate) {
+        this.addDate = addDate;
     }
 
     public GiftCategory getCategory() {

@@ -92,7 +92,8 @@ CREATE TABLE public.gift
   name        VARCHAR(255)                   NOT NULL,
   cost        INT                            NOT NULL,
   description TEXT,
-  categoryId  INT                            NOT NULL
+  categoryId  INT                            NOT NULL,
+  addDate     TIMESTAMP                      NOT NULL
 );
 
 
