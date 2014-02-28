@@ -15,12 +15,13 @@
     <title><spring:message code="label.title"/></title>
     <meta name="viewport" content="width=device-width">
     <link rel="stylesheet" href="/resources/ext/jquery/datepicker/css/pickmeup.min.css">
-    <link rel="stylesheet" href="/resources/ext/main/css/style.css">
+    <link rel="stylesheet" href="/resources/main/css/style.css">
     <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
     <script type="text/javascript" src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/resources/ext/jquery/datepicker/jquery.pickmeup.min.js"></script>
-    <script type="text/javascript" src="/resources/ext/main/js/loading.js"></script>
+    <script type="text/javascript" src="/resources/main/js/loading.js"></script>
+    <script type="text/javascript" src="/resources/main/js/utils.js"></script>
 </head>
 
 <body>
@@ -28,7 +29,7 @@
     <header>
         <div class="row">
             <div class="col-md-11">
-                <img src="/resources/ext/main/images/logo.png">
+                <img src="/resources/main/images/logo.png">
             </div>
             <div class="col-md-1">
                 <span style="float: right">
@@ -92,3 +93,11 @@
         </div>
     </header>
 </div>
+
+<div class="container">
+    <jsp:include page="../notifications-block.jsp">
+        <jsp:param name="errors" value="${param.errors}"/>
+        <jsp:param name="warnings" value="${param.warnings}"/>
+        <jsp:param name="information" value="${param.information}"/>
+        <jsp:param name="successes" value="${param.successes}"/>
+    </jsp:include>

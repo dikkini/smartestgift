@@ -22,7 +22,7 @@
 
         <security:form-login login-page="/login"
                              default-target-url="/"
-                             authentication-failure-url="/login?error=true"/>
+                             authentication-failure-url="/login?errors=login_error"/>
 
         <security:custom-filter position="LOGOUT_FILTER" ref="logoutFilter"/>
 

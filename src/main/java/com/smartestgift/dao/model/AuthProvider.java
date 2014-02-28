@@ -22,6 +22,13 @@ public class AuthProvider implements Serializable {
     @OneToMany(mappedBy = "authProvider")
     private Set<SmartUserDetails> smartUsers;
 
+    public AuthProvider() {}
+
+    public AuthProvider(Integer id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public Integer getId() {
         return id;
     }

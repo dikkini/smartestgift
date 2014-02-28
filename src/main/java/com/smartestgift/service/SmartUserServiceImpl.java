@@ -5,6 +5,7 @@ import com.smartestgift.dao.AuthProviderDAO;
 import com.smartestgift.dao.RoleDAO;
 import com.smartestgift.dao.SmartUserDAO;
 import com.smartestgift.dao.SmartUserDetailsDAO;
+import com.smartestgift.dao.model.AuthProvider;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserDetails;
 import com.smartestgift.security.UserAuthProvider;
@@ -13,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by dikkini on 18.02.14.
@@ -23,51 +26,41 @@ import java.util.Date;
 public class SmartUserServiceImpl implements SmartUserService {
 
     @Autowired
-    private UserAuthProvider userAuthProvider;
-
-    @Autowired
     private AuthProviderDAO authProviderDAO;
 
     @Autowired
     private SmartUserDetailsDAO smartUserDetailsDAO;
 
     @Autowired
-    private RoleDAO roleDAO;
+    private UserAuthProvider userAuthProvider;
 
     @Override
-    public String authFacebookUser(User facebookUser, HttpServletRequest request) {
-        boolean emailOccupied = false;
-        boolean usernameOccupied = false;
+    public SmartUserDetails findExistSocialUser(String socialId, Integer providerId) {
+        AuthProvider authProvider = authProviderDAO.find(providerId);
+        return smartUserDetailsDAO.findUserBySocialIdAndAuthProvider(socialId, authProvider);
+    }
 
-        SmartUserDetails existFacebookUser = smartUserDetailsDAO.findUserBySocialIdAndAuthProvider(facebookUser.getId(), authProviderDAO.findFacebookProvider());
+    @Override
+    public List<String> checkOccupiedEmailAndUsername(String username, String email) {
+        List<String> result = new ArrayList<>();
 
-        // create new user
-        if (existFacebookUser == null) {
-            SmartUser authSmartUser = new SmartUser(facebookUser.getBirthdayAsDate(), facebookUser.getUsername(), facebookUser.getFirstName(),
-                    facebookUser.getLastName(), facebookUser.getMiddleName());
-            authSmartUser.setAddress(facebookUser.getHometownName());
+        SmartUserDetails smartUserDetailsByEmail = smartUserDetailsDAO.findSmartUserDetailsByEmail(email);
+        SmartUserDetails smartUserDetailsByUsername = smartUserDetailsDAO.findSmartUserDetailsByUsername(username);
 
-            existFacebookUser = new SmartUserDetails(authSmartUser, null, facebookUser.getEmail(), facebookUser.getId(), new Date(),
-                    roleDAO.findUserRole(), authProviderDAO.findFacebookProvider());
-
-            SmartUserDetails smartUserDetailsByEmail = smartUserDetailsDAO.findSmartUserDetailsByEmail(facebookUser.getEmail());
-            SmartUserDetails smartUserDetailsByUsername = smartUserDetailsDAO.findSmartUserDetailsByUsername(facebookUser.getUsername());
-
-            if (smartUserDetailsByEmail != null) {
-                emailOccupied = true;
-            }
-            if (smartUserDetailsByUsername != null) {
-                usernameOccupied = true;
-            }
-
-            if (emailOccupied || usernameOccupied) {
-                request.getSession().setAttribute(facebookUser.getId(), existFacebookUser);
-                return "redirect:/signup/social?id=" + facebookUser.getId() +"&errors=" + (emailOccupied ? "" : "email") + (usernameOccupied ? "" : ",username");
-            }
+        if (smartUserDetailsByEmail != null) {
+            result.add("email");
         }
 
-        userAuthProvider.authenticateUser(existFacebookUser, request);
-        return "redirect:/profile";
+        if (smartUserDetailsByUsername != null) {
+            result.add("username");
+        }
+
+        return result;
+    }
+
+    @Override
+    public void createSmartUserDetails(SmartUserDetails smartUserDetails) {
+        smartUserDetailsDAO.store(smartUserDetails);
     }
 
     @Override
@@ -75,5 +68,16 @@ public class SmartUserServiceImpl implements SmartUserService {
         SmartUserDetails userDetailsByUsername = smartUserDetailsDAO.findSmartUserDetailsByUsername(login);
         SmartUserDetails smartUserDetailsByEmail = smartUserDetailsDAO.findSmartUserDetailsByEmail(login);
         return userDetailsByUsername == null && smartUserDetailsByEmail == null;
+    }
+
+    @Override
+    public boolean checkOccupiedEmail(String email) {
+        SmartUserDetails smartUserDetailsByEmail = smartUserDetailsDAO.findSmartUserDetailsByEmail(email);
+        return smartUserDetailsByEmail == null;
+    }
+
+    @Override
+    public void authenticateUser(SmartUserDetails smartUserDetails, HttpServletRequest request) {
+        userAuthProvider.authenticateUser(smartUserDetails, request);
     }
 }

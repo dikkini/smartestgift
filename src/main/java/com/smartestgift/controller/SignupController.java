@@ -1,5 +1,6 @@
 package com.smartestgift.controller;
 
+import com.smartestgift.controller.model.AjaxResponse;
 import com.smartestgift.dao.AuthProviderDAO;
 import com.smartestgift.dao.RoleDAO;
 import com.smartestgift.dao.SmartUserDetailsDAO;
@@ -18,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by dikkini on 06.02.14.
@@ -50,32 +53,27 @@ public class SignupController {
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public @ResponseBody JSONObject signUpUser(HttpServletRequest request,
+    public @ResponseBody AjaxResponse signUpUser(HttpServletRequest request,
             @RequestParam (required = true, value = "username") String username,
             @RequestParam (required = true, value = "email") String email,
             @RequestParam (required = true, value = "password") String password,
             @RequestParam (required = true, value = "firstName") String firstName,
             @RequestParam (required = false, value = "lastName") String lastName) {
 
-        JSONObject result = new JSONObject();
+        AjaxResponse result = new AjaxResponse();
         // TODO проверка всех входных данных
 
         StandardPasswordEncoder encoder = new StandardPasswordEncoder();
         String passwordEncoded = encoder.encode(password);
 
-        SmartUser smartUser = new SmartUser(null, username, firstName, lastName, null);
+        SmartUser smartUser = new SmartUser(null, username, firstName, lastName, null, null);
         SmartUserDetails smartUserDetails = new SmartUserDetails(smartUser, passwordEncoded, email, null, new Date(),
                 roleDAO.findUserRole(), authProviderDAO.findApplicationProvider());
         smartUserDetailsDAO.store(smartUserDetails);
 
         authProvider.authenticateUser(smartUserDetails, request);
 
-        try {
-            result.put("status", true);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
+        result.setSuccess(true);
         return result;
     }
 
@@ -91,35 +89,41 @@ public class SignupController {
     }
 
     @RequestMapping(value = "/social/register", method = RequestMethod.POST)
-    public String socialRegister(HttpServletRequest request,
+    public @ResponseBody AjaxResponse socialRegister(HttpServletRequest request,
                                       @RequestParam (required = true, value = "id") String socialId,
                                       @RequestParam (required = true, value = "username") String username,
                                       @RequestParam (required = true, value = "email") String email,
                                       @RequestParam (required = true, value = "firstName") String firstName,
                                       @RequestParam (required = false, value = "lastName") String lastName) {
 
+        AjaxResponse response = new AjaxResponse();
+
         // TODO проверка всех входных данных
         SmartUserDetails smartUserDetails = (SmartUserDetails) request.getSession().getAttribute(socialId);
-        SmartUser smartUser = new SmartUser(null, username, firstName, lastName, null);
+        SmartUser smartUser = new SmartUser(null, username, firstName, lastName, null, null);
         smartUserDetails = new SmartUserDetails(smartUser, null, email, null, new Date(),
                 smartUserDetails.getRole(), smartUserDetails.getAuthProvider());
         smartUserDetailsDAO.store(smartUserDetails);
 
         authProvider.authenticateUser(smartUserDetails, request);
 
-        return "redirect:/profile";
+        response.setSuccess(true);
+        return response;
     }
 
     @RequestMapping(value = "/checkLogin", method = RequestMethod.POST)
-    public @ResponseBody
-    String checkLogin(@RequestParam(value = "login", required = true) String login) {
+    public @ResponseBody AjaxResponse checkLogin(@RequestParam(value = "login", required = true) String login) {
         boolean loginFree = smartUserService.checkOccupiedUserLogin(login);
-        JSONObject result = new JSONObject();
-        try {
-            result.put("loginFree", loginFree);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return result.toString();
+        AjaxResponse result = new AjaxResponse();
+        result.setSuccess(loginFree);
+        return result;
+    }
+
+    @RequestMapping(value = "/checkEmail", method = RequestMethod.POST)
+    public @ResponseBody AjaxResponse checkEmail(@RequestParam(value = "email", required = true) String email) {
+        boolean emailFree = smartUserService.checkOccupiedEmail(email);
+        AjaxResponse result = new AjaxResponse();
+        result.setSuccess(emailFree);
+        return result;
     }
 }
