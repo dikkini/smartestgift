@@ -78,10 +78,12 @@
                 cache: false,
                 data: "giftuuid=" + $(this).data("gift-uuid"),
                 success: function (response) {
-                    alert("success");
+                    if (response.success) {
+                        window.location = window.location + "?successes=user_add_gift"
+                    }
                 },
                 error: function (response) {
-                    alert(response.error);
+                    window.location = window.location + "?errors=user_add_gift_error"
                 }
             });
         });

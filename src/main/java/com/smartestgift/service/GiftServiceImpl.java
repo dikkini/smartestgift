@@ -5,6 +5,7 @@ import com.smartestgift.dao.SmartUserDAO;
 import com.smartestgift.dao.model.Gift;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserGift;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,8 @@ public class GiftServiceImpl implements GiftService {
 
         user.getSmartUserGifts().add(userGift);
 
-        sessionFactory.getCurrentSession().saveOrUpdate(user);
+        Session session = sessionFactory.getCurrentSession();
+        session.update(user);
+        session.flush();
     }
 }

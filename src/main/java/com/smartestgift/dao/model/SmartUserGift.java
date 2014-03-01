@@ -9,6 +9,11 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "user_gift")
+@AssociationOverrides({
+        @AssociationOverride(name = "pk.user",
+                joinColumns = @JoinColumn(name = "user_uuid")),
+        @AssociationOverride(name = "pk.gift",
+                joinColumns = @JoinColumn(name = "gift_uuid")) })
 public class SmartUserGift implements Serializable {
 
     @EmbeddedId

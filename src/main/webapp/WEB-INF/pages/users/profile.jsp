@@ -61,7 +61,8 @@
                             <a href="/gifts/gift/<c:out value="${smartUserGift.gift.uuid}"/>"><c:out value="${smartUserGift.gift.name}"/></a>
                             - <c:out value="${smartUserGift.gift.cost}"/>
                         </p>
-                        <c:out value="${smartUserGift.gift.description}"/>
+                        <p class="ellipses"><c:out value="${smartUserGift.gift.description}"/></p>
+                        <small><spring:message code="label.collected_money_for_gift"/>: <c:out value="${smartUserGift.moneyCollect}"/> </small>
                     </blockquote>
                 </li>
             </c:forEach>
