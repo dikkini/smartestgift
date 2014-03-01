@@ -22,32 +22,32 @@ public class Gift implements Serializable {
     @Column(name = "uuid", unique = true)
     protected String uuid;
 
-    @Column
+    @Column(name = "name")
     protected String name;
 
     @Column
     protected BigDecimal cost;
 
-    @Column
+    @Column(name = "description")
     protected String description;
 
-    @Column
+    @Column(name = "add_date")
     protected Date addDate;
 
     @ManyToOne
-    @JoinColumn(name="categoryid")
+    @JoinColumn(name="category_id")
     protected GiftCategory category;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "gifts")
-    protected Set<SmartUser> smartUsers;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "pk.gift")
+    protected Set<SmartUserGift> smartUserGifts;
 
     @ManyToMany(fetch = FetchType.EAGER,  cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "gift_file",
             joinColumns = {
-                    @JoinColumn(name = "giftuuid", nullable = false, updatable = false)
+                    @JoinColumn(name = "gift_uuid", nullable = false, updatable = false)
             },
             inverseJoinColumns = {
-                    @JoinColumn(name = "fileId", nullable = false, updatable = false)
+                    @JoinColumn(name = "file_id", nullable = false, updatable = false)
             }
     )
     protected Set<File> files;
@@ -100,12 +100,12 @@ public class Gift implements Serializable {
         this.category = category;
     }
 
-    public Set<SmartUser> getSmartUsers() {
-        return smartUsers;
+    public Set<SmartUserGift> getSmartUserGifts() {
+        return smartUserGifts;
     }
 
-    public void setSmartUsers(Set<SmartUser> smartUsers) {
-        this.smartUsers = smartUsers;
+    public void setSmartUserGifts(Set<SmartUserGift> smartUserGifts) {
+        this.smartUserGifts = smartUserGifts;
     }
 
     public Set<File> getFiles() {

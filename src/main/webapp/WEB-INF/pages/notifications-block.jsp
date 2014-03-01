@@ -26,6 +26,6 @@
 <c:forEach items="${param.information}" var="info">
     <div class="alert alert-info alert-dismissable">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-        <p class="erros"><spring:message key="label.${info}"/></p>
+        <p class="info"><spring:message key="label.${info}"/></p>
     </div>
 </c:forEach>

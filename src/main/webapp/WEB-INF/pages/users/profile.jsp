@@ -54,14 +54,14 @@
     <div class="col-xs-4">
         <h3><spring:message code="label.wishlist"/></h3>
         <ul class="list-group">
-            <c:forEach items="${smartUser.gifts}" var="gift">
+            <c:forEach items="${smartUser.smartUserGifts}" var="smartUserGift">
                 <li class="list-group-item">
                     <blockquote>
                         <p>
-                            <a href="/gifts/gift/<c:out value="${gift.uuid}"/>"><c:out value="${gift.name}"/></a>
-                            - <c:out value="${gift.cost}"/>
+                            <a href="/gifts/gift/<c:out value="${smartUserGift.gift.uuid}"/>"><c:out value="${smartUserGift.gift.name}"/></a>
+                            - <c:out value="${smartUserGift.gift.cost}"/>
                         </p>
-                        <c:out value="${gift.description}"/>
+                        <c:out value="${smartUserGift.gift.description}"/>
                     </blockquote>
                 </li>
             </c:forEach>

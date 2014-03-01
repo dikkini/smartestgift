@@ -22,7 +22,7 @@ public class Token implements Serializable {
     @Column(name = "token")
     private String tokenValue;
 
-    @Column
+    @Column(name = "last_used")
     private Date lastUsed;
 
     public Token() {}

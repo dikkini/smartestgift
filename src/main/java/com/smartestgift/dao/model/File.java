@@ -16,14 +16,14 @@ public class File implements Serializable {
     @SequenceGenerator(name = "file_seq_gen", sequenceName = "file_id_seq")
     protected Long id;
 
-    @Column
+    @Column(name = "name")
     protected String name;
 
-    @Column
+    @Column(name = "size")
     protected String size;
 
     @ManyToOne
-    @JoinColumn(name="typeid")
+    @JoinColumn(name="type_id")
     protected FileType type;
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "files", cascade = {CascadeType.PERSIST, CascadeType.MERGE})

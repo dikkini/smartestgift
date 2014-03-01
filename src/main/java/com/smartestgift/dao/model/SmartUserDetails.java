@@ -28,46 +28,46 @@ public class SmartUserDetails implements Serializable, UserDetails {
             parameters = @Parameter(name = "property", value = "smartUser"))
     @Id
     @GeneratedValue(generator = "generator")
-    @Column(name = "useruuid", unique = true, nullable = false)
+    @Column(name = "user_uuid", unique = true, nullable = false)
     protected String userUuid;
 
     @OneToOne(fetch = FetchType.LAZY)
     @PrimaryKeyJoinColumn
     protected SmartUser smartUser;
 
-    @Column
+    @Column(name = "username")
     protected String username;
 
-    @Column
+    @Column(name = "password")
     protected String password;
 
-    @Column
+    @Column(name = "email")
     protected String email;
 
-    @Column
+    @Column(name = "enabled")
     protected boolean enabled = true;
 
-    @Column
+    @Column(name = "social_id")
     protected String socialId;
 
-    @Column
+    @Column(name = "accountNonExpired")
     protected boolean accountNonExpired = true;
 
-    @Column
+    @Column(name = "credentialsNonExpired")
     protected boolean credentialsNonExpired = true;
 
-    @Column
+    @Column(name = "accountNonLocked")
     protected boolean accountNonLocked = true;
 
     @ManyToOne
-    @JoinColumn(name = "roleId")
+    @JoinColumn(name = "role_id")
     private Role role;
 
     @ManyToOne
-    @JoinColumn(name = "authProviderId")
+    @JoinColumn(name = "auth_provider_id")
     private AuthProvider authProvider;
 
-    @Column
+    @Column(name = "registration_date")
     protected Date registrationDate;
 
     public SmartUserDetails() {}

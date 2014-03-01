@@ -1,19 +1,21 @@
 package com.smartestgift.controller;
 
+import com.smartestgift.controller.model.AjaxResponse;
 import com.smartestgift.dao.GiftCategoryDAO;
 import com.smartestgift.dao.GiftDAO;
 import com.smartestgift.dao.model.Gift;
 import com.smartestgift.dao.model.GiftCategory;
 import com.smartestgift.dao.model.SmartUserDetails;
+import com.smartestgift.dao.model.SmartUserGift;
+import com.smartestgift.enums.messages.SuccessesEnum;
+import com.smartestgift.service.GiftService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import sun.net.www.content.image.gif;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Set;
 
@@ -30,10 +32,13 @@ public class GiftController {
     @Autowired
     GiftDAO giftDAO;
 
+    @Autowired
+    GiftService giftService;
+
     @RequestMapping(value = "/gifts/mygifts", method = RequestMethod.GET)
     public ModelAndView myGifts() {
         SmartUserDetails smartUserDetails = (SmartUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Set<Gift> gifts = smartUserDetails.getSmartUser().getGifts();
+        Set<SmartUserGift> gifts = smartUserDetails.getSmartUser().getSmartUserGifts();
         return new ModelAndView("gifts/mygifts", "gifts", gifts);
     }
 
@@ -64,5 +69,17 @@ public class GiftController {
     @RequestMapping(value = "/gifts/randomGift", method = RequestMethod.GET)
     public String getRandomGift() {
         return "redirect:/gifts/235334";
+    }
+
+    @RequestMapping(value = "/gifts/wantgift", method = RequestMethod.POST)
+    public @ResponseBody AjaxResponse wantGift(@RequestParam(required = true, value = "giftuuid") String giftUuid) {
+        AjaxResponse result = new AjaxResponse();
+        SmartUserDetails smartUserDetails = (SmartUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Gift gift = giftDAO.find(giftUuid);
+        giftService.addGiftToUserWishes(smartUserDetails.getSmartUser(), gift);
+
+        result.setSuccess(true);
+        result.addSuccessMessage(SuccessesEnum.user_add_gift.getCode());
+        return result;
     }
 }

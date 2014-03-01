@@ -16,14 +16,14 @@ public class GiftCategory implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Integer id;
 
-    @Column
+    @Column(name = "name")
     protected String name;
 
-    @Column
+    @Column(name = "description")
     protected String description;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name="fileid")
+    @JoinColumn(name="file_id")
     protected File file;
 
     @OneToMany(mappedBy = "category")

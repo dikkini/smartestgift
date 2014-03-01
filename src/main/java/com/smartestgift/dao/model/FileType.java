@@ -16,10 +16,10 @@ public class FileType {
     @SequenceGenerator(name = "file_type_seq_gen", sequenceName = "file_type_id_seq")
     protected Integer id;
 
-    @Column
+    @Column(name = "name")
     protected String name;
 
-    @Column
+    @Column (name = "path")
     protected String path;
 
     @OneToMany(mappedBy = "type")

@@ -21,7 +21,7 @@
         <security:intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" requires-channel="http"/>
 
         <security:form-login login-page="/login"
-                             default-target-url="/"
+                             default-target-url="/profile?successes=login_success"
                              authentication-failure-url="/login?errors=login_error"/>
 
         <security:custom-filter position="LOGOUT_FILTER" ref="logoutFilter"/>

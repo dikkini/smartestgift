@@ -1,7 +1,6 @@
 package com.smartestgift.dao.model;
 
 import org.hibernate.annotations.GenericGenerator;
-import sun.net.www.content.image.gif;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -22,55 +21,51 @@ public class SmartUser implements Serializable {
     @Column(name = "uuid", unique = true)
     protected String uuid;
 
-    @Column
+    @Column(name = "username")
     protected String username;
 
-    @Column
+    @Column(name = "birth_date")
     protected Date birthDate;
 
-    @Column
+    @Column(name = "first_name")
     protected String firstName;
 
-    @Column
+    @Column(name = "last_name")
     protected String lastName;
 
-    @Column
+    @Column(name = "middle_name")
     protected String middleName;
 
     /**
      * TRUE - man
      * FALSE - women
      */
-    @Column
+    @Column(name = "gender")
     protected Boolean gender;
 
-    @Column
+    @Column(name = "address")
     protected String address;
 
-    @Column
+    @Column(name = "address_visible")
     protected boolean addressVisible = false;
 
-    @Column
+    @Column(name = "profile_visible")
     protected boolean profileVisible = true;
 
-    @Column
+    @Column(name = "cellPhone")
     protected String cellPhone;
 
-    @Column
+    @Column(name = "cellPhone_visible")
     protected boolean cellPhoneVisible = false;
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "smartUser", cascade = CascadeType.ALL)
     protected SmartUserDetails smartUserDetails;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "user_gift", joinColumns = {
-            @JoinColumn(name = "useruuid", nullable = false, updatable = false)},
-            inverseJoinColumns = {@JoinColumn(name = "giftuuid",
-                    nullable = false, updatable = false)})
-    protected Set<Gift> gifts;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "pk.user", cascade=CascadeType.ALL)
+    protected Set<SmartUserGift> smartUserGifts;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name="fileid")
+    @JoinColumn(name="file_id")
     protected File file;
 
     public SmartUser() {}
@@ -180,12 +175,12 @@ public class SmartUser implements Serializable {
         this.smartUserDetails = authDetails;
     }
 
-    public Set<Gift> getGifts() {
-        return gifts;
+    public Set<SmartUserGift> getSmartUserGifts() {
+        return this.smartUserGifts;
     }
 
-    public void setGifts(Set<Gift> gifts) {
-        this.gifts = gifts;
+    public void setSmartUserGifts(Set<SmartUserGift> smartUserGifts) {
+        this.smartUserGifts = smartUserGifts;
     }
 
     public File getFile() {

@@ -69,4 +69,23 @@
     </div>
 </c:if>
 
+<script type="text/javascript">
+    $(document).ready(function(){
+        $(".want-gift-btn").click(function() {
+            $.ajax({
+                type: "post",
+                url: "/gifts/wantgift",
+                cache: false,
+                data: "giftuuid=" + $(this).data("gift-uuid"),
+                success: function (response) {
+                    alert("success");
+                },
+                error: function (response) {
+                    alert(response.error);
+                }
+            });
+        });
+    });
+</script>
+
 <jsp:include page="../template/bottom.jsp"/>

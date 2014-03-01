@@ -17,7 +17,7 @@ public class Role implements Serializable {
     @SequenceGenerator(name = "roles_seq_gen", sequenceName = "roles_id_seq")
     private Integer id;
 
-    @Column
+    @Column(name = "role")
     private String role;
 
     @OneToMany(mappedBy = "role")

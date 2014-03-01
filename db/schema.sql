@@ -39,51 +39,51 @@ CREATE TABLE public.role (
 
 CREATE TABLE public.file
 (
-  id     SERIAL PRIMARY KEY,
-  name   VARCHAR                              NOT NULL,
-  size   VARCHAR                              NOT NULL,
-  typeId INT REFERENCES public.file_type (id) NOT NULL
+  id      SERIAL PRIMARY KEY,
+  name    VARCHAR                              NOT NULL,
+  size    VARCHAR                              NOT NULL,
+  type_id INT REFERENCES public.file_type (id) NOT NULL
 );
 
 CREATE TABLE public.users
 (
-  uuid             VARCHAR(36) PRIMARY KEY NOT NULL,
-  username         VARCHAR(64) UNIQUE      NOT NULL,
-  firstName        VARCHAR(255)            NOT NULL,
-  lastName         VARCHAR(255),
-  middleName       VARCHAR(255),
-  birthDate        TIMESTAMP,
-  gender           BOOLEAN,
-  address          TEXT,
-  addressVisible   BOOLEAN DEFAULT FALSE   NOT NULL,
-  profileVisible   BOOLEAN DEFAULT TRUE    NOT NULL,
-  cellphone        VARCHAR(255),
-  cellphoneVisible BOOLEAN DEFAULT FALSE   NOT NULL,
-  fileId           INT REFERENCES public.file (id)
+  uuid              VARCHAR(36) PRIMARY KEY NOT NULL,
+  username          VARCHAR(64) UNIQUE      NOT NULL,
+  first_name        VARCHAR(255)            NOT NULL,
+  last_name         VARCHAR(255),
+  middle_name       VARCHAR(255),
+  birth_date        TIMESTAMP,
+  gender            BOOLEAN,
+  address           TEXT,
+  address_visible   BOOLEAN DEFAULT FALSE   NOT NULL,
+  profile_visible   BOOLEAN DEFAULT TRUE    NOT NULL,
+  cellphone         VARCHAR(255),
+  cellphone_visible BOOLEAN DEFAULT FALSE   NOT NULL,
+  file_id           INT REFERENCES public.file (id)
 );
 
 CREATE TABLE public.user_details
 (
-  userUuid              VARCHAR(36) PRIMARY KEY  REFERENCES public.users (uuid) NOT NULL,
+  user_uuid             VARCHAR(36) PRIMARY KEY  REFERENCES public.users (uuid) NOT NULL,
   username              VARCHAR(64) UNIQUE REFERENCES public.users (username)   NOT NULL,
   password              TEXT,
   email                 VARCHAR UNIQUE                                          NOT NULL,
   enabled               BOOLEAN DEFAULT TRUE                                    NOT NULL,
-  socialId              VARCHAR,
-  authProviderId        INT REFERENCES public.auth_provider (id)                NOT NULL,
-  roleId                INT REFERENCES public.role (id)                         NOT NULL,
+  social_id             VARCHAR,
+  auth_provider_id      INT REFERENCES public.auth_provider (id)                NOT NULL,
+  role_id               INT REFERENCES public.role (id)                         NOT NULL,
   accountNonExpired     BOOLEAN DEFAULT TRUE                                    NOT NULL,
   credentialsNonExpired BOOLEAN DEFAULT TRUE                                    NOT NULL,
   accountNonLocked      BOOLEAN DEFAULT TRUE                                    NOT NULL,
-  registrationDate      TIMESTAMP DEFAULT now()                                 NOT NULL
+  registration_date     TIMESTAMP DEFAULT now()                                 NOT NULL
 );
 
 CREATE TABLE public.persistent_login
 (
-  username VARCHAR(64) UNIQUE REFERENCES public.users (username) NOT NULL,
-  series   VARCHAR(64) PRIMARY KEY                               NOT NULL,
-  token    VARCHAR(64) DEFAULT NULL,
-  lastUsed TIMESTAMP                                             NOT NULL
+  username  VARCHAR(64) UNIQUE REFERENCES public.users (username) NOT NULL,
+  series    VARCHAR(64) PRIMARY KEY                               NOT NULL,
+  token     VARCHAR(64) DEFAULT NULL,
+  last_used TIMESTAMP                                             NOT NULL
 );
 
 CREATE TABLE public.gift
@@ -92,30 +92,30 @@ CREATE TABLE public.gift
   name        VARCHAR(255)                   NOT NULL,
   cost        INT                            NOT NULL,
   description TEXT,
-  categoryId  INT                            NOT NULL,
-  addDate     TIMESTAMP                      NOT NULL
+  category_id INT                            NOT NULL,
+  add_date    TIMESTAMP                      NOT NULL
 );
 
 
 CREATE TABLE public.gift_file
 (
-  id       SERIAL PRIMARY KEY,
-  fileId   INT REFERENCES public.file (id)       NOT NULL,
-  giftUuid VARCHAR REFERENCES public.gift (uuid) NOT NULL
+  id        SERIAL PRIMARY KEY,
+  file_id   INT REFERENCES public.file (id)       NOT NULL,
+  gift_uuid VARCHAR REFERENCES public.gift (uuid) NOT NULL
 );
 
 CREATE TABLE public.user_gift
 (
-  userUuid     VARCHAR(36) REFERENCES public.users (uuid)  NOT NULL,
-  giftUuid     VARCHAR(36) REFERENCES public.gift (uuid)   NOT NULL,
+  user_uuid    VARCHAR(36) REFERENCES public.users (uuid)  NOT NULL,
+  gift_uuid    VARCHAR(36) REFERENCES public.gift (uuid)   NOT NULL,
   moneyCollect INT                                         NOT NULL,
-  PRIMARY KEY (userUuid, giftUuid)
+  PRIMARY KEY (user_uuid, gift_uuid)
 );
 
 CREATE TABLE public.gift_category
 (
   id          SERIAL PRIMARY KEY,
-  name        VARCHAR(255) NOT NULL,
-  description VARCHAR(255) NOT NULL,
-  fileid      INT REFERENCES public.file (id) NOT NULL
+  name        VARCHAR(255)                    NOT NULL,
+  description VARCHAR(255)                    NOT NULL,
+  file_id     INT REFERENCES public.file (id) NOT NULL
 );

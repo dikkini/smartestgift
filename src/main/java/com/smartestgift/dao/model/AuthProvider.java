@@ -16,7 +16,7 @@ public class AuthProvider implements Serializable {
     @SequenceGenerator(name = "auth_provider_seq_gen", sequenceName = "auth_provider_id_seq")
     protected Integer id;
 
-    @Column
+    @Column(name = "name")
     protected String name;
 
     @OneToMany(mappedBy = "authProvider")
