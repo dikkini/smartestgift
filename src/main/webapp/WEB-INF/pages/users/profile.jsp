@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <fmt:requestEncoding value="utf-8" />
@@ -45,7 +46,7 @@
     <div class="col-xs-5">
         <p>
             <strong> <c:out value="${smartUser.lastName} ${smartUser.firstName} ${smartUser.middleName}"/> </strong>
-            <a href="/settings"><img id="edit-profile" height="25px" src="http://icons.iconarchive.com/icons/visualpharm/must-have/256/Edit-icon.png"></a>
+            <a href="/profile/settings"><img id="edit-profile" height="25px" src="http://icons.iconarchive.com/icons/visualpharm/must-have/256/Edit-icon.png"></a>
         </p>
         <p><strong><spring:message code="label.birthdate"/>:</strong> <fmt:formatDate value="${smartUser.birthDate}" pattern="dd.MM.yyyy" /></p>
         <p><strong><spring:message code="label.mobilephone"/>:</strong> <c:out value="${smartUser.cellPhone}"/></p>
@@ -54,7 +55,7 @@
     <div class="col-xs-4">
         <h3><spring:message code="label.wishlist"/></h3>
         <ul class="list-group">
-            <c:forEach items="${smartUser.smartUserGifts}" var="smartUserGift">
+            <c:forEach items="${smartUser.smartUserGifts}" var="smartUserGift" end="3">
                 <li class="list-group-item">
                     <blockquote>
                         <p>
@@ -66,6 +67,9 @@
                     </blockquote>
                 </li>
             </c:forEach>
+            <c:if test="${fn:length(smartUser.smartUserGifts) > 3}">
+                <a style="float: right;" href="/gifts/mygifts"><spring:message code="label.and_more"/> <c:out value="${fn:length(smartUser.smartUserGifts) - 3}"/></a>
+            </c:if>
         </ul>
     </div>
 </div>

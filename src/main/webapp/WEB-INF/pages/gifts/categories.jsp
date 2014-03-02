@@ -39,7 +39,7 @@
         </div>
     </div>
 </div>
-<c:if test="${giftCategory != null}">
+<c:if test="${giftCategory.id != null}">
     <div class="row top-buffer">
         <div class="col-xs-12">
             <div class="panel panel-primary">
@@ -79,11 +79,11 @@
                 data: "giftuuid=" + $(this).data("gift-uuid"),
                 success: function (response) {
                     if (response.success) {
-                        window.location = window.location + "?successes=user_add_gift"
+                        window.location = $.updateQueryStringParameter(window.location.href, "successes", "user_add_gift");
                     }
                 },
                 error: function (response) {
-                    window.location = window.location + "?errors=user_add_gift_error"
+                    window.location = $.updateQueryStringParameter(window.location.href, "errors", "user_add_gift_error");
                 }
             });
         });

@@ -41,7 +41,6 @@ public class SmartUserDAOImpl implements SmartUserDAO {
         Session session = sessionFactory.getCurrentSession();
         session.saveOrUpdate(dmodel);
         session.flush();
-        session.refresh(dmodel);
     }
 
     @Override
