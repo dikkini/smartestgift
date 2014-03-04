@@ -89,8 +89,6 @@ public class GiftCategory implements Serializable {
 
         if (!code.equals(that.code)) return false;
         if (description != null ? !description.equals(that.description) : that.description != null) return false;
-        if (file != null ? !file.equals(that.file) : that.file != null) return false;
-        if (gifts != null ? !gifts.equals(that.gifts) : that.gifts != null) return false;
         if (!id.equals(that.id)) return false;
         if (!name.equals(that.name)) return false;
 

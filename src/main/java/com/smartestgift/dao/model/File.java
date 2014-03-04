@@ -84,11 +84,9 @@ public class File implements Serializable {
 
         File file = (File) o;
 
-        if (gifts != null ? !gifts.equals(file.gifts) : file.gifts != null) return false;
         if (!id.equals(file.id)) return false;
         if (!name.equals(file.name)) return false;
         if (!size.equals(file.size)) return false;
-        if (!type.equals(file.type)) return false;
 
         return true;
     }

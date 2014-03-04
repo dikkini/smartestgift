@@ -13,6 +13,7 @@ import java.util.Date;
 @Entity
 @Table(name = "persistent_login")
 public class Token implements Serializable {
+
     @Column
     private String username;
 

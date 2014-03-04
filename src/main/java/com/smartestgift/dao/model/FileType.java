@@ -65,7 +65,6 @@ public class FileType implements Serializable {
 
         FileType fileType = (FileType) o;
 
-        if (files != null ? !files.equals(fileType.files) : fileType.files != null) return false;
         if (!id.equals(fileType.id)) return false;
         if (!name.equals(fileType.name)) return false;
         if (!path.equals(fileType.path)) return false;

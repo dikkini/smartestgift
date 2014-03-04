@@ -204,15 +204,10 @@ public class SmartUser implements Serializable {
         if (address != null ? !address.equals(smartUser.address) : smartUser.address != null) return false;
         if (birthDate != null ? !birthDate.equals(smartUser.birthDate) : smartUser.birthDate != null) return false;
         if (cellPhone != null ? !cellPhone.equals(smartUser.cellPhone) : smartUser.cellPhone != null) return false;
-        if (file != null ? !file.equals(smartUser.file) : smartUser.file != null) return false;
         if (!firstName.equals(smartUser.firstName)) return false;
         if (gender != null ? !gender.equals(smartUser.gender) : smartUser.gender != null) return false;
         if (lastName != null ? !lastName.equals(smartUser.lastName) : smartUser.lastName != null) return false;
         if (middleName != null ? !middleName.equals(smartUser.middleName) : smartUser.middleName != null) return false;
-        if (smartUserDetails != null ? !smartUserDetails.equals(smartUser.smartUserDetails) : smartUser.smartUserDetails != null)
-            return false;
-        if (smartUserGifts != null ? !smartUserGifts.equals(smartUser.smartUserGifts) : smartUser.smartUserGifts != null)
-            return false;
         if (!username.equals(smartUser.username)) return false;
         if (!uuid.equals(smartUser.uuid)) return false;
 

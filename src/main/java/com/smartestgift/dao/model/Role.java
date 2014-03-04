@@ -63,7 +63,6 @@ public class Role implements Serializable {
         Role role1 = (Role) o;
 
         if (!id.equals(role1.id)) return false;
-        if (personRoles != null ? !personRoles.equals(role1.personRoles) : role1.personRoles != null) return false;
         if (!role.equals(role1.role)) return false;
 
         return true;

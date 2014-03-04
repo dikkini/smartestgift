@@ -197,8 +197,6 @@ public class SmartUserDetails implements Serializable, UserDetails {
         if (!email.equals(that.email)) return false;
         if (password != null ? !password.equals(that.password) : that.password != null) return false;
         if (!registrationDate.equals(that.registrationDate)) return false;
-        if (!role.equals(that.role)) return false;
-        if (!smartUser.equals(that.smartUser)) return false;
         if (socialId != null ? !socialId.equals(that.socialId) : that.socialId != null) return false;
         if (!userUuid.equals(that.userUuid)) return false;
         if (!username.equals(that.username)) return false;
