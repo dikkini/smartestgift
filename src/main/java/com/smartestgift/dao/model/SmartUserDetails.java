@@ -24,6 +24,7 @@ import java.util.Set;
 @Entity
 @Table(name = "user_details")
 public class SmartUserDetails implements Serializable, UserDetails {
+
     @GenericGenerator(name = "generator", strategy = "foreign",
             parameters = @Parameter(name = "property", value = "smartUser"))
     @Id

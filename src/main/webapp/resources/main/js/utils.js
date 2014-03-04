@@ -18,7 +18,7 @@ $.updateNotifyBlockRequest = function(uri, successes, errors, information) {
     }
 
     separator = uri.indexOf('?') !== -1 ? "&" : "?";
-    if (infos.length > 0) {
+    if (information.length > 0) {
         uri += separator + "information=";
         for (var info in information) {
             uri += info + ",";
@@ -32,4 +32,6 @@ $.updateNotifyBlockRequest = function(uri, successes, errors, information) {
             uri += success + ",";
         }
     }
+
+    return uri;
 };

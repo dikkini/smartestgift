@@ -78,7 +78,7 @@
                 cache: false,
                 data: "giftuuid=" + $(this).data("gift-uuid"),
                 success: function (response) {
-                    $.updateNotifyBlockRequest(window.location.href, response.successes, response.errors, response.information)
+                    window.location = $.updateNotifyBlockRequest(window.location.href, response.successes, response.errors, response.information);
                 },
                 error: function (response) {
                     //$.updateNotifyBlockRequest(window.location.href, response.successes, response.errors, response.information)
