@@ -29,8 +29,8 @@
                     <div class="col-xs-12">
                         <c:forEach items="${allGiftCategories}" var="giftCategory">
                                 <span class="gift-category">
-                                    <a href="/gifts/categories/${giftCategory.id}"><img height="75" src="<c:out value="/file/get/${giftCategory.file.id}"/>"></a>
-                                    <a href="/gifts/categories/${giftCategory.id}"><c:out value="${giftCategory.name}"/></a>
+                                    <a href="/catalog/${giftCategory.code}"><img height="75" src="<c:out value="/file/get/${giftCategory.file.id}"/>"></a>
+                                    <a href="/catalog/${giftCategory.code}"><c:out value="${giftCategory.name}"/></a>
                                 </span>
                         </c:forEach>
                     </div>
@@ -74,7 +74,7 @@
         $(".want-gift-btn").click(function() {
             $.ajax({
                 type: "post",
-                url: "/gifts/wantgift",
+                url: "/catalog/wantGift",
                 cache: false,
                 data: "giftuuid=" + $(this).data("gift-uuid"),
                 success: function (response) {

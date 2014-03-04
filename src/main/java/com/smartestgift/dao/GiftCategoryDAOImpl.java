@@ -5,6 +5,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.CriteriaSpecification;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +26,13 @@ public class GiftCategoryDAOImpl implements GiftCategoryDAO {
     @Override
     public GiftCategory find(Integer id) {
         return (GiftCategory) sessionFactory.getCurrentSession().get(GiftCategory.class, id);
+    }
+
+    @Override
+    public GiftCategory findByCode(String code) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(GiftCategory.class);
+        criteria.add(Restrictions.eq("code", code));
+        return (GiftCategory) criteria.uniqueResult();
     }
 
     @Override

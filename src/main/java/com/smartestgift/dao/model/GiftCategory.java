@@ -16,6 +16,9 @@ public class GiftCategory implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Integer id;
 
+    @Column
+    protected String code;
+
     @Column(name = "name")
     protected String name;
 
@@ -35,6 +38,14 @@ public class GiftCategory implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getName() {

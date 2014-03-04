@@ -27,11 +27,11 @@ INSERT INTO public.file (id, name, size, type_id) VALUES (8, 'iphone5c', '1', 3)
 INSERT INTO public.file (id, name, size, type_id) VALUES (9, 'iphone5s', '1', 3);
 
 
-INSERT INTO public.gift_category (id, name, description, file_id) VALUES (1, 'Технологии', 'Технологические новинки и прочее барахло', 1);
-INSERT INTO public.gift_category (id, name, description, file_id) VALUES (2, 'Для слабого пола', 'Женские штучк-дрючки', 2);
-INSERT INTO public.gift_category (id, name, description, file_id) VALUES (3, 'Для сильного пола', 'Лучший мужской подарок', 3);
-INSERT INTO public.gift_category (id, name, description, file_id) VALUES (4, 'Дети - цветы жизни', 'Цветы детям не надо дарить, но конструктор Lego - вполне!', 4);
-INSERT INTO public.gift_category (id, name, description, file_id) VALUES (5, 'Дорого и бесценно', 'Подарок бесценнен, а дорогой подарок еще дороже', 5);
+INSERT INTO public.gift_category (id, code, name, description, file_id) VALUES (1, 'tech', 'Технологии', 'Технологические новинки и прочее барахло', 1);
+INSERT INTO public.gift_category (id, code, name, description, file_id) VALUES (2, 'women', 'Для слабого пола', 'Женские штучк-дрючки', 2);
+INSERT INTO public.gift_category (id, code, name, description, file_id) VALUES (3, 'man', 'Для сильного пола', 'Лучший мужской подарок', 3);
+INSERT INTO public.gift_category (id, code, name, description, file_id) VALUES (4, 'children', 'Дети - цветы жизни', 'Цветы детям не надо дарить, но конструктор Lego - вполне!', 4);
+INSERT INTO public.gift_category (id, code, name, description, file_id) VALUES (5, 'expensive', 'Дорого и бесценно', 'Подарок бесценнен, а дорогой подарок еще дороже', 5);
 
 
 INSERT INTO public.gift (uuid, name, cost, description, add_date, category_id) VALUES ('2c948591412a325ac14g2a91333d0000', 'iPhone 4', 2000, 'Супер новмодный телефон - будь как все!', now(), 1);

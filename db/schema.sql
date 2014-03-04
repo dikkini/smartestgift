@@ -115,6 +115,7 @@ CREATE TABLE public.user_gift
 CREATE TABLE public.gift_category
 (
   id          SERIAL PRIMARY KEY,
+  code        VARCHAR                         NOT NULL,
   name        VARCHAR(255)                    NOT NULL,
   description VARCHAR(255)                    NOT NULL,
   file_id     INT REFERENCES public.file (id) NOT NULL

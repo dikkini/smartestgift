@@ -1,0 +1,79 @@
+package com.smartestgift.controller;
+
+import com.smartestgift.controller.model.AjaxResponse;
+import com.smartestgift.dao.GiftCategoryDAO;
+import com.smartestgift.dao.GiftDAO;
+import com.smartestgift.dao.model.Gift;
+import com.smartestgift.dao.model.GiftCategory;
+import com.smartestgift.dao.model.SmartUserDetails;
+import com.smartestgift.enums.messages.SuccessesEnum;
+import com.smartestgift.service.GiftService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+
+import java.util.List;
+
+/**
+ * Created by dikkini on 04.03.14.
+ * Email: dikkini@gmail.com
+ */
+@Controller
+@RequestMapping("/catalog")
+public class CatalogController {
+
+    @Autowired
+    GiftCategoryDAO giftCategoryDAO;
+
+    @Autowired
+    GiftDAO giftDAO;
+
+    @Autowired
+    GiftService giftService;
+
+    @RequestMapping(method = RequestMethod.GET)
+    public ModelAndView giftCategories() {
+        List<GiftCategory> allGiftCategories = giftCategoryDAO.findAll();
+        ModelAndView mav = new ModelAndView("catalog/catalog");
+        mav.addObject("allGiftCategories", allGiftCategories);
+        return mav;
+    }
+
+    @RequestMapping(value = "/{giftCategoryCode}", method = RequestMethod.GET)
+    public ModelAndView giftCategory(@PathVariable String giftCategoryCode) {
+        List<GiftCategory> allGiftCategories = giftCategoryDAO.findAll();
+        ModelAndView mav = new ModelAndView("catalog/catalog");
+        mav.addObject("allGiftCategories", allGiftCategories);
+        GiftCategory giftCategory = giftCategoryDAO.findByCode(giftCategoryCode);
+        mav.addObject("giftCategory", giftCategory);
+        return mav;
+    }
+
+    @RequestMapping(value = "/{giftCategoryCode}/{giftId}", method = RequestMethod.GET)
+    public ModelAndView giftPage(@PathVariable String giftCategoryCode, @PathVariable String giftId) {
+        // TODO check what to do with giftcategorycode
+        Gift gift = giftDAO.find(giftId);
+        return new ModelAndView("catalog/gift", "gift", gift);
+    }
+
+    @RequestMapping(value = "/randomGift", method = RequestMethod.GET)
+    public String getRandomGift() {
+        // TODO do :-)
+        return "redirect:/gifts/235334";
+    }
+
+    @RequestMapping(value = "/wantGift", method = RequestMethod.POST)
+    public @ResponseBody
+    AjaxResponse wantGift(@RequestParam(required = true, value = "giftuuid") String giftUuid) {
+        AjaxResponse result = new AjaxResponse();
+        SmartUserDetails smartUserDetails = (SmartUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Gift gift = giftDAO.find(giftUuid);
+        giftService.addGiftToUserWishes(smartUserDetails.getSmartUser(), gift);
+
+        result.setSuccess(true);
+        result.addSuccessMessage(SuccessesEnum.user_add_gift.getCode());
+        return result;
+    }
+}
