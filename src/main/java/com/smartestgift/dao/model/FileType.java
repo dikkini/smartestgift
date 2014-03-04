@@ -1,6 +1,7 @@
 package com.smartestgift.dao.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Set;
 
 /**
@@ -9,7 +10,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "file_type")
-public class FileType {
+public class FileType implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "file_type_seq_gen")
@@ -55,5 +56,20 @@ public class FileType {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FileType)) return false;
+
+        FileType fileType = (FileType) o;
+
+        if (files != null ? !files.equals(fileType.files) : fileType.files != null) return false;
+        if (!id.equals(fileType.id)) return false;
+        if (!name.equals(fileType.name)) return false;
+        if (!path.equals(fileType.path)) return false;
+
+        return true;
     }
 }

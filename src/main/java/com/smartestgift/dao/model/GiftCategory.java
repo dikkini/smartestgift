@@ -79,4 +79,21 @@ public class GiftCategory implements Serializable {
     public void setGifts(Set<Gift> gifts) {
         this.gifts = gifts;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof GiftCategory)) return false;
+
+        GiftCategory that = (GiftCategory) o;
+
+        if (!code.equals(that.code)) return false;
+        if (description != null ? !description.equals(that.description) : that.description != null) return false;
+        if (file != null ? !file.equals(that.file) : that.file != null) return false;
+        if (gifts != null ? !gifts.equals(that.gifts) : that.gifts != null) return false;
+        if (!id.equals(that.id)) return false;
+        if (!name.equals(that.name)) return false;
+
+        return true;
+    }
 }

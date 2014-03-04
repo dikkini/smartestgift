@@ -13,8 +13,6 @@ public class AjaxResponse {
 
     protected List<String> errors = new ArrayList<>();
 
-    protected List<String> warnings = new ArrayList<>();
-
     protected List<String> information = new ArrayList<>();
 
     protected List<String> successes = new ArrayList<>();
@@ -35,14 +33,6 @@ public class AjaxResponse {
         this.errors = errors;
     }
 
-    public List<String> getWarnings() {
-        return warnings;
-    }
-
-    public void setWarnings(List<String> warnings) {
-        this.warnings = warnings;
-    }
-
     public List<String> getInformation() {
         return information;
     }
@@ -61,10 +51,6 @@ public class AjaxResponse {
 
     public void addError(String errorMessage) {
         this.errors.add(errorMessage);
-    }
-
-    public void addWarning(String warningMessage) {
-        this.warnings.add(warningMessage);
     }
 
     public void addInformation(String informationMessage) {

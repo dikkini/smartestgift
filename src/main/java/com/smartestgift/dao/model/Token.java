@@ -65,4 +65,19 @@ public class Token implements Serializable {
     public void setLastUsed(Date date) {
         this.lastUsed = date;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Token)) return false;
+
+        Token token = (Token) o;
+
+        if (!lastUsed.equals(token.lastUsed)) return false;
+        if (!series.equals(token.series)) return false;
+        if (tokenValue != null ? !tokenValue.equals(token.tokenValue) : token.tokenValue != null) return false;
+        if (!username.equals(token.username)) return false;
+
+        return true;
+    }
 }

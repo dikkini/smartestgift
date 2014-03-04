@@ -52,4 +52,18 @@ public class AuthProvider implements Serializable {
     public void setSmartUsers(Set<SmartUserDetails> smartUsers) {
         this.smartUsers = smartUsers;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AuthProvider)) return false;
+
+        AuthProvider that = (AuthProvider) o;
+
+        if (!id.equals(that.id)) return false;
+        if (!name.equals(that.name)) return false;
+        if (smartUsers != null ? !smartUsers.equals(that.smartUsers) : that.smartUsers != null) return false;
+
+        return true;
+    }
 }

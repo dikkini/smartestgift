@@ -1,6 +1,5 @@
 package com.smartestgift.service;
 
-import com.smartestgift.dao.GiftDAO;
 import com.smartestgift.dao.SmartUserDAO;
 import com.smartestgift.dao.model.Gift;
 import com.smartestgift.dao.model.SmartUser;
@@ -9,7 +8,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sun.net.www.content.image.gif;
 
 import java.util.Set;
 
@@ -27,14 +25,22 @@ public class GiftServiceImpl implements GiftService {
     SmartUserDAO smartUserDAO;
 
     @Override
+    public boolean smartUserHasGift(Set<SmartUserGift> smartUserGifts, Gift gift) {
+        for (SmartUserGift smartuserGift : smartUserGifts) {
+            if (smartuserGift.getGift().equals(gift)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public void addGiftToUserWishes(SmartUser user, Gift gift) {
-        SmartUserGift userGift = new SmartUserGift();
-        userGift.setSmartUser(user);
-        userGift.setGift(gift);
-        userGift.setMoneyCollect(0);
-
-        user.getSmartUserGifts().add(userGift);
-
+        SmartUserGift smartUserGift = new SmartUserGift();
+        smartUserGift.setSmartUser(user);
+        smartUserGift.setGift(gift);
+        smartUserGift.setMoneyCollect(0);
+        user.getSmartUserGifts().add(smartUserGift);
         Session session = sessionFactory.getCurrentSession();
         session.update(user);
         session.flush();

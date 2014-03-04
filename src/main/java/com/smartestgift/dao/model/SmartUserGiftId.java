@@ -33,19 +33,12 @@ public class SmartUserGiftId implements Serializable {
 
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof SmartUserGiftId)) return false;
 
         SmartUserGiftId that = (SmartUserGiftId) o;
 
         return !(user != null ? !user.equals(that.user) : that.user != null) &&
                 !(gift != null ? !gift.equals(that.gift) : that.gift != null);
 
-    }
-
-    public int hashCode() {
-        int result;
-        result = (user != null ? user.hashCode() : 0);
-        result = 31 * result + (gift != null ? gift.hashCode() : 0);
-        return result;
     }
 }

@@ -181,11 +181,27 @@ public class SmartUserDetails implements Serializable, UserDetails {
         this.authProvider = authProvider;
     }
 
+    @Override
     public boolean equals(Object o) {
-        return (o instanceof SmartUserDetails) && (((SmartUserDetails) o).getEmail()).equals(this.getEmail());
-    }
+        if (this == o) return true;
+        if (!(o instanceof SmartUserDetails)) return false;
 
-    public int hashCode() {
-        return email.hashCode();
+        SmartUserDetails that = (SmartUserDetails) o;
+
+        if (accountNonExpired != that.accountNonExpired) return false;
+        if (accountNonLocked != that.accountNonLocked) return false;
+        if (credentialsNonExpired != that.credentialsNonExpired) return false;
+        if (enabled != that.enabled) return false;
+        if (!authProvider.equals(that.authProvider)) return false;
+        if (!email.equals(that.email)) return false;
+        if (password != null ? !password.equals(that.password) : that.password != null) return false;
+        if (!registrationDate.equals(that.registrationDate)) return false;
+        if (!role.equals(that.role)) return false;
+        if (!smartUser.equals(that.smartUser)) return false;
+        if (socialId != null ? !socialId.equals(that.socialId) : that.socialId != null) return false;
+        if (!userUuid.equals(that.userUuid)) return false;
+        if (!username.equals(that.username)) return false;
+
+        return true;
     }
 }

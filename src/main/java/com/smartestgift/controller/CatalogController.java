@@ -6,7 +6,6 @@ import com.smartestgift.dao.GiftDAO;
 import com.smartestgift.dao.model.Gift;
 import com.smartestgift.dao.model.GiftCategory;
 import com.smartestgift.dao.model.SmartUserDetails;
-import com.smartestgift.enums.messages.SuccessesEnum;
 import com.smartestgift.service.GiftService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+
+import static com.smartestgift.utils.ResponseMessages.*;
 
 /**
  * Created by dikkini on 04.03.14.
@@ -70,10 +71,15 @@ public class CatalogController {
         AjaxResponse result = new AjaxResponse();
         SmartUserDetails smartUserDetails = (SmartUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Gift gift = giftDAO.find(giftUuid);
-        giftService.addGiftToUserWishes(smartUserDetails.getSmartUser(), gift);
 
-        result.setSuccess(true);
-        result.addSuccessMessage(SuccessesEnum.user_add_gift.getCode());
+        if (!giftService.smartUserHasGift(smartUserDetails.getSmartUser().getSmartUserGifts(), gift)) {
+            giftService.addGiftToUserWishes(smartUserDetails.getSmartUser(), gift);
+            result.setSuccess(true);
+            result.addSuccessMessage(USER_ADD_GIFT_SUCCESS);
+        } else {
+            result.setSuccess(false);
+            result.addError(USER_HAD_GIFT_ERROR);
+        }
         return result;
     }
 }

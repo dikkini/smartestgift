@@ -76,4 +76,20 @@ public class File implements Serializable {
     public void setGifts(Set<Gift> gifts) {
         this.gifts = gifts;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof File)) return false;
+
+        File file = (File) o;
+
+        if (gifts != null ? !gifts.equals(file.gifts) : file.gifts != null) return false;
+        if (!id.equals(file.id)) return false;
+        if (!name.equals(file.name)) return false;
+        if (!size.equals(file.size)) return false;
+        if (!type.equals(file.type)) return false;
+
+        return true;
+    }
 }

@@ -78,12 +78,11 @@
                 cache: false,
                 data: "giftuuid=" + $(this).data("gift-uuid"),
                 success: function (response) {
-                    if (response.success) {
-                        window.location = $.updateQueryStringParameter(window.location.href, "successes", "user_add_gift");
-                    }
+                    $.updateNotifyBlockRequest(window.location.href, response.successes, response.errors, response.information)
                 },
                 error: function (response) {
-                    window.location = $.updateQueryStringParameter(window.location.href, "errors", "user_add_gift_error");
+                    //$.updateNotifyBlockRequest(window.location.href, response.successes, response.errors, response.information)
+                    alert("error");
                 }
             });
         });

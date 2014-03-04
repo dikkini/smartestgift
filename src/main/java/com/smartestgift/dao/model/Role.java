@@ -11,6 +11,7 @@ import java.util.Set;
 @Entity
 @Table(name = "role")
 public class Role implements Serializable {
+    private static final long serialVersionUID = 6529685098267757690L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "roles_seq_gen")
@@ -20,7 +21,7 @@ public class Role implements Serializable {
     @Column(name = "role")
     private String role;
 
-    @OneToMany(mappedBy = "role")
+    @OneToMany(mappedBy = "role", fetch = FetchType.EAGER)
     private Set<SmartUserDetails> personRoles;
 
     public Role() {}
@@ -54,4 +55,17 @@ public class Role implements Serializable {
         this.personRoles = personRoles;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Role)) return false;
+
+        Role role1 = (Role) o;
+
+        if (!id.equals(role1.id)) return false;
+        if (personRoles != null ? !personRoles.equals(role1.personRoles) : role1.personRoles != null) return false;
+        if (!role.equals(role1.role)) return false;
+
+        return true;
+    }
 }

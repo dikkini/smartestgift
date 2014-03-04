@@ -57,10 +57,8 @@ public class SmartUserGift implements Serializable {
     }
 
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
+        if (this == o) return true;
+        if (!(o instanceof SmartUserGift)) return false;
 
         SmartUserGift that = (SmartUserGift) o;
 

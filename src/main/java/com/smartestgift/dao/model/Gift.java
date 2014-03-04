@@ -1,5 +1,7 @@
 package com.smartestgift.dao.model;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -114,5 +116,25 @@ public class Gift implements Serializable {
 
     public void setFiles(Set<File> files) {
         this.files = files;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Gift)) return false;
+
+        Gift gift = (Gift) o;
+
+        if (!addDate.equals(gift.addDate)) return false;
+        if (!category.equals(gift.category)) return false;
+        if (!cost.equals(gift.cost)) return false;
+        if (!description.equals(gift.description)) return false;
+        if (files != null ? !files.equals(gift.files) : gift.files != null) return false;
+        if (!name.equals(gift.name)) return false;
+        if (smartUserGifts != null ? !smartUserGifts.equals(gift.smartUserGifts) : gift.smartUserGifts != null)
+            return false;
+        if (!uuid.equals(gift.uuid)) return false;
+
+        return true;
     }
 }
