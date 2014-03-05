@@ -7,15 +7,19 @@ import com.smartestgift.dao.model.Gift;
 import com.smartestgift.dao.model.GiftCategory;
 import com.smartestgift.dao.model.SmartUserDetails;
 import com.smartestgift.service.GiftService;
+import com.smartestgift.utils.ResponseMessages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import sun.net.www.content.image.gif;
 
 import java.util.List;
+import java.util.UUID;
 
 import static com.smartestgift.utils.ResponseMessages.*;
+import static com.smartestgift.utils.Utils.isUUID;
 
 /**
  * Created by dikkini on 04.03.14.
@@ -69,6 +73,13 @@ public class CatalogController {
     public @ResponseBody
     AjaxResponse wantGift(@RequestParam(required = true, value = "giftuuid") String giftUuid) {
         AjaxResponse result = new AjaxResponse();
+
+        if (!isUUID(giftUuid)) {
+            result.setSuccess(false);
+            result.addError(ResponseMessages.USER_ADD_GIFT_ERROR);
+            return result;
+        }
+
         SmartUserDetails smartUserDetails = (SmartUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Gift gift = giftDAO.find(giftUuid);
 

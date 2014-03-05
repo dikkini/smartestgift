@@ -7,6 +7,7 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Locale;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,5 +28,13 @@ public class Utils {
     public static String getHashFacebookAuth(String word) {
         PasswordEncoder encoder = new StandardPasswordEncoder();
         return encoder.encode(word);
+    }
+
+    public static boolean isUUID(String uuid) {
+        try {
+            return UUID.fromString(uuid) != null;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 }

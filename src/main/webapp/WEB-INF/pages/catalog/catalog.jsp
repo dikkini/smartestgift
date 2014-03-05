@@ -95,7 +95,7 @@
                     window.location = $.updateNotifyBlockRequest(window.location.href, response.successes, response.errors, response.information);
                 },
                 error: function (response) {
-                    window.location = $.updateNotifyBlockRequest(window.location.href, response.successes, response.errors, response.information)
+                    window.location = "500";
                 }
             });
         });

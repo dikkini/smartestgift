@@ -17,4 +17,5 @@ public class ResponseMessages {
     public final static String EXTERNAL_ERROR = "external_error";
     public final static String USER_HAD_GIFT_ERROR = "user_had_gift_error";
     public final static String SOCIAL_NETWORK_ERROR = "social_network_error";
+    public final static String USER_ADD_GIFT_ERROR = "user_add_gift_error";
 }
