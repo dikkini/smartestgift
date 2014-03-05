@@ -41,8 +41,6 @@ public class GiftServiceImpl implements GiftService {
         smartUserGift.setGift(gift);
         smartUserGift.setMoneyCollect(0);
         user.getSmartUserGifts().add(smartUserGift);
-        Session session = sessionFactory.getCurrentSession();
-        session.saveOrUpdate(user);
-        session.flush();
+        smartUserDAO.store(user);
     }
 }

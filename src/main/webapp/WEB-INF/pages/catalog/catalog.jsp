@@ -9,6 +9,8 @@
 <jsp:useBean id="allGiftCategories" type="java.util.List<com.smartestgift.dao.model.GiftCategory>" scope="request"/>
 <jsp:useBean id="giftCategory" class="com.smartestgift.dao.model.GiftCategory" scope="request"/>
 
+<jsp:useBean id="smartUser" class="com.smartestgift.dao.model.SmartUser" scope="request"/>
+
 <c:set var="weekAgo" value="<%=new Date(new Date().getTime() - 60*60*24*1000*7)%>"/>
 
 <jsp:include page="../template/top.jsp"/>
@@ -59,7 +61,19 @@
                                 <p>${gift.name}</p>
                                 <p class="ellipses small">${gift.description}</p>
                                 <p class="gift-price small">${gift.cost}</p>
-                                <button data-gift-uuid="<c:out value="${gift.uuid}"/>" class="btn btn-default want-gift-btn"><spring:message code="label.wanttogift"/></button>
+                                <c:forEach items="${smartUser.smartUserGifts}" var="smartUserGift">
+                                    <c:if test="${smartUserGift.gift.uuid == gift.uuid}">
+                                        <c:set var="giftExist" value="true"/>
+                                    </c:if>
+                                </c:forEach>
+                                <c:choose>
+                                    <c:when test="${giftExist == true}">
+                                        <spring:message code="label.gift_already_in_wishlist"/>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <button data-gift-uuid="<c:out value="${gift.uuid}"/>" class="btn btn-default want-gift-btn"><spring:message code="label.wanttogift"/></button>
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                         </c:forEach>
                     </div>
@@ -81,8 +95,7 @@
                     window.location = $.updateNotifyBlockRequest(window.location.href, response.successes, response.errors, response.information);
                 },
                 error: function (response) {
-                    //$.updateNotifyBlockRequest(window.location.href, response.successes, response.errors, response.information)
-                    alert("error");
+                    window.location = $.updateNotifyBlockRequest(window.location.href, response.successes, response.errors, response.information)
                 }
             });
         });
