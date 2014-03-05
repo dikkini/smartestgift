@@ -43,4 +43,15 @@ public class GiftServiceImpl implements GiftService {
         user.getSmartUserGifts().add(smartUserGift);
         smartUserDAO.store(user);
     }
+
+    @Override
+    public void deleteGiftFromUser(SmartUser user, Gift gift) {
+        Set<SmartUserGift> smartUserGifts = user.getSmartUserGifts();
+        for (SmartUserGift smartUserGift : smartUserGifts) {
+            if (smartUserGift.getGift().equals(gift)) {
+                smartUserGifts.remove(smartUserGift);
+            }
+        }
+        smartUserDAO.store(user);
+    }
 }

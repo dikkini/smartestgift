@@ -18,4 +18,6 @@ public class ResponseMessages {
     public final static String USER_HAD_GIFT_ERROR = "user_had_gift_error";
     public final static String SOCIAL_NETWORK_ERROR = "social_network_error";
     public final static String USER_ADD_GIFT_ERROR = "user_add_gift_error";
+    public final static String DELETE_GIFT_FROM_USER_SUCCESS = "delete_gift_from_user_success";
+    public final static String DELETE_GIFT_FROM_USER_ERROR = "delete_gift_from_user_error";
 }

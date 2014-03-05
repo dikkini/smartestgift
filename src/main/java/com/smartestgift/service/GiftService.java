@@ -26,4 +26,12 @@ public interface GiftService {
      * @param gift Gift model
      */
     public void addGiftToUserWishes(SmartUser user, Gift gift);
+
+    /**
+     *
+     * @param user
+     * @param gift
+     * @return
+     */
+    public void deleteGiftFromUser(SmartUser user, Gift gift);
 }

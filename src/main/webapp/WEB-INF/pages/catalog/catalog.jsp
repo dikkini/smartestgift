@@ -69,6 +69,7 @@
                                 <c:choose>
                                     <c:when test="${giftExist == true}">
                                         <spring:message code="label.gift_already_in_wishlist"/>
+                                        <c:set var="giftExist" value="false"/>
                                     </c:when>
                                     <c:otherwise>
                                         <button data-gift-uuid="<c:out value="${gift.uuid}"/>" class="btn btn-default want-gift-btn"><spring:message code="label.wanttogift"/></button>

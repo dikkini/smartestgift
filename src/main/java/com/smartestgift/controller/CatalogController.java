@@ -69,16 +69,17 @@ public class CatalogController {
         return "redirect:/gifts/235334";
     }
 
+    // TODO add event to news feed
+    // TODO sending email to a friends of users if option checked true to send
     @RequestMapping(value = "/wantGift", method = RequestMethod.POST)
-    public @ResponseBody
-    AjaxResponse wantGift(@RequestParam(required = true, value = "giftuuid") String giftUuid) {
+    public @ResponseBody AjaxResponse wantGift(@RequestParam(required = true, value = "giftuuid") String giftUuid) {
         AjaxResponse result = new AjaxResponse();
 
-        if (!isUUID(giftUuid)) {
+/*        if (!isUUID(giftUuid)) {
             result.setSuccess(false);
             result.addError(ResponseMessages.USER_ADD_GIFT_ERROR);
             return result;
-        }
+        }*/
 
         SmartUserDetails smartUserDetails = (SmartUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Gift gift = giftDAO.find(giftUuid);
