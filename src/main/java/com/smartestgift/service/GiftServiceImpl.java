@@ -42,7 +42,7 @@ public class GiftServiceImpl implements GiftService {
         smartUserGift.setMoneyCollect(0);
         user.getSmartUserGifts().add(smartUserGift);
         Session session = sessionFactory.getCurrentSession();
-        session.update(user);
+        session.saveOrUpdate(user);
         session.flush();
     }
 }
