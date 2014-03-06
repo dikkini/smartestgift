@@ -20,7 +20,7 @@ public class Gift implements Serializable {
 
     @Id
     @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid2")
     @Column(name = "uuid", unique = true)
     protected String uuid;
 

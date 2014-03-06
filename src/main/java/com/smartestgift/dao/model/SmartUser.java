@@ -18,7 +18,7 @@ public class SmartUser implements Serializable, Annotation {
 
     @Id
     @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid2")
     @Column(name = "uuid", unique = true)
     protected String uuid;
 

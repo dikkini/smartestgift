@@ -7,6 +7,7 @@ import com.smartestgift.dao.model.SmartUserDetails;
 import com.smartestgift.dao.model.SmartUserGift;
 import com.smartestgift.service.GiftService;
 import com.smartestgift.utils.ActiveUser;
+import com.smartestgift.utils.ResponseMessages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -44,11 +45,11 @@ public class GiftController {
     public @ResponseBody AjaxResponse wantGift(@ActiveUser SmartUserDetails smartUserDetails, @RequestParam(required = true, value = "giftuuid") String giftUuid) {
         AjaxResponse result = new AjaxResponse();
 
-/*        if (!isUUID(giftUuid)) {
+        if (!isUUID(giftUuid)) {
             result.setSuccess(false);
             result.addError(ResponseMessages.USER_ADD_GIFT_ERROR);
             return result;
-        }*/
+        }
 
         Gift gift = giftService.findGiftByUuid(giftUuid);
 
@@ -67,11 +68,11 @@ public class GiftController {
     public @ResponseBody AjaxResponse unWantGift(@ActiveUser SmartUserDetails smartUserDetails, @RequestParam(required = true, value = "giftuuid") String giftUuid) {
         AjaxResponse result = new AjaxResponse();
 
-//        if (!isUUID(giftUuid)) {
-//            result.setSuccess(false);
-//            result.addError(ResponseMessages.INTERNAL_ERROR);
-//            return result;
-//        }
+        if (!isUUID(giftUuid)) {
+            result.setSuccess(false);
+            result.addError(ResponseMessages.INTERNAL_ERROR);
+            return result;
+        }
 
         Gift gift = giftService.findGiftByUuid(giftUuid);
 
