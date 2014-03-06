@@ -30,11 +30,8 @@ public class Utils {
         return encoder.encode(word);
     }
 
-    public static boolean isUUID(String str) {
+    public static boolean isUUID(String uuid) {
         try {
-            String uuid = str.replaceAll(
-                    "(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})",
-                    "$1-$2-$3-$4-$5");
             return UUID.fromString(uuid) != null;
         } catch (IllegalArgumentException e) {
             return false;
