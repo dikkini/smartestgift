@@ -32,7 +32,9 @@ public class Utils {
 
     public static boolean isUUID(String str) {
         try {
-            String uuid =  str.replaceFirst( "(\\p{XDigit}{8})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}+)", "$1-$2-$3-$4-$5" );
+            String uuid = str.replaceAll(
+                    "(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})",
+                    "$1-$2-$3-$4-$5");
             return UUID.fromString(uuid) != null;
         } catch (IllegalArgumentException e) {
             return false;

@@ -65,10 +65,11 @@
                         <p class="ellipses"><c:out value="${smartUserGift.gift.description}"/></p>
                         <small><spring:message code="label.collected_money_for_gift"/>: <c:out value="${smartUserGift.moneyCollect}"/> </small>
                     </blockquote>
+                    <button data-gift-uuid="<c:out value="${smartUserGift.gift.uuid}"/>" class="btn btn-default un-want-gift-btn"><spring:message code="label.un_want_gift_button"/></button>
                 </li>
             </c:forEach>
             <c:if test="${fn:length(smartUser.smartUserGifts) > 3}">
-                <a style="float: right;" href="/gifts/mygifts"><spring:message code="label.and_more"/> <c:out value="${fn:length(smartUser.smartUserGifts) - 3}"/></a>
+                <a style="float: right;" href="/gifts/mygifts"><spring:message code="label.all_gifts_in_wishlist"/> <c:out value="${fn:length(smartUser.smartUserGifts)}"/></a>
             </c:if>
         </ul>
     </div>
@@ -78,5 +79,20 @@
 
 <script type="text/javascript">
     $(document).ready(function(){
+        $(".un-want-gift-btn").click(function(e) {
+            $.ajax({
+                type: "post",
+                url: "/gifts/unWantGift",
+                cache: false,
+                data: "giftuuid=" + $(this).data("gift-uuid"),
+                success: function (response) {
+                    window.location = $.updateNotifyBlockRequest(window.location.href, response.successes, response.errors, response.information);
+                },
+                error: function (response) {
+                    window.location = "500";
+                }
+            });
+            e.preventDefault();
+        });
     });
 </script>

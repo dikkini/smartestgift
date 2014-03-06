@@ -84,12 +84,14 @@
     </div>
 </c:if>
 
+<jsp:include page="../template/bottom.jsp"/>
+
 <script type="text/javascript">
     $(document).ready(function(){
         $(".want-gift-btn").click(function() {
             $.ajax({
                 type: "post",
-                url: "/catalog/wantGift",
+                url: "/gifts/wantGift",
                 cache: false,
                 data: "giftuuid=" + $(this).data("gift-uuid"),
                 success: function (response) {
@@ -102,5 +104,3 @@
         });
     });
 </script>
-
-<jsp:include page="../template/bottom.jsp"/>

@@ -4,6 +4,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
 import java.util.Date;
 import java.util.Set;
 
@@ -13,7 +14,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "users")
-public class SmartUser implements Serializable {
+public class SmartUser implements Serializable, Annotation {
 
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -212,5 +213,10 @@ public class SmartUser implements Serializable {
         if (!uuid.equals(smartUser.uuid)) return false;
 
         return true;
+    }
+
+    @Override
+    public Class<? extends Annotation> annotationType() {
+        return null;
     }
 }

@@ -62,6 +62,9 @@
                 <property name="supportedMediaTypes" value = "text/plain;charset=UTF-8" />
             </bean>
         </mvc:message-converters>
+            <mvc:argument-resolvers>
+                <bean class="com.smartestgift.handler.CurrentUserHandlerMethodArgumentResolver"/>
+            </mvc:argument-resolvers>
     </mvc:annotation-driven>
 
 	<!-- Всю статику (изображения, css-файлы, javascript) положим в папку webapp/resources

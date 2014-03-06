@@ -3,6 +3,7 @@ package com.smartestgift.controller;
 import com.smartestgift.dao.SmartUserDAO;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserDetails;
+import com.smartestgift.utils.ActiveUser;
 import com.smartestgift.utils.ApplicationConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -41,7 +42,7 @@ public class ProfileController {
     }
 
     @RequestMapping(value = "/profile/settings/save", method = RequestMethod.POST)
-    public String saveSettings(
+    public String saveSettings(@ActiveUser SmartUserDetails smartUserDetails,
             @RequestParam(required = true, value = "firstName") String firstName,
             @RequestParam(required = true, value = "lastName") String lastName,
             @RequestParam(required = true, value = "middleName") String middleName,
@@ -51,7 +52,6 @@ public class ProfileController {
             @RequestParam(required = false, value = "profileVisible") boolean profileVisible,
             @RequestParam(required = true, value = "cellphone") String cellPhone,
             @RequestParam(required = false, value = "cellphoneVisible") boolean cellphoneVisible) {
-        SmartUserDetails smartUserDetails = (SmartUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         SmartUser smartUser = smartUserDetails.getSmartUser();
         smartUser.setFirstName(firstName);
         smartUser.setLastName(lastName);

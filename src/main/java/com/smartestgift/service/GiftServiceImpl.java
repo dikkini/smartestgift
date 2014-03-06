@@ -1,7 +1,10 @@
 package com.smartestgift.service;
 
+import com.smartestgift.dao.GiftCategoryDAO;
+import com.smartestgift.dao.GiftDAO;
 import com.smartestgift.dao.SmartUserDAO;
 import com.smartestgift.dao.model.Gift;
+import com.smartestgift.dao.model.GiftCategory;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserGift;
 import org.hibernate.Session;
@@ -9,6 +12,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -19,10 +23,21 @@ import java.util.Set;
 public class GiftServiceImpl implements GiftService {
 
     @Autowired
+    GiftCategoryDAO giftCategoryDAO;
+
+    @Autowired
+    GiftDAO giftDAO;
+
+    @Autowired
     SessionFactory sessionFactory;
 
     @Autowired
     SmartUserDAO smartUserDAO;
+
+    @Override
+    public Gift findGiftByUuid(String uuid) {
+        return giftDAO.find(uuid);
+    }
 
     @Override
     public boolean smartUserHasGift(Set<SmartUserGift> smartUserGifts, Gift gift) {
@@ -53,5 +68,15 @@ public class GiftServiceImpl implements GiftService {
             }
         }
         smartUserDAO.store(user);
+    }
+
+    @Override
+    public List<GiftCategory> findAllGiftCategories() {
+        return giftCategoryDAO.findAll();
+    }
+
+    @Override
+    public GiftCategory findGiftCategoryByCode(String code) {
+        return giftCategoryDAO.findByCode(code);
     }
 }

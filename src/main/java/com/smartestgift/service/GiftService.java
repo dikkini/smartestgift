@@ -1,9 +1,11 @@
 package com.smartestgift.service;
 
 import com.smartestgift.dao.model.Gift;
+import com.smartestgift.dao.model.GiftCategory;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserGift;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -11,6 +13,13 @@ import java.util.Set;
  * Email: dikkini@gmail.com
  */
 public interface GiftService {
+
+    /**
+     *
+     * @param uuid
+     * @return
+     */
+    public Gift findGiftByUuid(String uuid);
 
     /**
      * if the user has this gift
@@ -34,4 +43,17 @@ public interface GiftService {
      * @return
      */
     public void deleteGiftFromUser(SmartUser user, Gift gift);
+
+    /**
+     *
+     * @return
+     */
+    public List<GiftCategory> findAllGiftCategories();
+
+    /**
+     *
+     * @param code
+     * @return
+     */
+    public GiftCategory findGiftCategoryByCode(String code);
 }
