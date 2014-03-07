@@ -1,6 +1,7 @@
 package com.smartestgift.dao;
 
 import com.smartestgift.dao.model.Gift;
+import com.smartestgift.dao.model.SmartUser;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -46,6 +47,13 @@ public class GiftDAOImpl implements GiftDAO {
     public void delete(Gift dmodel) {
         Session session = sessionFactory.getCurrentSession();
         session.delete(dmodel);
+        session.flush();
+    }
+
+    @Override
+    public void merge(Gift dmodel) {
+        Session session = sessionFactory.getCurrentSession();
+        session.merge(dmodel);
         session.flush();
     }
 }

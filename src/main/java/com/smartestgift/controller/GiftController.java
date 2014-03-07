@@ -42,12 +42,13 @@ public class GiftController {
     // TODO add event to news feed
     // TODO sending email to a friends of users if option checked true to send
     @RequestMapping(value = "/wantGift", method = RequestMethod.POST)
-    public @ResponseBody AjaxResponse wantGift(@ActiveUser SmartUserDetails smartUserDetails, @RequestParam(required = true, value = "giftuuid") String giftUuid) {
+    public @ResponseBody AjaxResponse wantGift(@ActiveUser SmartUserDetails smartUserDetails,
+                                               @RequestParam(required = true, value = "giftuuid") String giftUuid) {
         AjaxResponse result = new AjaxResponse();
 
         if (!isUUID(giftUuid)) {
             result.setSuccess(false);
-            result.addError(ResponseMessages.USER_ADD_GIFT_ERROR);
+            result.addError(ResponseMessages.INTERNAL_ERROR);
             return result;
         }
 
@@ -65,7 +66,8 @@ public class GiftController {
     }
 
     @RequestMapping(value = "/unWantGift", method = RequestMethod.POST)
-    public @ResponseBody AjaxResponse unWantGift(@ActiveUser SmartUserDetails smartUserDetails, @RequestParam(required = true, value = "giftuuid") String giftUuid) {
+    public @ResponseBody AjaxResponse unWantGift(@ActiveUser SmartUserDetails smartUserDetails,
+                                                 @RequestParam(required = true, value = "giftuuid") String giftUuid) {
         AjaxResponse result = new AjaxResponse();
 
         if (!isUUID(giftUuid)) {

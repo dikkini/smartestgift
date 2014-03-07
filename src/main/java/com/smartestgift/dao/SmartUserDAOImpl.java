@@ -51,6 +51,13 @@ public class SmartUserDAOImpl implements SmartUserDAO {
     }
 
     @Override
+    public void merge(SmartUser dmodel) {
+        Session session = sessionFactory.getCurrentSession();
+        session.merge(dmodel);
+        session.flush();
+    }
+
+    @Override
     public SmartUser findSmartUserByUsername(String username) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
         criteria.add(Restrictions.eq("username", username));

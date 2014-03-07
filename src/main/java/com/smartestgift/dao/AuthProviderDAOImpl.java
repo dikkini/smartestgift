@@ -1,11 +1,13 @@
 package com.smartestgift.dao;
 
 import com.smartestgift.dao.model.AuthProvider;
+import com.smartestgift.dao.model.Gift;
 import com.smartestgift.dao.model.Role;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.enums.AuthProviderEnum;
 import com.smartestgift.enums.RolesEnum;
 import org.hibernate.Criteria;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +56,11 @@ public class AuthProviderDAOImpl implements AuthProviderDAO {
 
     @Override
     public void delete(AuthProvider dmodel) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void merge(AuthProvider dmodel) {
         throw new UnsupportedOperationException();
     }
 }

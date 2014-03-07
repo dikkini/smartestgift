@@ -12,6 +12,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -56,18 +57,20 @@ public class GiftServiceImpl implements GiftService {
         smartUserGift.setGift(gift);
         smartUserGift.setMoneyCollect(0);
         user.getSmartUserGifts().add(smartUserGift);
-        smartUserDAO.store(user);
+        smartUserDAO.merge(user);
     }
 
     @Override
     public void deleteGiftFromUser(SmartUser user, Gift gift) {
         Set<SmartUserGift> smartUserGifts = user.getSmartUserGifts();
-        for (SmartUserGift smartUserGift : smartUserGifts) {
-            if (smartUserGift.getGift().equals(gift)) {
-                smartUserGifts.remove(smartUserGift);
+        for(Iterator<SmartUserGift> smartUserGiftIterator = smartUserGifts.iterator(); smartUserGiftIterator.hasNext();){
+            SmartUserGift currentSmartUserGift = smartUserGiftIterator.next();
+            if (gift.equals(currentSmartUserGift.getGift())) {
+                smartUserGiftIterator.remove();
+                break;
             }
         }
-        smartUserDAO.store(user);
+        smartUserDAO.merge(user);
     }
 
     @Override

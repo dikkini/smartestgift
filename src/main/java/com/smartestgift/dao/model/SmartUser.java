@@ -17,7 +17,7 @@ import java.util.Set;
 public class SmartUser implements Serializable, Annotation {
 
     @Id
-    @GeneratedValue(generator = "system-uuid")
+    @GeneratedValue(generator = "system-uuid", strategy = GenerationType.IDENTITY)
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")
     @Column(name = "uuid", unique = true)
     protected String uuid;

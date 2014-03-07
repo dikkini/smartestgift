@@ -52,6 +52,13 @@ public class SmartUserDetailsDAOImpl implements SmartUserDetailsDAO {
     }
 
     @Override
+    public void merge(SmartUserDetails dmodel) {
+        Session session = sessionFactory.getCurrentSession();
+        session.merge(dmodel);
+        session.flush();
+    }
+
+    @Override
     public SmartUserDetails findSmartUserDetailsByEmail(String email) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUserDetails.class);
         criteria.add(Restrictions.eq("email", email));

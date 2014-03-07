@@ -1,6 +1,7 @@
 package com.smartestgift.dao;
 
 import com.smartestgift.dao.model.File;
+import com.smartestgift.dao.model.Gift;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -44,5 +45,12 @@ public class FileDAOImpl implements FileDAO {
     public void delete(File dmodel) {
         Session session = sessionFactory.getCurrentSession();
         session.delete(dmodel);
+    }
+
+    @Override
+    public void merge(File dmodel) {
+        Session session = sessionFactory.getCurrentSession();
+        session.merge(dmodel);
+        session.flush();
     }
 }

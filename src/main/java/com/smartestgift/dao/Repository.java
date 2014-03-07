@@ -14,4 +14,6 @@ public interface Repository<T, P> {
     void store(T dmodel);
 
     void delete(T dmodel);
+
+    void merge(T dmodel);
 }
