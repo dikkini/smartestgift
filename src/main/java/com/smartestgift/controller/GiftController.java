@@ -1,22 +1,17 @@
 package com.smartestgift.controller;
 
 import com.smartestgift.controller.model.AjaxResponse;
-import com.smartestgift.dao.model.Gift;
-import com.smartestgift.dao.model.SmartUser;
-import com.smartestgift.dao.model.SmartUserDetails;
-import com.smartestgift.dao.model.SmartUserGift;
+import com.smartestgift.dao.model.*;
 import com.smartestgift.service.GiftService;
 import com.smartestgift.utils.ActiveUser;
 import com.smartestgift.utils.ResponseMessages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
 import java.util.Set;
 
 import static com.smartestgift.utils.ResponseMessages.*;
@@ -33,10 +28,36 @@ public class GiftController {
     @Autowired
     GiftService giftService;
 
-    @RequestMapping(value = "/mygifts", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
+    public ModelAndView giftCategories() {
+        List<GiftCategory> allGiftCategories = giftService.findAllGiftCategories();
+        ModelAndView mav = new ModelAndView("gifts/gifts");
+        mav.addObject("allGiftCategories", allGiftCategories);
+        return mav;
+    }
+
+    @RequestMapping(value = "/{giftCategoryCode}", method = RequestMethod.GET)
+    public ModelAndView giftCategory(@PathVariable String giftCategoryCode) {
+        List<GiftCategory> allGiftCategories = giftService.findAllGiftCategories();
+        ModelAndView mav = new ModelAndView("gifts/gifts");
+        mav.addObject("allGiftCategories", allGiftCategories);
+        GiftCategory giftCategory = giftService.findGiftCategoryByCode(giftCategoryCode);
+        mav.addObject("giftCategory", giftCategory);
+        return mav;
+    }
+
+
+    @RequestMapping(value = "/my", method = RequestMethod.GET)
     public ModelAndView myGifts(@ActiveUser SmartUserDetails smartUserDetails) {
         Set<SmartUserGift> gifts = smartUserDetails.getSmartUser().getSmartUserGifts();
-        return new ModelAndView("gifts/mygifts", "gifts", gifts);
+        return new ModelAndView("gifts/my", "gifts", gifts);
+    }
+
+    @RequestMapping(value = "/{giftCategoryCode}/{giftUuid}", method = RequestMethod.GET)
+    public ModelAndView giftPage(@PathVariable String giftCategoryCode, @PathVariable String giftUuid) {
+        // TODO check what to do with giftcategorycode
+        Gift gift = giftService.findGiftByUuid(giftUuid);
+        return new ModelAndView("gifts/gift", "gift", gift);
     }
 
     // TODO add event to news feed
@@ -87,5 +108,11 @@ public class GiftController {
             result.addError(DELETE_GIFT_FROM_USER_ERROR);
         }
         return result;
+    }
+
+    @RequestMapping(value = "/randomGift", method = RequestMethod.GET)
+    public String getRandomGift() {
+        // TODO do :-)
+        return "redirect:/gifts/235334";
     }
 }

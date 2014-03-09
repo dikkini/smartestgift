@@ -1,5 +1,8 @@
 package com.smartestgift.dao.model;
 
+import org.hibernate.annotations.Sort;
+import org.hibernate.annotations.SortType;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
@@ -29,6 +32,7 @@ public class GiftCategory implements Serializable {
     @JoinColumn(name="file_id")
     protected File file;
 
+    @OrderBy(value = "addDate")
     @OneToMany(mappedBy = "category")
     private Set<Gift> gifts;
 

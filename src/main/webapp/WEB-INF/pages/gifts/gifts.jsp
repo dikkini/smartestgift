@@ -8,7 +8,6 @@
 
 <jsp:useBean id="allGiftCategories" type="java.util.List<com.smartestgift.dao.model.GiftCategory>" scope="request"/>
 <jsp:useBean id="giftCategory" class="com.smartestgift.dao.model.GiftCategory" scope="request"/>
-
 <jsp:useBean id="smartUser" class="com.smartestgift.dao.model.SmartUser" scope="request"/>
 
 <c:set var="weekAgo" value="<%=new Date(new Date().getTime() - 60*60*24*1000*7)%>"/>
@@ -31,8 +30,8 @@
                     <div class="col-xs-12">
                         <c:forEach items="${allGiftCategories}" var="giftCategory">
                                 <span class="gift-category">
-                                    <a href="/catalog/${giftCategory.code}"><img height="75" src="<c:out value="/file/get/${giftCategory.file.id}"/>"></a>
-                                    <a href="/catalog/${giftCategory.code}"><c:out value="${giftCategory.name}"/></a>
+                                    <a href="/gifts/${giftCategory.code}"><img height="75" src="<c:out value="/file/get/${giftCategory.file.id}"/>"></a>
+                                    <a href="/gifts/${giftCategory.code}"><c:out value="${giftCategory.name}"/></a>
                                 </span>
                         </c:forEach>
                     </div>

@@ -27,7 +27,7 @@
             <div class="panel-heading"><spring:message code="label.gift"/></div>
             <div class="panel-body">
                 <ul class="nav nav-pills nav-stacked">
-                    <li><a href="/catalog"><spring:message code="label.find_gift"/></a></li>
+                    <li><a href="/gifts"><spring:message code="label.find_gift"/></a></li>
                 </ul>
             </div>
         </div>

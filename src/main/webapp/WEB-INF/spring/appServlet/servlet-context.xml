@@ -12,7 +12,7 @@
         <!-- adding smartuser model in modelandview object everywhere-->
         <mvc:interceptor>
             <mvc:mapping path="/profile/**"/>
-            <mvc:mapping path="/catalog/**"/>
+            <mvc:mapping path="/gifts/**"/>
             <bean class="com.smartestgift.handler.UserInterceptor"/>
         </mvc:interceptor>
         <mvc:interceptor>
