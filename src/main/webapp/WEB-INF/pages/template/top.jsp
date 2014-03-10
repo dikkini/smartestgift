@@ -56,7 +56,7 @@
                                 <a href="<c:url value="/gifts/my"/>"><spring:message code="label.mygifts"/></a>
                             </li>
                             <li>
-                                <a href="<c:url value="/messages"/>"><spring:message code="label.messages"/></a>
+                                <a href="<c:url value="/messages"/>"><spring:message code="label.messages"/> <span class="badge">42</span></a>
                             </li>
                         </sec:authorize>
                         <sec:authorize access="isAnonymous()">
