@@ -27,9 +27,6 @@ public class Gift implements Serializable {
     @Column(name = "name")
     protected String name;
 
-    @Column
-    protected BigDecimal cost;
-
     @Column(name = "description")
     protected String description;
 
@@ -68,14 +65,6 @@ public class Gift implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public BigDecimal getCost() {
-        return cost;
-    }
-
-    public void setCost(BigDecimal cost) {
-        this.cost = cost;
     }
 
     public String getDescription() {
@@ -126,7 +115,6 @@ public class Gift implements Serializable {
         Gift gift = (Gift) o;
 
         if (!addDate.equals(gift.addDate)) return false;
-        if (!cost.equals(gift.cost)) return false;
         if (!description.equals(gift.description)) return false;
         if (!name.equals(gift.name)) return false;
         if (!uuid.equals(gift.uuid)) return false;

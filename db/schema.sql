@@ -90,7 +90,6 @@ CREATE TABLE public.gift
 (
   uuid        VARCHAR(36) UNIQUE PRIMARY KEY NOT NULL,
   name        VARCHAR(255)                   NOT NULL,
-  cost        INT                            NOT NULL,
   description TEXT,
   category_id INT                            NOT NULL,
   add_date    TIMESTAMP                      NOT NULL

@@ -15,10 +15,10 @@
         <div class="panel">
         <c:choose>
             <c:when test="${smartUser.file.id == null}">
-                <img src=/resources/main/images/no_photo.jpg>
+                <img height="250" src=/resources/main/images/no_photo.jpg>
             </c:when>
             <c:otherwise>
-                <img src="/file/get/${smartUser.file.id}">
+                <img height="250" src="/file/get/${smartUser.file.id}">
             </c:otherwise>
         </c:choose>
         </div>
@@ -41,8 +41,8 @@
                 </ul>
             </div>
         </div>
-
     </div>
+
     <div class="col-xs-5">
         <p>
             <strong> <c:out value="${smartUser.lastName} ${smartUser.firstName} ${smartUser.middleName}"/> </strong>
@@ -52,6 +52,7 @@
         <p><strong><spring:message code="label.mobilephone"/>:</strong> <c:out value="${smartUser.cellPhone}"/></p>
         <p><strong><spring:message code="label.address"/>:</strong> <c:out value="${smartUser.address}"/></p>
     </div>
+
     <div class="col-xs-4">
         <h3><spring:message code="label.wishlist"/></h3>
         <ul class="list-group">

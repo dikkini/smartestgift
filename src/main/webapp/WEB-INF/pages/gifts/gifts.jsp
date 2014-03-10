@@ -55,11 +55,10 @@
                                     <c:if test="${gift.addDate < weekAgo}">
                                         <span class="gift-new-label">
                                     </c:if>
-                                        <img height="200" src="/file/get/${giftFiles.id}">
+                                        <a href="/${giftCategory.code}/${gift.uuid}"><img height="200" src="/file/get/${giftFiles.id}"></a>
                                 </c:forEach>
                                 <p>${gift.name}</p>
                                 <p class="ellipses small">${gift.description}</p>
-                                <p class="gift-price small">${gift.cost}</p>
                                 <c:forEach items="${smartUser.smartUserGifts}" var="smartUserGift">
                                     <c:if test="${smartUserGift.gift.uuid == gift.uuid}">
                                         <c:set var="giftExist" value="true"/>
