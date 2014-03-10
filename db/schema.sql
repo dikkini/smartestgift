@@ -119,3 +119,11 @@ CREATE TABLE public.gift_category
   description VARCHAR(255)                    NOT NULL,
   file_id     INT REFERENCES public.file (id) NOT NULL
 );
+
+CREATE TABLE public.messages
+(
+  uuid VARCHAR(36) PRIMARY KEY,
+  user_from_uuid   VARCHAR(36) REFERENCES public.users (uuid)  NOT NULL,
+  user_to_uuid   VARCHAR(36) REFERENCES public.users (uuid)  NOT NULL,
+  message VARCHAR NOT NULL
+);
