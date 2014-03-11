@@ -1,8 +1,10 @@
 package com.smartestgift.controller;
 
+import com.smartestgift.dao.model.Conversation;
 import com.smartestgift.dao.model.Message;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserDetails;
+import com.smartestgift.service.ConversationService;
 import com.smartestgift.service.MessageService;
 import com.smartestgift.utils.ActiveUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +25,11 @@ import java.util.List;
 public class MessageController {
 
     @Autowired
-    MessageService messageService;
+    ConversationService conversationService;
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView messages(@ActiveUser SmartUserDetails smartUserDetails) {
-        List<Message> userConversations = messageService.findUserConversations(smartUserDetails.getSmartUser());
+        List<Conversation> userConversations = conversationService.findUserConversations(smartUserDetails.getSmartUser());
         ModelAndView mav = new ModelAndView("users/messages");
         mav.addObject("userConversations", userConversations);
         return mav;

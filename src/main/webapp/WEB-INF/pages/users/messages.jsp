@@ -6,7 +6,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <fmt:requestEncoding value="utf-8" />
 
-<jsp:useBean id="userConversations" type="java.util.List<com.smartestgift.dao.model.Message>" scope="request"/>
+<jsp:useBean id="userConversations" type="java.util.List<com.smartestgift.dao.model.Conversation>" scope="request"/>
 <jsp:useBean id="smartUser" class="com.smartestgift.dao.model.SmartUser" scope="request"/>
 
 <jsp:include page="../template/top.jsp"/>
@@ -32,16 +32,25 @@
                         </c:when>
                         <c:otherwise>
                             <c:forEach items="${userConversations}" var="conversation">
+                                <c:choose>
+                                    <c:when test="${conversation.pk.userFrom.uuid eq smartUser.uuid}">
+                                        <c:set var="fromUserConversation" value="${conversation.pk.userTo}" />
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:set var="fromUserConversation" value="${conversation.pk.userFrom}" />
+                                    </c:otherwise>
+                                </c:choose>
+
                                 <li>
                                     <div class="list-group">
                                         <a href="#" class="list-group-item">
                                             <div class="row">
                                                 <div class="col-xs-3">
-                                                    <img height="50" src="/file/get/${conversation.smartUserFrom.file.id}">
+                                                    <img height="50" src="/file/get/${fromUserConversation.file.id}">
                                                 </div>
                                                 <div class="col-xs-9">
-                                                    <p class="list-group-item-heading">${conversation.smartUserFrom.username}</p>
-                                                    <p class="list-group-item-text ellipses">${conversation.message}</p>
+                                                    <p class="list-group-item-heading">${fromUserConversation.username}</p>
+                                                    <p class="list-group-item-text ellipses">${conversation.lastMessage}</p>
                                                 </div>
                                             </div>
                                         </a>

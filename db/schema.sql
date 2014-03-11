@@ -18,7 +18,7 @@ DROP TABLE public.gift_category CASCADE;
 DROP TABLE public.file_type CASCADE;
 DROP TABLE public.file CASCADE;
 DROP TABLE public.gift_file CASCADE;
-DROP TABLE public.messages CASCADE;
+DROP TABLE public.message CASCADE;
 
 CREATE TABLE public.auth_provider
 (
@@ -121,11 +121,18 @@ CREATE TABLE public.gift_category
   file_id     INT REFERENCES public.file (id) NOT NULL
 );
 
-CREATE TABLE public.messages
+CREATE TABLE public.message
 (
   uuid           VARCHAR(36) PRIMARY KEY,
   user_from_uuid VARCHAR(36) REFERENCES public.users (uuid)  NOT NULL,
   user_to_uuid   VARCHAR(36) REFERENCES public.users (uuid)  NOT NULL,
   message        VARCHAR                                     NOT NULL,
   date           TIMESTAMP                                   NOT NULL
+);
+
+CREATE TABLE public.conversation
+(
+  user_from_uuid VARCHAR(36) REFERENCES public.users (uuid)    NOT NULL,
+  user_to_uuid   VARCHAR(36) REFERENCES public.users (uuid)    NOT NULL,
+  last_message   VARCHAR(36) REFERENCES public.message (uuid) NOT NULL
 );

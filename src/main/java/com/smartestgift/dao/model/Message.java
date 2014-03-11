@@ -11,7 +11,7 @@ import java.util.Date;
  * Email: dikkini@gmail.com
  */
 @Entity
-@Table(name = "messages")
+@Table(name = "message")
 public class Message implements Serializable {
     @Id
     @GeneratedValue(generator = "system-uuid", strategy = GenerationType.IDENTITY)
