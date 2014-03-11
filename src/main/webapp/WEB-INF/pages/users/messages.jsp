@@ -6,6 +6,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <fmt:requestEncoding value="utf-8" />
 
+<jsp:useBean id="userConversations" type="java.util.List<com.smartestgift.dao.model.Message>" scope="request"/>
 <jsp:useBean id="smartUser" class="com.smartestgift.dao.model.SmartUser" scope="request"/>
 
 <jsp:include page="../template/top.jsp"/>
@@ -25,51 +26,30 @@
             </div>
             <div>
                 <ul class="nav nav-pills nav-stacked">
-                    <li>
-                        <div class="list-group">
-                            <a href="#" class="list-group-item active">
-                                <div class="row">
-                                    <div class="col-xs-3">
-                                        <img height="50" src="asd">
+                    <c:choose>
+                        <c:when test="${fn:length(userConversations) == 0}">
+                            You have no conversations now.
+                        </c:when>
+                        <c:otherwise>
+                            <c:forEach items="${userConversations}" var="conversation">
+                                <li>
+                                    <div class="list-group">
+                                        <a href="#" class="list-group-item">
+                                            <div class="row">
+                                                <div class="col-xs-3">
+                                                    <img height="50" src="/file/get/${conversation.smartUserFrom.file.id}">
+                                                </div>
+                                                <div class="col-xs-9">
+                                                    <p class="list-group-item-heading">${conversation.smartUserFrom.username}</p>
+                                                    <p class="list-group-item-text ellipses">${conversation.message}</p>
+                                                </div>
+                                            </div>
+                                        </a>
                                     </div>
-                                    <div class="col-xs-9">
-                                        <p class="list-group-item-heading">Nickname</p>
-                                        <p class="list-group-item-text">Description</p>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="list-group">
-                            <a href="#" class="list-group-item">
-                                <div class="row">
-                                    <div class="col-xs-3">
-                                        <img height="50" src="asd">
-                                    </div>
-                                    <div class="col-xs-9">
-                                        <p class="list-group-item-heading">Nickname</p>
-                                        <p class="list-group-item-text">Description</p>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="list-group">
-                            <a href="#" class="list-group-item">
-                                <div class="row">
-                                    <div class="col-xs-3">
-                                        <img height="50" src="asd">
-                                    </div>
-                                    <div class="col-xs-9">
-                                        <p class="list-group-item-heading">Nickname</p>
-                                        <p class="list-group-item-text">Description</p>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    </li>
+                                </li>
+                            </c:forEach>
+                        </c:otherwise>
+                    </c:choose>
                 </ul>
             </div>
         </div>

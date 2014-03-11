@@ -1,11 +1,17 @@
 package com.smartestgift.controller;
 
+import com.smartestgift.dao.model.Message;
+import com.smartestgift.dao.model.SmartUser;
+import com.smartestgift.dao.model.SmartUserDetails;
 import com.smartestgift.service.MessageService;
+import com.smartestgift.utils.ActiveUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.List;
 
 /**
  * Created by dikkini on 10.03.14.
@@ -20,7 +26,10 @@ public class MessageController {
     MessageService messageService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView messages() {
-        return new ModelAndView("users/messages");
+    public ModelAndView messages(@ActiveUser SmartUserDetails smartUserDetails) {
+        List<Message> userConversations = messageService.findUserConversations(smartUserDetails.getSmartUser());
+        ModelAndView mav = new ModelAndView("users/messages");
+        mav.addObject("userConversations", userConversations);
+        return mav;
     }
 }

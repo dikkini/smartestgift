@@ -5,10 +5,14 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.CriteriaSpecification;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.SimpleExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.Order;
 import java.util.List;
 
 /**
@@ -54,5 +58,16 @@ public class MessageDAOImpl implements MessageDAO {
         Session session = sessionFactory.getCurrentSession();
         session.merge(dmodel);
         session.flush();
+    }
+
+    @Override
+    public List<Message> findAllUserMessages(String userUuid) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Message.class);
+        SimpleExpression smartUserFrom = Restrictions.eq("smartUserFrom.uuid", userUuid);
+        SimpleExpression smartUserTo = Restrictions.eq("smartUserTo.uuid", userUuid);
+        criteria.add(Restrictions.or(smartUserFrom, smartUserTo));
+        criteria.addOrder(org.hibernate.criterion.Order.asc("smartUserFrom.uuid"));
+        criteria.addOrder(org.hibernate.criterion.Order.asc("date"));
+        return (List<Message>) criteria.list();
     }
 }

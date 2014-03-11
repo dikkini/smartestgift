@@ -27,7 +27,10 @@ public class Message implements Serializable {
     @JoinColumn(name = "user_to_uuid")
     protected SmartUser smartUserTo;
 
-    @Column
+    @Column(name = "message")
+    protected String message;
+
+    @Column(name = "date")
     protected Date date;
 
     public String getUuid() {
@@ -52,6 +55,14 @@ public class Message implements Serializable {
 
     public void setSmartUserTo(SmartUser smartUserTo) {
         this.smartUserTo = smartUserTo;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public Date getDate() {
