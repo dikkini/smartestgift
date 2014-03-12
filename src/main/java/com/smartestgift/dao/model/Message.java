@@ -20,18 +20,18 @@ public class Message implements Serializable {
     protected String uuid;
 
     @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_from_uuid")
-    protected SmartUser smartUserFrom;
-
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_to_uuid")
-    protected SmartUser smartUserTo;
+    @JoinColumn(name = "user_uuid")
+    protected SmartUser smartUser;
 
     @Column(name = "message")
     protected String message;
 
     @Column(name = "date")
     protected Date date;
+
+    @OneToOne
+    @JoinColumn(name = "conversation_uuid")
+    protected Conversation conversation;
 
     public String getUuid() {
         return uuid;
@@ -41,20 +41,12 @@ public class Message implements Serializable {
         this.uuid = uuid;
     }
 
-    public SmartUser getSmartUserFrom() {
-        return smartUserFrom;
+    public SmartUser getSmartUser() {
+        return smartUser;
     }
 
-    public void setSmartUserFrom(SmartUser smartUserFrom) {
-        this.smartUserFrom = smartUserFrom;
-    }
-
-    public SmartUser getSmartUserTo() {
-        return smartUserTo;
-    }
-
-    public void setSmartUserTo(SmartUser smartUserTo) {
-        this.smartUserTo = smartUserTo;
+    public void setSmartUser(SmartUser smartUser) {
+        this.smartUser = smartUser;
     }
 
     public String getMessage() {

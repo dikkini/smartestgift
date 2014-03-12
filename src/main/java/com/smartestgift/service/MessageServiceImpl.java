@@ -27,7 +27,7 @@ public class MessageServiceImpl implements MessageService {
     MessageDAO messageDAO;
 
     @Override
-    public List<Message> findUserMessagesWithUser(SmartUser activeUser, SmartUser withUser) {
-        return messageDAO.findUserMessagesWithUser(activeUser.getUuid(), withUser.getUuid());
+    public List<Message> findConversationMessages(Conversation conversation) {
+        return messageDAO.findConversationMessages(conversation.getUuid());
     }
 }

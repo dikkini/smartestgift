@@ -61,13 +61,9 @@ public class MessageDAOImpl implements MessageDAO {
     }
 
     @Override
-    public List<Message> findUserMessagesWithUser(String activeUserUUid, String withUserUuid) {
+    public List<Message> findConversationMessages(String conversationUuid) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Message.class);
-        SimpleExpression smartUserFrom = Restrictions.eq("smartUserFrom.uuid", activeUserUUid);
-        SimpleExpression smartUserFrom1 = Restrictions.eq("smartUserFrom.uuid", withUserUuid);
-        SimpleExpression smartUserTo = Restrictions.eq("smartUserTo.uuid", activeUserUUid);
-        SimpleExpression smartUserTo1 = Restrictions.eq("smartUserTo.uuid", withUserUuid);
-        criteria.add(Restrictions.or(smartUserFrom, smartUserTo, smartUserFrom1, smartUserTo1));
+        criteria.add(Restrictions.eq("conversation.uuid", conversationUuid));
         criteria.addOrder(org.hibernate.criterion.Order.asc("date"));
         return (List<Message>) criteria.list();
     }

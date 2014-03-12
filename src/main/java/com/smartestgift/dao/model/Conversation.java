@@ -12,32 +12,41 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "conversation")
-@AssociationOverrides({
-        @AssociationOverride(name = "pk.userFrom",
-                joinColumns = @JoinColumn(name = "user_from_uuid")),
-        @AssociationOverride(name = "pk.userTo",
-                joinColumns = @JoinColumn(name = "user_to_uuid")) })
 public class Conversation implements Serializable {
 
-    @EmbeddedId
-    protected ConversationId pk = new ConversationId();
+    @Id
+    @GeneratedValue(generator = "system-uuid", strategy = GenerationType.IDENTITY)
+    @GenericGenerator(name = "system-uuid", strategy = "uuid2")
+    @Column(name = "uuid", unique = true)
+    protected String uuid;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    protected Message last_message;
+    @ManyToOne
+    private SmartUser user_from;
 
-    public ConversationId getPk() {
-        return pk;
+    @ManyToOne
+    private SmartUser user_to;
+
+    public String getUuid() {
+        return uuid;
     }
 
-    public void setPk(ConversationId pk) {
-        this.pk = pk;
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
-    public Message getLastMessage() {
-        return last_message;
+    public SmartUser getUser_from() {
+        return user_from;
     }
 
-    public void setLastMessage(Message lastMessage) {
-        this.last_message = lastMessage;
+    public void setUser_from(SmartUser user_from) {
+        this.user_from = user_from;
+    }
+
+    public SmartUser getUser_to() {
+        return user_to;
+    }
+
+    public void setUser_to(SmartUser user_to) {
+        this.user_to = user_to;
     }
 }

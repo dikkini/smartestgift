@@ -13,9 +13,8 @@ import java.util.List;
 public interface MessageService {
     /**
      *
-     * @param activeUser
-     * @param withUser
+     * @param conversation
      * @return
      */
-    public List<Message> findUserMessagesWithUser(SmartUser activeUser, SmartUser withUser);
+    public List<Message> findConversationMessages(Conversation conversation);
 }

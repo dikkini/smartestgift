@@ -33,24 +33,24 @@
                         <c:otherwise>
                             <c:forEach items="${userConversations}" var="conversation">
                                 <c:choose>
-                                    <c:when test="${conversation.pk.userFrom.uuid eq smartUser.uuid}">
-                                        <c:set var="fromUserConversation" value="${conversation.pk.userTo}" />
+                                    <c:when test="${conversation.user_from.uuid eq smartUser.uuid}">
+                                        <c:set var="fromUserConversation" value="${conversation.user_to}" />
                                     </c:when>
                                     <c:otherwise>
-                                        <c:set var="fromUserConversation" value="${conversation.pk.userFrom}" />
+                                        <c:set var="fromUserConversation" value="${conversation.user_from}" />
                                     </c:otherwise>
                                 </c:choose>
 
                                 <li>
                                     <div class="list-group">
-                                        <a href="#" data-user-uuid="${fromUserConversation.uuid}" class="list-group-item conversation">
+                                        <a href="#" data-conversation-uuid="${conversation.uuid}" class="list-group-item conversation">
                                             <div class="row">
                                                 <div class="col-xs-3">
                                                     <img height="50" src="/file/get/${fromUserConversation.file.id}">
                                                 </div>
                                                 <div class="col-xs-9">
                                                     <p class="list-group-item-heading">${fromUserConversation.username}</p>
-                                                    <p class="list-group-item-text ellipses">${conversation.lastMessage.message}</p>
+                                                    <p class="list-group-item-text ellipses">message?</p>
                                                 </div>
                                             </div>
                                         </a>
@@ -91,15 +91,14 @@
                 type: "post",
                 url: "/messages/getUserMessages",
                 cache: false,
-                data: "useruuid=" + $(this).data("user-uuid"),
+                data: "conversationUuid=" + $(this).data("conversation-uuid"),
                 success: function (response) {
                     response.forEach(function(entry) {
                         console.log(entry);
                     });
                 },
                 error: function (response) {
-                    alert(response);
-                    window.location = "500";
+                    alert("error");
                 }
             });
         });

@@ -34,9 +34,6 @@ public class MessageController {
     @Autowired
     MessageService messageService;
 
-    @Autowired
-    SmartUserDAO smartUserDAO;
-
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView messages(@ActiveUser SmartUserDetails smartUserDetails) {
         List<Conversation> userConversations = conversationService.findUserConversations(smartUserDetails.getSmartUser());
@@ -47,9 +44,10 @@ public class MessageController {
 
     @RequestMapping(value = "/getUserMessages", method = RequestMethod.POST)
     public @ResponseBody List<Message> getUserMessages(@ActiveUser SmartUserDetails smartUserDetails,
-                                                       @RequestParam(value = "useruuid", required = true) String userUuid) {
-        SmartUser smartUser = smartUserDAO.find(userUuid);
-        List<Message> userMessagesWithUser = messageService.findUserMessagesWithUser(smartUserDetails.getSmartUser(), smartUser);
+                                                       @RequestParam(value = "conversationUuid", required = true) String conversationUuid) {
+        // TODO add additional security checks
+        Conversation conversation = conversationService.findConversationByUuid(conversationUuid);
+        List<Message> userMessagesWithUser = messageService.findConversationMessages(conversation);
         return userMessagesWithUser;
     }
 }

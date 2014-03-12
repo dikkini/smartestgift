@@ -31,10 +31,15 @@ public class ConversationServiceImpl implements ConversationService {
     ConversationDAO conversationDAO;
 
     @Override
+    public Conversation findConversationByUuid(String uuid) {
+        return conversationDAO.find(uuid);
+    }
+
+    @Override
     public List<Conversation> findUserConversations(SmartUser user) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Conversation.class);
-        SimpleExpression smartUserFrom = Restrictions.eq("pk.userFrom", user);
-        SimpleExpression smartUserTo = Restrictions.eq("pk.userTo", user);
+        SimpleExpression smartUserFrom = Restrictions.eq("user_from", user);
+        SimpleExpression smartUserTo = Restrictions.eq("user_to", user);
         criteria.add(Restrictions.or(smartUserFrom, smartUserTo));
         return (List<Conversation>) criteria.list();
     }

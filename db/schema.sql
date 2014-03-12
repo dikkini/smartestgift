@@ -122,18 +122,19 @@ CREATE TABLE public.gift_category
   file_id     INT REFERENCES public.file (id) NOT NULL
 );
 
-CREATE TABLE public.message
-(
-  uuid           VARCHAR(36) PRIMARY KEY,
-  user_from_uuid VARCHAR(36) REFERENCES public.users (uuid)  NOT NULL,
-  user_to_uuid   VARCHAR(36) REFERENCES public.users (uuid)  NOT NULL,
-  message        VARCHAR                                     NOT NULL,
-  date           TIMESTAMP                                   NOT NULL
-);
 
 CREATE TABLE public.conversation
 (
+  uuid           VARCHAR(36) PRIMARY KEY,
   user_from_uuid VARCHAR(36) REFERENCES public.users (uuid)    NOT NULL,
-  user_to_uuid   VARCHAR(36) REFERENCES public.users (uuid)    NOT NULL,
-  last_message_uuid   VARCHAR(36) REFERENCES public.message (uuid) NOT NULL
+  user_to_uuid   VARCHAR(36) REFERENCES public.users (uuid)    NOT NULL
+);
+
+CREATE TABLE public.message
+(
+  uuid              VARCHAR(36) PRIMARY KEY,
+  user_uuid         VARCHAR(36) REFERENCES public.users (uuid)        NOT NULL,
+  message           VARCHAR                                           NOT NULL,
+  date              TIMESTAMP                                         NOT NULL,
+  conversation_uuid VARCHAR(36) REFERENCES public.conversation (uuid) NOT NULL
 );

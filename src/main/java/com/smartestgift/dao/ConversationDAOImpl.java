@@ -27,6 +27,11 @@ public class ConversationDAOImpl implements ConversationDAO {
     SessionFactory sessionFactory;
 
     @Override
+    public Conversation find(String id) {
+        return (Conversation) sessionFactory.getCurrentSession().get(Conversation.class, id);
+    }
+
+    @Override
     public List<Conversation> findAll() {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Conversation.class);
         criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
@@ -45,5 +50,10 @@ public class ConversationDAOImpl implements ConversationDAO {
         Session session = sessionFactory.getCurrentSession();
         session.delete(dmodel);
         session.flush();
+    }
+
+    @Override
+    public void merge(Conversation dmodel) {
+
     }
 }

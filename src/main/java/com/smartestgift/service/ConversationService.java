@@ -11,5 +11,7 @@ import java.util.List;
  */
 public interface ConversationService {
 
+    public Conversation findConversationByUuid(String uuid);
+
     public List<Conversation> findUserConversations(SmartUser user);
 }
