@@ -43,14 +43,14 @@
 
                                 <li>
                                     <div class="list-group">
-                                        <a href="#" class="list-group-item">
+                                        <a href="#" data-user-uuid="${fromUserConversation.uuid}" class="list-group-item conversation">
                                             <div class="row">
                                                 <div class="col-xs-3">
                                                     <img height="50" src="/file/get/${fromUserConversation.file.id}">
                                                 </div>
                                                 <div class="col-xs-9">
                                                     <p class="list-group-item-heading">${fromUserConversation.username}</p>
-                                                    <p class="list-group-item-text ellipses">${conversation.lastMessage}</p>
+                                                    <p class="list-group-item-text ellipses">${conversation.lastMessage.message}</p>
                                                 </div>
                                             </div>
                                         </a>
@@ -77,13 +77,32 @@
                 <li><a href="#">Third Link</a></li>
             </ul>
         </div>
+        <div class="messages-dialog">
+
+        </div>
     </div>
 </div>
 <jsp:include page="../template/bottom.jsp"/>
 
 <script type="text/javascript">
     $(document).ready(function(){
-
+        $(".conversation").click(function() {
+            $.ajax({
+                type: "post",
+                url: "/messages/getUserMessages",
+                cache: false,
+                data: "useruuid=" + $(this).data("user-uuid"),
+                success: function (response) {
+                    response.forEach(function(entry) {
+                        console.log(entry);
+                    });
+                },
+                error: function (response) {
+                    alert(response);
+                    window.location = "500";
+                }
+            });
+        });
     });
 </script>
 

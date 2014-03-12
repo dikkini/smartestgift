@@ -44,3 +44,9 @@ INSERT INTO public.gift_file (id, file_id, gift_uuid) VALUES (1, 6, '510de47e-34
 INSERT INTO public.gift_file (id, file_id, gift_uuid) VALUES (2, 7, '510de47e-3477-426e-96fe-c99c58af464b');
 INSERT INTO public.gift_file (id, file_id, gift_uuid) VALUES (3, 8, '510de47e-3477-426e-96fe-c99c58af464c');
 INSERT INTO public.gift_file (id, file_id, gift_uuid) VALUES (4, 9, '510de47e-3477-426e-96fe-c99c58af464d');
+
+INSERT INTO public.message (uuid, user_from_uuid, user_to_uuid, message, date) VALUES ('510de47e-3477-426e-96fe-c99c58af4611', '2d0767d8-effb-41f2-8910-5729a460527d', '78043c3b-7bb6-46d8-b568-ab7e8a2e88d8', 'Привет друг', '2014-03-12 17:30:04');
+INSERT INTO public.message (uuid, user_from_uuid, user_to_uuid, message, date) VALUES ('510de47e-3477-426e-96fe-c99c58af4612', '2d0767d8-effb-41f2-8910-5729a460527d', '78043c3b-7bb6-46d8-b568-ab7e8a2e88d8', 'Как дела?', '2014-03-12 17:32:04');
+INSERT INTO public.message (uuid, user_from_uuid, user_to_uuid, message, date) VALUES ('510de47e-3477-426e-96fe-c99c58af4613', '78043c3b-7bb6-46d8-b568-ab7e8a2e88d8', '2d0767d8-effb-41f2-8910-5729a460527d', 'Нормально', '2014-03-12 17:34:04');
+
+INSERT INTO public.conversation (user_from_uuid, user_to_uuid, last_message_uuid) VALUES ('2d0767d8-effb-41f2-8910-5729a460527d', '78043c3b-7bb6-46d8-b568-ab7e8a2e88d8', '510de47e-3477-426e-96fe-c99c58af4613')

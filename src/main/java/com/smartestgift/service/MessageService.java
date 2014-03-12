@@ -11,4 +11,11 @@ import java.util.List;
  * Email: dikkini@gmail.com
  */
 public interface MessageService {
+    /**
+     *
+     * @param activeUser
+     * @param withUser
+     * @return
+     */
+    public List<Message> findUserMessagesWithUser(SmartUser activeUser, SmartUser withUser);
 }

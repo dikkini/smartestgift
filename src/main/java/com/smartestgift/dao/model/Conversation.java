@@ -22,8 +22,8 @@ public class Conversation implements Serializable {
     @EmbeddedId
     protected ConversationId pk = new ConversationId();
 
-    @Column(name = "last_message")
-    protected String lastMessage;
+    @OneToOne(fetch = FetchType.LAZY)
+    protected Message last_message;
 
     public ConversationId getPk() {
         return pk;
@@ -33,11 +33,11 @@ public class Conversation implements Serializable {
         this.pk = pk;
     }
 
-    public String getLastMessage() {
-        return lastMessage;
+    public Message getLastMessage() {
+        return last_message;
     }
 
-    public void setLastMessage(String lastMessage) {
-        this.lastMessage = lastMessage;
+    public void setLastMessage(Message lastMessage) {
+        this.last_message = lastMessage;
     }
 }

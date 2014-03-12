@@ -24,8 +24,10 @@ import java.util.List;
 public class MessageServiceImpl implements MessageService {
 
     @Autowired
-    SessionFactory sessionFactory;
-
-    @Autowired
     MessageDAO messageDAO;
+
+    @Override
+    public List<Message> findUserMessagesWithUser(SmartUser activeUser, SmartUser withUser) {
+        return messageDAO.findUserMessagesWithUser(activeUser.getUuid(), withUser.getUuid());
+    }
 }

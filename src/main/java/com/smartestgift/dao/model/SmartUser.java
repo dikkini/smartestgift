@@ -1,5 +1,6 @@
 package com.smartestgift.dao.model;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -59,6 +60,7 @@ public class SmartUser implements Serializable, Annotation {
     @Column(name = "cellPhone_visible")
     protected boolean cellPhoneVisible = false;
 
+    @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "smartUser", cascade = CascadeType.ALL)
     protected SmartUserDetails smartUserDetails;
 
