@@ -67,4 +67,10 @@ public class MessageDAOImpl implements MessageDAO {
         criteria.addOrder(org.hibernate.criterion.Order.asc("date"));
         return (List<Message>) criteria.list();
     }
+
+    @Override
+    public Integer findCountUserMessages(String username) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Message.class);
+        return ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+    }
 }

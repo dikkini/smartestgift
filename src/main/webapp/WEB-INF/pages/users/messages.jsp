@@ -31,7 +31,7 @@
                             You have no conversations now.
                         </c:when>
                         <c:otherwise>
-                            <c:forEach items="${userConversations}" var="conversation">
+                             <c:forEach items="${userConversations}" var="conversation">
                                 <c:choose>
                                     <c:when test="${conversation.user_from == smartUser}">
                                         <c:set var="fromUserConversation" value="${conversation.user_to}" />
@@ -43,7 +43,7 @@
 
                                 <li>
                                     <div class="list-group">
-                                        <a href="#" data-conversation-username="${fromUserConversation.username}" data-conversation-uuid="${conversation.uuid}" class="list-group-item conversation">
+                                        <a data-conversation-username="${fromUserConversation.username}" data-conversation-uuid="${conversation.uuid}" class="list-group-item conversation" style="cursor: pointer;">
                                             <div class="row">
                                                 <div class="col-xs-3">
                                                     <img height="50" src="/file/get/${fromUserConversation.file.id}">
@@ -78,18 +78,30 @@
             </ul>
         </div>
         <div style="margin-top: 20px">
-            <ul style="margin-bottom: 20px" id="messages-dialog" class="nav nav-pills nav-stacked"><%--messages here--%></ul>
-            <div id="new-message-recepient-form">
-                <input id="input-new-conversation-recipient" type="text" class="form-control" placeholder="Start write a username or first name">
+            <div id="conversation-message">
+                <ul style="margin-bottom: 20px" id="messages-dialog" class="nav nav-pills nav-stacked"><%--messages here--%></ul>
             </div>
-            <div id="new-message-input-form" class="row" style="margin-bottom: 20px; display: none;">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Write new message here">
-                    <span class="input-group-btn">
-                        <button id="btn-send-message" class="btn btn-primary" type="button">Send</button>
-                    </span>
-                </div>
+
+            <div id="new-message-input-form" style="margin-bottom: 20px; display: none;">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <input id="input-new-conversation-recipient" data-username="" type="text" class="form-control" placeholder="Username or First name">
+                    </li>
+                    <li class="list-group-item">
+                        <div class="recipient-auto-complete" style="height: 500px"></div>
+                    </li>
+                </ul>
             </div>
+
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <textarea id="input-new-message" class="form-control" placeholder="Write new message here" style="resize:vertical;"></textarea>
+                </li>
+                <li class="list-group-item">
+                    <a id="btn-send-message" type="button" style="float: right; cursor: pointer;">Enter - send message</a>
+                    <div class="clearfix"></div>
+                </li>
+            </ul>
         </div>
     </div>
 </div>
@@ -97,36 +109,122 @@
 
 <script type="text/javascript">
     $(document).ready(function(){
-        $(".conversation").click(function() {
-            var conversationObj = $(this);
+        var pollingConversationInterval;
+        function startLongPollingConversation(conversationUuid){
+            loadAndRenderConversationMessages(conversationUuid);
+            pollingConversationInterval = setInterval(function(){
+                loadAndRenderConversationMessages(conversationUuid)
+            }, 3000);
+        }
+
+        function stopLongPollingConversation(pollingConversationInterval) {
+            clearInterval(pollingConversationInterval);
+        }
+
+        var conversationMessages = "";
+        function loadAndRenderConversationMessages(conversationUuid) {
             $.ajax({
                 type: "post",
-                url: "/messages/getMessagesWithUser",
+                url: "/messages/getConversationMessages",
                 cache: false,
-                data: "conversationUuid=" + conversationObj.data("conversation-uuid"),
+                data: "conversationUuid=" + conversationUuid,
                 success: function (response) {
-                    var messagesDialog = $("#messages-dialog");
-                    messagesDialog.empty();
-
-                    response.forEach(function(entry) {
-                        var html = '<li><div class="list-gropu"><a href="#" class="list-group-item"><div class="row"><div class="col-xs-1">';
-                        html += '<img height="50" src="/file/get/' + entry.smartUser.file.id + '"></div><div class="col-xs-9">';
-                        html += '<p class="list-group-item-heading">' + entry.smartUser.username + '</p>'
-                        html += '<p class="list-group-item-text ellipses">' + entry.message + '</p>'
-                        messagesDialog.append(html);
-                    });
-                    $("#new-message-input-form").show();
-                    $("#messages-title").text(conversationObj.data("conversation-username"));
+                    if (conversationMessages.length != response.length) {
+                        renderConversationMessages(response);
+                        conversationMessages = response;
+                    }
                 },
                 error: function (response) {
                     //TODO обработка ошибок
                     alert("error");
                 }
             });
+        }
+
+        function renderConversationMessages(messages) {
+            $("#new-message-input-form").hide();
+            var messagesDialog = $("#messages-dialog");
+            messagesDialog.empty();
+
+            messages.forEach(function(entry) {
+                var html =
+                        '<li>' +
+                            '<div class="list-group">' +
+                                '<a class="list-group-item" style="cursor: pointer">' +
+                                    '<div class="row">' +
+                                        '<div class="col-xs-1">' +
+                                            '<img height="50" src="/file/get/' + entry.smartUser.file.id + '">' +
+                                        '</div>' +
+                                        '<div class="col-xs-9">' +
+                                            '<p class="list-group-item-heading">' +
+                                                entry.smartUser.username +
+                                            '</p>' +
+                                            '<p class="list-group-item-text">' +
+                                                entry.message +
+                                            '</p>' +
+                                        '</div>'  +
+                                        '<div class="col-xs-2">' +
+                                            new Date(entry.date).customFormat("#DD#.#MM#.#YYYY#") +
+                                        '</div>' +
+                                    '</div>' +
+                                '</a>' +
+                            '</div>' +
+                        '</li>';
+
+                messagesDialog.append(html);
+            });
+        }
+
+        $(".conversation").click(function() {
+            var conversationUuid = $(this).data("conversation-uuid");
+            $("#messages-title").text($(this).data("conversation-username"));
+            $("#conversation-message").attr("data-conversation-uuid", conversationUuid);
+            stopLongPollingConversation(pollingConversationInterval);
+            startLongPollingConversation(conversationUuid);
         });
 
         $("#btn-new-message").click(function() {
+            $("#messages-title").text("New Message");
+            $("#messages-dialog").empty();
+            $("#new-message-input-form").show();
+        });
 
+        $("#btn-send-message").click(function() {
+            // send to user
+            if ($("#messages-dialog").children().length > 0) {
+                var conversationUuid = $("#conversation-message").data("conversation-uuid");
+                $.ajax({
+                    type: "post",
+                    url: "/messages/sendMessageToUser",
+                    cache: false,
+                    data: "message=" + $("#input-new-message").val()
+                            + "&conversation-uuid=" + conversationUuid,
+                    success: function (response) {
+                        $("#input-new-message").val("");
+                        loadAndRenderConversationMessages(conversationUuid);
+                    },
+                    error: function (response) {
+                        //TODO обработка ошибок
+                        alert("error");
+                    }
+                });
+            } else {
+                // TODO username брать из data-username у инпута после зполненения этого аттрибута автокомплитом
+                $.ajax({
+                    type: "post",
+                    url: "/messages/createNewConversation",
+                    cache: false,
+                    data: "message=" + $("#input-new-message").val()
+                            + "&username=" + $("#input-new-conversation-recipient").val(),
+                    success: function (response) {
+                        alert("OK")
+                    },
+                    error: function (response) {
+                        //TODO обработка ошибок
+                        alert("error");
+                    }
+                });
+            }
         });
     });
 </script>

@@ -1,8 +1,13 @@
 package com.smartestgift.controller;
 
+import com.smartestgift.dao.model.SmartUserDetails;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -15,5 +20,17 @@ public class IndexController {
     public ModelAndView signin() {
         ModelAndView mav = new ModelAndView("index");
         return mav;
+    }
+
+    @RequestMapping(value = "/isUserAuthenticated", method = RequestMethod.POST)
+    public @ResponseBody boolean isUserAuthenticated() {
+        try {
+            SmartUserDetails authUser = (SmartUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (authUser != null) {
+                return true;
+            }
+        } catch (Exception ignored) {}
+
+        return false;
     }
 }

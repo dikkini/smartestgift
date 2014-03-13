@@ -56,7 +56,7 @@
                                 <a href="<c:url value="/gifts/my"/>"><spring:message code="label.mygifts"/></a>
                             </li>
                             <li>
-                                <a href="<c:url value="/messages"/>"><spring:message code="label.messages"/> <span class="badge">42</span></a>
+                                <a href="<c:url value="/messages"/>"><spring:message code="label.messages"/> <span id="countUnreadMessages" class="badge"></span></a>
                             </li>
                         </sec:authorize>
                         <sec:authorize access="isAnonymous()">
@@ -97,10 +97,54 @@
     </header>
 </div>
 
+<script type="text/javascript">
+    $(document).ready(function() {
+        isUserAuthenticated();
+        var countUserMessages = -1;
+        var userUnreadMessages = 0;
+
+        function getCountUserMessages() {
+            $.ajax({
+                type: "post",
+                url: "/messages/getCountUserMessages",
+                cache: false,
+                success: function (response) {
+                    if (countUserMessages == -1) {
+                        countUserMessages = response;
+                        return;
+                    }
+                    userUnreadMessages = response - countUserMessages;
+                    if (userUnreadMessages > 0) {
+                        $("#countUnreadMessages").text(userUnreadMessages);
+                        countUserMessages = response;
+                    }
+                },
+                error: function (response) {
+                    //TODO обработка ошибок
+                    alert("error");
+                }
+            });
+        }
+
+        function isUserAuthenticated() {
+            $.ajax({
+                type: "post",
+                url: "/isUserAuthenticated",
+                cache: false,
+                success: function (response) {
+                    if (response) {
+                        setInterval(function(){
+                            getCountUserMessages();
+                        }, 3000);
+                    }
+                },
+                error: function (response) {
+                    //TODO обработка ошибок
+                    alert("error");
+                }
+            });
+        }
+    });
+</script>
+
 <div class="container">
-    <jsp:include page="../notifications-block.jsp">
-        <jsp:param name="errors" value="${param.errors}"/>
-        <jsp:param name="warnings" value="${param.warnings}"/>
-        <jsp:param name="information" value="${param.information}"/>
-        <jsp:param name="successes" value="${param.successes}"/>
-    </jsp:include>

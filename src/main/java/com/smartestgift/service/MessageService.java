@@ -17,4 +17,27 @@ public interface MessageService {
      * @return
      */
     public List<Message> findConversationMessages(Conversation conversation);
+
+    /**
+     *
+     * @param username
+     * @param message
+     * @param conversationUuid
+     */
+    public void sendMessageToUser(String username, String message, String conversationUuid);
+
+    /**
+     *
+     * @param usernameFrom
+     * @param usernameTo
+     * @param message
+     */
+    public void createConversation(String usernameFrom, String usernameTo, String message);
+
+    /**
+     *
+     * @param username
+     * @return
+     */
+    public Integer getCountUserMessages(String username);
 }

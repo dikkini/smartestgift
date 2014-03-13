@@ -11,5 +11,17 @@ import java.util.List;
  */
 public interface MessageDAO extends Repository<Message, String> {
 
+    /**
+     *
+     * @param conversationUuid
+     * @return
+     */
     public List<Message> findConversationMessages(String conversationUuid);
+
+    /**
+     *
+     * @param username
+     * @return
+     */
+    public Integer findCountUserMessages(String username);
 }
