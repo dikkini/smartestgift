@@ -11,10 +11,7 @@ import com.smartestgift.service.SmartUserService;
 import com.smartestgift.utils.ActiveUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -42,10 +39,11 @@ public class MessageController {
         return mav;
     }
 
-    @RequestMapping(value = "/getUserMessages", method = RequestMethod.POST)
-    public @ResponseBody List<Message> getUserMessages(@ActiveUser SmartUserDetails smartUserDetails,
-                                                       @RequestParam(value = "conversationUuid", required = true) String conversationUuid) {
-        // TODO add additional security checks
+    @RequestMapping(value = "/getMessagesWithUser", method = RequestMethod.POST)
+    public @ResponseBody List<Message> getMessagesWithUser(@ActiveUser SmartUserDetails smartUserDetails,
+                                                           @RequestParam(value = "conversationUuid", required = true)
+                                                           String conversationUuid) {
+        // TODO add additional security checks using username and active user
         Conversation conversation = conversationService.findConversationByUuid(conversationUuid);
         List<Message> userMessagesWithUser = messageService.findConversationMessages(conversation);
         return userMessagesWithUser;

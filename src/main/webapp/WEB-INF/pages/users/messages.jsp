@@ -33,7 +33,7 @@
                         <c:otherwise>
                             <c:forEach items="${userConversations}" var="conversation">
                                 <c:choose>
-                                    <c:when test="${conversation.user_from.uuid eq smartUser.uuid}">
+                                    <c:when test="${conversation.user_from == smartUser}">
                                         <c:set var="fromUserConversation" value="${conversation.user_to}" />
                                     </c:when>
                                     <c:otherwise>
@@ -43,7 +43,7 @@
 
                                 <li>
                                     <div class="list-group">
-                                        <a href="#" data-conversation-uuid="${conversation.uuid}" class="list-group-item conversation">
+                                        <a href="#" data-conversation-username="${fromUserConversation.username}" data-conversation-uuid="${conversation.uuid}" class="list-group-item conversation">
                                             <div class="row">
                                                 <div class="col-xs-3">
                                                     <img height="50" src="/file/get/${fromUserConversation.file.id}">
@@ -64,8 +64,8 @@
         </div>
     </div>
     <div class="col-xs-8">
-        <strong>User Nickname</strong>
-        <a style="margin-left: 20px" class="btn btn-primary">New Message</a>
+        <strong id="messages-title">New Message</strong>
+        <a id="btn-new-message" style="margin-left: 20px" class="btn btn-primary">New Message</a>
         <div class="btn-group">
             <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">
                 Actions
@@ -77,8 +77,19 @@
                 <li><a href="#">Third Link</a></li>
             </ul>
         </div>
-        <div class="messages-dialog">
-
+        <div style="margin-top: 20px">
+            <ul style="margin-bottom: 20px" id="messages-dialog" class="nav nav-pills nav-stacked"><%--messages here--%></ul>
+            <div id="new-message-recepient-form">
+                <input id="input-new-conversation-recipient" type="text" class="form-control" placeholder="Start write a username or first name">
+            </div>
+            <div id="new-message-input-form" class="row" style="margin-bottom: 20px; display: none;">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Write new message here">
+                    <span class="input-group-btn">
+                        <button id="btn-send-message" class="btn btn-primary" type="button">Send</button>
+                    </span>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -87,20 +98,35 @@
 <script type="text/javascript">
     $(document).ready(function(){
         $(".conversation").click(function() {
+            var conversationObj = $(this);
             $.ajax({
                 type: "post",
-                url: "/messages/getUserMessages",
+                url: "/messages/getMessagesWithUser",
                 cache: false,
-                data: "conversationUuid=" + $(this).data("conversation-uuid"),
+                data: "conversationUuid=" + conversationObj.data("conversation-uuid"),
                 success: function (response) {
+                    var messagesDialog = $("#messages-dialog");
+                    messagesDialog.empty();
+
                     response.forEach(function(entry) {
-                        console.log(entry);
+                        var html = '<li><div class="list-gropu"><a href="#" class="list-group-item"><div class="row"><div class="col-xs-1">';
+                        html += '<img height="50" src="/file/get/' + entry.smartUser.file.id + '"></div><div class="col-xs-9">';
+                        html += '<p class="list-group-item-heading">' + entry.smartUser.username + '</p>'
+                        html += '<p class="list-group-item-text ellipses">' + entry.message + '</p>'
+                        messagesDialog.append(html);
                     });
+                    $("#new-message-input-form").show();
+                    $("#messages-title").text(conversationObj.data("conversation-username"));
                 },
                 error: function (response) {
+                    //TODO обработка ошибок
                     alert("error");
                 }
             });
+        });
+
+        $("#btn-new-message").click(function() {
+
         });
     });
 </script>

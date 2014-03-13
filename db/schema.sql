@@ -61,7 +61,7 @@ CREATE TABLE public.users
   profile_visible   BOOLEAN DEFAULT TRUE    NOT NULL,
   cellphone         VARCHAR(255),
   cellphone_visible BOOLEAN DEFAULT FALSE   NOT NULL,
-  file_id           INT REFERENCES public.file (id)
+  file_id           INT REFERENCES public.file (id) DEFAULT 10 NOT NULL
 );
 
 CREATE TABLE public.user_details

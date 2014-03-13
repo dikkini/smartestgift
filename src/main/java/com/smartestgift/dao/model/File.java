@@ -1,5 +1,7 @@
 package com.smartestgift.dao.model;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
@@ -22,6 +24,7 @@ public class File implements Serializable {
     @Column(name = "size")
     protected String size;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="type_id")
     protected FileType type;
