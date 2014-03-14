@@ -1,6 +1,9 @@
 package com.smartestgift.controller;
 
 import com.smartestgift.dao.model.SmartUserDetails;
+import com.smartestgift.service.SmartUserService;
+import com.smartestgift.utils.ActiveUser;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,6 +19,10 @@ import org.springframework.web.servlet.ModelAndView;
  */
 @Controller
 public class IndexController {
+
+    @Autowired
+    SmartUserService smartUserService;
+
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView signin() {
         ModelAndView mav = new ModelAndView("index");
@@ -32,5 +39,10 @@ public class IndexController {
         } catch (Exception ignored) {}
 
         return false;
+    }
+
+    @RequestMapping(value = "/saveMessagesCount", method = RequestMethod.POST)
+    public @ResponseBody void saveMessagesCount(@ActiveUser SmartUserDetails smartUserDetails) {
+        smartUserService.saveCountMessagesForUser(smartUserDetails);
     }
 }

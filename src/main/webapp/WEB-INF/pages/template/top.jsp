@@ -101,12 +101,11 @@
     $(document).ready(function() {
         // dont not polling messages on messages page :-P
         if (window.location.pathname !== "/messages") {
+            var unreadMessagesPolling;
+            var countUserMessages = -1;
+            var userUnreadMessages = 0;
             authUserAndStartPollingMessages();
         }
-
-        var unreadMessagesPolling;
-        var countUserMessages = -1;
-        var userUnreadMessages = 0;
 
         function getCountUserMessages() {
             $.ajax({
@@ -147,6 +146,16 @@
                     //TODO обработка ошибок
                     alert("error");
                 }
+            });
+        }
+
+        window.onunload = afterUnload;
+
+        function afterUnload() {
+            $.ajax({
+                type: "post",
+                url: "/saveMessagesCount",
+                cache: false
             });
         }
     });

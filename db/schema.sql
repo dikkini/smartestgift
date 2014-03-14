@@ -49,19 +49,20 @@ CREATE TABLE public.file
 
 CREATE TABLE public.users
 (
-  uuid              VARCHAR(36) PRIMARY KEY NOT NULL,
-  username          VARCHAR(64) UNIQUE      NOT NULL,
-  first_name        VARCHAR(255)            NOT NULL,
-  last_name         VARCHAR(255),
-  middle_name       VARCHAR(255),
-  birth_date        TIMESTAMP,
-  gender            BOOLEAN,
-  address           TEXT,
-  address_visible   BOOLEAN DEFAULT FALSE   NOT NULL,
-  profile_visible   BOOLEAN DEFAULT TRUE    NOT NULL,
-  cellphone         VARCHAR(255),
-  cellphone_visible BOOLEAN DEFAULT FALSE   NOT NULL,
-  file_id           INT REFERENCES public.file (id) DEFAULT 10 NOT NULL
+  uuid                  VARCHAR(36) PRIMARY KEY                    NOT NULL,
+  username              VARCHAR(64) UNIQUE                         NOT NULL,
+  first_name            VARCHAR(255)                               NOT NULL,
+  last_name             VARCHAR(255),
+  middle_name           VARCHAR(255),
+  birth_date            TIMESTAMP,
+  gender                BOOLEAN,
+  address               TEXT,
+  address_visible       BOOLEAN DEFAULT FALSE                      NOT NULL,
+  profile_visible       BOOLEAN DEFAULT TRUE                       NOT NULL,
+  cellphone             VARCHAR(255),
+  cellphone_visible     BOOLEAN DEFAULT FALSE                      NOT NULL,
+  file_id               INT REFERENCES public.file (id) DEFAULT 10 NOT NULL,
+  unread_messages_count INT DEFAULT 0                              NOT NULL
 );
 
 CREATE TABLE public.user_details

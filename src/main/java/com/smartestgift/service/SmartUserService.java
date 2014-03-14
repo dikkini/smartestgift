@@ -1,6 +1,7 @@
 package com.smartestgift.service;
 
 import com.restfb.types.User;
+import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserDetails;
 
 import javax.servlet.http.HttpServletRequest;
@@ -46,6 +47,12 @@ public interface SmartUserService {
      * @return
      */
     public SmartUserDetails createNewUserFromFacebook(User facebookUser);
+
+    /**
+     *
+     * @param smartUserDetails
+     */
+    public void saveCountMessagesForUser(SmartUserDetails smartUserDetails);
 
     /**
      *

@@ -67,6 +67,9 @@ public class SmartUser implements Serializable, Annotation {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "pk.user", cascade=CascadeType.ALL)
     protected Set<SmartUserGift> smartUserGifts;
 
+    @Column (name = "unread_messages_count")
+    protected int unreadMessagesCount = 0;
+
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name="file_id")
     protected File file;
@@ -183,6 +186,14 @@ public class SmartUser implements Serializable, Annotation {
 
     public void setSmartUserGifts(Set<SmartUserGift> smartUserGifts) {
         this.smartUserGifts = smartUserGifts;
+    }
+
+    public int getUnreadMessagesCount() {
+        return unreadMessagesCount;
+    }
+
+    public void setUnreadMessagesCount(int unreadMessagesCount) {
+        this.unreadMessagesCount = unreadMessagesCount;
     }
 
     public File getFile() {

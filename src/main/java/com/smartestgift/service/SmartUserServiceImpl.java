@@ -33,10 +33,13 @@ public class SmartUserServiceImpl implements SmartUserService {
     private UserAuthProvider userAuthProvider;
 
     @Autowired
-    RoleDAO roleDAO;
+    private RoleDAO roleDAO;
 
     @Autowired
-    FileDAO fileDAO;
+    private FileDAO fileDAO;
+
+    @Autowired
+    private MessageDAO messageDAO;
 
     @Override
     public SmartUserDetails createNewUser(String username, String email, String passwordEncoded, String firstName, String lastName, Integer authProviderId, Integer roleId) {
@@ -80,6 +83,13 @@ public class SmartUserServiceImpl implements SmartUserService {
     @Override
     public SmartUserDetails createNewUserFromFacebook(User facebookUser) {
         return getSmartUserDetailsFromFacebookUser(facebookUser);
+    }
+
+    @Override
+    public void saveCountMessagesForUser(SmartUserDetails smartUserDetails) {
+        Integer countUserMessages = messageDAO.findCountUserMessages(smartUserDetails.getUsername());
+        smartUserDetails.getSmartUser().setUnreadMessagesCount(countUserMessages);
+        smartUserDetailsDAO.merge(smartUserDetails);
     }
 
     @Override

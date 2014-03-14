@@ -145,7 +145,7 @@
 
             messages.forEach(function(entry) {
                 var html =
-                        '<li>' +
+                        '<li tabindex="1">' +
                             '<div class="list-group">' +
                                 '<a class="list-group-item" style="cursor: pointer">' +
                                     '<div class="row">' +
@@ -169,6 +169,7 @@
                         '</li>';
 
                 messagesDialog.append(html);
+                $('#messages-dialog li').last().addClass('active-li').focus();
             });
         }
 
