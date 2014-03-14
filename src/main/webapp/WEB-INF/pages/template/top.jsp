@@ -99,7 +99,12 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        isUserAuthenticated();
+        // dont not polling messages on messages page :-P
+        if (window.location.pathname !== "/messages") {
+            authUserAndStartPollingMessages();
+        }
+
+        var unreadMessagesPolling;
         var countUserMessages = -1;
         var userUnreadMessages = 0;
 
@@ -126,14 +131,14 @@
             });
         }
 
-        function isUserAuthenticated() {
+        function authUserAndStartPollingMessages() {
             $.ajax({
                 type: "post",
                 url: "/isUserAuthenticated",
                 cache: false,
                 success: function (response) {
                     if (response) {
-                        setInterval(function(){
+                        unreadMessagesPolling = setInterval(function(){
                             getCountUserMessages();
                         }, 3000);
                     }
