@@ -14,7 +14,7 @@
 <div class="row">
     <div class="col-xs-4">
         <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Inbox <span class="badge">42</span></a></li>
+            <li class="active"><a href="#">Inbox <span class="badge"></span></a></li>
             <li><a href="#">Sent</a></li>
         </ul>
         <div class="col-lg-9">
@@ -79,7 +79,7 @@
         </div>
         <div style="margin-top: 20px">
             <div id="conversation-message">
-                <ul style="margin-bottom: 20px" id="messages-dialog" class="nav nav-pills nav-stacked"><%--messages here--%></ul>
+                <ul style="margin-bottom: 20px; max-height: 250px; overflow: auto;" id="messages-dialog" class="nav nav-pills nav-stacked"><%--messages here--%></ul>
             </div>
 
             <div id="new-message-input-form" style="margin-bottom: 20px; display: none;">
@@ -88,7 +88,7 @@
                         <input id="input-new-conversation-recipient" data-username="" type="text" class="form-control" placeholder="Username or First name">
                     </li>
                     <li class="list-group-item">
-                        <div class="recipient-auto-complete" style="height: 500px"></div>
+                        <div class="recipient-auto-complete" style="max-height: 250px; overflow: auto;"></div>
                     </li>
                 </ul>
             </div>
@@ -111,25 +111,22 @@
     $(document).ready(function(){
         var pollingConversationInterval;
         function startLongPollingConversation(conversationUuid){
-            loadAndRenderConversationMessages(conversationUuid);
             pollingConversationInterval = setInterval(function(){
                 loadAndRenderConversationMessages(conversationUuid)
             }, 3000);
         }
 
-        function stopLongPollingConversation(pollingConversationInterval) {
-            clearInterval(pollingConversationInterval);
-        }
-
         var conversationMessages = "";
-        function loadAndRenderConversationMessages(conversationUuid) {
+        function loadAndRenderConversationMessages(conversationUuid, now) {
             $.ajax({
                 type: "post",
                 url: "/messages/getConversationMessages",
                 cache: false,
                 data: "conversationUuid=" + conversationUuid,
                 success: function (response) {
-                    if (conversationMessages.length != response.length) {
+                    if (now) {
+                        renderConversationMessages(response);
+                    } else if (conversationMessages.length != response.length) {
                         renderConversationMessages(response);
                         conversationMessages = response;
                     }
@@ -179,11 +176,13 @@
             var conversationUuid = $(this).data("conversation-uuid");
             $("#messages-title").text($(this).data("conversation-username"));
             $("#conversation-message").attr("data-conversation-uuid", conversationUuid);
-            stopLongPollingConversation(pollingConversationInterval);
+            loadAndRenderConversationMessages(conversationUuid, true);
+            clearInterval(pollingConversationInterval);
             startLongPollingConversation(conversationUuid);
         });
 
         $("#btn-new-message").click(function() {
+            clearInterval(pollingConversationInterval);
             $("#messages-title").text("New Message");
             $("#messages-dialog").empty();
             $("#new-message-input-form").show();
