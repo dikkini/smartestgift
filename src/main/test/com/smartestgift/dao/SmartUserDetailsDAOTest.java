@@ -1,6 +1,7 @@
 package com.smartestgift.dao;
 
 import com.smartestgift.dao.model.SmartUserDetails;
+import com.smartestgift.utils.ApplicationConstants;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,7 +47,7 @@ public class SmartUserDetailsDAOTest {
     @Test
     @Ignore
     public void testFindFacebookUserBySocialId() throws Exception {
-        SmartUserDetails facebookUserBySocialId = smartUserDetailsDAO.findUserBySocialIdAndAuthProvider(testSocialId, authProviderDAO.findFacebookProvider());
+        SmartUserDetails facebookUserBySocialId = smartUserDetailsDAO.findUserBySocialIdAndAuthProvider(testSocialId, authProviderDAO.find(ApplicationConstants.FACEBOOK_AUTH_PROVIDER_ID));
         assertTrue(facebookUserBySocialId != null);
     }
 

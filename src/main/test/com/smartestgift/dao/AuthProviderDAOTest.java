@@ -3,6 +3,7 @@ package com.smartestgift.dao;
 import com.smartestgift.dao.AuthProviderDAO;
 import com.smartestgift.dao.model.AuthProvider;
 import com.smartestgift.dao.model.SmartUserDetails;
+import com.smartestgift.utils.ApplicationConstants;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +29,9 @@ public class AuthProviderDAOTest {
 
     @Test
     public void testAuthProviderDAO() throws Exception {
-        AuthProvider facebookProvider = authProviderDAO.findFacebookProvider();
+        AuthProvider facebookProvider = authProviderDAO.find(ApplicationConstants.FACEBOOK_AUTH_PROVIDER_ID);
         assertTrue(facebookProvider.getName().equals("facebook"));
-        AuthProvider applicationProvider = authProviderDAO.findApplicationProvider();
+        AuthProvider applicationProvider = authProviderDAO.find(ApplicationConstants.APPLICATION_AUTH_PROVIDER_ID);
         assertTrue(applicationProvider.getName().equals("application"));
         facebookProvider.getSmartUsers();
     }

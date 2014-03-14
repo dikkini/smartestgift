@@ -16,7 +16,7 @@ public class File implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "file_seq_gen")
     @SequenceGenerator(name = "file_seq_gen", sequenceName = "file_id_seq")
-    protected Long id;
+    protected Integer id;
 
     @Column(name = "name")
     protected String name;
@@ -40,11 +40,11 @@ public class File implements Serializable {
         this.type = type;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

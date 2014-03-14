@@ -3,14 +3,15 @@ package com.smartestgift.controller;
 import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
 import com.restfb.types.User;
-import com.smartestgift.controller.model.AjaxResponse;
 import com.smartestgift.dao.model.SmartUserDetails;
-import com.smartestgift.enums.AuthProviderEnum;
 import com.smartestgift.service.SmartUserService;
 import com.smartestgift.utils.ApplicationConstants;
 import com.smartestgift.utils.Utils;
-import org.apache.commons.httpclient.*;
-import org.apache.commons.httpclient.methods.*;
+import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
@@ -24,8 +25,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -126,22 +125,24 @@ public class LoginController {
 
                     // TODO сделать проверку на валидность юзера
                     User facebookUser = facebookClient.fetchObject("me", User.class);
-                    //In this user object, you will have the details you want from Facebook, Since we have the access token with us, can play around and see what more can be done
+                    // In this user object, you will have the details you want from Facebook,
+                    // Since we have the access token with us, can play around and see what more can be done
 
-                    SmartUserDetails existSocialUser = smartUserService.findExistSocialUser(facebookUser.getId(), AuthProviderEnum.FACEBOOK.getId());
+                    SmartUserDetails existSocialUser = smartUserService.findExistSocialUser(facebookUser.getId(),
+                            ApplicationConstants.FACEBOOK_AUTH_PROVIDER_ID);
 
                     if (existSocialUser != null) {
                         smartUserService.authenticateUser(existSocialUser, request);
                     } else {
-                        List<String> errors = smartUserService.checkOccupiedEmailAndUsername(facebookUser.getUsername(), facebookUser.getEmail());
-                        SmartUserDetails smartUserDetails = new SmartUserDetails(facebookUser);
+                        List<String> errors = smartUserService.checkOccupiedEmailAndUsername(facebookUser.getUsername(),
+                                facebookUser.getEmail());
                         if (errors.isEmpty()) {
-                            smartUserService.createSmartUserDetails(smartUserDetails);
-                            smartUserService.authenticateUser(smartUserDetails, request);
+                            SmartUserDetails newUserFromFacebook = smartUserService.createNewUserFromFacebook(facebookUser);
+                            smartUserService.authenticateUser(newUserFromFacebook, request);
                             return "redirect:/profile";
                         } else {
-                            request.getSession().setAttribute(smartUserDetails.getSocialId(), smartUserDetails);
-                            return "redirect:/signup/social?id=" + smartUserDetails.getSocialId() + "&errors="
+                            request.getSession().setAttribute(facebookUser.getId(), facebookUser);
+                            return "redirect:/signup/facebook?id=" + facebookUser.getId() + "&errors="
                                     + (errors.contains("username") ? "username_error," : "")
                                     + (errors.contains("email") ? "email_error" : "");
                         }

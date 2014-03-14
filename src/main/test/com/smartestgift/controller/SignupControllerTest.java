@@ -7,6 +7,7 @@ import com.smartestgift.dao.SmartUserDAO;
 import com.smartestgift.dao.SmartUserDetailsDAO;
 import com.smartestgift.dao.model.SmartUserDetails;
 import com.smartestgift.security.UserAuthProvider;
+import com.smartestgift.service.SmartUserService;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
@@ -33,6 +34,9 @@ public class SignupControllerTest extends TestControllerBaseConfiguration {
     SmartUserDetailsDAO smartUserDetailsDAO;
 
     @Autowired
+    SmartUserService smartUserService;
+
+    @Autowired
     RoleDAO roleDAO;
 
     @Autowired
@@ -49,9 +53,7 @@ public class SignupControllerTest extends TestControllerBaseConfiguration {
 
         // Process mock annotations
         MockitoAnnotations.initMocks(this);
-        signupController.smartUserDetailsDAO = smartUserDetailsDAO;
-        signupController.roleDAO = roleDAO;
-        signupController.authProviderDAO = authProviderDAO;
+        signupController.smartUserService = smartUserService;
         signupController.authProvider = authProvider;
         // Setup Spring test in standalone mode
         this.mockMvc = MockMvcBuilders.standaloneSetup(signupController)

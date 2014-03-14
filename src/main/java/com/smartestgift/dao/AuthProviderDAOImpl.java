@@ -1,13 +1,8 @@
 package com.smartestgift.dao;
 
 import com.smartestgift.dao.model.AuthProvider;
-import com.smartestgift.dao.model.Gift;
-import com.smartestgift.dao.model.Role;
-import com.smartestgift.dao.model.SmartUser;
-import com.smartestgift.enums.AuthProviderEnum;
-import com.smartestgift.enums.RolesEnum;
+import com.smartestgift.utils.ApplicationConstants;
 import org.hibernate.Criteria;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,16 +21,6 @@ public class AuthProviderDAOImpl implements AuthProviderDAO {
 
     @Autowired
     SessionFactory sessionFactory;
-
-    @Override
-    public AuthProvider findFacebookProvider() {
-        return (AuthProvider) sessionFactory.getCurrentSession().get(AuthProvider.class, AuthProviderEnum.FACEBOOK.getId());
-    }
-
-    @Override
-    public AuthProvider findApplicationProvider() {
-        return (AuthProvider) sessionFactory.getCurrentSession().get(AuthProvider.class, AuthProviderEnum.APPLICATION.getId());
-    }
 
     @Override
     public AuthProvider find(Integer id) {

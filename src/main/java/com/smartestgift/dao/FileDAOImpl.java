@@ -23,7 +23,7 @@ public class FileDAOImpl implements FileDAO {
     SessionFactory sessionFactory;
 
     @Override
-    public File find(Long id) {
+    public File find(Integer id) {
         return (File) sessionFactory.getCurrentSession().get(File.class, id);
     }
 

@@ -7,7 +7,4 @@ import com.smartestgift.dao.model.AuthProvider;
  * Email: dikkini@gmail.com
  */
 public interface AuthProviderDAO extends Repository<AuthProvider, Integer> {
-    public AuthProvider findFacebookProvider();
-
-    public AuthProvider findApplicationProvider();
 }

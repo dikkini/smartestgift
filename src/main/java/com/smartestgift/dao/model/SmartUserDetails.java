@@ -1,8 +1,6 @@
 package com.smartestgift.dao.model;
 
 import com.restfb.types.User;
-import com.smartestgift.enums.AuthProviderEnum;
-import com.smartestgift.enums.RolesEnum;
 import org.hibernate.annotations.GenericGenerator;
 
 import org.hibernate.annotations.Parameter;
@@ -73,31 +71,6 @@ public class SmartUserDetails implements Serializable, UserDetails {
 
     public SmartUserDetails() {}
 
-    /**
-     * Creating SmartUser from Facebook user
-     * @param user facebook user
-     */
-    public SmartUserDetails(User user) {
-        this.smartUser = new SmartUser(user.getBirthdayAsDate(), user.getUsername(), user.getFirstName(),
-                user.getLastName(), user.getMiddleName(), user.getHometownName());
-        this.socialId = user.getId();
-        this.registrationDate = new Date();
-        this.email = user.getEmail();
-        this.role = new Role(RolesEnum.USER_ROLE.getId(), RolesEnum.USER_ROLE.getRole());
-        this.authProvider = new AuthProvider(AuthProviderEnum.FACEBOOK.getId(), AuthProviderEnum.FACEBOOK.getName());
-    }
-
-    public SmartUserDetails(SmartUser smartUser, String password, String email, String socialId, Date registrationDate, Role role, AuthProvider authProvider) {
-        this.smartUser = smartUser;
-        this.password = password;
-        this.email = email;
-        this.socialId = socialId;
-        this.registrationDate = registrationDate;
-        this.role = role;
-        this.authProvider = authProvider;
-        this.username = smartUser.getUsername();
-    }
-
     public String getUserUuid() {
         return userUuid;
     }
@@ -118,60 +91,80 @@ public class SmartUserDetails implements Serializable, UserDetails {
         return authorities;
     }
 
+    public void setUserUuid(String userUuid) {
+        this.userUuid = userUuid;
+    }
+
+    public void setSmartUser(SmartUser smartUser) {
+        this.smartUser = smartUser;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public String getPassword() {
         return password;
     }
 
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public String getSocialId() {
-        return socialId;
-    }
-
-    public boolean isAccountNonExpired() {
-        return accountNonExpired;
-    }
-
-    public boolean isCredentialsNonExpired() {
-        return credentialsNonExpired;
-    }
-
-    public boolean isAccountNonLocked() {
-        return accountNonLocked;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public Date getRegistrationDate() {
-        return registrationDate;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getEmail() {
         return email;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public String getSocialId() {
+        return socialId;
+    }
+
+    public void setSocialId(String socialId) {
+        this.socialId = socialId;
+    }
+
+    public boolean isAccountNonExpired() {
+        return accountNonExpired;
+    }
+
     public void setAccountNonExpired(boolean accountNonExpired) {
         this.accountNonExpired = accountNonExpired;
+    }
+
+    public boolean isCredentialsNonExpired() {
+        return credentialsNonExpired;
     }
 
     public void setCredentialsNonExpired(boolean credentialsNonExpired) {
         this.credentialsNonExpired = credentialsNonExpired;
     }
 
+    public boolean isAccountNonLocked() {
+        return accountNonLocked;
+    }
+
     public void setAccountNonLocked(boolean accountNonLocked) {
         this.accountNonLocked = accountNonLocked;
     }
 
-    public void setRegistrationDate(Date registrationDate) {
-        this.registrationDate = registrationDate;
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public AuthProvider getAuthProvider() {
@@ -180,6 +173,14 @@ public class SmartUserDetails implements Serializable, UserDetails {
 
     public void setAuthProvider(AuthProvider authProvider) {
         this.authProvider = authProvider;
+    }
+
+    public Date getRegistrationDate() {
+        return registrationDate;
+    }
+
+    public void setRegistrationDate(Date registrationDate) {
+        this.registrationDate = registrationDate;
     }
 
     @Override

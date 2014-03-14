@@ -13,6 +13,41 @@ import java.util.List;
 public interface SmartUserService {
 
     /**
+     * Create new user
+     * @param username username
+     * @param email email
+     * @param passwordEncoded encoded password
+     * @param firstName first name
+     * @param lastName last name
+     * @param authProviderId auth provider id (from ApplicationConstants)
+     * @param roleId role id (from ApplicationConstants)
+     * @return SmartUserDetails model
+     */
+    public SmartUserDetails createNewUser(String username, String email, String passwordEncoded, String firstName,
+                                          String lastName, Integer authProviderId, Integer roleId);
+
+    /**
+     * Creating new user from facebook with new user data. New user data coming from page continue registration,
+     * when username or email was occupied.
+     * @param facebookUser facebook user model (restfb model
+     * @param username username
+     * @param email email
+     * @param firstName first name
+     * @param lastName last name
+     * @param socialId social id
+     * @return SmartUserDetails model
+     */
+    public SmartUserDetails createNewUserFromFacebook(User facebookUser, String username, String email, String firstName,
+                                                      String lastName, String socialId);
+
+    /**
+     *
+     * @param facebookUser
+     * @return
+     */
+    public SmartUserDetails createNewUserFromFacebook(User facebookUser);
+
+    /**
      *
      * @param socialId
      * @param providerId
@@ -34,11 +69,6 @@ public interface SmartUserService {
      * @return true - free
      */
     public boolean checkOccupiedEmail(String email);
-
-    /**
-     * Creating user
-     */
-    public void createSmartUserDetails(SmartUserDetails smartUserDetails);
 
     /**
      *

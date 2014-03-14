@@ -4,6 +4,7 @@ import com.smartestgift.dao.AuthProviderDAO;
 import com.smartestgift.dao.RoleDAO;
 import com.smartestgift.dao.model.AuthProvider;
 import com.smartestgift.dao.model.Role;
+import com.smartestgift.utils.ApplicationConstants;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,9 @@ public class RoleDAOTest {
 
     @Test
     public void testRoleDAO() throws Exception {
-        Role userRole = roleDAO.findUserRole();
+        Role userRole = roleDAO.find(ApplicationConstants.USER_ROLE_ID);
+        Role adminRole = roleDAO.find(ApplicationConstants.ADMIN_ROLE_ID);
         assertTrue(userRole.getRole().equals("user"));
+        assertTrue(adminRole.getRole().equals("admin"));
     }
 }

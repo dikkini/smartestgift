@@ -73,21 +73,20 @@ public class SmartUser implements Serializable, Annotation {
 
     public SmartUser() {}
 
-    public SmartUser(Date birthDate, String username, String firstName, String lastName, String middleName, String address) {
-        this.username = username;
-        this.birthDate = birthDate;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.middleName = middleName;
-        this.address = address;
-    }
-
     public String getUuid() {
         return uuid;
     }
 
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
     public String getUsername() {
         return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Date getBirthDate() {
@@ -174,12 +173,12 @@ public class SmartUser implements Serializable, Annotation {
         return smartUserDetails;
     }
 
-    public void setSmartUserDetails(SmartUserDetails authDetails) {
-        this.smartUserDetails = authDetails;
+    public void setSmartUserDetails(SmartUserDetails smartUserDetails) {
+        this.smartUserDetails = smartUserDetails;
     }
 
     public Set<SmartUserGift> getSmartUserGifts() {
-        return this.smartUserGifts;
+        return smartUserGifts;
     }
 
     public void setSmartUserGifts(Set<SmartUserGift> smartUserGifts) {

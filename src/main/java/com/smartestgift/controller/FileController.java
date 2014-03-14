@@ -63,7 +63,7 @@ public class FileController {
 
     @RequestMapping(value = "/get/{value}", method = RequestMethod.GET)
     public void getFileById(HttpServletResponse response, @PathVariable Integer value) {
-        File getFile = fileDAO.find(value.longValue());
+        File getFile = fileDAO.find(value);
         java.io.File file = new java.io.File(getFile.getType().getPath() + getFile.getName());
 
         try {
@@ -84,9 +84,9 @@ public class FileController {
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    public void deleteFileById(@RequestParam(value = "fileId", required = true) String fileId,
-                                  HttpServletResponse response) {
-        File file = fileDAO.find(Long.valueOf(fileId));
+    public void deleteFileById(HttpServletResponse response,
+                               @RequestParam(value = "fileId", required = true) Integer fileId) {
+        File file = fileDAO.find(fileId);
         fileDAO.delete(file);
     }
 }

@@ -2,7 +2,6 @@ package com.smartestgift.dao;
 
 import com.smartestgift.dao.model.AuthProvider;
 import com.smartestgift.dao.model.SmartUserDetails;
-import com.smartestgift.enums.AuthProviderEnum;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
