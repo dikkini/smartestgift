@@ -64,11 +64,12 @@ public class SmartUser implements Serializable, Annotation {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "smartUser", cascade = CascadeType.ALL)
     protected SmartUserDetails smartUserDetails;
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "pk.user", cascade=CascadeType.ALL)
     protected Set<SmartUserGift> smartUserGifts;
 
-    @Column (name = "unread_messages_count")
-    protected int unreadMessagesCount = 0;
+    @Column (name = "messages_count")
+    protected int messagesCount = 0;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name="file_id")
@@ -188,12 +189,12 @@ public class SmartUser implements Serializable, Annotation {
         this.smartUserGifts = smartUserGifts;
     }
 
-    public int getUnreadMessagesCount() {
-        return unreadMessagesCount;
+    public int getMessagesCount() {
+        return messagesCount;
     }
 
-    public void setUnreadMessagesCount(int unreadMessagesCount) {
-        this.unreadMessagesCount = unreadMessagesCount;
+    public void setMessagesCount(int unreadMessagesCount) {
+        this.messagesCount = unreadMessagesCount;
     }
 
     public File getFile() {

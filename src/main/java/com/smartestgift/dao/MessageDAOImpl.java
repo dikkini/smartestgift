@@ -71,6 +71,6 @@ public class MessageDAOImpl implements MessageDAO {
     @Override
     public Integer findCountUserMessages(String username) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Message.class);
-        return ((Number) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+        return ((Long) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
     }
 }

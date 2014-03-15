@@ -7,6 +7,9 @@
 
 <sec:authentication var="user" property="principal" />
 
+<jsp:useBean id="user" class="com.smartestgift.dao.model.SmartUserDetails" scope="request"/>
+
+
 <!doctype html>
 
 <html lang="en">
@@ -22,6 +25,7 @@
     <script type="text/javascript" src="/resources/ext/jquery/datepicker/jquery.pickmeup.min.js"></script>
     <script type="text/javascript" src="/resources/main/js/loading.js"></script>
     <script type="text/javascript" src="/resources/main/js/utils.js"></script>
+    <script type="text/javascript" src="/resources/main/js/check_browse_close.js"></script>
 </head>
 
 <body>
@@ -100,12 +104,12 @@
 <script type="text/javascript">
     $(document).ready(function() {
         // dont not polling messages on messages page :-P
-        if (window.location.pathname !== "/messages") {
-            var unreadMessagesPolling;
-            var countUserMessages = -1;
-            var userUnreadMessages = 0;
-            authUserAndStartPollingMessages();
-        }
+        <sec:authorize access="isAuthenticated()">
+            if (window.location.pathname !== "/messages") {
+                var countUserMessages = ${user.smartUser.messagesCount};
+                authUserAndStartPollingMessages();
+            }
+        </sec:authorize>
 
         function getCountUserMessages() {
             $.ajax({
@@ -113,19 +117,11 @@
                 url: "/messages/getCountUserMessages",
                 cache: false,
                 success: function (response) {
-                    if (countUserMessages == -1) {
-                        countUserMessages = response;
-                        return;
-                    }
-                    userUnreadMessages = response - countUserMessages;
+                    var userUnreadMessages = response - countUserMessages;
                     if (userUnreadMessages > 0) {
                         $("#countUnreadMessages").text(userUnreadMessages);
                         countUserMessages = response;
                     }
-                },
-                error: function (response) {
-                    //TODO обработка ошибок
-                    alert("error");
                 }
             });
         }
@@ -137,25 +133,11 @@
                 cache: false,
                 success: function (response) {
                     if (response) {
-                        unreadMessagesPolling = setInterval(function(){
+                        setInterval(function(){
                             getCountUserMessages();
                         }, 3000);
                     }
-                },
-                error: function (response) {
-                    //TODO обработка ошибок
-                    alert("error");
                 }
-            });
-        }
-
-        window.onunload = afterUnload;
-
-        function afterUnload() {
-            $.ajax({
-                type: "post",
-                url: "/saveMessagesCount",
-                cache: false
             });
         }
     });

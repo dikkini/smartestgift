@@ -30,6 +30,9 @@ public class SmartUserServiceImpl implements SmartUserService {
     private SmartUserDetailsDAO smartUserDetailsDAO;
 
     @Autowired
+    private SmartUserDAO smartUserDAO;
+
+    @Autowired
     private UserAuthProvider userAuthProvider;
 
     @Autowired
@@ -88,8 +91,9 @@ public class SmartUserServiceImpl implements SmartUserService {
     @Override
     public void saveCountMessagesForUser(SmartUserDetails smartUserDetails) {
         Integer countUserMessages = messageDAO.findCountUserMessages(smartUserDetails.getUsername());
-        smartUserDetails.getSmartUser().setUnreadMessagesCount(countUserMessages);
-        smartUserDetailsDAO.merge(smartUserDetails);
+        SmartUser smartUser = smartUserDetails.getSmartUser();
+        smartUser.setMessagesCount(countUserMessages);
+        smartUserDAO.store(smartUser);
     }
 
     @Override
