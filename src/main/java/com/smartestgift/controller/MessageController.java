@@ -42,14 +42,28 @@ public class MessageController {
     }
 
     @RequestMapping(value = "/getConversationMessages", method = RequestMethod.POST)
-    public @ResponseBody List<Message> getMessagesWithUser(@ActiveUser SmartUserDetails smartUserDetails,
+    public @ResponseBody Callable<List<Message>> getMessagesWithUser(@ActiveUser final SmartUserDetails smartUserDetails,
+/*                                                           @RequestParam(value = "currentMessagesCount", required = false) final
+                                                           Integer currentMessagesCount,*/
                                                            @RequestParam(value = "conversationUuid", required = true)
                                                            String conversationUuid) {
         // TODO add additional security checks using username and active user
-        Conversation conversation = conversationService.findConversationByUuid(conversationUuid);
-        List<Message> userMessagesWithUser = messageService.findConversationMessages(smartUserDetails.getSmartUser(),
-                conversation);
-        return userMessagesWithUser;
+        final Conversation conversation = conversationService.findConversationByUuid(conversationUuid);
+        return new Callable<List<Message>>() {
+            @Override
+            public List<Message> call() throws Exception {
+
+                List<Message> userMessagesWithUser = messageService.findConversationMessages(smartUserDetails.getSmartUser(),
+                        conversation);
+/*                while (userMessagesWithUser.size() == currentMessagesCount) {
+                    Thread.sleep(1000);*/
+                    userMessagesWithUser = messageService.findConversationMessages(smartUserDetails.getSmartUser(),
+                            conversation);
+
+/*                }*/
+                return userMessagesWithUser;
+            }
+        };
     }
 
     @RequestMapping(value = "/sendMessageToUser", method = RequestMethod.POST)
@@ -83,7 +97,12 @@ public class MessageController {
         return new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
+
                 Integer countUserUnreadMessages = messageService.findCountUserUnreadMessages(smartUserDetails.getSmartUser());
+                while (countUserUnreadMessages == 0) {
+                    Thread.sleep(1000);
+                    countUserUnreadMessages = messageService.findCountUserUnreadMessages(smartUserDetails.getSmartUser());
+                }
                 return countUserUnreadMessages;
             }
         };
