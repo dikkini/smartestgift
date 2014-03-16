@@ -16,8 +16,6 @@
 
     <security:http auto-config="false" use-expressions="true">
         <security:intercept-url pattern="/" access="permitAll" requires-channel="http"/>
-        <security:intercept-url pattern="/isUserAuthenticated" access="permitAll" requires-channel="http"/>
-        <security:intercept-url pattern="/saveMessagesCount" access="isAuthenticated()" requires-channel="http"/>
         <security:intercept-url pattern="/login/**" access="isAnonymous()" requires-channel="http"/>
         <security:intercept-url pattern="/signup/**" access="isAnonymous()" requires-channel="http"/>
 

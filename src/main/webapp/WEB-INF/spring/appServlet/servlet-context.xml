@@ -11,9 +11,10 @@
     <mvc:interceptors>
         <!-- adding smartuser model in modelandview object everywhere-->
         <mvc:interceptor>
-            <mvc:mapping path="/profile/**"/>
-            <mvc:mapping path="/gifts/**"/>
-            <mvc:mapping path="/messages/**"/>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/"/>
+            <mvc:exclude-mapping path="/login/**"/>
+            <mvc:exclude-mapping path="/signup/**"/>
             <bean class="com.smartestgift.handler.UserInterceptor"/>
         </mvc:interceptor>
         <mvc:interceptor>

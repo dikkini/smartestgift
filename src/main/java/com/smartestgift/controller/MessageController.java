@@ -1,21 +1,22 @@
 package com.smartestgift.controller;
 
 import com.smartestgift.controller.model.AjaxResponse;
-import com.smartestgift.dao.SmartUserDAO;
 import com.smartestgift.dao.model.Conversation;
 import com.smartestgift.dao.model.Message;
-import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserDetails;
 import com.smartestgift.service.ConversationService;
 import com.smartestgift.service.MessageService;
-import com.smartestgift.service.SmartUserService;
 import com.smartestgift.utils.ActiveUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * Created by dikkini on 10.03.14.
@@ -46,7 +47,8 @@ public class MessageController {
                                                            String conversationUuid) {
         // TODO add additional security checks using username and active user
         Conversation conversation = conversationService.findConversationByUuid(conversationUuid);
-        List<Message> userMessagesWithUser = messageService.findConversationMessages(conversation);
+        List<Message> userMessagesWithUser = messageService.findConversationMessages(smartUserDetails.getSmartUser(),
+                conversation);
         return userMessagesWithUser;
     }
 
@@ -56,7 +58,7 @@ public class MessageController {
                                                         @RequestParam(value = "conversation-uuid", required = true) String conversationUuid) {
         // TODO add additional security checks using username and active user
         AjaxResponse result = new AjaxResponse();
-        messageService.sendMessageToUser(smartUserDetails.getUsername(), message, conversationUuid);
+        messageService.sendMessageToUser(smartUserDetails.getSmartUser(), message, conversationUuid);
         result.setSuccess(true);
         result.addSuccessMessage("message_sent_success");
         return result;
@@ -68,17 +70,22 @@ public class MessageController {
                                                                  @RequestParam(value = "username", required = true) String username) {
         // TODO add additional security checks using username and active user
         AjaxResponse result = new AjaxResponse();
-        messageService.createConversation(smartUserDetails.getUsername(), username, message);
+        messageService.createConversation(smartUserDetails.getSmartUser(), username, message);
         result.setSuccess(true);
         //TODO добавить в сообщения данное сообщение
         result.addSuccessMessage("message_sent_success");
         return result;
     }
 
-    @RequestMapping(value = "/getCountUserMessages", method = RequestMethod.POST)
-    public @ResponseBody Integer getCountUserMessages(@ActiveUser SmartUserDetails smartUserDetails) {
+    @RequestMapping(value = "/getCountUserUnreadMessages", method = RequestMethod.POST)
+    public @ResponseBody Callable<Integer> getCountUserUnreadMessages(@ActiveUser final SmartUserDetails smartUserDetails) {
         // TODO add additional security checks using username and active user
-        Integer countUserMessages = messageService.getCountUserMessages(smartUserDetails.getUsername());
-        return countUserMessages;
+        return new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                Integer countUserUnreadMessages = messageService.findCountUserUnreadMessages(smartUserDetails.getSmartUser());
+                return countUserUnreadMessages;
+            }
+        };
     }
 }

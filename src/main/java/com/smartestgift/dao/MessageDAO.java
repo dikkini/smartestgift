@@ -1,6 +1,8 @@
 package com.smartestgift.dao;
 
+import com.smartestgift.dao.model.Conversation;
 import com.smartestgift.dao.model.Message;
+import com.smartestgift.dao.model.MessageStatus;
 import com.smartestgift.dao.model.SmartUser;
 
 import java.util.List;
@@ -12,7 +14,6 @@ import java.util.List;
 public interface MessageDAO extends Repository<Message, String> {
 
     /**
-     *
      * @param conversationUuid
      * @return
      */
@@ -20,8 +21,18 @@ public interface MessageDAO extends Repository<Message, String> {
 
     /**
      *
-     * @param username
+     * @param smartUser
+     * @param messageStatus
      * @return
      */
-    public Integer findCountUserMessages(String username);
+    public List<Message> findUserMessagesByStatus(SmartUser smartUser, MessageStatus messageStatus);
+
+    /**
+     *
+     * @param smartUser
+     * @param conversation
+     * @param messageStatus
+     * @return
+     */
+    public Integer findMessagesUserNotAuthorCountByConversationAndStatus(SmartUser smartUser, Conversation conversation, MessageStatus messageStatus);
 }

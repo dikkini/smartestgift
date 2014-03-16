@@ -33,6 +33,10 @@ public class Message implements Serializable {
     @JoinColumn(name = "conversation_uuid")
     protected Conversation conversation;
 
+    @OneToOne
+    @JoinColumn(name = "status_id")
+    protected MessageStatus messageStatus;
+
     public String getUuid() {
         return uuid;
     }
@@ -71,5 +75,13 @@ public class Message implements Serializable {
 
     public void setConversation(Conversation conversation) {
         this.conversation = conversation;
+    }
+
+    public MessageStatus getMessageStatus() {
+        return messageStatus;
+    }
+
+    public void setMessageStatus(MessageStatus messageStatus) {
+        this.messageStatus = messageStatus;
     }
 }

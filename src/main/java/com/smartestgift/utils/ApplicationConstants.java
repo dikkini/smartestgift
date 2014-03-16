@@ -29,5 +29,9 @@ public class ApplicationConstants {
     public static final Integer USER_ROLE_ID = 2;
     public static final Integer ADMIN_ROLE_ID = 1;
 
+    // Message statuses
+    public static final Integer MESSAGE_STATUS_NEW = 1;
+    public static final Integer MESSAGE_STATUS_READ = 2;
+
 
 }

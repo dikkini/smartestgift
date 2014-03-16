@@ -2,15 +2,10 @@ package com.smartestgift.service;
 
 import com.smartestgift.dao.ConversationDAO;
 import com.smartestgift.dao.MessageDAO;
+import com.smartestgift.dao.MessageStatusDAO;
 import com.smartestgift.dao.SmartUserDAO;
-import com.smartestgift.dao.model.Conversation;
-import com.smartestgift.dao.model.Message;
-import com.smartestgift.dao.model.SmartUser;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.SimpleExpression;
+import com.smartestgift.dao.model.*;
+import com.smartestgift.utils.ApplicationConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,37 +29,55 @@ public class MessageServiceImpl implements MessageService {
     @Autowired
     ConversationDAO conversationDAO;
 
+    @Autowired
+    MessageStatusDAO messageStatusDAO;
+
     @Override
-    public List<Message> findConversationMessages(Conversation conversation) {
-        return messageDAO.findConversationMessages(conversation.getUuid());
+    public List<Message> findConversationMessages(SmartUser activeUser, Conversation conversation) {
+        List<Message> conversationMessages = messageDAO.findConversationMessages(conversation.getUuid());
+        for (Message conversationMsg : conversationMessages) {
+            MessageStatus messageStatus = conversationMsg.getMessageStatus();
+            if (!conversationMsg.getSmartUser().equals(activeUser) && messageStatus.getId().equals(ApplicationConstants.MESSAGE_STATUS_NEW)) {
+                conversationMsg.setMessageStatus(messageStatusDAO.find(ApplicationConstants.MESSAGE_STATUS_READ));
+                messageDAO.store(conversationMsg);
+            }
+        }
+
+        return conversationMessages;
     }
 
     @Override
-    public void sendMessageToUser(String username, String message, String conversationUuid) {
-        SmartUser smartUserByUsername = smartUserDAO.findSmartUserByUsername(username);
+    public void sendMessageToUser(SmartUser smartUser, String message, String conversationUuid) {
         Conversation conversation = conversationDAO.find(conversationUuid);
 
         Message msg = new Message();
-        msg.setSmartUser(smartUserByUsername);
+        msg.setSmartUser(smartUser);
         msg.setDate(new Date());
         msg.setMessage(message);
         msg.setConversation(conversation);
+        msg.setMessageStatus(messageStatusDAO.find(ApplicationConstants.MESSAGE_STATUS_NEW));
 
         messageDAO.store(msg);
     }
 
     @Override
-    public void createConversation(String usernameFrom, String usernameTo, String message) {
+    public void createConversation(SmartUser smartUserFrom, String usernameTo, String message) {
         Conversation conversation = new Conversation();
-        conversation.setUser_from(smartUserDAO.findSmartUserByUsername(usernameFrom));
+        conversation.setUser_from(smartUserFrom);
         conversation.setUser_to(smartUserDAO.findSmartUserByUsername(usernameTo));
         conversationDAO.store(conversation);
-        sendMessageToUser(usernameFrom, message, conversation.getUuid());
+        sendMessageToUser(smartUserFrom, message, conversation.getUuid());
     }
 
     @Override
-    public Integer getCountUserMessages(String username) {
-        return messageDAO.findCountUserMessages(username);
+    public Integer findCountUserUnreadMessages(SmartUser smartUser) {
+        MessageStatus messageStatus = messageStatusDAO.find(ApplicationConstants.MESSAGE_STATUS_NEW);
+        List<Conversation> userConversations = conversationDAO.findUserConversations(smartUser);
+        Integer countUserUnreadMessages = 0;
+        for (Conversation conversation : userConversations) {
+            countUserUnreadMessages += messageDAO.findMessagesUserNotAuthorCountByConversationAndStatus(smartUser, conversation, messageStatus);
+        }
+        return countUserUnreadMessages;
     }
 
 }

@@ -103,40 +103,20 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        // dont not polling messages on messages page :-P
         <sec:authorize access="isAuthenticated()">
-            if (window.location.pathname !== "/messages") {
-                var countUserMessages = ${user.smartUser.messagesCount};
-                authUserAndStartPollingMessages();
-            }
+        getCountUnreadUserMessages();
+            setInterval(function(){
+                getCountUnreadUserMessages();
+            }, 3000);
         </sec:authorize>
 
-        function getCountUserMessages() {
+        function getCountUnreadUserMessages() {
             $.ajax({
                 type: "post",
-                url: "/messages/getCountUserMessages",
+                url: "/messages/getCountUserUnreadMessages",
                 cache: false,
                 success: function (response) {
-                    var userUnreadMessages = response - countUserMessages;
-                    if (userUnreadMessages > 0) {
-                        $("#countUnreadMessages").text(userUnreadMessages);
-                        countUserMessages = response;
-                    }
-                }
-            });
-        }
-
-        function authUserAndStartPollingMessages() {
-            $.ajax({
-                type: "post",
-                url: "/isUserAuthenticated",
-                cache: false,
-                success: function (response) {
-                    if (response) {
-                        setInterval(function(){
-                            getCountUserMessages();
-                        }, 3000);
-                    }
+                    $("#countUnreadMessages").text(response);
                 }
             });
         }

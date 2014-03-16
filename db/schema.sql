@@ -20,6 +20,7 @@ DROP TABLE public.file CASCADE;
 DROP TABLE public.gift_file CASCADE;
 DROP TABLE public.message CASCADE;
 DROP TABLE public.conversation CASCADE;
+DROP TABLE public.message_status CASCADE;
 
 CREATE TABLE public.auth_provider
 (
@@ -61,8 +62,7 @@ CREATE TABLE public.users
   profile_visible   BOOLEAN DEFAULT TRUE                       NOT NULL,
   cellphone         VARCHAR(255),
   cellphone_visible BOOLEAN DEFAULT FALSE                      NOT NULL,
-  file_id           INT REFERENCES public.file (id) DEFAULT 10 NOT NULL,
-  messages_count    INT DEFAULT 0                              NOT NULL
+  file_id           INT REFERENCES public.file (id) DEFAULT 10 NOT NULL
 );
 
 CREATE TABLE public.user_details
@@ -131,11 +131,18 @@ CREATE TABLE public.conversation
   user_to_uuid   VARCHAR(36) REFERENCES public.users (uuid)    NOT NULL
 );
 
+CREATE TABLE public.message_status
+(
+  id     SERIAL PRIMARY KEY,
+  status VARCHAR(20) NOT NULL
+);
+
 CREATE TABLE public.message
 (
   uuid              VARCHAR(36) PRIMARY KEY,
   user_uuid         VARCHAR(36) REFERENCES public.users (uuid)        NOT NULL,
   message           VARCHAR                                           NOT NULL,
   date              TIMESTAMP                                         NOT NULL,
-  conversation_uuid VARCHAR(36) REFERENCES public.conversation (uuid) NOT NULL
+  conversation_uuid VARCHAR(36) REFERENCES public.conversation (uuid) NOT NULL,
+  status_id         INT REFERENCES public.message_status (id)         NOT NULL
 );

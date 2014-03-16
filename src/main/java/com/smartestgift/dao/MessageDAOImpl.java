@@ -1,6 +1,9 @@
 package com.smartestgift.dao;
 
+import com.smartestgift.dao.model.Conversation;
 import com.smartestgift.dao.model.Message;
+import com.smartestgift.dao.model.MessageStatus;
+import com.smartestgift.dao.model.SmartUser;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -69,8 +72,19 @@ public class MessageDAOImpl implements MessageDAO {
     }
 
     @Override
-    public Integer findCountUserMessages(String username) {
+    public List<Message> findUserMessagesByStatus(SmartUser smartUser, MessageStatus messageStatus) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Message.class);
+        criteria.add(Restrictions.eq("smartUser", smartUser));
+        criteria.add(Restrictions.eq("messageStatus", messageStatus));
+        return (List<Message>) criteria.list();
+    }
+
+    @Override
+    public Integer findMessagesUserNotAuthorCountByConversationAndStatus(SmartUser smartUser, Conversation conversation, MessageStatus messageStatus) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Message.class);
+        criteria.add(Restrictions.eq("messageStatus", messageStatus));
+        criteria.add(Restrictions.eq("conversation", conversation));
+        criteria.add(Restrictions.ne("smartUser", smartUser));
         return ((Long) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
     }
 }

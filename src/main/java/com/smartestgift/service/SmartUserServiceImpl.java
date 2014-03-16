@@ -89,14 +89,6 @@ public class SmartUserServiceImpl implements SmartUserService {
     }
 
     @Override
-    public void saveCountMessagesForUser(SmartUserDetails smartUserDetails) {
-        Integer countUserMessages = messageDAO.findCountUserMessages(smartUserDetails.getUsername());
-        SmartUser smartUser = smartUserDetails.getSmartUser();
-        smartUser.setMessagesCount(countUserMessages);
-        smartUserDAO.store(smartUser);
-    }
-
-    @Override
     public SmartUserDetails findExistSocialUser(String socialId, Integer providerId) {
         AuthProvider authProvider = authProviderDAO.find(providerId);
         return smartUserDetailsDAO.findUserBySocialIdAndAuthProvider(socialId, authProvider);

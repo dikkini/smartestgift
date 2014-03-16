@@ -48,11 +48,6 @@ public interface SmartUserService {
      */
     public SmartUserDetails createNewUserFromFacebook(User facebookUser);
 
-    /**
-     *
-     * @param smartUserDetails
-     */
-    public void saveCountMessagesForUser(SmartUserDetails smartUserDetails);
 
     /**
      *

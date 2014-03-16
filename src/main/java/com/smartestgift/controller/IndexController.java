@@ -28,21 +28,4 @@ public class IndexController {
         ModelAndView mav = new ModelAndView("index");
         return mav;
     }
-
-    @RequestMapping(value = "/isUserAuthenticated", method = RequestMethod.POST)
-    public @ResponseBody boolean isUserAuthenticated() {
-        try {
-            SmartUserDetails authUser = (SmartUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            if (authUser != null) {
-                return true;
-            }
-        } catch (Exception ignored) {}
-
-        return false;
-    }
-
-    @RequestMapping(value = "/saveMessagesCount", method = RequestMethod.POST)
-    public @ResponseBody void saveMessagesCount(@ActiveUser SmartUserDetails smartUserDetails) {
-        smartUserService.saveCountMessagesForUser(smartUserDetails);
-    }
 }
