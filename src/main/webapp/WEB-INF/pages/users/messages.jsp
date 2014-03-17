@@ -109,27 +109,21 @@
 
 <script type="text/javascript">
     $(document).ready(function(){
-        var pollingConversationInterval;
+        var pollingConversationTimeout;
         function startLongPollingConversation(conversationUuid){
-            pollingConversationInterval = setInterval(function(){
-                loadAndRenderNewConversationMessages(conversationUuid)
-            }, 3000);
+            loadAndRenderNewConversationMessages(conversationUuid)
         }
 
         function loadAndRenderNewConversationMessages(conversationUuid) {
-            $.ajax({
-                type: "post",
-                url: "/messages/getNewConversationMessages",
-                cache: false,
-                data: "conversationUuid=" + conversationUuid,
-                success: function (response) {
-                    renderConversationMessages(response, false);
-                },
-                error: function (response) {
-                    //TODO обработка ошибок
-                    alert("error");
-                }
-            });
+            setTimeout(function () {
+                pollingConversationTimeout = $.ajax({
+                    type: "post",
+                    url: "/messages/getCountUserUnreadMessages",
+                    cache: false,
+                    success: function (response) {
+                        $("#countUnreadMessages").text(response);
+                    }, dataType: "json", complete: loadAndRenderNewConversationMessages(conversationUuid), timeout: 3000 });
+            }, 5000);
         }
         function loadAndRenderAllConversationMessages(conversationUuid) {
             $.ajax({
@@ -138,7 +132,7 @@
                 cache: false,
                 data: "conversationUuid=" + conversationUuid,
                 success: function (response) {
-                renderConversationMessages(response, true);
+                    renderConversationMessages(response, true);
                 },
                 error: function (response) {
                     //TODO обработка ошибок
@@ -180,7 +174,7 @@
                         '</li>';
 
                 messagesDialog.append(html);
-                $('#messages-dialog li').last().addClass('active-li').focus();
+                messagesDialog.find('li').last().addClass('active-li').focus();
             });
         }
 
@@ -189,79 +183,102 @@
             $("#messages-title").text($(this).data("conversation-username"));
             $("#conversation-message").attr("data-conversation-uuid", conversationUuid);
             loadAndRenderAllConversationMessages(conversationUuid);
-            clearInterval(pollingConversationInterval);
+            clearTimeout(pollingConversationTimeout);
             startLongPollingConversation(conversationUuid);
         });
 
         $("#btn-new-message").click(function() {
-            clearInterval(pollingConversationInterval);
+            clearTimeout(pollingConversationTimeout);
             $("#messages-title").text("New Message");
             $("#messages-dialog").empty();
             $("#new-message-input-form").show();
         });
 
-        $("#btn-send-message").click(function() {
-            // send to user
-            if ($("#messages-dialog").children().length > 0) {
-                var conversationUuid = $("#conversation-message").data("conversation-uuid");
-                $.ajax({
-                    type: "post",
-                    url: "/messages/sendMessageToUser",
-                    cache: false,
-                    data: "message=" + $("#input-new-message").val()
-                            + "&conversation-uuid=" + conversationUuid,
-                    success: function (response) {
-                        var html =
-                                '<li tabindex="1">' +
-                                        '<div class="list-group">' +
-                                        '<a class="list-group-item" style="cursor: pointer">' +
-                                        '<div class="row">' +
-                                        '<div class="col-xs-1">' +
-                                        '<img height="50" src="/file/get/' + '${smartUser.file.id}' + '">' +
-                                        '</div>' +
-                                        '<div class="col-xs-9">' +
-                                        '<p class="list-group-item-heading">' +
-                                        '${smartUser.username}' +
-                                        '</p>' +
-                                        '<p class="list-group-item-text">' +
-                                        $("#input-new-message").val() +
-                                        '</p>' +
-                                        '</div>'  +
-                                        '<div class="col-xs-2">' +
-                                        new Date().customFormat("#DD#.#MM#.#YYYY#") +
-                                        '</div>' +
-                                        '</div>' +
-                                        '</a>' +
-                                        '</div>' +
-                                        '</li>';
-
-                        $("#messages-dialog").append(html);
-                        $('#messages-dialog li').last().addClass('active-li').focus();
-                        $("#input-new-message").val("");
-                    },
-                    error: function (response) {
-                        //TODO обработка ошибок
-                        alert("error");
-                    }
-                });
-            } else {
-                // TODO username брать из data-username у инпута после зполненения этого аттрибута автокомплитом
-                $.ajax({
-                    type: "post",
-                    url: "/messages/createNewConversation",
-                    cache: false,
-                    data: "message=" + $("#input-new-message").val()
-                            + "&username=" + $("#input-new-conversation-recipient").val(),
-                    success: function (response) {
-                        alert("OK")
-                    },
-                    error: function (response) {
-                        //TODO обработка ошибок
-                        alert("error");
-                    }
-                });
+        $("#input-new-message").on('keypress', function(e) {
+            // enter key
+            if (e.which !== 13) {
+                return;
             }
+            sendMessageOrStartNewConversation();
         });
+
+        $("#btn-send-message").click(function(e) {
+            sendMessageOrStartNewConversation();
+        });
+
+        function sendMessageOrStartNewConversation() {
+            if ($("#messages-dialog").children().length > 0) {
+                sendMessageToUser();
+            } else {
+                startNewConversationWithUser();
+            }
+        }
+
+        function startNewConversationWithUser() {
+            var messageDialogObj = $("#messages-dialog");
+            var inputNewMessageObj = $("#input-new-message");
+            // TODO username брать из data-username у инпута после зполненения этого аттрибута автокомплитом
+            $.ajax({
+                type: "post",
+                url: "/messages/createNewConversation",
+                cache: false,
+                data: "message=" + inputNewMessageObj.val()
+                        + "&username=" + $("#input-new-conversation-recipient").val(),
+                success: function (response) {
+                    alert("OK")
+                },
+                error: function (response) {
+                    //TODO обработка ошибок
+                    alert("error");
+                }
+            });
+        }
+
+        function sendMessageToUser() {
+            var messageDialogObj = $("#messages-dialog");
+            var inputNewMessageObj = $("#input-new-message");
+            var conversationUuid = $("#conversation-message").data("conversation-uuid");
+            $.ajax({
+                type: "post",
+                url: "/messages/sendMessageToUser",
+                cache: false,
+                data: "message=" + inputNewMessageObj.val()
+                        + "&conversation-uuid=" + conversationUuid,
+                success: function (response) {
+                    var html =
+                            '<li tabindex="1">' +
+                                    '<div class="list-group">' +
+                                    '<a class="list-group-item" style="cursor: pointer">' +
+                                    '<div class="row">' +
+                                    '<div class="col-xs-1">' +
+                                    '<img height="50" src="/file/get/' + '${smartUser.file.id}' + '">' +
+                                    '</div>' +
+                                    '<div class="col-xs-9">' +
+                                    '<p class="list-group-item-heading">' +
+                                    '${smartUser.username}' +
+                                    '</p>' +
+                                    '<p class="list-group-item-text">' +
+                                    inputNewMessageObj.val() +
+                                    '</p>' +
+                                    '</div>'  +
+                                    '<div class="col-xs-2">' +
+                                    new Date().customFormat("#DD#.#MM#.#YYYY#") +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</a>' +
+                                    '</div>' +
+                                    '</li>';
+
+                    messageDialogObj.append(html);
+                    messageDialogObj.find('li').last().addClass('active-li').focus();
+                    inputNewMessageObj.val("");
+                },
+                error: function (response) {
+                    //TODO обработка ошибок
+                    alert("error");
+                }
+            });
+        }
     });
 </script>
 

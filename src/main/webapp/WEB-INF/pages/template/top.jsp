@@ -105,13 +105,15 @@
     $(document).ready(function() {
         <sec:authorize access="isAuthenticated()">
             (function poll(){
-                $.ajax({
-                    type: "post",
-                    url: "/messages/getCountUserUnreadMessages",
-                    cache: false,
-                    success: function (response) {
-                        $("#countUnreadMessages").text(response);
-                    }, dataType: "json", complete: poll, timeout: 3000 });
+                setTimeout(function () {
+                    $.ajax({
+                        type: "post",
+                        url: "/messages/getCountUserUnreadMessages",
+                        cache: false,
+                        success: function (response) {
+                            $("#countUnreadMessages").text(response);
+                        }, dataType: "json", complete: poll, timeout: 3000 });
+                }, 5000);
             })();
         </sec:authorize>
     });
