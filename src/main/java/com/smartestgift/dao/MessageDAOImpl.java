@@ -80,10 +80,11 @@ public class MessageDAOImpl implements MessageDAO {
     }
 
     @Override
-    public List<Message> findMessagesByConversationAndStatus(Conversation conversation, MessageStatus messageStatus) {
+    public List<Message> findMessagesUserIsAuthorByConversationAndStatus(SmartUser smartUser, Conversation conversation, MessageStatus messageStatus) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Message.class);
         criteria.add(Restrictions.eq("conversation", conversation));
         criteria.add(Restrictions.eq("messageStatus", messageStatus));
+        criteria.add(Restrictions.ne("smartUser", smartUser));
         return (List<Message>) criteria.list();
     }
 

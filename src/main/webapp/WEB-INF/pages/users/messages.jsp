@@ -211,6 +211,32 @@
                     data: "message=" + $("#input-new-message").val()
                             + "&conversation-uuid=" + conversationUuid,
                     success: function (response) {
+                        var html =
+                                '<li tabindex="1">' +
+                                        '<div class="list-group">' +
+                                        '<a class="list-group-item" style="cursor: pointer">' +
+                                        '<div class="row">' +
+                                        '<div class="col-xs-1">' +
+                                        '<img height="50" src="/file/get/' + '${smartUser.file.id}' + '">' +
+                                        '</div>' +
+                                        '<div class="col-xs-9">' +
+                                        '<p class="list-group-item-heading">' +
+                                        '${smartUser.username}' +
+                                        '</p>' +
+                                        '<p class="list-group-item-text">' +
+                                        $("#input-new-message").val() +
+                                        '</p>' +
+                                        '</div>'  +
+                                        '<div class="col-xs-2">' +
+                                        new Date().customFormat("#DD#.#MM#.#YYYY#") +
+                                        '</div>' +
+                                        '</div>' +
+                                        '</a>' +
+                                        '</div>' +
+                                        '</li>';
+
+                        $("#messages-dialog").append(html);
+                        $('#messages-dialog li').last().addClass('active-li').focus();
                         $("#input-new-message").val("");
                     },
                     error: function (response) {
