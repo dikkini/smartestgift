@@ -17,7 +17,7 @@ public interface MessageDAO extends Repository<Message, String> {
      * @param conversationUuid
      * @return
      */
-    public List<Message> findConversationMessages(String conversationUuid);
+    public List<Message> findMessagesByConversation(String conversationUuid);
 
     /**
      *
@@ -25,7 +25,15 @@ public interface MessageDAO extends Repository<Message, String> {
      * @param messageStatus
      * @return
      */
-    public List<Message> findUserMessagesByStatus(SmartUser smartUser, MessageStatus messageStatus);
+    public List<Message> findMessagesByAuthorAndStatus(SmartUser smartUser, MessageStatus messageStatus);
+
+    /**
+     *
+     * @param conversation
+     * @param messageStatus
+     * @return
+     */
+    public List<Message> findMessagesByConversationAndStatus(Conversation conversation, MessageStatus messageStatus);
 
     /**
      *

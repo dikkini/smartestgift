@@ -104,22 +104,16 @@
 <script type="text/javascript">
     $(document).ready(function() {
         <sec:authorize access="isAuthenticated()">
-        getCountUnreadUserMessages();
-            setInterval(function(){
-                getCountUnreadUserMessages();
-            }, 3000);
+            (function poll(){
+                $.ajax({
+                    type: "post",
+                    url: "/messages/getCountUserUnreadMessages",
+                    cache: false,
+                    success: function (response) {
+                        $("#countUnreadMessages").text(response);
+                    }, dataType: "json", complete: poll, timeout: 3000 });
+            })();
         </sec:authorize>
-
-        function getCountUnreadUserMessages() {
-            $.ajax({
-                type: "post",
-                url: "/messages/getCountUserUnreadMessages",
-                cache: false,
-                success: function (response) {
-                    $("#countUnreadMessages").text(response);
-                }
-            });
-        }
     });
 </script>
 

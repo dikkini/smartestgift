@@ -17,5 +17,5 @@ public interface ConversationDAO extends Repository<Conversation, String> {
      * @param smartUser
      * @return
      */
-    public List<Conversation> findUserConversations(SmartUser smartUser);
+    public List<Conversation> findConversationsByUser(SmartUser smartUser);
 }

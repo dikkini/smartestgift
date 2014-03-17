@@ -33,17 +33,18 @@ public class MessageServiceImpl implements MessageService {
     MessageStatusDAO messageStatusDAO;
 
     @Override
-    public List<Message> findConversationMessages(SmartUser activeUser, Conversation conversation) {
-        List<Message> conversationMessages = messageDAO.findConversationMessages(conversation.getUuid());
-        for (Message conversationMsg : conversationMessages) {
-            MessageStatus messageStatus = conversationMsg.getMessageStatus();
-            if (!conversationMsg.getSmartUser().equals(activeUser) && messageStatus.getId().equals(ApplicationConstants.MESSAGE_STATUS_NEW)) {
-                conversationMsg.setMessageStatus(messageStatusDAO.find(ApplicationConstants.MESSAGE_STATUS_READ));
-                messageDAO.store(conversationMsg);
-            }
-        }
-
+    public List<Message> findMessagesInConversation(SmartUser activeUser, Conversation conversation) {
+        List<Message> conversationMessages = messageDAO.findMessagesByConversation(conversation.getUuid());
+        this.markMessagesAsReadNotAuthor(conversationMessages, activeUser);
         return conversationMessages;
+    }
+
+    @Override
+    public List<Message> findNewMessagesInConversation(SmartUser activeUser, Conversation conversation) {
+        MessageStatus messageStatus = messageStatusDAO.find(ApplicationConstants.MESSAGE_STATUS_NEW);
+        List<Message> messagesByConversationAndStatus = messageDAO.findMessagesByConversationAndStatus(conversation, messageStatus);
+        this.markMessagesAsReadNotAuthor(messagesByConversationAndStatus, activeUser);
+        return messagesByConversationAndStatus;
     }
 
     @Override
@@ -61,23 +62,24 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void createConversation(SmartUser smartUserFrom, String usernameTo, String message) {
-        Conversation conversation = new Conversation();
-        conversation.setUser_from(smartUserFrom);
-        conversation.setUser_to(smartUserDAO.findSmartUserByUsername(usernameTo));
-        conversationDAO.store(conversation);
-        sendMessageToUser(smartUserFrom, message, conversation.getUuid());
-    }
-
-    @Override
     public Integer findCountUserUnreadMessages(SmartUser smartUser) {
         MessageStatus messageStatus = messageStatusDAO.find(ApplicationConstants.MESSAGE_STATUS_NEW);
-        List<Conversation> userConversations = conversationDAO.findUserConversations(smartUser);
+        List<Conversation> userConversations = conversationDAO.findConversationsByUser(smartUser);
         Integer countUserUnreadMessages = 0;
         for (Conversation conversation : userConversations) {
             countUserUnreadMessages += messageDAO.findMessagesUserNotAuthorCountByConversationAndStatus(smartUser, conversation, messageStatus);
         }
         return countUserUnreadMessages;
+    }
+
+    private void markMessagesAsReadNotAuthor(List<Message> messages, SmartUser authorUser) {
+        for (Message message : messages) {
+            MessageStatus messageStatus = message.getMessageStatus();
+            if (!message.getSmartUser().equals(authorUser) && messageStatus.getId().equals(ApplicationConstants.MESSAGE_STATUS_NEW)) {
+                message.setMessageStatus(messageStatusDAO.find(ApplicationConstants.MESSAGE_STATUS_READ));
+                messageDAO.store(message);
+            }
+        }
     }
 
 }

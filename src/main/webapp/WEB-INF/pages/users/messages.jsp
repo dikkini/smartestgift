@@ -112,24 +112,33 @@
         var pollingConversationInterval;
         function startLongPollingConversation(conversationUuid){
             pollingConversationInterval = setInterval(function(){
-                loadAndRenderConversationMessages(conversationUuid)
+                loadAndRenderNewConversationMessages(conversationUuid)
             }, 3000);
         }
 
-        var conversationMessages = "";
-        function loadAndRenderConversationMessages(conversationUuid, now) {
+        function loadAndRenderNewConversationMessages(conversationUuid) {
+            $.ajax({
+                type: "post",
+                url: "/messages/getNewConversationMessages",
+                cache: false,
+                data: "conversationUuid=" + conversationUuid,
+                success: function (response) {
+                    renderConversationMessages(response, false);
+                },
+                error: function (response) {
+                    //TODO обработка ошибок
+                    alert("error");
+                }
+            });
+        }
+        function loadAndRenderAllConversationMessages(conversationUuid) {
             $.ajax({
                 type: "post",
                 url: "/messages/getConversationMessages",
                 cache: false,
                 data: "conversationUuid=" + conversationUuid,
                 success: function (response) {
-                    if (now) {
-                        renderConversationMessages(response);
-                    } else if (conversationMessages.length != response.length) {
-                        renderConversationMessages(response);
-                        conversationMessages = response;
-                    }
+                renderConversationMessages(response, true);
                 },
                 error: function (response) {
                     //TODO обработка ошибок
@@ -138,10 +147,12 @@
             });
         }
 
-        function renderConversationMessages(messages) {
+        function renderConversationMessages(messages, isEmpty) {
             $("#new-message-input-form").hide();
             var messagesDialog = $("#messages-dialog");
-            messagesDialog.empty();
+            if (isEmpty) {
+                messagesDialog.empty();
+            }
 
             messages.forEach(function(entry) {
                 var html =
@@ -177,7 +188,7 @@
             var conversationUuid = $(this).data("conversation-uuid");
             $("#messages-title").text($(this).data("conversation-username"));
             $("#conversation-message").attr("data-conversation-uuid", conversationUuid);
-            loadAndRenderConversationMessages(conversationUuid, true);
+            loadAndRenderAllConversationMessages(conversationUuid);
             clearInterval(pollingConversationInterval);
             startLongPollingConversation(conversationUuid);
         });
@@ -201,7 +212,6 @@
                             + "&conversation-uuid=" + conversationUuid,
                     success: function (response) {
                         $("#input-new-message").val("");
-                        loadAndRenderConversationMessages(conversationUuid);
                     },
                     error: function (response) {
                         //TODO обработка ошибок

@@ -1,9 +1,6 @@
 package com.smartestgift.service;
 
-import com.smartestgift.dao.model.Conversation;
-import com.smartestgift.dao.model.Message;
-import com.smartestgift.dao.model.SmartUser;
-import com.smartestgift.dao.model.SmartUserDetails;
+import com.smartestgift.dao.model.*;
 
 import java.util.List;
 
@@ -18,7 +15,15 @@ public interface MessageService {
      * @param conversation
      * @return
      */
-    public List<Message> findConversationMessages(SmartUser activeUser, Conversation conversation);
+    public List<Message> findMessagesInConversation(SmartUser activeUser, Conversation conversation);
+
+    /**
+     *
+     * @param activeUser
+     * @param conversation
+     * @return
+     */
+    public List<Message> findNewMessagesInConversation(SmartUser activeUser, Conversation conversation);
 
     /**
      *
@@ -27,14 +32,6 @@ public interface MessageService {
      * @param conversationUuid
      */
     public void sendMessageToUser(SmartUser smartUser, String message, String conversationUuid);
-
-    /**
-     *
-     * @param smartUserFrom
-     * @param usernameTo
-     * @param message
-     */
-    public void createConversation(SmartUser smartUserFrom, String usernameTo, String message);
 
     /**
      *

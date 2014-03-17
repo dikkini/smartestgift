@@ -2,6 +2,8 @@ package com.smartestgift.service;
 
 import com.smartestgift.dao.ConversationDAO;
 import com.smartestgift.dao.MessageDAO;
+import com.smartestgift.dao.MessageStatusDAO;
+import com.smartestgift.dao.SmartUserDAO;
 import com.smartestgift.dao.model.Conversation;
 import com.smartestgift.dao.model.SmartUser;
 import org.hibernate.Criteria;
@@ -22,13 +24,19 @@ import java.util.List;
 public class ConversationServiceImpl implements ConversationService {
 
     @Autowired
-    SessionFactory sessionFactory;
-
-    @Autowired
     MessageDAO messageDAO;
 
     @Autowired
+    SmartUserDAO smartUserDAO;
+
+    @Autowired
     ConversationDAO conversationDAO;
+
+    @Autowired
+    MessageStatusDAO messageStatusDAO;
+
+    @Autowired
+    MessageService messageService;
 
     @Override
     public Conversation findConversationByUuid(String uuid) {
@@ -36,11 +44,16 @@ public class ConversationServiceImpl implements ConversationService {
     }
 
     @Override
-    public List<Conversation> findUserConversations(SmartUser user) {
-        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Conversation.class);
-        SimpleExpression smartUserFrom = Restrictions.eq("user_from", user);
-        SimpleExpression smartUserTo = Restrictions.eq("user_to", user);
-        criteria.add(Restrictions.or(smartUserFrom, smartUserTo));
-        return (List<Conversation>) criteria.list();
+    public List<Conversation> findConversationsByUser(SmartUser user) {
+        return conversationDAO.findConversationsByUser(user);
+    }
+
+    @Override
+    public void createConversation(SmartUser smartUserFrom, String usernameTo, String message) {
+        Conversation conversation = new Conversation();
+        conversation.setUser_from(smartUserFrom);
+        conversation.setUser_to(smartUserDAO.findSmartUserByUsername(usernameTo));
+        conversationDAO.store(conversation);
+        messageService.sendMessageToUser(smartUserFrom, message, conversation.getUuid());
     }
 }

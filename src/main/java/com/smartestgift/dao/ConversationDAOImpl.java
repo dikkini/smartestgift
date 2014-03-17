@@ -61,9 +61,11 @@ public class ConversationDAOImpl implements ConversationDAO {
     }
 
     @Override
-    public List<Conversation> findUserConversations(SmartUser smartUser) {
+    public List<Conversation> findConversationsByUser(SmartUser smartUser) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Conversation.class);
-        criteria.add(Restrictions.or(Restrictions.eq("user_from", smartUser), Restrictions.eq("user_to", smartUser)));
-        return criteria.list();
+        SimpleExpression smartUserFrom = Restrictions.eq("user_from", smartUser);
+        SimpleExpression smartUserTo = Restrictions.eq("user_to", smartUser);
+        criteria.add(Restrictions.or(smartUserFrom, smartUserTo));
+        return (List<Conversation>) criteria.list();
     }
 }

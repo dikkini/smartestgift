@@ -35,41 +35,38 @@ public class MessageController {
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView messages(@ActiveUser SmartUserDetails smartUserDetails) {
-        List<Conversation> userConversations = conversationService.findUserConversations(smartUserDetails.getSmartUser());
+        List<Conversation> userConversations = conversationService.findConversationsByUser(smartUserDetails.getSmartUser());
         ModelAndView mav = new ModelAndView("users/messages");
         mav.addObject("userConversations", userConversations);
         return mav;
     }
 
     @RequestMapping(value = "/getConversationMessages", method = RequestMethod.POST)
-    public @ResponseBody Callable<List<Message>> getMessagesWithUser(@ActiveUser final SmartUserDetails smartUserDetails,
-/*                                                           @RequestParam(value = "currentMessagesCount", required = false) final
-                                                           Integer currentMessagesCount,*/
-                                                           @RequestParam(value = "conversationUuid", required = true)
-                                                           String conversationUuid) {
+    public @ResponseBody List<Message> getNewMessagesWithUser(@ActiveUser SmartUserDetails smartUserDetails,
+                                                              @RequestParam(value = "conversationUuid", required = true)
+                                                                                              String conversationUuid) {
         // TODO add additional security checks using username and active user
-        final Conversation conversation = conversationService.findConversationByUuid(conversationUuid);
-        return new Callable<List<Message>>() {
-            @Override
-            public List<Message> call() throws Exception {
+        Conversation conversation = conversationService.findConversationByUuid(conversationUuid);
+        return messageService.findMessagesInConversation(smartUserDetails.getSmartUser(),
+                conversation);
+    }
 
-                List<Message> userMessagesWithUser = messageService.findConversationMessages(smartUserDetails.getSmartUser(),
-                        conversation);
-/*                while (userMessagesWithUser.size() == currentMessagesCount) {
-                    Thread.sleep(1000);*/
-                    userMessagesWithUser = messageService.findConversationMessages(smartUserDetails.getSmartUser(),
-                            conversation);
-
-/*                }*/
-                return userMessagesWithUser;
-            }
-        };
+    @RequestMapping(value = "/getNewConversationMessages", method = RequestMethod.POST)
+    public @ResponseBody List<Message> getNewConversationMessages(@ActiveUser SmartUserDetails smartUserDetails,
+                                                                  @RequestParam(value = "conversationUuid", required = true)
+                                                                  String conversationUuid) {
+        // TODO add additional security checks using username and active user
+        Conversation conversation = conversationService.findConversationByUuid(conversationUuid);
+        return messageService.findNewMessagesInConversation(smartUserDetails.getSmartUser(),
+                conversation);
     }
 
     @RequestMapping(value = "/sendMessageToUser", method = RequestMethod.POST)
     public @ResponseBody AjaxResponse sendMessageToUser(@ActiveUser SmartUserDetails smartUserDetails,
-                                                        @RequestParam(value = "message", required = true) String message,
-                                                        @RequestParam(value = "conversation-uuid", required = true) String conversationUuid) {
+                                                        @RequestParam(value = "message", required = true)
+                                                        String message,
+                                                        @RequestParam(value = "conversation-uuid", required = true)
+                                                        String conversationUuid) {
         // TODO add additional security checks using username and active user
         AjaxResponse result = new AjaxResponse();
         messageService.sendMessageToUser(smartUserDetails.getSmartUser(), message, conversationUuid);
@@ -80,11 +77,13 @@ public class MessageController {
 
     @RequestMapping(value = "/createNewConversation", method = RequestMethod.POST)
     public @ResponseBody AjaxResponse createNewConversation(@ActiveUser SmartUserDetails smartUserDetails,
-                                                                 @RequestParam(value = "message", required = true) String message,
-                                                                 @RequestParam(value = "username", required = true) String username) {
+                                                                 @RequestParam(value = "message", required = true)
+                                                                 String message,
+                                                                 @RequestParam(value = "username", required = true)
+                                                                 String username) {
         // TODO add additional security checks using username and active user
         AjaxResponse result = new AjaxResponse();
-        messageService.createConversation(smartUserDetails.getSmartUser(), username, message);
+        conversationService.createConversation(smartUserDetails.getSmartUser(), username, message);
         result.setSuccess(true);
         //TODO добавить в сообщения данное сообщение
         result.addSuccessMessage("message_sent_success");
