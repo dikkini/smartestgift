@@ -2,9 +2,11 @@ package com.smartestgift.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.smartestgift.handler.CurrentUserHandlerMethodArgumentResolver;
 import com.smartestgift.handler.UserInterceptor;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -24,15 +26,22 @@ import org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
+import org.springframework.web.servlet.HandlerMapping;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.*;
+import org.springframework.web.servlet.i18n.CookieLocaleResolver;
+import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
+import org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping;
+import org.springframework.web.servlet.mvc.method.annotation.ServletWebArgumentResolverAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
+import org.springframework.web.servlet.view.JstlView;
 
 import java.lang.reflect.Modifier;
 import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Created by dikkini on 18.03.14.
@@ -43,7 +52,7 @@ import java.util.Properties;
 @EnableWebMvc
 @ComponentScan(basePackages = {"com.smartestgift"})
 @EnableTransactionManagement
-public class WebConfig extends WebMvcConfigurerAdapter {
+public class WebAppConfig extends WebMvcConfigurerAdapter {
     private static final Charset UTF8 = Charset.forName("UTF-8");
 
     @Autowired
@@ -70,7 +79,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());
-        sessionFactory.setPackagesToScan("com.smartestgift.*");
+        sessionFactory.setPackagesToScan("com.smartestgift.dao.model.*");
         sessionFactory.setHibernateProperties(hibernateProperties());
 
         return sessionFactory;
@@ -102,18 +111,17 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/assets/**").addResourceLocations("/assets").setCachePeriod(31556926);
-        registry.addResourceHandler("/css/**").addResourceLocations("/css/").setCachePeriod(31556926);
-        registry.addResourceHandler("/img/**").addResourceLocations("/img/").setCachePeriod(31556926);
-        registry.addResourceHandler("/js/**").addResourceLocations("/js/").setCachePeriod(31556926);
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new UserInterceptor()).addPathPatterns("/**")
-                .excludePathPatterns("/", "/login/**", "/signup/**");
         OpenEntityManagerInViewInterceptor interceptor = new OpenEntityManagerInViewInterceptor();
         interceptor.setEntityManagerFactory(entityManagerFactory().getObject());
+
         registry.addWebRequestInterceptor(interceptor);
+        registry.addInterceptor(localeChangeInterceptor());
+        registry.addInterceptor(new UserInterceptor()).addPathPatterns("/**")
+                .excludePathPatterns("/", "/login/**", "/signup/**");
     }
 
     @Bean
@@ -121,6 +129,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         InternalResourceViewResolver resolver = new InternalResourceViewResolver();
         resolver.setPrefix("/WEB-INF/pages/");
         resolver.setSuffix(".jsp");
+        resolver.setViewClass(JstlView.class);
         return resolver;
     }
 
@@ -134,11 +143,45 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     }
 
     @Bean
-    public ReloadableResourceBundleMessageSource messageSource() {
-        ReloadableResourceBundleMessageSource rrbms = new ReloadableResourceBundleMessageSource();
-        rrbms.setBasename("classpath:label");
-        rrbms.setDefaultEncoding("UTF-8");
-        return rrbms;
+    public MessageSource messageSource() {
+        final ReloadableResourceBundleMessageSource ret = new ReloadableResourceBundleMessageSource();
+        ret.setBasename("classpath:lang");
+        ret.setDefaultEncoding("UTF-8");
+        return ret;
+    }
+
+    @Bean(name = "localeResolver")
+    public LocaleResolver getLocaleResolver(){
+        return new CookieLocaleResolver();
+    }
+
+    @Bean
+    public LocaleChangeInterceptor localeChangeInterceptor(){
+        LocaleChangeInterceptor localeChangeInterceptor=new LocaleChangeInterceptor();
+        localeChangeInterceptor.setParamName("language");
+        return localeChangeInterceptor;
+    }
+
+    @Bean
+    public LocaleResolver localeResolver() {
+        final CookieLocaleResolver ret = new CookieLocaleResolver();
+        ret.setDefaultLocale(new Locale("en_En"));
+        return ret;
+    }
+
+    @Bean
+    public HandlerMapping handlerMapping() {
+        final LocaleChangeInterceptor interceptor = new LocaleChangeInterceptor();
+        interceptor.setParamName("language");
+
+        final DefaultAnnotationHandlerMapping ret = new DefaultAnnotationHandlerMapping();
+        ret.setInterceptors(new Object[] { interceptor });
+        return ret;
+    }
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+        argumentResolvers.add(new CurrentUserHandlerMethodArgumentResolver());
     }
 
     @Override
@@ -151,5 +194,10 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         ));
         stringConverter.setWriteAcceptCharset(false);
         converters.add(stringConverter);
+    }
+
+    @Bean
+    public MultipartResolver multipartResolver() {
+        return new StandardServletMultipartResolver();
     }
 }
