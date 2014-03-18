@@ -1,5 +1,6 @@
 package com.smartestgift.config;
 
+import org.springframework.security.web.FilterChainProxy;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
@@ -8,9 +9,9 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.DispatcherServlet;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRegistration;
+import javax.servlet.*;
+import java.util.EnumSet;
+import java.util.List;
 
 /**
  * Created by dikkini on 18.03.14.
@@ -29,28 +30,33 @@ public class Initializer implements WebApplicationInitializer {
         ctx.register(WebAppConfig.class);
 
         servletContext.addListener(new ContextLoaderListener(ctx));
+        servletContext.setInitParameter("defaultHtmlEscape", "true");
         servletContext.addListener(new HttpSessionEventPublisher());
 
-        CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter();
-        characterEncodingFilter.setEncoding("UTF-8");
-        characterEncodingFilter.setForceEncoding(true);
-        servletContext.addFilter("characterEncodingFilter", characterEncodingFilter)
+        FilterRegistration.Dynamic fr = servletContext.addFilter("encodingFilter",
+                new CharacterEncodingFilter());
+        fr.setInitParameter("encoding", "UTF-8");
+        fr.setInitParameter("forceEncoding", "true");
+        fr.addMappingForUrlPatterns(null, true, "/*");
+
+        servletContext.addFilter("securityFilter", new DelegatingFilterProxy("springSecurityFilterChain"))
                 .addMappingForUrlPatterns(null, false, "/*");
-
-        servletContext.addFilter("springSecurityFilterChain", new DelegatingFilterProxy())
-                .addMappingForUrlPatterns(null, false, "/*");
-
-        ctx.setServletContext(servletContext);
-
-        // Create the dispatcher servlet's Spring application context
-        AnnotationConfigWebApplicationContext dispatcherContext =
-                new AnnotationConfigWebApplicationContext();
-        dispatcherContext.register(DispatcherConfig.class);
 
         ServletRegistration.Dynamic servlet = servletContext.addServlet(DISPATCHER_SERVLET_NAME,
                 new DispatcherServlet(ctx));
         servlet.addMapping("/");
         servlet.setLoadOnStartup(1);
+
+        ctx.setServletContext(servletContext);
+    }
+
+    public Filter[] getServletFilters() {
+
+        CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter();
+        characterEncodingFilter.setEncoding("UTF-8");
+        characterEncodingFilter.setForceEncoding(true);
+
+        return new Filter[]{characterEncodingFilter, new DelegatingFilterProxy()};
     }
 
 }

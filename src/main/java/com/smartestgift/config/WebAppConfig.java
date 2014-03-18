@@ -5,12 +5,10 @@ import com.google.gson.GsonBuilder;
 import com.smartestgift.handler.CurrentUserHandlerMethodArgumentResolver;
 import com.smartestgift.handler.UserInterceptor;
 import org.hibernate.SessionFactory;
+import org.hibernate.internal.SessionFactoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.*;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
@@ -67,10 +65,10 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
     @Bean
     DriverManagerDataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("jdbc.driverClassName");
-        dataSource.setUrl("jdbc.databaseurl");
-        dataSource.setUsername("jdbc.username");
-        dataSource.setPassword("jdbc.password");
+        dataSource.setDriverClassName("org.postgresql.Driver");
+        dataSource.setUrl("jdbc:postgresql://109.120.165.66:5432/smartestgiftdb?useEncoding=true&amp;characterEncoding=UTF-8");
+        dataSource.setUsername("smartestgiftdbadmin");
+        dataSource.setPassword("smartestgiftdbadmin");
 
         return dataSource;
     }
@@ -104,13 +102,17 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
     }
 
     @Bean
-    public PlatformTransactionManager transactionManager() {
-        return new JpaTransactionManager(entityManagerFactory().getObject());
+    @Autowired
+    PlatformTransactionManager transactionManager(SessionFactory sessionFactory) {
+        return new HibernateTransactionManager(sessionFactory);
     }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/assets/**").addResourceLocations("/assets").setCachePeriod(31556926);
+        registry.addResourceHandler("/assets/**").addResourceLocations("/assets/").setCachePeriod(31556926);
+        registry.addResourceHandler("/css/**").addResourceLocations("/css/").setCachePeriod(31556926);
+        registry.addResourceHandler("/img/**").addResourceLocations("/img/").setCachePeriod(31556926);
+        registry.addResourceHandler("/js/**").addResourceLocations("/js/").setCachePeriod(31556926);
     }
 
     @Override
@@ -135,47 +137,44 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
 
     private Properties hibernateProperties() {
         return new Properties() {{
-            setProperty("hibernate.connection.characterEncoding", "jdbc.connectCharSet");
-            setProperty("hibernate.connection.charSet", "jdbc.connectCharSet");
-            setProperty("hibernate.dialect", "jdbc.dialect");
-            setProperty("hibernate.show_sql", "jdbc.show_sql");
+            setProperty("hibernate.connection.characterEncoding", "UTF-8");
+            setProperty("hibernate.connection.charSet", "UTF-8");
+            setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQL82Dialect");
+            setProperty("hibernate.show_sql", "true");
         }};
     }
 
     @Bean
     public MessageSource messageSource() {
         final ReloadableResourceBundleMessageSource ret = new ReloadableResourceBundleMessageSource();
-        ret.setBasename("classpath:lang");
+        ret.setBasename("/assets/messages");
         ret.setDefaultEncoding("UTF-8");
         return ret;
     }
 
-    @Bean(name = "localeResolver")
+/*    @Bean(name = "localeResolver")
     public LocaleResolver getLocaleResolver(){
         return new CookieLocaleResolver();
-    }
+    }*/
 
     @Bean
     public LocaleChangeInterceptor localeChangeInterceptor(){
-        LocaleChangeInterceptor localeChangeInterceptor=new LocaleChangeInterceptor();
-        localeChangeInterceptor.setParamName("language");
+        LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
+        localeChangeInterceptor.setParamName("lang");
         return localeChangeInterceptor;
     }
 
     @Bean
     public LocaleResolver localeResolver() {
         final CookieLocaleResolver ret = new CookieLocaleResolver();
-        ret.setDefaultLocale(new Locale("en_En"));
+        ret.setDefaultLocale(Locale.ENGLISH);
         return ret;
     }
 
     @Bean
     public HandlerMapping handlerMapping() {
-        final LocaleChangeInterceptor interceptor = new LocaleChangeInterceptor();
-        interceptor.setParamName("language");
-
         final DefaultAnnotationHandlerMapping ret = new DefaultAnnotationHandlerMapping();
-        ret.setInterceptors(new Object[] { interceptor });
+        ret.setInterceptors(new Object[] { localeChangeInterceptor() });
         return ret;
     }
 

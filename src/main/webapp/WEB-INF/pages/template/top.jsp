@@ -18,14 +18,14 @@
     <title><spring:message code="label.title"/></title>
     <meta name="viewport" content="width=device-width">
     <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/resources/ext/jquery/datepicker/css/pickmeup.min.css">
-    <link rel="stylesheet" href="/resources/main/css/style.css">
+    <link rel="stylesheet" href="/assets/ext/jquery/datepicker/css/pickmeup.min.css">
+    <link rel="stylesheet" href="/assets/main/css/style.css">
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
     <script type="text/javascript" src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/resources/ext/jquery/datepicker/jquery.pickmeup.min.js"></script>
-    <script type="text/javascript" src="/resources/main/js/loading.js"></script>
-    <script type="text/javascript" src="/resources/main/js/utils.js"></script>
-    <script type="text/javascript" src="/resources/main/js/check_browse_close.js"></script>
+    <script type="text/javascript" src="/assets/ext/jquery/datepicker/jquery.pickmeup.min.js"></script>
+    <script type="text/javascript" src="/assets/main/js/loading.js"></script>
+    <script type="text/javascript" src="/assets/main/js/utils.js"></script>
+    <script type="text/javascript" src="/assets/main/js/check_browse_close.js"></script>
 </head>
 
 <body>
@@ -33,7 +33,7 @@
     <header>
         <div class="row">
             <div class="col-md-11">
-                <img src="/resources/main/images/logo.png">
+                <img src="/assets/main/images/logo.png">
             </div>
             <div class="col-md-1">
                 <span style="float: right">
