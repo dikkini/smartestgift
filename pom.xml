@@ -439,6 +439,13 @@
             <artifactId>reactor-tcp</artifactId>
             <version>1.0.0.RELEASE</version>
         </dependency>
+        <!-- For SockJS -->
+        <!-- http://jira.codehaus.org/browse/JACKSON-884 -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.2.1</version>
+        </dependency>
 
         <!-- file upload deps -->
         <dependency>

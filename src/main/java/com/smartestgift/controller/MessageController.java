@@ -8,6 +8,11 @@ import com.smartestgift.service.ConversationService;
 import com.smartestgift.service.MessageService;
 import com.smartestgift.utils.ActiveUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -32,6 +38,11 @@ public class MessageController {
 
     @Autowired
     MessageService messageService;
+
+    @Autowired
+    private SimpMessagingTemplate template;
+
+    private TaskScheduler scheduler = new ConcurrentTaskScheduler();
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView messages(@ActiveUser SmartUserDetails smartUserDetails) {
@@ -90,20 +101,22 @@ public class MessageController {
         return result;
     }
 
-    @RequestMapping(value = "/getCountUserUnreadMessages", method = RequestMethod.POST)
-    public @ResponseBody Callable<Integer> getCountUserUnreadMessages(@ActiveUser final SmartUserDetails smartUserDetails) {
-        // TODO add additional security checks using username and active user
-        return new Callable<Integer>() {
-            @Override
-            public Integer call() throws Exception {
+    private void getCountUserUnreadMessages() throws Exception {
+        Integer countUserUnreadMessages = 1; /*messageService.findCountUserUnreadMessages(smartUserDetails.getSmartUser());*/
+        template.convertAndSend("/topic/getUnreadMessagesCount", countUserUnreadMessages);
+    }
 
-                Integer countUserUnreadMessages = messageService.findCountUserUnreadMessages(smartUserDetails.getSmartUser());
-                while (countUserUnreadMessages == 0) {
-                    Thread.sleep(1000);
-                    countUserUnreadMessages = messageService.findCountUserUnreadMessages(smartUserDetails.getSmartUser());
+    @PostConstruct
+    private void broadcastTimePeriodically() {
+        scheduler.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    getCountUserUnreadMessages();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                return countUserUnreadMessages;
             }
-        };
+        }, 3000);
     }
 }

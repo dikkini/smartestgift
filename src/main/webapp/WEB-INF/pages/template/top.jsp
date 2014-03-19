@@ -27,6 +27,8 @@
     <script type="text/javascript" src="/assets/main/js/utils.js"></script>
     <script type="text/javascript" src="/assets/main/js/check_browse_close.js"></script>
     <script type="text/javascript" src="/assets/ext/common/modernizr.js"></script>
+    <script type="text/javascript" src="/assets/ext/common/sockjs-0.3.4.js"></script>
+    <script type="text/javascript" src="/assets/ext/common/stomp.js"></script>
 </head>
 
 <body>
@@ -105,17 +107,15 @@
 <script type="text/javascript">
     $(document).ready(function() {
         <sec:authorize access="isAuthenticated()">
-            (function poll(){
-                setTimeout(function () {
-                    $.ajax({
-                        type: "post",
-                        url: "/messages/getCountUserUnreadMessages",
-                        cache: false,
-                        success: function (response) {
-                            $("#countUnreadMessages").text(response);
-                        }, dataType: "json", complete: poll, timeout: 3000 });
-                }, 5000);
-            })();
+            var socket = new SockJS('/unreadMessagesCount');
+            var stompClient = Stomp.over(socket);
+            stompClient.connect({}, function(frame) {
+                console.log('Connected: ' + frame);
+                stompClient.subscribe('/topic/getUnreadMessagesCount', function(response) {
+                    response = JSON.parse(response.body);
+                    $("#countUnreadMessages").text(response);
+                });
+            });
         </sec:authorize>
     });
 </script>

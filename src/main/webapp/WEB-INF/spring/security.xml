@@ -11,11 +11,14 @@
 
     <context:component-scan base-package="com.smartestgift.security"/>
 
-    <security:http pattern="/resources/**" security="none"/>
+    <security:http pattern="/assets/**" security="none"/>
     <security:http pattern="/favicon.ico" security="none" />
 
     <security:http auto-config="false" use-expressions="true">
         <security:intercept-url pattern="/" access="permitAll" requires-channel="http"/>
+        <security:intercept-url pattern="/ws" access="permitAll" requires-channel="http"/>
+        <security:intercept-url pattern="/hello" access="permitAll" requires-channel="http"/>
+        <security:intercept-url pattern="/topic/greetings" access="permitAll" requires-channel="http"/>
         <security:intercept-url pattern="/login/**" access="isAnonymous()" requires-channel="http"/>
         <security:intercept-url pattern="/signup/**" access="isAnonymous()" requires-channel="http"/>
 

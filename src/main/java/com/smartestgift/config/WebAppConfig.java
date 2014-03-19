@@ -180,7 +180,12 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-        argumentResolvers.add(new CurrentUserHandlerMethodArgumentResolver());
+        argumentResolvers.add(currentUserHandlerMethodArgumentResolver());
+    }
+
+    @Bean
+    public CurrentUserHandlerMethodArgumentResolver currentUserHandlerMethodArgumentResolver() {
+        return new CurrentUserHandlerMethodArgumentResolver();
     }
 
     @Override
