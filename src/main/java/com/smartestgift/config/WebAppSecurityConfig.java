@@ -12,6 +12,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 @Configuration
 @EnableWebSecurity
-@ImportResource("classpath:security.xml")
+@ImportResource("classpath*:security.xml")
 public class WebAppSecurityConfig extends WebSecurityConfigurerAdapter {
 }

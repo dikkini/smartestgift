@@ -13,7 +13,7 @@
         <spring-security.version>3.2.2.RELEASE</spring-security.version>
 
         <db.name>smartestgiftdb</db.name>
-        <!--<db.host>172.25.29.197</db.host>-->
+<!--        <db.host>172.25.29.197</db.host>-->
         <db.host>109.120.165.66</db.host>
         <db.port>5432</db.port>
         <db.username>smartestgiftdbadmin</db.username>

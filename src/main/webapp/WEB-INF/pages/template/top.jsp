@@ -10,7 +10,7 @@
 <jsp:useBean id="user" class="com.smartestgift.dao.model.SmartUserDetails" scope="request"/>
 
 
-<!doctype html>
+<!DOCTYPE HTML>
 
 <html lang="en">
 
@@ -26,6 +26,7 @@
     <script type="text/javascript" src="/assets/main/js/loading.js"></script>
     <script type="text/javascript" src="/assets/main/js/utils.js"></script>
     <script type="text/javascript" src="/assets/main/js/check_browse_close.js"></script>
+    <script type="text/javascript" src="/assets/ext/common/modernizr.js"></script>
 </head>
 
 <body>

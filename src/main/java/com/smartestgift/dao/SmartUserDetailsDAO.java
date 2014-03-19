@@ -3,6 +3,7 @@ package com.smartestgift.dao;
 import com.smartestgift.dao.model.AuthProvider;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserDetails;
+import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
@@ -10,6 +11,7 @@ import java.util.UUID;
  * Created by dikkini on 06.10.13
  * Email: dikkini@gmail.com
  */
+@Component("smartUserDetailsDAO")
 public interface SmartUserDetailsDAO extends Repository<SmartUserDetails, String> {
     /**
      *

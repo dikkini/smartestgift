@@ -48,7 +48,7 @@ import java.util.*;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = {"com.smartestgift"})
+@ComponentScan("com.smartestgift")
 @EnableTransactionManagement
 public class WebAppConfig extends WebMvcConfigurerAdapter {
     private static final Charset UTF8 = Charset.forName("UTF-8");
@@ -66,9 +66,14 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
     DriverManagerDataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.postgresql.Driver");
+
         dataSource.setUrl("jdbc:postgresql://109.120.165.66:5432/smartestgiftdb?useEncoding=true&amp;characterEncoding=UTF-8");
         dataSource.setUsername("smartestgiftdbadmin");
         dataSource.setPassword("smartestgiftdbadmin");
+
+//        dataSource.setUrl("jdbc:postgresql://172.25.29.197:5432/smartestgiftdb?useEncoding=true&amp;characterEncoding=UTF-8");
+//        dataSource.setUsername("dikkini");
+//        dataSource.setPassword("asddsa");
 
         return dataSource;
     }
@@ -77,7 +82,7 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
     LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());
-        sessionFactory.setPackagesToScan("com.smartestgift.dao.model.*");
+        sessionFactory.setPackagesToScan("com.smartestgift.*");
         sessionFactory.setHibernateProperties(hibernateProperties());
 
         return sessionFactory;
@@ -88,7 +93,7 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
         emf.setDataSource(dataSource());
-        emf.setPackagesToScan("com.smartestgift.dao.model");
+        emf.setPackagesToScan("com.smartestgift.*");
 
         //let Hibernate know which database we're using.
         //note that this is vendor specific, not JPA
@@ -151,11 +156,6 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
         ret.setDefaultEncoding("UTF-8");
         return ret;
     }
-
-/*    @Bean(name = "localeResolver")
-    public LocaleResolver getLocaleResolver(){
-        return new CookieLocaleResolver();
-    }*/
 
     @Bean
     public LocaleChangeInterceptor localeChangeInterceptor(){
