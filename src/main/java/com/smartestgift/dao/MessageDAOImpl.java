@@ -84,7 +84,7 @@ public class MessageDAOImpl implements MessageDAO {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Message.class);
         criteria.add(Restrictions.eq("conversation", conversation));
         criteria.add(Restrictions.eq("messageStatus", messageStatus));
-        criteria.add(Restrictions.ne("smartUser", smartUser));
+        criteria.add(Restrictions.eq("smartUser", smartUser));
         return (List<Message>) criteria.list();
     }
 

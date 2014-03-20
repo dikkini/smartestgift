@@ -135,6 +135,7 @@
                 data: "conversationUuid=" + conversationUuid,
                 dataType: "json",
                 success: function (response) {
+                    response = JSON.parse(response);
                     renderConversationMessages(response, true);
                 },
                 error: function (response) {

@@ -60,11 +60,9 @@ public class SmartUser implements Serializable, Annotation {
     @Column(name = "cellPhone_visible")
     protected boolean cellPhoneVisible = false;
 
-    @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "smartUser", cascade = CascadeType.ALL)
     private SmartUserDetails smartUserDetails;
 
-    @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "pk.user", cascade=CascadeType.ALL)
     private Set<SmartUserGift> smartUserGifts;
 

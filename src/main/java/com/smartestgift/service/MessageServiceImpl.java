@@ -65,7 +65,8 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public Integer findCountUserUnreadMessages(SmartUser smartUser) {
+    public Integer findCountUserUnreadMessages(String username) {
+        SmartUser smartUser = smartUserDAO.find(username);
         MessageStatus messageStatus = messageStatusDAO.find(ApplicationConstants.MESSAGE_STATUS_NEW);
         List<Conversation> userConversations = conversationDAO.findConversationsByUser(smartUser);
         Integer countUserUnreadMessages = 0;

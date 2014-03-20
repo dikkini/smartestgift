@@ -110,6 +110,7 @@
             var socket = new SockJS('/unreadMessagesCount');
             var stompClient = Stomp.over(socket);
             stompClient.connect({}, function(frame) {
+                stompClient.send("/app/setUnreadCount", {}, {});
 //                console.log('Connected: ' + frame);
                 stompClient.subscribe('/topic/getUnreadMessagesCount', function(response) {
                     response = JSON.parse(response.body);

@@ -1,5 +1,6 @@
 package com.smartestgift.controller;
 
+import com.google.gson.Gson;
 import com.smartestgift.controller.model.AjaxResponse;
 import com.smartestgift.controller.model.SocketMessage;
 import com.smartestgift.dao.model.Conversation;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.PostConstruct;
+import javax.persistence.PostLoad;
 import java.security.Principal;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -40,13 +42,16 @@ import java.util.concurrent.Callable;
 public class MessageController {
 
     @Autowired
-    ConversationService conversationService;
+    private ConversationService conversationService;
 
     @Autowired
-    MessageService messageService;
+    private MessageService messageService;
 
     @Autowired
     private SimpMessagingTemplate template;
+
+    @Autowired
+    private Gson gson;
 
     private TaskScheduler scheduler = new ConcurrentTaskScheduler();
 
@@ -58,14 +63,15 @@ public class MessageController {
         return mav;
     }
 
-    @RequestMapping(value = "/getConversationMessages", method = RequestMethod.POST, produces = "application/json")
-    public @ResponseBody List<Message> getNewMessagesWithUser(@ActiveUser SmartUserDetails smartUserDetails,
+    @RequestMapping(value = "/getConversationMessages", headers="Accept=application/json", method = RequestMethod.POST)
+    public @ResponseBody String getNewMessagesWithUser(@ActiveUser SmartUserDetails smartUserDetails,
                                                               @RequestParam(value = "conversationUuid", required = true)
                                                                                               String conversationUuid) {
         // TODO add additional security checks using username and active user
         Conversation conversation = conversationService.findConversationByUuid(conversationUuid);
-        return messageService.findMessagesInConversation(smartUserDetails.getSmartUser(),
+        List<Message> messagesInConversation = messageService.findMessagesInConversation(smartUserDetails.getSmartUser(),
                 conversation);
+        return gson.toJson(messagesInConversation);
     }
 
     @MessageMapping("/setConversation")
@@ -114,18 +120,17 @@ public class MessageController {
         return result;
     }
 
-    private void getCountUserUnreadMessages() throws Exception {
-        Integer countUserUnreadMessages = 1;/*messageService.findCountUserUnreadMessages(activeUser.getSmartUser());*/
-        template.convertAndSend("/topic/getUnreadMessagesCount", countUserUnreadMessages);
-    }
-
-    @PostConstruct
-    private void broadcastTimePeriodically() {
+    @MessageMapping("/setUnreadCount")
+    public void getCountUserUnreadMessages(final Principal p) {
+        // TODO add additional security checks using username and active user
         scheduler.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
                 try {
-                    getCountUserUnreadMessages();
+                    Integer countUserUnreadMessages = messageService.findCountUserUnreadMessages(p.getName());
+                    if (countUserUnreadMessages != 0) {
+                        template.convertAndSend("/topic/getUnreadMessagesCount", countUserUnreadMessages);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

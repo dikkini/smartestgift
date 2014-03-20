@@ -74,12 +74,19 @@ public class WebAppSecurityConfig extends WebSecurityConfigurerAdapter {
                 .usernameParameter("j_username")
                 .passwordParameter("j_password")
                 .failureUrl("/login?errors=login_error");
+        http.logout()
+                .deleteCookies("JSESSIONID")
+                .deleteCookies("REMEMBER_ME")
+                .invalidateHttpSession(true)
+                .logoutSuccessUrl("/")
+                .logoutUrl("/logout");
         http.authorizeRequests()
                 .antMatchers("/admin*").hasRole("admin")
                 .antMatchers("/assets*").permitAll()
                 .antMatchers("/login/**", "/signup/**").anonymous()
-                .antMatchers("/**").access("isRememberMe() or isFullyAuthenticated()");
-        http.addFilter(logoutFilter());
+                .antMatchers("/**").access("isRememberMe() or isFullyAuthenticated()")
+                .anyRequest().authenticated();
+/*        http.addFilter(logoutFilter());*/
         http.rememberMe()
                 .rememberMeServices(rememberMeServices())
                 .key("127roseQ");
@@ -88,10 +95,10 @@ public class WebAppSecurityConfig extends WebSecurityConfigurerAdapter {
         http.httpBasic();
     }
 
-    @Bean
+/*    @Bean
     public LogoutFilter logoutFilter() {
         return new LogoutFilter("/login", securityContextLogoutHandler(), smartLogoutHandler);
-    }
+    }*/
 
     @Bean
     public SecurityContextLogoutHandler securityContextLogoutHandler() {

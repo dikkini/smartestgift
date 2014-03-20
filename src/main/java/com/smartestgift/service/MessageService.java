@@ -35,8 +35,8 @@ public interface MessageService {
 
     /**
      *
-     * @param smartUser
+     * @param username
      * @return
      */
-    public Integer findCountUserUnreadMessages(SmartUser smartUser);
+    public Integer findCountUserUnreadMessages(String username);
 }
