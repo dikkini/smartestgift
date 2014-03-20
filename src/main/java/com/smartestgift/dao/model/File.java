@@ -27,9 +27,9 @@ public class File implements Serializable {
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name="type_id")
-    protected FileType type;
+    private FileType type;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "files", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "files", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     protected Set<Gift> gifts;
 
     public File() {}

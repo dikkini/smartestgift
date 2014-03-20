@@ -19,11 +19,11 @@ public interface MessageService {
 
     /**
      *
-     * @param activeUser
-     * @param conversation
+     * @param userName
+     * @param conversationUuid
      * @return
      */
-    public List<Message> findNewMessagesInConversation(SmartUser activeUser, Conversation conversation);
+    public List<Message> findNewMessagesInConversation(String userName, String conversationUuid);
 
     /**
      *

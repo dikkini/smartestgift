@@ -40,11 +40,13 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public List<Message> findNewMessagesInConversation(SmartUser activeUser, Conversation conversation) {
+    public List<Message> findNewMessagesInConversation(String userName, String conversationUuid) {
+        SmartUser smartUserByUsername = smartUserDAO.findSmartUserByUsername(userName);
+        Conversation conversation = conversationDAO.find(conversationUuid);
         MessageStatus messageStatus = messageStatusDAO.find(ApplicationConstants.MESSAGE_STATUS_NEW);
         List<Message> messagesByConversationAndStatus = messageDAO.findMessagesUserIsAuthorByConversationAndStatus
-                (activeUser, conversation, messageStatus);
-        this.markMessagesAsReadNotAuthor(messagesByConversationAndStatus, activeUser);
+                (smartUserByUsername, conversation, messageStatus);
+        this.markMessagesAsReadNotAuthor(messagesByConversationAndStatus, smartUserByUsername);
         return messagesByConversationAndStatus;
     }
 

@@ -21,10 +21,10 @@ public class Conversation implements Serializable {
     protected String uuid;
 
     @ManyToOne
-    private SmartUser user_from;
+    protected SmartUser user_from;
 
     @ManyToOne
-    private SmartUser user_to;
+    protected SmartUser user_to;
 
     public String getUuid() {
         return uuid;

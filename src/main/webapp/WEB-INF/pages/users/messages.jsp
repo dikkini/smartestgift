@@ -109,28 +109,31 @@
 
 <script type="text/javascript">
     $(document).ready(function(){
-        var pollingConversationTimeout;
-        function startLongPollingConversation(conversationUuid){
-            loadAndRenderNewConversationMessages(conversationUuid)
+
+        var socket = new SockJS('/unreadMessagesCount');
+        var stompClient = Stomp.over(socket);
+        stompClient.connect({}, function(frame) {
+            console.log('Connected: ' + frame);
+            stompNewSubscribe(false);
+        });
+
+        function stompNewSubscribe(unsubscribe) {
+            if (unsubscribe) {
+                stompClient.unsubscribe('/topic/getNewConversationMessages');
+            }
+            stompClient.subscribe('/topic/getNewConversationMessages', function(response) {
+                response = JSON.parse(response.body);
+                renderConversationMessages(response, false)
+            });
         }
 
-        function loadAndRenderNewConversationMessages(conversationUuid) {
-            setTimeout(function () {
-                pollingConversationTimeout = $.ajax({
-                    type: "post",
-                    url: "/messages/getCountUserUnreadMessages",
-                    cache: false,
-                    success: function (response) {
-                        $("#countUnreadMessages").text(response);
-                    }, dataType: "json", complete: loadAndRenderNewConversationMessages(conversationUuid), timeout: 3000 });
-            }, 5000);
-        }
         function loadAndRenderAllConversationMessages(conversationUuid) {
             $.ajax({
                 type: "post",
                 url: "/messages/getConversationMessages",
                 cache: false,
                 data: "conversationUuid=" + conversationUuid,
+                dataType: "json",
                 success: function (response) {
                     renderConversationMessages(response, true);
                 },
@@ -179,16 +182,18 @@
         }
 
         $(".conversation").click(function() {
+            stompNewSubscribe(true);
             var conversationUuid = $(this).data("conversation-uuid");
+            loadAndRenderAllConversationMessages(conversationUuid);
+            var jsonstr = JSON.stringify({ 'param': conversationUuid});
+            stompClient.send("/app/setConversation", {}, jsonstr);
+
             $("#messages-title").text($(this).data("conversation-username"));
             $("#conversation-message").attr("data-conversation-uuid", conversationUuid);
-            loadAndRenderAllConversationMessages(conversationUuid);
-            clearTimeout(pollingConversationTimeout);
-            startLongPollingConversation(conversationUuid);
+
         });
 
         $("#btn-new-message").click(function() {
-            clearTimeout(pollingConversationTimeout);
             $("#messages-title").text("New Message");
             $("#messages-dialog").empty();
             $("#new-message-input-form").show();

@@ -1,8 +1,10 @@
 package com.smartestgift.controller;
 
 import com.smartestgift.controller.model.AjaxResponse;
+import com.smartestgift.controller.model.SocketMessage;
 import com.smartestgift.dao.model.Conversation;
 import com.smartestgift.dao.model.Message;
+import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserDetails;
 import com.smartestgift.service.ConversationService;
 import com.smartestgift.service.MessageService;
@@ -13,6 +15,9 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.PostConstruct;
+import java.security.Principal;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -52,7 +58,7 @@ public class MessageController {
         return mav;
     }
 
-    @RequestMapping(value = "/getConversationMessages", method = RequestMethod.POST)
+    @RequestMapping(value = "/getConversationMessages", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody List<Message> getNewMessagesWithUser(@ActiveUser SmartUserDetails smartUserDetails,
                                                               @RequestParam(value = "conversationUuid", required = true)
                                                                                               String conversationUuid) {
@@ -62,14 +68,21 @@ public class MessageController {
                 conversation);
     }
 
-    @RequestMapping(value = "/getNewConversationMessages", method = RequestMethod.POST)
-    public @ResponseBody List<Message> getNewConversationMessages(@ActiveUser SmartUserDetails smartUserDetails,
-                                                                  @RequestParam(value = "conversationUuid", required = true)
-                                                                  String conversationUuid) {
+    @MessageMapping("/setConversation")
+    public void getNewConversationMessages(final SocketMessage socketMessage, final Principal p) {
         // TODO add additional security checks using username and active user
-        Conversation conversation = conversationService.findConversationByUuid(conversationUuid);
-        return messageService.findNewMessagesInConversation(smartUserDetails.getSmartUser(),
-                conversation);
+        scheduler.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    List<Message> newMessagesInConversation = messageService.
+                            findNewMessagesInConversation(p.getName(), socketMessage.getParam());
+                    template.convertAndSend("/topic/getNewConversationMessages", newMessagesInConversation);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, 1000);
     }
 
     @RequestMapping(value = "/sendMessageToUser", method = RequestMethod.POST)
@@ -102,7 +115,7 @@ public class MessageController {
     }
 
     private void getCountUserUnreadMessages() throws Exception {
-        Integer countUserUnreadMessages = 1; /*messageService.findCountUserUnreadMessages(smartUserDetails.getSmartUser());*/
+        Integer countUserUnreadMessages = 1;/*messageService.findCountUserUnreadMessages(activeUser.getSmartUser());*/
         template.convertAndSend("/topic/getUnreadMessagesCount", countUserUnreadMessages);
     }
 
@@ -117,6 +130,6 @@ public class MessageController {
                     e.printStackTrace();
                 }
             }
-        }, 3000);
+        }, 1000);
     }
 }
