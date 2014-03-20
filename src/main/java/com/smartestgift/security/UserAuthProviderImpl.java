@@ -33,12 +33,14 @@ public class UserAuthProviderImpl implements UserAuthProvider {
     @Autowired
     private SmartUserDetailsDAO smartUserDetailsDAO;
 
+    @Override
     public UserDetails loadUserByUsername(String login)
             throws UsernameNotFoundException {
         if (isEmail(login)) {
             return smartUserDetailsDAO.findSmartUserDetailsByEmail(login);
         } else {
-            return smartUserDetailsDAO.findSmartUserDetailsByUsername(login);
+            SmartUserDetails smartUserDetailsByUsername = smartUserDetailsDAO.findSmartUserDetailsByUsername(login);
+            return smartUserDetailsByUsername;
         }
     }
 
