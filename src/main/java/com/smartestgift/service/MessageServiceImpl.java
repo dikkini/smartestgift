@@ -44,7 +44,7 @@ public class MessageServiceImpl implements MessageService {
         SmartUser smartUserByUsername = smartUserDAO.findSmartUserByUsername(userName);
         Conversation conversation = conversationDAO.find(conversationUuid);
         MessageStatus messageStatus = messageStatusDAO.find(ApplicationConstants.MESSAGE_STATUS_NEW);
-        List<Message> messagesByConversationAndStatus = messageDAO.findMessagesUserIsAuthorByConversationAndStatus
+        List<Message> messagesByConversationAndStatus = messageDAO.findMessagesUserNotAuthorCountByConversationAndStatus
                 (smartUserByUsername, conversation, messageStatus);
         this.markMessagesAsReadNotAuthor(messagesByConversationAndStatus, smartUserByUsername);
         return messagesByConversationAndStatus;
@@ -66,12 +66,12 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public Integer findCountUserUnreadMessages(String username) {
-        SmartUser smartUser = smartUserDAO.find(username);
+        SmartUser smartUser = smartUserDAO.findSmartUserByUsername(username);
         MessageStatus messageStatus = messageStatusDAO.find(ApplicationConstants.MESSAGE_STATUS_NEW);
         List<Conversation> userConversations = conversationDAO.findConversationsByUser(smartUser);
         Integer countUserUnreadMessages = 0;
         for (Conversation conversation : userConversations) {
-            countUserUnreadMessages += messageDAO.findMessagesUserNotAuthorCountByConversationAndStatus(smartUser, conversation, messageStatus);
+            countUserUnreadMessages += messageDAO.findMessagesUserNotAuthorCountByConversationAndStatus(smartUser, conversation, messageStatus).size();
         }
         return countUserUnreadMessages;
     }

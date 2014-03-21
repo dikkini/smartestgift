@@ -43,5 +43,5 @@ public interface MessageDAO extends Repository<Message, String> {
      * @param messageStatus
      * @return
      */
-    public Integer findMessagesUserNotAuthorCountByConversationAndStatus(SmartUser smartUser, Conversation conversation, MessageStatus messageStatus);
+    public List<Message> findMessagesUserNotAuthorCountByConversationAndStatus(SmartUser smartUser, Conversation conversation, MessageStatus messageStatus);
 }

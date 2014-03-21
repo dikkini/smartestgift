@@ -112,7 +112,7 @@
             stompClient.connect({}, function(frame) {
                 stompClient.send("/app/setUnreadCount", {}, {});
 //                console.log('Connected: ' + frame);
-                stompClient.subscribe('/topic/getUnreadMessagesCount', function(response) {
+                stompClient.subscribe('/topic/getUnreadMessagesCount/' + '${user.username}', function(response) {
                     response = JSON.parse(response.body);
                     $("#countUnreadMessages").text(response);
                 });

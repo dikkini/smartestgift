@@ -89,11 +89,11 @@ public class MessageDAOImpl implements MessageDAO {
     }
 
     @Override
-    public Integer findMessagesUserNotAuthorCountByConversationAndStatus(SmartUser smartUser, Conversation conversation, MessageStatus messageStatus) {
+    public List<Message> findMessagesUserNotAuthorCountByConversationAndStatus(SmartUser smartUser, Conversation conversation, MessageStatus messageStatus) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Message.class);
         criteria.add(Restrictions.eq("messageStatus", messageStatus));
         criteria.add(Restrictions.eq("conversation", conversation));
         criteria.add(Restrictions.ne("smartUser", smartUser));
-        return ((Long) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+        return (List<Message>) criteria.list();
     }
 }

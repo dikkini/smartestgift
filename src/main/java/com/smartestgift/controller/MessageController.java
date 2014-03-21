@@ -1,6 +1,7 @@
 package com.smartestgift.controller;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.smartestgift.controller.model.AjaxResponse;
 import com.smartestgift.controller.model.SocketMessage;
 import com.smartestgift.dao.model.Conversation;
@@ -11,6 +12,7 @@ import com.smartestgift.service.ConversationService;
 import com.smartestgift.service.MessageService;
 import com.smartestgift.utils.ActiveUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -28,6 +30,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.PostLoad;
+import java.lang.reflect.Type;
 import java.security.Principal;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -83,12 +86,13 @@ public class MessageController {
                 try {
                     List<Message> newMessagesInConversation = messageService.
                             findNewMessagesInConversation(p.getName(), socketMessage.getParam());
-                    template.convertAndSend("/topic/getNewConversationMessages", newMessagesInConversation);
+                    String json = gson.toJson(newMessagesInConversation);
+                    template.convertAndSend("/topic/getNewConversationMessages/" + p.getName(), json);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-        }, 1000);
+        }, 3000);
     }
 
     @RequestMapping(value = "/sendMessageToUser", method = RequestMethod.POST)
@@ -128,9 +132,7 @@ public class MessageController {
             public void run() {
                 try {
                     Integer countUserUnreadMessages = messageService.findCountUserUnreadMessages(p.getName());
-                    if (countUserUnreadMessages != 0) {
-                        template.convertAndSend("/topic/getUnreadMessagesCount", countUserUnreadMessages);
-                    }
+                    template.convertAndSend("/topic/getUnreadMessagesCount/" + p.getName(), countUserUnreadMessages);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

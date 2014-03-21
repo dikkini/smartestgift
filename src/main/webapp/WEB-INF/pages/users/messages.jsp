@@ -119,11 +119,14 @@
 
         function stompNewSubscribe(unsubscribe) {
             if (unsubscribe) {
-                stompClient.unsubscribe('/topic/getNewConversationMessages');
+                stompClient.unsubscribe('/topic/getNewConversationMessages/' + '${smartUser.username}');
             }
-            stompClient.subscribe('/topic/getNewConversationMessages', function(response) {
-                response = JSON.parse(response.body);
-                renderConversationMessages(response, false)
+            stompClient.subscribe('/topic/getNewConversationMessages/' + '${smartUser.username}', function(response) {
+                var body = JSON.parse(response.body);
+                if (body != "[]") {
+                    var messages = JSON.parse(body);
+                    renderConversationMessages(messages, false);
+                }
             });
         }
 
