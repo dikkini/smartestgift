@@ -22,26 +22,10 @@ public interface MessageDAO extends Repository<Message, String> {
     /**
      *
      * @param smartUser
-     * @param messageStatus
-     * @return
-     */
-    public List<Message> findMessagesByAuthorAndStatus(SmartUser smartUser, MessageStatus messageStatus);
-
-    /**
-     *
-     * @param smartUser
      * @param conversation
      * @param messageStatus
      * @return
      */
-    public List<Message> findMessagesUserIsAuthorByConversationAndStatus(SmartUser smartUser, Conversation conversation, MessageStatus messageStatus);
-
-    /**
-     *
-     * @param smartUser
-     * @param conversation
-     * @param messageStatus
-     * @return
-     */
-    public List<Message> findMessagesUserNotAuthorCountByConversationAndStatus(SmartUser smartUser, Conversation conversation, MessageStatus messageStatus);
+    public List<Message> findMessagesUserNotAuthorCountByConversationAndStatus(SmartUser smartUser,
+                                                                               Conversation conversation, MessageStatus messageStatus);
 }

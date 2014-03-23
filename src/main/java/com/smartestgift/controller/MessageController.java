@@ -32,8 +32,11 @@ import javax.annotation.PostConstruct;
 import javax.persistence.PostLoad;
 import java.lang.reflect.Type;
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ScheduledFuture;
 
 /**
  * Created by dikkini on 10.03.14.
@@ -56,7 +59,10 @@ public class MessageController {
     @Autowired
     private Gson gson;
 
-    private TaskScheduler scheduler = new ConcurrentTaskScheduler();
+    @Autowired
+    private TaskScheduler scheduler;
+
+    private Map<String, ScheduledFuture<?>> conversationSchedulers = new HashMap<>();
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView messages(@ActiveUser SmartUserDetails smartUserDetails) {
@@ -80,19 +86,26 @@ public class MessageController {
     @MessageMapping("/setConversation")
     public void getNewConversationMessages(final SocketMessage socketMessage, final Principal p) {
         // TODO add additional security checks using username and active user
-        scheduler.scheduleAtFixedRate(new Runnable() {
+        ScheduledFuture<?> scheduledFuture = conversationSchedulers.get(p.getName());
+        if (scheduledFuture != null) {
+            scheduledFuture.cancel(true);
+        }
+        ScheduledFuture<?> messagingScheduler = scheduler.scheduleWithFixedDelay(new Runnable() {
             @Override
             public void run() {
                 try {
                     List<Message> newMessagesInConversation = messageService.
                             findNewMessagesInConversation(p.getName(), socketMessage.getParam());
-                    String json = gson.toJson(newMessagesInConversation);
-                    template.convertAndSend("/topic/getNewConversationMessages/" + p.getName(), json);
+                    if (newMessagesInConversation.size() > 0) {
+                        String json = gson.toJson(newMessagesInConversation);
+                        template.convertAndSendToUser(p.getName(), "/getNewConversationMessages", json);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }, 3000);
+        conversationSchedulers.put(p.getName(), messagingScheduler);
     }
 
     @RequestMapping(value = "/sendMessageToUser", method = RequestMethod.POST)
@@ -127,16 +140,18 @@ public class MessageController {
     @MessageMapping("/setUnreadCount")
     public void getCountUserUnreadMessages(final Principal p) {
         // TODO add additional security checks using username and active user
-        scheduler.scheduleAtFixedRate(new Runnable() {
+        ScheduledFuture<?> scheduledFuture = scheduler.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
                 try {
                     Integer countUserUnreadMessages = messageService.findCountUserUnreadMessages(p.getName());
-                    template.convertAndSend("/topic/getUnreadMessagesCount/" + p.getName(), countUserUnreadMessages);
+                    if (countUserUnreadMessages != 0) {
+                        template.convertAndSendToUser(p.getName(), "/getUnreadMessagesCount", countUserUnreadMessages);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-        }, 1000);
+        }, 2000);
     }
 }

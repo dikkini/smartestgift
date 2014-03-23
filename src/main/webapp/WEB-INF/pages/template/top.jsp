@@ -105,14 +105,15 @@
 </div>
 
 <script type="text/javascript">
+    var socket;
     $(document).ready(function() {
         <sec:authorize access="isAuthenticated()">
-            var socket = new SockJS('/unreadMessagesCount');
+            socket = new SockJS('/messages');
             var stompClient = Stomp.over(socket);
             stompClient.connect({}, function(frame) {
                 stompClient.send("/app/setUnreadCount", {}, {});
 //                console.log('Connected: ' + frame);
-                stompClient.subscribe('/topic/getUnreadMessagesCount/' + '${user.username}', function(response) {
+                stompClient.subscribe('/user/' + '${user.username}' + '/getUnreadMessagesCount', function(response) {
                     response = JSON.parse(response.body);
                     $("#countUnreadMessages").text(response);
                 });

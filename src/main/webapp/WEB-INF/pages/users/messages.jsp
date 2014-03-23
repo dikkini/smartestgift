@@ -109,8 +109,6 @@
 
 <script type="text/javascript">
     $(document).ready(function(){
-
-        var socket = new SockJS('/unreadMessagesCount');
         var stompClient = Stomp.over(socket);
         stompClient.connect({}, function(frame) {
             console.log('Connected: ' + frame);
@@ -119,9 +117,9 @@
 
         function stompNewSubscribe(unsubscribe) {
             if (unsubscribe) {
-                stompClient.unsubscribe('/topic/getNewConversationMessages/' + '${smartUser.username}');
+                stompClient.unsubscribe('/user/' + '${smartUser.username}' + '/getNewConversationMessages');
             }
-            stompClient.subscribe('/topic/getNewConversationMessages/' + '${smartUser.username}', function(response) {
+            stompClient.subscribe('/user/' + '${smartUser.username}' + '/getNewConversationMessages', function(response) {
                 var body = JSON.parse(response.body);
                 if (body != "[]") {
                     var messages = JSON.parse(body);

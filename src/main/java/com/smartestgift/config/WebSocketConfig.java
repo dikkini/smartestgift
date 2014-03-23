@@ -1,9 +1,15 @@
 package com.smartestgift.config;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 import org.springframework.web.socket.config.annotation.AbstractWebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
@@ -20,7 +26,7 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic");
+        config.enableSimpleBroker("/topic", "/user");
         config.setApplicationDestinationPrefixes("/app");
     }
 
@@ -36,7 +42,28 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/unreadMessagesCount").withSockJS();
+        registry.addEndpoint("/messages").withSockJS();
+    }
+
+    @Bean
+    public TaskScheduler scheduler() {
+        return new ConcurrentTaskScheduler();
+    }
+
+    @Bean
+    public SimpMessagingTemplate messagingTemplate() {
+        MessageChannel messageChannel = new MessageChannel() {
+            @Override
+            public boolean send(Message<?> message) {
+                return false;
+            }
+
+            @Override
+            public boolean send(Message<?> message, long l) {
+                return false;
+            }
+        };
+        return new SimpMessagingTemplate(messageChannel);
     }
 
 }
