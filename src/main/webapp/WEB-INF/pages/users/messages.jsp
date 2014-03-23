@@ -112,13 +112,6 @@
         var stompClient = Stomp.over(socket);
         stompClient.connect({}, function(frame) {
             console.log('Connected: ' + frame);
-            stompNewSubscribe(false);
-        });
-
-        function stompNewSubscribe(unsubscribe) {
-            if (unsubscribe) {
-                stompClient.unsubscribe('/user/' + '${smartUser.username}' + '/getNewConversationMessages');
-            }
             stompClient.subscribe('/user/' + '${smartUser.username}' + '/getNewConversationMessages', function(response) {
                 var body = JSON.parse(response.body);
                 if (body != "[]") {
@@ -126,6 +119,10 @@
                     renderConversationMessages(messages, false);
                 }
             });
+        });
+
+        function unsubscribe() {
+            stompClient.unsubscribe('/user/' + '${smartUser.username}' + '/getNewConversationMessages');
         }
 
         function loadAndRenderAllConversationMessages(conversationUuid) {
@@ -184,7 +181,6 @@
         }
 
         $(".conversation").click(function() {
-            stompNewSubscribe(true);
             var conversationUuid = $(this).data("conversation-uuid");
             loadAndRenderAllConversationMessages(conversationUuid);
             var jsonstr = JSON.stringify({ 'param': conversationUuid});
@@ -196,6 +192,7 @@
         });
 
         $("#btn-new-message").click(function() {
+            unsubscribe();
             $("#messages-title").text("New Message");
             $("#messages-dialog").empty();
             $("#new-message-input-form").show();

@@ -59,9 +59,6 @@ public class MessageController {
     @Autowired
     private Gson gson;
 
-    @Autowired
-    private TaskScheduler scheduler;
-
     private Map<String, ScheduledFuture<?>> conversationSchedulers = new HashMap<>();
 
     @RequestMapping(method = RequestMethod.GET)
@@ -90,7 +87,7 @@ public class MessageController {
         if (scheduledFuture != null) {
             scheduledFuture.cancel(true);
         }
-        ScheduledFuture<?> messagingScheduler = scheduler.scheduleWithFixedDelay(new Runnable() {
+        ScheduledFuture<?> messagingScheduler = new ConcurrentTaskScheduler().scheduleWithFixedDelay(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -140,7 +137,7 @@ public class MessageController {
     @MessageMapping("/setUnreadCount")
     public void getCountUserUnreadMessages(final Principal p) {
         // TODO add additional security checks using username and active user
-        ScheduledFuture<?> scheduledFuture = scheduler.scheduleAtFixedRate(new Runnable() {
+        new ConcurrentTaskScheduler().scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
                 try {

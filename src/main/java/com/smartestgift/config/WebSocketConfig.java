@@ -44,10 +44,4 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/messages").withSockJS();
     }
-
-    @Bean
-    public TaskScheduler scheduler() {
-        return new ConcurrentTaskScheduler();
-    }
-
 }
