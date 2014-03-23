@@ -5,12 +5,14 @@ import com.smartestgift.dao.SmartUserDetailsDAO;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,12 +33,14 @@ public class UserAuthProviderImpl implements UserAuthProvider {
     @Autowired
     private SmartUserDetailsDAO smartUserDetailsDAO;
 
+    @Override
     public UserDetails loadUserByUsername(String login)
             throws UsernameNotFoundException {
         if (isEmail(login)) {
             return smartUserDetailsDAO.findSmartUserDetailsByEmail(login);
         } else {
-            return smartUserDetailsDAO.findSmartUserDetailsByUsername(login);
+            SmartUserDetails smartUserDetailsByUsername = smartUserDetailsDAO.findSmartUserDetailsByUsername(login);
+            return smartUserDetailsByUsername;
         }
     }
 

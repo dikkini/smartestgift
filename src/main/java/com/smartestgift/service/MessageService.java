@@ -19,11 +19,11 @@ public interface MessageService {
 
     /**
      *
-     * @param activeUser
-     * @param conversation
+     * @param userName
+     * @param conversationUuid
      * @return
      */
-    public List<Message> findNewMessagesInConversation(SmartUser activeUser, Conversation conversation);
+    public List<Message> findNewMessagesInConversation(String userName, String conversationUuid);
 
     /**
      *
@@ -35,8 +35,8 @@ public interface MessageService {
 
     /**
      *
-     * @param smartUser
+     * @param username
      * @return
      */
-    public Integer findCountUserUnreadMessages(SmartUser smartUser);
+    public Integer findCountUserUnreadMessages(String username);
 }

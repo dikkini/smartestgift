@@ -13,7 +13,7 @@
         <spring-security.version>3.2.2.RELEASE</spring-security.version>
 
         <db.name>smartestgiftdb</db.name>
-        <!--<db.host>172.25.29.197</db.host>-->
+<!--        <db.host>172.25.29.197</db.host>-->
         <db.host>109.120.165.66</db.host>
         <db.port>5432</db.port>
         <db.username>smartestgiftdbadmin</db.username>
@@ -144,6 +144,13 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -233,11 +240,6 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>cglib</groupId>
-            <artifactId>cglib</artifactId>
-            <version>3.0</version>
-        </dependency>
-        <dependency>
             <groupId>aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
             <version>1.5.4</version>
@@ -274,17 +276,27 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>4.2.2.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate.javax.persistence</groupId>
-            <artifactId>hibernate-jpa-2.0-api</artifactId>
-            <version>1.0.0.Final</version>
+            <version>4.3.3.Final</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>5.0.1.Final</version>
+            <version>5.0.3.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>4.3.4.Final</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>cglib</groupId>
+                    <artifactId>cglib</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>dom4j</groupId>
+                    <artifactId>dom4j</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 <!--        <dependency>
             <groupId>org.hibernate</groupId>
@@ -294,7 +306,7 @@
 
 
         <!-- Logging -->
-        <dependency>
+<!--        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.6</version>
@@ -334,7 +346,7 @@
                 </exclusion>
             </exclusions>
             <scope>runtime</scope>
-        </dependency>
+        </dependency>-->
 
         <!-- @Inject -->
         <dependency>
@@ -392,15 +404,14 @@
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>3.1.0</version>
-            <scope>provided</scope>
         </dependency>
+<!--        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+        </dependency>-->
 
         <!-- websockets and stomp -->
         <dependency>
@@ -428,6 +439,13 @@
             <artifactId>reactor-tcp</artifactId>
             <version>1.0.0.RELEASE</version>
         </dependency>
+        <!-- For SockJS -->
+        <!-- http://jira.codehaus.org/browse/JACKSON-884 -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.2.1</version>
+        </dependency>
 
         <!-- file upload deps -->
         <dependency>
@@ -435,10 +453,15 @@
             <artifactId>commons-fileupload</artifactId>
             <version>1.3.1</version>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-core-asl</artifactId>
             <version>1.9.13</version>
+        </dependency>-->
+        <dependency>
+            <groupId> org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>1.9.12</version>
         </dependency>
     </dependencies>
 

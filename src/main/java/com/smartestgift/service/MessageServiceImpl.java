@@ -35,16 +35,19 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public List<Message> findMessagesInConversation(SmartUser activeUser, Conversation conversation) {
         List<Message> conversationMessages = messageDAO.findMessagesByConversation(conversation.getUuid());
+        // TODO mark all messages as read
         this.markMessagesAsReadNotAuthor(conversationMessages, activeUser);
         return conversationMessages;
     }
 
     @Override
-    public List<Message> findNewMessagesInConversation(SmartUser activeUser, Conversation conversation) {
+    public List<Message> findNewMessagesInConversation(String userName, String conversationUuid) {
+        SmartUser smartUserByUsername = smartUserDAO.findSmartUserByUsername(userName);
+        Conversation conversation = conversationDAO.find(conversationUuid);
         MessageStatus messageStatus = messageStatusDAO.find(ApplicationConstants.MESSAGE_STATUS_NEW);
-        List<Message> messagesByConversationAndStatus = messageDAO.findMessagesUserIsAuthorByConversationAndStatus
-                (activeUser, conversation, messageStatus);
-        this.markMessagesAsReadNotAuthor(messagesByConversationAndStatus, activeUser);
+        List<Message> messagesByConversationAndStatus = messageDAO.findMessagesUserNotAuthorCountByConversationAndStatus
+                (smartUserByUsername, conversation, messageStatus);
+        this.markMessagesAsReadNotAuthor(messagesByConversationAndStatus, smartUserByUsername);
         return messagesByConversationAndStatus;
     }
 
@@ -63,12 +66,13 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public Integer findCountUserUnreadMessages(SmartUser smartUser) {
+    public Integer findCountUserUnreadMessages(String username) {
+        SmartUser smartUser = smartUserDAO.findSmartUserByUsername(username);
         MessageStatus messageStatus = messageStatusDAO.find(ApplicationConstants.MESSAGE_STATUS_NEW);
         List<Conversation> userConversations = conversationDAO.findConversationsByUser(smartUser);
         Integer countUserUnreadMessages = 0;
         for (Conversation conversation : userConversations) {
-            countUserUnreadMessages += messageDAO.findMessagesUserNotAuthorCountByConversationAndStatus(smartUser, conversation, messageStatus);
+            countUserUnreadMessages += messageDAO.findMessagesUserNotAuthorCountByConversationAndStatus(smartUser, conversation, messageStatus).size();
         }
         return countUserUnreadMessages;
     }

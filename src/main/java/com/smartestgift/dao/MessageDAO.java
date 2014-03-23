@@ -21,11 +21,10 @@ public interface MessageDAO extends Repository<Message, String> {
 
     /**
      *
-     * @param smartUser
-     * @param messageStatus
+     * @param conversationUuid
      * @return
      */
-    public List<Message> findMessagesByAuthorAndStatus(SmartUser smartUser, MessageStatus messageStatus);
+    public List<Message> findUnreadMessagesByConversation(String conversationUuid);
 
     /**
      *
@@ -34,14 +33,6 @@ public interface MessageDAO extends Repository<Message, String> {
      * @param messageStatus
      * @return
      */
-    public List<Message> findMessagesUserIsAuthorByConversationAndStatus(SmartUser smartUser, Conversation conversation, MessageStatus messageStatus);
-
-    /**
-     *
-     * @param smartUser
-     * @param conversation
-     * @param messageStatus
-     * @return
-     */
-    public Integer findMessagesUserNotAuthorCountByConversationAndStatus(SmartUser smartUser, Conversation conversation, MessageStatus messageStatus);
+    public List<Message> findMessagesUserNotAuthorCountByConversationAndStatus(SmartUser smartUser,
+                                                                               Conversation conversation, MessageStatus messageStatus);
 }

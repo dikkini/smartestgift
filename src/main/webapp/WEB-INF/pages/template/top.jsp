@@ -10,7 +10,7 @@
 <jsp:useBean id="user" class="com.smartestgift.dao.model.SmartUserDetails" scope="request"/>
 
 
-<!doctype html>
+<!DOCTYPE HTML>
 
 <html lang="en">
 
@@ -18,14 +18,17 @@
     <title><spring:message code="label.title"/></title>
     <meta name="viewport" content="width=device-width">
     <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/resources/ext/jquery/datepicker/css/pickmeup.min.css">
-    <link rel="stylesheet" href="/resources/main/css/style.css">
+    <link rel="stylesheet" href="/assets/ext/jquery/datepicker/css/pickmeup.min.css">
+    <link rel="stylesheet" href="/assets/main/css/style.css">
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
     <script type="text/javascript" src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/resources/ext/jquery/datepicker/jquery.pickmeup.min.js"></script>
-    <script type="text/javascript" src="/resources/main/js/loading.js"></script>
-    <script type="text/javascript" src="/resources/main/js/utils.js"></script>
-    <script type="text/javascript" src="/resources/main/js/check_browse_close.js"></script>
+    <script type="text/javascript" src="/assets/ext/jquery/datepicker/jquery.pickmeup.min.js"></script>
+    <script type="text/javascript" src="/assets/main/js/loading.js"></script>
+    <script type="text/javascript" src="/assets/main/js/utils.js"></script>
+    <script type="text/javascript" src="/assets/main/js/check_browse_close.js"></script>
+    <script type="text/javascript" src="/assets/ext/common/modernizr.js"></script>
+    <script type="text/javascript" src="/assets/ext/common/sockjs-0.3.4.js"></script>
+    <script type="text/javascript" src="/assets/ext/common/stomp.js"></script>
 </head>
 
 <body>
@@ -33,7 +36,7 @@
     <header>
         <div class="row">
             <div class="col-md-11">
-                <img src="/resources/main/images/logo.png">
+                <img src="/assets/main/images/logo.png">
             </div>
             <div class="col-md-1">
                 <span style="float: right">
@@ -102,19 +105,19 @@
 </div>
 
 <script type="text/javascript">
+    var socket;
     $(document).ready(function() {
         <sec:authorize access="isAuthenticated()">
-            (function poll(){
-                setTimeout(function () {
-                    $.ajax({
-                        type: "post",
-                        url: "/messages/getCountUserUnreadMessages",
-                        cache: false,
-                        success: function (response) {
-                            $("#countUnreadMessages").text(response);
-                        }, dataType: "json", complete: poll, timeout: 3000 });
-                }, 5000);
-            })();
+            socket = new SockJS('/messages');
+            var stompClient = Stomp.over(socket);
+            stompClient.connect({}, function(frame) {
+                stompClient.send("/app/setUnreadCount", {}, {});
+//                console.log('Connected: ' + frame);
+                stompClient.subscribe('/user/' + '${user.username}' + '/getUnreadMessagesCount', function(response) {
+                    response = JSON.parse(response.body);
+                    $("#countUnreadMessages").text(response);
+                });
+            });
         </sec:authorize>
     });
 </script>

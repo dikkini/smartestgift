@@ -49,6 +49,7 @@
                                                     <img height="50" src="/file/get/${fromUserConversation.file.id}">
                                                 </div>
                                                 <div class="col-xs-9">
+                                                    <p class="list-group-unread-messages-count" style="float: right"></p>
                                                     <p class="list-group-item-heading">${fromUserConversation.username}</p>
                                                     <p class="list-group-item-text ellipses">message?</p>
                                                 </div>
@@ -109,29 +110,35 @@
 
 <script type="text/javascript">
     $(document).ready(function(){
-        var pollingConversationTimeout;
-        function startLongPollingConversation(conversationUuid){
-            loadAndRenderNewConversationMessages(conversationUuid)
+        var stompClient = Stomp.over(socket);
+        stompClient.connect({}, function(frame) {
+            console.log('Connected: ' + frame);
+            stompClient.subscribe('/user/' + '${smartUser.username}' + '/getNewConversationMessages', function(response) {
+                var body = JSON.parse(response.body);
+                var messages = JSON.parse(body);
+                renderConversationMessages(messages, false);
+            });
+            stompClient.subscribe('/user/' + '${smartUser.username}' + '/getUnreadConversations', function(response) {
+                var body = JSON.parse(response.body);
+                var conversations = JSON.parse(body);
+                markUnreadConversations(conversations)
+            });
+            stompClient.send("/app/startGetUnreadConversations", {}, {});
+        });
+
+        function unsubscribe() {
+            stompClient.unsubscribe('/user/' + '${smartUser.username}' + '/getNewConversationMessages');
         }
 
-        function loadAndRenderNewConversationMessages(conversationUuid) {
-            setTimeout(function () {
-                pollingConversationTimeout = $.ajax({
-                    type: "post",
-                    url: "/messages/getCountUserUnreadMessages",
-                    cache: false,
-                    success: function (response) {
-                        $("#countUnreadMessages").text(response);
-                    }, dataType: "json", complete: loadAndRenderNewConversationMessages(conversationUuid), timeout: 3000 });
-            }, 5000);
-        }
         function loadAndRenderAllConversationMessages(conversationUuid) {
             $.ajax({
                 type: "post",
                 url: "/messages/getConversationMessages",
                 cache: false,
                 data: "conversationUuid=" + conversationUuid,
+                dataType: "json",
                 success: function (response) {
+                    response = JSON.parse(response);
                     renderConversationMessages(response, true);
                 },
                 error: function (response) {
@@ -178,17 +185,30 @@
             });
         }
 
+        function markUnreadConversations(conversations) {
+            conversations.forEach(function(conversation) {
+                $(".conversation").each(function() {
+                    if (conversation.uuid == $(this).data("conversation-uuid")) {
+                        $(this).find(".list-group-unread-messages-count").text("unread");
+                    }
+                })
+            });
+        }
+
         $(".conversation").click(function() {
+            $(this).find(".list-group-unread-messages-count").text("");
             var conversationUuid = $(this).data("conversation-uuid");
+            loadAndRenderAllConversationMessages(conversationUuid);
+            var jsonstr = JSON.stringify({ 'param': conversationUuid});
+            stompClient.send("/app/setConversation", {}, jsonstr);
+
             $("#messages-title").text($(this).data("conversation-username"));
             $("#conversation-message").attr("data-conversation-uuid", conversationUuid);
-            loadAndRenderAllConversationMessages(conversationUuid);
-            clearTimeout(pollingConversationTimeout);
-            startLongPollingConversation(conversationUuid);
+
         });
 
         $("#btn-new-message").click(function() {
-            clearTimeout(pollingConversationTimeout);
+            unsubscribe();
             $("#messages-title").text("New Message");
             $("#messages-dialog").empty();
             $("#new-message-input-form").show();

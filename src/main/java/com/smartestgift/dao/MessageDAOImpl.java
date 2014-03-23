@@ -4,6 +4,7 @@ import com.smartestgift.dao.model.Conversation;
 import com.smartestgift.dao.model.Message;
 import com.smartestgift.dao.model.MessageStatus;
 import com.smartestgift.dao.model.SmartUser;
+import com.smartestgift.utils.ApplicationConstants;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -72,28 +73,22 @@ public class MessageDAOImpl implements MessageDAO {
     }
 
     @Override
-    public List<Message> findMessagesByAuthorAndStatus(SmartUser smartUser, MessageStatus messageStatus) {
+    public List<Message> findUnreadMessagesByConversation(String conversationUuid) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Message.class);
-        criteria.add(Restrictions.eq("smartUser", smartUser));
-        criteria.add(Restrictions.eq("messageStatus", messageStatus));
+        criteria.add(Restrictions.eq("conversation.uuid", conversationUuid));
+        criteria.add(Restrictions.eq("messageStatus.id", ApplicationConstants.MESSAGE_STATUS_NEW));
+        criteria.addOrder(org.hibernate.criterion.Order.asc("date"));
         return (List<Message>) criteria.list();
     }
 
     @Override
-    public List<Message> findMessagesUserIsAuthorByConversationAndStatus(SmartUser smartUser, Conversation conversation, MessageStatus messageStatus) {
+    public List<Message> findMessagesUserNotAuthorCountByConversationAndStatus(SmartUser smartUser,
+                                                                               Conversation conversation,
+                                                                               MessageStatus messageStatus) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Message.class);
-        criteria.add(Restrictions.eq("conversation", conversation));
         criteria.add(Restrictions.eq("messageStatus", messageStatus));
+        criteria.add(Restrictions.eq("conversation", conversation));
         criteria.add(Restrictions.ne("smartUser", smartUser));
         return (List<Message>) criteria.list();
-    }
-
-    @Override
-    public Integer findMessagesUserNotAuthorCountByConversationAndStatus(SmartUser smartUser, Conversation conversation, MessageStatus messageStatus) {
-        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Message.class);
-        criteria.add(Restrictions.eq("messageStatus", messageStatus));
-        criteria.add(Restrictions.eq("conversation", conversation));
-        criteria.add(Restrictions.ne("smartUser", smartUser));
-        return ((Long) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
     }
 }

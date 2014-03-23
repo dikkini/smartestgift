@@ -58,4 +58,4 @@
 <jsp:include page="template/bottom.jsp"/>
 
 
-<script type="text/javascript" src="/resources/main/js/signup.js"></script>
+<script type="text/javascript" src="/assets/main/js/signup.js"></script>

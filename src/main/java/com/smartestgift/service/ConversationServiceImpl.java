@@ -5,6 +5,7 @@ import com.smartestgift.dao.MessageDAO;
 import com.smartestgift.dao.MessageStatusDAO;
 import com.smartestgift.dao.SmartUserDAO;
 import com.smartestgift.dao.model.Conversation;
+import com.smartestgift.dao.model.Message;
 import com.smartestgift.dao.model.SmartUser;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
@@ -13,6 +14,7 @@ import org.hibernate.criterion.SimpleExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -55,5 +57,19 @@ public class ConversationServiceImpl implements ConversationService {
         conversation.setUser_to(smartUserDAO.findSmartUserByUsername(usernameTo));
         conversationDAO.store(conversation);
         messageService.sendMessageToUser(smartUserFrom, message, conversation.getUuid());
+    }
+
+    @Override
+    public List<Conversation> findUnreadConversationsByUsername(String username) {
+        List<Conversation> conversationsWithUnreadMessages = new ArrayList<>();
+        List<Conversation> all = conversationDAO.findAll();
+        for (Conversation conversation : all) {
+            List<Message> unreadMessagesByConversation = messageDAO.findUnreadMessagesByConversation(conversation.getUuid());
+            if (unreadMessagesByConversation.size() > 0) {
+                conversationsWithUnreadMessages.add(conversation);
+            }
+        }
+
+        return conversationsWithUnreadMessages;
     }
 }

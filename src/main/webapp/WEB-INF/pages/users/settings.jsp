@@ -11,14 +11,7 @@
 
 <div class="row">
     <div class="col-xs-3">
-        <c:choose>
-            <c:when test="${smartUser.file.id == null}">
-                <img height="250px" src=/resources/main/images/no_photo.jpg>
-            </c:when>
-            <c:otherwise>
-                <img height="250px" src="/file/get/${smartUser.file.id}">
-            </c:otherwise>
-        </c:choose>
+        <img height="250px" src="/file/get/${smartUser.file.id}">
         <button type="button" class="btn btn-default"><spring:message code="label.choosephoto"/></button>
     </div>
     <div class="col-xs-9">

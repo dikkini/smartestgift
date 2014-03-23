@@ -2,6 +2,7 @@ package com.smartestgift.security;
 
 import com.smartestgift.dao.model.SmartUserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 
