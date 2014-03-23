@@ -50,20 +50,4 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
         return new ConcurrentTaskScheduler();
     }
 
-    @Bean
-    public SimpMessagingTemplate messagingTemplate() {
-        MessageChannel messageChannel = new MessageChannel() {
-            @Override
-            public boolean send(Message<?> message) {
-                return false;
-            }
-
-            @Override
-            public boolean send(Message<?> message, long l) {
-                return false;
-            }
-        };
-        return new SimpMessagingTemplate(messageChannel);
-    }
-
 }
