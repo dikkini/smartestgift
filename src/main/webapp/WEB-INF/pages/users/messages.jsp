@@ -49,6 +49,7 @@
                                                     <img height="50" src="/file/get/${fromUserConversation.file.id}">
                                                 </div>
                                                 <div class="col-xs-9">
+                                                    <p class="list-group-unread-messages-count" style="float: right"></p>
                                                     <p class="list-group-item-heading">${fromUserConversation.username}</p>
                                                     <p class="list-group-item-text ellipses">message?</p>
                                                 </div>
@@ -114,11 +115,15 @@
             console.log('Connected: ' + frame);
             stompClient.subscribe('/user/' + '${smartUser.username}' + '/getNewConversationMessages', function(response) {
                 var body = JSON.parse(response.body);
-                if (body != "[]") {
-                    var messages = JSON.parse(body);
-                    renderConversationMessages(messages, false);
-                }
+                var messages = JSON.parse(body);
+                renderConversationMessages(messages, false);
             });
+            stompClient.subscribe('/user/' + '${smartUser.username}' + '/getUnreadConversations', function(response) {
+                var body = JSON.parse(response.body);
+                var conversations = JSON.parse(body);
+                markUnreadConversations(conversations)
+            });
+            stompClient.send("/app/startGetUnreadConversations", {}, {});
         });
 
         function unsubscribe() {
@@ -180,7 +185,18 @@
             });
         }
 
+        function markUnreadConversations(conversations) {
+            conversations.forEach(function(conversation) {
+                $(".conversation").each(function() {
+                    if (conversation.uuid == $(this).data("conversation-uuid")) {
+                        $(this).find(".list-group-unread-messages-count").text("unread");
+                    }
+                })
+            });
+        }
+
         $(".conversation").click(function() {
+            $(this).find(".list-group-unread-messages-count").text("");
             var conversationUuid = $(this).data("conversation-uuid");
             loadAndRenderAllConversationMessages(conversationUuid);
             var jsonstr = JSON.stringify({ 'param': conversationUuid});

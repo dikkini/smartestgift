@@ -35,6 +35,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public List<Message> findMessagesInConversation(SmartUser activeUser, Conversation conversation) {
         List<Message> conversationMessages = messageDAO.findMessagesByConversation(conversation.getUuid());
+        // TODO mark all messages as read
         this.markMessagesAsReadNotAuthor(conversationMessages, activeUser);
         return conversationMessages;
     }

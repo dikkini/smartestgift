@@ -33,4 +33,11 @@ public interface ConversationService {
      * @param message
      */
     public void createConversation(SmartUser smartUserFrom, String usernameTo, String message);
+
+    /**
+     *
+     * @param username
+     * @return
+     */
+    public List<Conversation> findUnreadConversationsByUsername(String username);
 }

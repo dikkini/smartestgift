@@ -70,7 +70,7 @@ public class MessageController {
     }
 
     @RequestMapping(value = "/getConversationMessages", headers="Accept=application/json", method = RequestMethod.POST)
-    public @ResponseBody String getNewMessagesWithUser(@ActiveUser SmartUserDetails smartUserDetails,
+    public @ResponseBody String getConversationMessages(@ActiveUser SmartUserDetails smartUserDetails,
                                                               @RequestParam(value = "conversationUuid", required = true)
                                                                                               String conversationUuid) {
         // TODO add additional security checks using username and active user
@@ -150,5 +150,25 @@ public class MessageController {
                 }
             }
         }, 2000);
+    }
+
+    @MessageMapping("/startGetUnreadConversations")
+    public void getUnreadConversations(final Principal p) {
+        // TODO add additional security checks using username and active user
+        new ConcurrentTaskScheduler().scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    List<Conversation> unreadConversationsByUsername = conversationService
+                            .findUnreadConversationsByUsername(p.getName());
+                    if (unreadConversationsByUsername.size() != 0) {
+                        String json = gson.toJson(unreadConversationsByUsername);
+                        template.convertAndSendToUser(p.getName(), "/getUnreadConversations", json);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, 5000);
     }
 }

@@ -21,6 +21,13 @@ public interface MessageDAO extends Repository<Message, String> {
 
     /**
      *
+     * @param conversationUuid
+     * @return
+     */
+    public List<Message> findUnreadMessagesByConversation(String conversationUuid);
+
+    /**
+     *
      * @param smartUser
      * @param conversation
      * @param messageStatus

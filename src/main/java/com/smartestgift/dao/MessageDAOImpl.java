@@ -4,6 +4,7 @@ import com.smartestgift.dao.model.Conversation;
 import com.smartestgift.dao.model.Message;
 import com.smartestgift.dao.model.MessageStatus;
 import com.smartestgift.dao.model.SmartUser;
+import com.smartestgift.utils.ApplicationConstants;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -67,6 +68,15 @@ public class MessageDAOImpl implements MessageDAO {
     public List<Message> findMessagesByConversation(String conversationUuid) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Message.class);
         criteria.add(Restrictions.eq("conversation.uuid", conversationUuid));
+        criteria.addOrder(org.hibernate.criterion.Order.asc("date"));
+        return (List<Message>) criteria.list();
+    }
+
+    @Override
+    public List<Message> findUnreadMessagesByConversation(String conversationUuid) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Message.class);
+        criteria.add(Restrictions.eq("conversation.uuid", conversationUuid));
+        criteria.add(Restrictions.eq("messageStatus.id", ApplicationConstants.MESSAGE_STATUS_NEW));
         criteria.addOrder(org.hibernate.criterion.Order.asc("date"));
         return (List<Message>) criteria.list();
     }
