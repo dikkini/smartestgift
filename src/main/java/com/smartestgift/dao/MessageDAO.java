@@ -14,17 +14,18 @@ import java.util.List;
 public interface MessageDAO extends Repository<Message, String> {
 
     /**
-     * @param conversationUuid
+     * @param conversation
      * @return
      */
-    public List<Message> findMessagesByConversation(String conversationUuid);
+    public List<Message> findMessagesByConversation(Conversation conversation);
 
     /**
      *
-     * @param conversationUuid
+     * @param conversation
+     * @param messageStatus
      * @return
      */
-    public List<Message> findUnreadMessagesByConversation(String conversationUuid);
+    public List<Message> findMessagesByConversationAndStatus(Conversation conversation, MessageStatus messageStatus);
 
     /**
      *
@@ -33,6 +34,6 @@ public interface MessageDAO extends Repository<Message, String> {
      * @param messageStatus
      * @return
      */
-    public List<Message> findMessagesUserNotAuthorCountByConversationAndStatus(SmartUser smartUser,
-                                                                               Conversation conversation, MessageStatus messageStatus);
+    public List<Message> findMessagesByConversationAndStatusAndNotByUser(Conversation conversation,
+                                                                         MessageStatus messageStatus, SmartUser smartUser);
 }

@@ -32,4 +32,24 @@ public class MessageStatus implements Serializable {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MessageStatus)) return false;
+
+        MessageStatus that = (MessageStatus) o;
+
+        if (!id.equals(that.id)) return false;
+        if (!status.equals(that.status)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + status.hashCode();
+        return result;
+    }
 }

@@ -1,26 +1,18 @@
 package com.smartestgift.controller;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.smartestgift.controller.model.AjaxResponse;
 import com.smartestgift.controller.model.SocketMessage;
 import com.smartestgift.dao.model.Conversation;
 import com.smartestgift.dao.model.Message;
-import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserDetails;
 import com.smartestgift.service.ConversationService;
 import com.smartestgift.service.MessageService;
 import com.smartestgift.utils.ActiveUser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,14 +20,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.annotation.PostConstruct;
-import javax.persistence.PostLoad;
-import java.lang.reflect.Type;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ScheduledFuture;
 
 /**
@@ -74,9 +62,8 @@ public class MessageController {
                                                               @RequestParam(value = "conversationUuid", required = true)
                                                                                               String conversationUuid) {
         // TODO add additional security checks using username and active user
-        Conversation conversation = conversationService.findConversationByUuid(conversationUuid);
-        List<Message> messagesInConversation = messageService.findMessagesInConversation(smartUserDetails.getSmartUser(),
-                conversation);
+        List<Message> messagesInConversation = messageService.findAllMessagesByConversationForUser(
+                smartUserDetails.getUsername(), conversationUuid);
         return gson.toJson(messagesInConversation);
     }
 
@@ -92,7 +79,7 @@ public class MessageController {
             public void run() {
                 try {
                     List<Message> newMessagesInConversation = messageService.
-                            findNewMessagesInConversation(p.getName(), socketMessage.getParam());
+                            findNewMessagesForUserByConversation(p.getName(), socketMessage.getParam());
                     if (newMessagesInConversation.size() > 0) {
                         String json = gson.toJson(newMessagesInConversation);
                         template.convertAndSendToUser(p.getName(), "/getNewConversationMessages", json);
@@ -101,7 +88,7 @@ public class MessageController {
                     e.printStackTrace();
                 }
             }
-        }, 3000);
+        }, 5000);
         conversationSchedulers.put(p.getName(), messagingScheduler);
     }
 
@@ -141,7 +128,7 @@ public class MessageController {
             @Override
             public void run() {
                 try {
-                    Integer countUserUnreadMessages = messageService.findCountUserUnreadMessages(p.getName());
+                    Integer countUserUnreadMessages = messageService.findCountUnreadMessages(p.getName());
                     if (countUserUnreadMessages != 0) {
                         template.convertAndSendToUser(p.getName(), "/getUnreadMessagesCount", countUserUnreadMessages);
                     }
@@ -149,7 +136,7 @@ public class MessageController {
                     e.printStackTrace();
                 }
             }
-        }, 2000);
+        }, 5000);
     }
 
     @MessageMapping("/startGetUnreadConversations")
