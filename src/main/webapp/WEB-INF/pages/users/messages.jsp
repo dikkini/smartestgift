@@ -11,9 +11,6 @@
 
 <jsp:include page="../template/top.jsp"/>
 
-<form name="refreshForm">
-    <input type="hidden" name="visited" value="" />
-</form>
 <div class="row">
     <div class="col-xs-4">
         <ul class="nav navbar-nav">
@@ -301,22 +298,6 @@
                     alert("error");
                 }
             });
-        }
-
-        function checkRefresh() {
-            if (document.refreshForm.visited.value == "") {
-                // This is a fresh page load
-                document.refreshForm.visited.value = "1";
-
-                // You may want to add code here special for
-                // fresh page loads
-            }
-            else {
-                // This is a page refresh
-
-                // Insert code here representing what to do on
-                // a refresh
-            }
         }
     });
 </script>
