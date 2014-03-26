@@ -9,6 +9,21 @@ import java.util.List;
  * Email: dikkini@gmail.com
  */
 public interface MessageService {
+    /**
+     *
+     * @param activeUser
+     * @param conversation
+     * @return
+     */
+    public List<Message> findMessagesInConversation(SmartUser activeUser, Conversation conversation);
+
+    /**
+     *
+     * @param userName
+     * @param conversationUuid
+     * @return
+     */
+    public List<Message> findNewMessagesInConversation(String userName, String conversationUuid);
 
     /**
      *
@@ -19,24 +34,9 @@ public interface MessageService {
     public void sendMessageToUser(SmartUser smartUser, String message, String conversationUuid);
 
     /**
-     * @param username
-     * @return
-     */
-    public Integer findCountUnreadMessages(String username);
-
-    /**
      *
      * @param username
-     * @param conversationUuid
      * @return
      */
-    public List<Message> findNewMessagesForUserByConversation(String username, String conversationUuid);
-
-    /**
-     *
-     * @param username
-     * @param conversationUuid
-     * @return
-     */
-    public List<Message> findAllMessagesByConversationForUser(String username, String conversationUuid);
+    public Integer findCountUserUnreadMessages(String username);
 }

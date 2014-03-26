@@ -185,6 +185,7 @@
             });
         }
 
+        // TODO когда загружаешь все сообщения, срабатывает асинхронный код добавляющий новые сообщения также.
         $(".conversation").click(function() {
             $(this).find(".list-group-unread-messages-count").text("");
             var conversationUuid = $(this).data("conversation-uuid");

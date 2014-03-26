@@ -65,25 +65,26 @@ public class MessageDAOImpl implements MessageDAO {
     }
 
     @Override
-    public List<Message> findMessagesByConversation(Conversation conversation) {
+    public List<Message> findMessagesByConversation(String conversationUuid) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Message.class);
-        criteria.add(Restrictions.eq("conversation", conversation));
+        criteria.add(Restrictions.eq("conversation.uuid", conversationUuid));
         criteria.addOrder(org.hibernate.criterion.Order.asc("date"));
         return (List<Message>) criteria.list();
     }
 
     @Override
-    public List<Message> findMessagesByConversationAndStatus(Conversation conversation, MessageStatus messageStatus) {
+    public List<Message> findUnreadMessagesByConversation(String conversationUuid) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Message.class);
-        criteria.add(Restrictions.eq("conversation", conversation));
-        criteria.add(Restrictions.eq("messageStatus", messageStatus));
+        criteria.add(Restrictions.eq("conversation.uuid", conversationUuid));
+        criteria.add(Restrictions.eq("messageStatus.id", ApplicationConstants.MESSAGE_STATUS_NEW));
         criteria.addOrder(org.hibernate.criterion.Order.asc("date"));
         return (List<Message>) criteria.list();
     }
 
     @Override
-    public List<Message> findMessagesByConversationAndStatusAndNotByUser(Conversation conversation,
-                                                                         MessageStatus messageStatus, SmartUser smartUser) {
+    public List<Message> findMessagesUserNotAuthorCountByConversationAndStatus(SmartUser smartUser,
+                                                                               Conversation conversation,
+                                                                               MessageStatus messageStatus) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Message.class);
         criteria.add(Restrictions.eq("messageStatus", messageStatus));
         criteria.add(Restrictions.eq("conversation", conversation));

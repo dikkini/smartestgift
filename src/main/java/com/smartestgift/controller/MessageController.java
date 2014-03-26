@@ -73,9 +73,10 @@ public class MessageController {
     public @ResponseBody String getConversationMessages(@ActiveUser SmartUserDetails smartUserDetails,
                                                               @RequestParam(value = "conversationUuid", required = true)
                                                                                               String conversationUuid) {
+        Conversation conversationByUuid = conversationService.findConversationByUuid(conversationUuid);
         // TODO add additional security checks using username and active user
-        List<Message> messagesInConversation = messageService.findAllMessagesByConversationForUser(smartUserDetails.getUsername(),
-                conversationUuid);
+        List<Message> messagesInConversation = messageService.findMessagesInConversation(smartUserDetails.getSmartUser(),
+                conversationByUuid);
         return gson.toJson(messagesInConversation);
     }
 
@@ -91,7 +92,7 @@ public class MessageController {
             public void run() {
                 try {
                     List<Message> newMessagesInConversation = messageService.
-                            findNewMessagesForUserByConversation(p.getName(), socketMessage.getParam());
+                            findNewMessagesInConversation(p.getName(), socketMessage.getParam());
                     if (newMessagesInConversation.size() > 0) {
                         String json = gson.toJson(newMessagesInConversation);
                         template.convertAndSendToUser(p.getName(), "/getNewConversationMessages", json);
@@ -140,7 +141,7 @@ public class MessageController {
             @Override
             public void run() {
                 try {
-                    Integer countUserUnreadMessages = messageService.findCountUnreadMessages(p.getName());
+                    Integer countUserUnreadMessages = messageService.findCountUserUnreadMessages(p.getName());
                     if (countUserUnreadMessages != 0) {
                         template.convertAndSendToUser(p.getName(), "/getUnreadMessagesCount", countUserUnreadMessages);
                     }
@@ -148,7 +149,7 @@ public class MessageController {
                     e.printStackTrace();
                 }
             }
-        }, 5000);
+        }, 3000);
     }
 
 

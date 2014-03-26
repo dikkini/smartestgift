@@ -6,9 +6,7 @@ import com.smartestgift.dao.MessageStatusDAO;
 import com.smartestgift.dao.SmartUserDAO;
 import com.smartestgift.dao.model.Conversation;
 import com.smartestgift.dao.model.Message;
-import com.smartestgift.dao.model.MessageStatus;
 import com.smartestgift.dao.model.SmartUser;
-import com.smartestgift.utils.ApplicationConstants;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
@@ -63,14 +61,11 @@ public class ConversationServiceImpl implements ConversationService {
 
     @Override
     public List<Conversation> findUnreadConversationsByUsername(String username) {
-        SmartUser smartUserByUsername = smartUserDAO.findSmartUserByUsername(username);
-        MessageStatus messageStatus = messageStatusDAO.find(ApplicationConstants.MESSAGE_STATUS_NEW);
         List<Conversation> conversationsWithUnreadMessages = new ArrayList<>();
         List<Conversation> all = conversationDAO.findAll();
         for (Conversation conversation : all) {
-            List<Message> unreadMessagesByConversation = messageDAO.findMessagesByConversationAndStatus(conversation,
-                    messageStatus);
-            if (unreadMessagesByConversation.size() > 0 && !conversation.getUser_from().equals(smartUserByUsername)) {
+            List<Message> unreadMessagesByConversation = messageDAO.findUnreadMessagesByConversation(conversation.getUuid());
+            if (unreadMessagesByConversation.size() > 0) {
                 conversationsWithUnreadMessages.add(conversation);
             }
         }
