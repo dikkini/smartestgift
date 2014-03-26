@@ -74,9 +74,8 @@ public class MessageController {
                                                               @RequestParam(value = "conversationUuid", required = true)
                                                                                               String conversationUuid) {
         // TODO add additional security checks using username and active user
-        Conversation conversation = conversationService.findConversationByUuid(conversationUuid);
-        List<Message> messagesInConversation = messageService.findMessagesInConversation(smartUserDetails.getSmartUser(),
-                conversation);
+        List<Message> messagesInConversation = messageService.findAllMessagesByConversationForUser(smartUserDetails.getUsername(),
+                conversationUuid);
         return gson.toJson(messagesInConversation);
     }
 
@@ -92,7 +91,7 @@ public class MessageController {
             public void run() {
                 try {
                     List<Message> newMessagesInConversation = messageService.
-                            findNewMessagesInConversation(p.getName(), socketMessage.getParam());
+                            findNewMessagesForUserByConversation(p.getName(), socketMessage.getParam());
                     if (newMessagesInConversation.size() > 0) {
                         String json = gson.toJson(newMessagesInConversation);
                         template.convertAndSendToUser(p.getName(), "/getNewConversationMessages", json);
@@ -141,7 +140,7 @@ public class MessageController {
             @Override
             public void run() {
                 try {
-                    Integer countUserUnreadMessages = messageService.findCountUserUnreadMessages(p.getName());
+                    Integer countUserUnreadMessages = messageService.findCountUnreadMessages(p.getName());
                     if (countUserUnreadMessages != 0) {
                         template.convertAndSendToUser(p.getName(), "/getUnreadMessagesCount", countUserUnreadMessages);
                     }
