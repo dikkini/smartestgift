@@ -118,19 +118,16 @@
                 var messages = JSON.parse(body);
                 renderConversationMessages(messages, false);
             });
-            stompClient.subscribe('/user/' + '${smartUser.username}' + '/getUnreadConversations', function(response) {
-                var body = JSON.parse(response.body);
-                var conversations = JSON.parse(body);
-                markUnreadConversations(conversations)
-            });
-            stompClient.disconnect(function() {
-                alert("See you next time!");
-            });
             stompClient.send("/app/startGetUnreadConversations", {}, {});
         });
 
-        function unsubscribe() {
-            stompClient.unsubscribe('/user/' + '${smartUser.username}' + '/getNewConversationMessages');
+        function stopNewMessageSchedule() {
+            $.ajax({
+                async: false // Important - this makes this a blocking call
+                , url: '/messages/stopNewMessagesSchedulers'
+                , type: 'post'
+                , data: {}
+            });
         }
 
         function loadAndRenderAllConversationMessages(conversationUuid) {
@@ -188,16 +185,6 @@
             });
         }
 
-        function markUnreadConversations(conversations) {
-            conversations.forEach(function(conversation) {
-                $(".conversation").each(function() {
-                    if (conversation.uuid == $(this).data("conversation-uuid")) {
-                        $(this).find(".list-group-unread-messages-count").text("unread");
-                    }
-                })
-            });
-        }
-
         $(".conversation").click(function() {
             $(this).find(".list-group-unread-messages-count").text("");
             var conversationUuid = $(this).data("conversation-uuid");
@@ -211,7 +198,7 @@
         });
 
         $("#btn-new-message").click(function() {
-            unsubscribe();
+            stopNewMessageSchedule();
             $("#messages-title").text("New Message");
             $("#messages-dialog").empty();
             $("#new-message-input-form").show();
@@ -302,6 +289,10 @@
                 }
             });
         }
+
+        window.onbeforeunload = function() {
+            stopNewMessageSchedule();
+        };
     });
 </script>
 
