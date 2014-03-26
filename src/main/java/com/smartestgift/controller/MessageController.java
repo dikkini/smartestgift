@@ -101,7 +101,7 @@ public class MessageController {
                     e.printStackTrace();
                 }
             }
-        }, 3000);
+        }, 1500);
         conversationSchedulers.put(p.getName(), messagingScheduler);
     }
 
@@ -149,26 +149,26 @@ public class MessageController {
                     e.printStackTrace();
                 }
             }
-        }, 2000);
+        }, 5000);
     }
 
-    @MessageMapping("/startGetUnreadConversations")
-    public void getUnreadConversations(final Principal p) {
-        // TODO add additional security checks using username and active user
-        new ConcurrentTaskScheduler().scheduleAtFixedRate(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    List<Conversation> unreadConversationsByUsername = conversationService
-                            .findUnreadConversationsByUsername(p.getName());
-                    if (unreadConversationsByUsername.size() != 0) {
-                        String json = gson.toJson(unreadConversationsByUsername);
-                        template.convertAndSendToUser(p.getName(), "/getUnreadConversations", json);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+
+    @RequestMapping(value = "/stopNewMessagesSchedulers", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    AjaxResponse stopNewMessagesSchedulers(@ActiveUser SmartUserDetails smartUserDetails) {
+        AjaxResponse result = new AjaxResponse();
+        try {
+            ScheduledFuture<?> scheduledFuture = conversationSchedulers.get(smartUserDetails.getUsername());
+            if (scheduledFuture != null) {
+                scheduledFuture.cancel(true);
             }
-        }, 5000);
+            result.setSuccess(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setSuccess(false);
+        }
+
+        return result;
     }
 }
