@@ -123,6 +123,9 @@
                 var conversations = JSON.parse(body);
                 markUnreadConversations(conversations)
             });
+            stompClient.disconnect(function() {
+                alert("See you next time!");
+            });
             stompClient.send("/app/startGetUnreadConversations", {}, {});
         });
 
