@@ -113,15 +113,25 @@
         var stompClient = Stomp.over(socket);
         stompClient.connect({}, function(frame) {
             console.log('Connected: ' + frame);
+        });
+
+        function unsubscribe() {
+            stompClient.unsubscribe('/user/' + '${smartUser.username}' + '/getNewConversationMessages');
+        }
+
+        function subscribe(conversationUuid) {
+            var jsonstr = JSON.stringify({ 'param': conversationUuid});
+            stompClient.send("/app/setConversation", {}, jsonstr);
+
             stompClient.subscribe('/user/' + '${smartUser.username}' + '/getNewConversationMessages', function(response) {
                 var body = JSON.parse(response.body);
                 var messages = JSON.parse(body);
                 renderConversationMessages(messages, false);
             });
-            stompClient.send("/app/startGetUnreadConversations", {}, {});
-        });
+        }
 
         function stopNewMessageSchedule() {
+            unsubscribe();
             $.ajax({
                 async: false // Important - this makes this a blocking call
                 , url: '/messages/stopNewMessagesSchedulers'
@@ -187,15 +197,15 @@
 
         // TODO когда загружаешь все сообщения, срабатывает асинхронный код добавляющий новые сообщения также.
         $(".conversation").click(function() {
+            stopNewMessageSchedule();
             $(this).find(".list-group-unread-messages-count").text("");
             var conversationUuid = $(this).data("conversation-uuid");
             loadAndRenderAllConversationMessages(conversationUuid);
-            var jsonstr = JSON.stringify({ 'param': conversationUuid});
-            stompClient.send("/app/setConversation", {}, jsonstr);
-
             $("#messages-title").text($(this).data("conversation-username"));
             $("#conversation-message").attr("data-conversation-uuid", conversationUuid);
-
+            setTimeout(function() {
+                subscribe();
+            }, 5000);
         });
 
         $("#btn-new-message").click(function() {
