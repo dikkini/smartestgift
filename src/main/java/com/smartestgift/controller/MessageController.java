@@ -1,26 +1,18 @@
 package com.smartestgift.controller;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.smartestgift.controller.model.AjaxResponse;
 import com.smartestgift.controller.model.SocketMessage;
 import com.smartestgift.dao.model.Conversation;
 import com.smartestgift.dao.model.Message;
-import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserDetails;
 import com.smartestgift.service.ConversationService;
 import com.smartestgift.service.MessageService;
 import com.smartestgift.utils.ActiveUser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,14 +20,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.annotation.PostConstruct;
-import javax.persistence.PostLoad;
-import java.lang.reflect.Type;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ScheduledFuture;
 
 /**
@@ -59,7 +47,7 @@ public class MessageController {
     @Autowired
     private Gson gson;
 
-    private Map<String, ScheduledFuture<?>> conversationSchedulers = new HashMap<>();
+    private Map<String, List<ScheduledFuture<?>>> conversationSchedulers = new HashMap<>();
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView messages(@ActiveUser SmartUserDetails smartUserDetails) {
@@ -83,10 +71,6 @@ public class MessageController {
     @MessageMapping("/setConversation")
     public void getNewConversationMessages(final SocketMessage socketMessage, final Principal p) {
         // TODO add additional security checks using username and active user
-        ScheduledFuture<?> scheduledFuture = conversationSchedulers.get(p.getName());
-        if (scheduledFuture != null) {
-            scheduledFuture.cancel(true);
-        }
         ScheduledFuture<?> messagingScheduler = new ConcurrentTaskScheduler().scheduleWithFixedDelay(new Runnable() {
             @Override
             public void run() {
@@ -102,7 +86,8 @@ public class MessageController {
                 }
             }
         }, 1500);
-        conversationSchedulers.put(p.getName(), messagingScheduler);
+        List<ScheduledFuture<?>> scheduledFutures = conversationSchedulers.get(p.getName());
+        scheduledFutures.add(messagingScheduler);
     }
 
     @RequestMapping(value = "/sendMessageToUser", method = RequestMethod.POST)
@@ -159,8 +144,8 @@ public class MessageController {
     AjaxResponse stopNewMessagesSchedulers(@ActiveUser SmartUserDetails smartUserDetails) {
         AjaxResponse result = new AjaxResponse();
         try {
-            ScheduledFuture<?> scheduledFuture = conversationSchedulers.get(smartUserDetails.getUsername());
-            if (scheduledFuture != null) {
+            List<ScheduledFuture<?>> scheduledFutures = conversationSchedulers.get(smartUserDetails.getUsername());
+            for (ScheduledFuture<?> scheduledFuture : scheduledFutures) {
                 scheduledFuture.cancel(true);
             }
             result.setSuccess(true);
