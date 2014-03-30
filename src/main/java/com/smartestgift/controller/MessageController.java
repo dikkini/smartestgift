@@ -47,7 +47,7 @@ public class MessageController {
     @Autowired
     private Gson gson;
 
-    private Map<String, List<ScheduledFuture<?>>> conversationSchedulers = new HashMap<>();
+    private Map<String, ScheduledFuture<?>> conversationSchedulers = new HashMap<>();
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView messages(@ActiveUser SmartUserDetails smartUserDetails) {
@@ -71,6 +71,10 @@ public class MessageController {
     @MessageMapping("/setConversation")
     public void getNewConversationMessages(final SocketMessage socketMessage, final Principal p) {
         // TODO add additional security checks using username and active user
+        ScheduledFuture<?> scheduledFutures = conversationSchedulers.get(p.getName());
+        if (scheduledFutures != null) {
+            scheduledFutures.cancel(true);
+        }
         ScheduledFuture<?> messagingScheduler = new ConcurrentTaskScheduler().scheduleWithFixedDelay(new Runnable() {
             @Override
             public void run() {
@@ -86,8 +90,7 @@ public class MessageController {
                 }
             }
         }, 1500);
-        List<ScheduledFuture<?>> scheduledFutures = conversationSchedulers.get(p.getName());
-        scheduledFutures.add(messagingScheduler);
+        conversationSchedulers.put(p.getName(), messagingScheduler);
     }
 
     @RequestMapping(value = "/sendMessageToUser", method = RequestMethod.POST)
@@ -144,10 +147,8 @@ public class MessageController {
     AjaxResponse stopNewMessagesSchedulers(@ActiveUser SmartUserDetails smartUserDetails) {
         AjaxResponse result = new AjaxResponse();
         try {
-            List<ScheduledFuture<?>> scheduledFutures = conversationSchedulers.get(smartUserDetails.getUsername());
-            for (ScheduledFuture<?> scheduledFuture : scheduledFutures) {
-                scheduledFuture.cancel(true);
-            }
+            ScheduledFuture<?> scheduledFutures = conversationSchedulers.get(smartUserDetails.getUsername());
+            scheduledFutures.cancel(true);
             result.setSuccess(true);
         } catch (Exception e) {
             e.printStackTrace();

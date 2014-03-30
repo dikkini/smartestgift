@@ -113,17 +113,15 @@
         var stompClient = Stomp.over(socket);
         stompClient.connect({}, function(frame) {
             console.log('Connected: ' + frame);
+            subscribe();
         });
 
         function unsubscribe() {
-            stompClient.unsubscribe('/user/' + '${smartUser.username}' + '/getNewConversationMessages');
+            stompClient.unsubscribe('/user/${smartUser.username}/getNewConversationMessages');
         }
 
-        function subscribe(conversationUuid) {
-            var jsonstr = JSON.stringify({ 'param': conversationUuid});
-            stompClient.send("/app/setConversation", {}, jsonstr);
-
-            stompClient.subscribe('/user/' + '${smartUser.username}' + '/getNewConversationMessages', function(response) {
+        function subscribe() {
+            stompClient.subscribe('/user/${smartUser.username}/getNewConversationMessages', function(response) {
                 var body = JSON.parse(response.body);
                 var messages = JSON.parse(body);
                 renderConversationMessages(messages, false);
@@ -131,12 +129,11 @@
         }
 
         function stopNewMessageSchedule() {
-            unsubscribe();
             $.ajax({
-                async: false // Important - this makes this a blocking call
-                , url: '/messages/stopNewMessagesSchedulers'
-                , type: 'post'
-                , data: {}
+                async: false, // Important - this makes this a blocking call
+                url: '/messages/stopNewMessagesSchedulers',
+                type: 'post',
+                data: {}
             });
         }
 
@@ -204,8 +201,9 @@
             $("#messages-title").text($(this).data("conversation-username"));
             $("#conversation-message").attr("data-conversation-uuid", conversationUuid);
             setTimeout(function() {
-                subscribe();
-            }, 5000);
+                var jsonstr = JSON.stringify({ 'param': conversationUuid});
+                stompClient.send("/app/setConversation", {}, jsonstr);
+            }, 3000)
         });
 
         $("#btn-new-message").click(function() {
