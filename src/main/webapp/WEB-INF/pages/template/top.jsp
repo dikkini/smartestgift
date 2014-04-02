@@ -25,7 +25,7 @@
     <script type="text/javascript" src="/assets/ext/jquery/datepicker/jquery.pickmeup.min.js"></script>
     <script type="text/javascript" src="/assets/main/js/loading.js"></script>
     <script type="text/javascript" src="/assets/main/js/utils.js"></script>
-    <%--<script type="text/javascript" src="/assets/main/js/check_browse_close.js"></script>--%>
+    <script type="text/javascript" src="/assets/ext/kladr/jquery.kladr.min.js"></script>
     <script type="text/javascript" src="/assets/ext/common/modernizr.js"></script>
     <script type="text/javascript" src="/assets/ext/common/sockjs-0.3.4.js"></script>
     <script type="text/javascript" src="/assets/ext/common/stomp.js"></script>

@@ -33,6 +33,21 @@
                 </div>
             </div>
             <div class="form-group">
+                <div class ="address">
+                    <div class="field">
+                        <label>Населённый пункт:</label>
+                        <select name="city">
+                            <option value="7700000000000" selected="selected">Москва</option>
+                            <option value="7800000000000">Санкт-Петербург</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>Улица:</label>
+                        <input name="street" type="text" value="">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
                 <label for="email" class="col-sm-2 control-label"><spring:message code="label.email"/><span class="required">*</span>
                 </label>
                 <div class="col-xs-4">
