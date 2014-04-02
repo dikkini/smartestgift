@@ -33,18 +33,10 @@
                 </div>
             </div>
             <div class="form-group">
-                <div class ="address">
-                    <div class="field">
-                        <label>Населённый пункт:</label>
-                        <select name="city">
-                            <option value="7700000000000" selected="selected">Москва</option>
-                            <option value="7800000000000">Санкт-Петербург</option>
-                        </select>
-                    </div>
-                    <div class="field">
-                        <label>Улица:</label>
-                        <input name="street" type="text" value="">
-                    </div>
+                <label for="city" class="col-sm-2 control-label">City</label>
+                <div class="col-xs-4">
+                    <input type="text" name="city" class="form-control" id="city" placeholder="City">
+                    <div id="kladr_autocomplete"></div>
                 </div>
             </div>
             <div class="form-group">

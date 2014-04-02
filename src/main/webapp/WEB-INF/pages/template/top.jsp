@@ -20,15 +20,19 @@
     <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
     <link rel="stylesheet" href="/assets/ext/jquery/datepicker/css/pickmeup.min.css">
     <link rel="stylesheet" href="/assets/main/css/style.css">
+    <link rel="stylesheet" href="/assets/ext/kladr/jquery.kladr.css">
+
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
     <script type="text/javascript" src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/assets/ext/jquery/datepicker/jquery.pickmeup.min.js"></script>
-    <script type="text/javascript" src="/assets/main/js/loading.js"></script>
-    <script type="text/javascript" src="/assets/main/js/utils.js"></script>
-    <script type="text/javascript" src="/assets/ext/kladr/jquery.kladr.min.js"></script>
+<%--    <script type="text/javascript" src="/assets/ext/kladr/jquery.kladr.min.js"></script>--%>
+    <script type="text/javascript" src="/assets/ext/kladr/jquery.kladr.js"></script>
+    <script type="text/javascript" src="/assets/ext/bootbox/bootbox.min.js"></script>
     <script type="text/javascript" src="/assets/ext/common/modernizr.js"></script>
     <script type="text/javascript" src="/assets/ext/common/sockjs-0.3.4.js"></script>
     <script type="text/javascript" src="/assets/ext/common/stomp.js"></script>
+    <script type="text/javascript" src="/assets/main/js/loading.js"></script>
+    <script type="text/javascript" src="/assets/main/js/utils.js"></script>
 </head>
 
 <body>

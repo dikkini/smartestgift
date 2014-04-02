@@ -267,7 +267,7 @@
 
                 spinner.css({
                     top:  inputOffset.top + (inputHeight - spinnerHeight)/2 - 1,
-                    left: inputOffset.left + inputWidth - spinnerWidth - 2,
+                    left: inputOffset.left + inputWidth - spinnerWidth - 2
                 });
             };
 

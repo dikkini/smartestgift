@@ -93,7 +93,7 @@
                 cache: false,
                 data: "giftuuid=" + $(this).data("gift-uuid"),
                 success: function (response) {
-                    window.location = $.updateNotifyBlockRequest(window.location.href, response.successes, response.errors, response.information);
+                    alert("OK");
                 },
                 error: function (response) {
                     window.location = "500";

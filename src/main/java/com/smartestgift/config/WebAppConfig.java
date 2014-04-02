@@ -72,13 +72,13 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.postgresql.Driver");
 
-  /*      dataSource.setUrl("jdbc:postgresql://109.120.165.66:5432/smartestgiftdb?useEncoding=true&amp;characterEncoding=UTF-8");
+        dataSource.setUrl("jdbc:postgresql://109.120.165.66:5432/smartestgiftdb?useEncoding=true&amp;characterEncoding=UTF-8");
         dataSource.setUsername("smartestgiftdbadmin");
-        dataSource.setPassword("smartestgiftdbadmin");*/
+        dataSource.setPassword("smartestgiftdbadmin");
 
-        dataSource.setUrl("jdbc:postgresql://172.25.29.197:5432/smartestgiftdb?useEncoding=true&amp;characterEncoding=UTF-8");
+/*        dataSource.setUrl("jdbc:postgresql://172.25.29.197:5432/smartestgiftdb?useEncoding=true&amp;characterEncoding=UTF-8");
         dataSource.setUsername("dikkini");
-        dataSource.setPassword("asddsa");
+        dataSource.setPassword("asddsa");*/
 
         return dataSource;
     }

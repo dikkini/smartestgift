@@ -85,4 +85,10 @@ public interface SmartUserService {
      * @param request
      */
     public void authenticateUser(SmartUserDetails smartUserDetails, HttpServletRequest request);
+
+    /**
+     *
+     * @param smartUserDetails
+     */
+    public void checkUserAddress(SmartUserDetails smartUserDetails);
 }

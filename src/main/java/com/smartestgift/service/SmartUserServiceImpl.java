@@ -41,9 +41,6 @@ public class SmartUserServiceImpl implements SmartUserService {
     @Autowired
     private FileDAO fileDAO;
 
-    @Autowired
-    private MessageDAO messageDAO;
-
     @Override
     public SmartUserDetails createNewUser(String username, String email, String passwordEncoded, String firstName, String lastName, Integer authProviderId, Integer roleId) {
 
@@ -128,6 +125,11 @@ public class SmartUserServiceImpl implements SmartUserService {
     @Override
     public void authenticateUser(SmartUserDetails smartUserDetails, HttpServletRequest request) {
         userAuthProvider.authenticateUser(smartUserDetails, request);
+    }
+
+    @Override
+    public void checkUserAddress(SmartUserDetails smartUserDetails) {
+
     }
 
     private SmartUserDetails getSmartUserDetailsFromFacebookUser(User facebookUser) {
