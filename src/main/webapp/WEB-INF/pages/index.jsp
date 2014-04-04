@@ -22,10 +22,20 @@
     <div class="row">
         <div class="col-xs-2"></div>
         <div class="col-xs-8">
-            <button class="btn btn-default btn-lg btn-block"><spring:message code="label.index_btn_text"/></button>
+            <sec:authorize access="isAuthenticated()">
+                <button id="sign-up-btn" class="btn btn-default btn-lg btn-block"><spring:message code="label.index_btn_text"/></button>
+            </sec:authorize>
         </div>
         <div class="col-xs-2"></div>
     </div>
 </div>
 
 <jsp:include page="template/bottom.jsp"/>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#sign-up-btn").click(function() {
+            window.location = "/signup";
+        });
+    });
+</script>

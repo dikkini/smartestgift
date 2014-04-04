@@ -5,7 +5,7 @@
             return this.each(function(){
                 $(this).width(options.width);
                 $(this).hide();
-                $(this).html('<img src="/resources/main/images/loading.gif" width="' + options.width
+                $(this).html('<img src="/assets/main/images/loading.gif" width="' + options.width
                     + '"/><span style="text-align: center; color: #9a9a9a; font-size: 12px"> '
                     + options.text + '</span>');
 

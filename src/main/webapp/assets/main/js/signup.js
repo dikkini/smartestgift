@@ -34,9 +34,9 @@ $(document).ready(function () {
             success: function (response) {
                 var imageSelector = $("#email-status");
                 if (response.success) {
-                    imageSelector.attr("src", "/resources/main/images/ok.png");
+                    imageSelector.attr("src", "/assets/main/images/ok.png");
                 } else {
-                    imageSelector.attr("src", "/resources/main/images/not_ok.png");
+                    imageSelector.attr("src", "/assets/main/images/not_ok.png");
                 }
                 $("#loading-email").loading('stop');
                 imageSelector.show();

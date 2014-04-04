@@ -84,7 +84,7 @@ css for link design
 }
 
 .gift-new-label::after {
-    content: url("/resources/main/images/gift_label-new.png");
+    content: url("/assets/main/images/gift_label-new.png");
     position: absolute;
     top: 0;
     left: 0;
