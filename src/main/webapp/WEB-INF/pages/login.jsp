@@ -38,10 +38,40 @@
         </div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-                <input type="submit" value="Login" class="btn btn-default"/>
+                <input id="login-btn" type="submit" value="Login" class="btn btn-default"/>
             </div>
         </div>
     </form>
 </div>
 
 <jsp:include page="template/bottom.jsp"/>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        var j_username = $("#j_username");
+        var j_password = $("#j_password");
+        var formUsername = j_username.parent().parent();
+        var formPassword = j_password.parent().parent();
+
+        j_username.focus(function() {
+            formUsername.removeClass("has-error")
+        });
+
+        j_password.focus(function() {
+            formPassword.removeClass("has-error")
+        });
+
+        $("#login-btn").click(function(e) {
+            var username = j_username.val().trim();
+            var password = j_password.val().trim();
+
+            if (username.length == 0) {
+                formUsername.addClass("has-error");
+                e.preventDefault();
+            } else if (password.length == 0) {
+                formPassword.addClass("has-error");
+                e.preventDefault();
+            }
+        });
+    })
+</script>
