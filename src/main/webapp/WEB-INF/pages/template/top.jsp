@@ -33,7 +33,6 @@
     <script type="text/javascript" src="/assets/ext/common/stomp.js"></script>
     <script type="text/javascript" src="/assets/main/js/loading.js"></script>
     <script type="text/javascript" src="/assets/main/js/utils.js"></script>
-    <script type="text/javascript" src="/assets/main/js/prototypes.js"></script>
 </head>
 
 <body>
