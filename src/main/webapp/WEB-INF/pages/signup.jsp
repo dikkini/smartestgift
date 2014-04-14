@@ -15,9 +15,11 @@
                 </label>
                 <div class="col-sm-4 has-feedback">
                     <input type="text" name="username" class="form-control" id="username" placeholder="<spring:message code="label.username"/>">
+                    <input id="username-valid" type="hidden" value="false">
                 </div>
                 <span id="username-ok-icon" class="glyphicon glyphicon-ok form-control-feedback" style="display: none;"></span>
                 <span id="username-not-ok-icon" class="glyphicon glyphicon-remove form-control-feedback" style="display: none;"></span>
+                <span id="username-input-error" class="required" style="display: none;"><spring:message code="label.username_input_length_error"/></span>
                 <span id="loading-username" class="loading"></span>
             </div>
             <div class="form-group">
@@ -37,7 +39,7 @@
                 <label for="city" class="col-sm-2 control-label"><spring:message code="label.city"/></label>
                 <div class="col-xs-4">
                     <input type="text" name="city" class="form-control" id="city" placeholder="<spring:message code="label.city"/>">
-                    <div id="kladr_autocomplete"></div>
+                    <div id="kladr_autocomplete" style="width: 100%"></div>
                     <span id="city-ok-icon" class="glyphicon glyphicon-ok form-control-feedback" style="display: none;"></span>
                     <span id="city-not-ok-icon" class="glyphicon glyphicon-remove form-control-feedback" style="display: none;"></span>
                 </div>

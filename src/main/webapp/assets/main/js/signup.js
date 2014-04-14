@@ -9,14 +9,19 @@ $(document).ready(function () {
     var usernameObj = $("#username");
     var emailObj = $("#email");
 
+    var usernameErrorTextObj = $("#username-input-error");
+
     var usernameForm = usernameObj.parent().parent();
     var emailForm = emailObj.parent().parent();
+
+    var signUpBtnObj = $("#sign-up-btn");
+    signUpBtnObj.attr("disabled", "disabled");
 
     $(".loading").loading({width: '25', text: 'Waiting...'});
 
 
 
-    usernameObj.on('keydown focusout', function (e) {
+    usernameObj.on('focusout', function (e) {
         var ajaxLoadingUsername = $("#loading-username");
         ajaxLoadingUsername.loading('start');
 
@@ -26,6 +31,7 @@ $(document).ready(function () {
             usernameForm.removeClass("has-success");
             usernameForm.addClass("has-error");
             usernameNotOkIcon.show();
+            usernameErrorTextObj.show();
             usernameOkIcon.hide();
 
             ajaxLoadingUsername.loading('stop');
@@ -42,11 +48,13 @@ $(document).ready(function () {
                     usernameForm.removeClass("has-error");
                     usernameForm.addClass("has-success");
                     usernameOkIcon.show();
+                    usernameErrorTextObj.hide();
                     usernameNotOkIcon.hide();
                 } else {
                     usernameForm.removeClass("has-success");
                     usernameForm.addClass("has-error");
                     usernameNotOkIcon.show();
+                    usernameErrorTextObj.show();
                     usernameOkIcon.hide();
                 }
                 ajaxLoadingUsername.loading('stop');
@@ -60,7 +68,9 @@ $(document).ready(function () {
     usernameObj.focus(function() {
         usernameNotOkIcon.hide();
         usernameOkIcon.hide();
+        usernameErrorTextObj.hide();
         usernameForm.removeClass("has-error")
+        usernameForm.removeClass("has-success")
     });
 
     emailObj.on('focusout', function (e) {
@@ -75,6 +85,7 @@ $(document).ready(function () {
                     emailForm.addClass("has-success");
                     emailOkIcon.show();
                     emailNotOkIcon.hide();
+                    signUpBtnObj.removeAttr("disabled");
                 } else {
                     emailForm.addClass("has-error");
                     emailOkIcon.show();
@@ -88,7 +99,7 @@ $(document).ready(function () {
         });
     });
 
-    $("#sign-up-btn").click(function (e) {
+    signUpBtnObj.click(function (e) {
         $("#loading-sign-up").loading('start');
 
         var data = {};
@@ -124,7 +135,9 @@ $(document).ready(function () {
                 key: '11a0052fed5a99278a594ca8ded998b160aeef7b',
                 type: $.kladr.type.city,
                 labelFormat: function( obj, query) {
-                    return obj.name;
+                    console.log(query);
+                    console.log(obj);
+                    return obj.type + " " + obj.name +  (obj.zip == null ? "" : ", Индекс: " + obj.zip);
                 }
             });
 
