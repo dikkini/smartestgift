@@ -25,8 +25,7 @@
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
     <script type="text/javascript" src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/assets/ext/jquery/datepicker/jquery.pickmeup.min.js"></script>
-<%--    <script type="text/javascript" src="/assets/ext/kladr/jquery.kladr.min.js"></script>--%>
-    <script type="text/javascript" src="/assets/ext/kladr/jquery.kladr.js"></script>
+    <script type="text/javascript" src="/assets/ext/kladr/jquery.kladr.min.js"></script>
     <script type="text/javascript" src="/assets/ext/bootbox/bootbox.min.js"></script>
     <script type="text/javascript" src="/assets/ext/common/modernizr.js"></script>
     <script type="text/javascript" src="/assets/ext/common/sockjs-0.3.4.js"></script>

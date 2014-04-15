@@ -8,34 +8,43 @@ $(document).ready(function () {
 
     var usernameObj = $("#username");
     var emailObj = $("#email");
+    var firstnameObj = $("#firstname");
+    var cityObj = $("#city");
+    var passwordObj = $("#password");
 
-    var usernameErrorTextObj = $("#username-input-error");
+    var usernameInputErrorObj = $("#username-input-error");
+    var usernameBusyErrorObj = $("#username-busy-error");
+
+    var emailInputErrorObj = $("#email-input-error");
+    var emailBusyErrorObj = $("#email-busy-error");
 
     var usernameForm = usernameObj.parent().parent();
     var emailForm = emailObj.parent().parent();
+    var cityForm = cityObj.parent().parent();
+    var passwordForm = passwordObj.parent().parent();
 
     var signUpBtnObj = $("#sign-up-btn");
     signUpBtnObj.attr("disabled", "disabled");
 
     $(".loading").loading({width: '25', text: 'Waiting...'});
 
-
-
     usernameObj.on('focusout', function (e) {
         var ajaxLoadingUsername = $("#loading-username");
         ajaxLoadingUsername.loading('start');
 
         var usernameVal = usernameObj.val();
-        var usernameRegexp = new RegExp("^[a-zA-Z]{5,255}$");
+        var usernameRegexp = new RegExp("^.{5,255}$");
         if (!usernameRegexp.test(usernameVal)) {
             usernameForm.removeClass("has-success");
             usernameForm.addClass("has-error");
             usernameNotOkIcon.show();
-            usernameErrorTextObj.show();
+            usernameInputErrorObj.show();
             usernameOkIcon.hide();
 
             ajaxLoadingUsername.loading('stop');
             return;
+        } else {
+            usernameInputErrorObj.hide();
         }
 
         $.ajax({
@@ -48,13 +57,14 @@ $(document).ready(function () {
                     usernameForm.removeClass("has-error");
                     usernameForm.addClass("has-success");
                     usernameOkIcon.show();
-                    usernameErrorTextObj.hide();
+                    usernameInputErrorObj.hide();
+                    usernameBusyErrorObj.hide();
                     usernameNotOkIcon.hide();
                 } else {
                     usernameForm.removeClass("has-success");
                     usernameForm.addClass("has-error");
                     usernameNotOkIcon.show();
-                    usernameErrorTextObj.show();
+                    usernameBusyErrorObj.show();
                     usernameOkIcon.hide();
                 }
                 ajaxLoadingUsername.loading('stop');
@@ -68,13 +78,31 @@ $(document).ready(function () {
     usernameObj.focus(function() {
         usernameNotOkIcon.hide();
         usernameOkIcon.hide();
-        usernameErrorTextObj.hide();
-        usernameForm.removeClass("has-error")
-        usernameForm.removeClass("has-success")
+        usernameInputErrorObj.hide();
+        usernameBusyErrorObj.hide();
+        usernameForm.removeClass("has-error");
+        usernameForm.removeClass("has-success");
     });
 
     emailObj.on('focusout', function (e) {
-        $("#loading-email").loading('start');
+        var emailLoading = $("#loading-email");
+        emailLoading.loading('start');
+
+        var emailVal = emailObj.val();
+
+        var emailRegexp = new RegExp("^[a-zA-Z0-9_.]+@\\w+.\\w+");
+        if (!emailRegexp.test(emailVal)) {
+            emailForm.removeClass("has-success");
+            emailForm.addClass("has-error");
+            emailOkIcon.hide();
+            emailNotOkIcon.show();
+            emailInputErrorObj.show();
+            emailBusyErrorObj.hide();
+            emailLoading.loading('stop');
+            return;
+        } else {
+            emailInputErrorObj.hide();
+        }
         $.ajax({
             type: "post",
             url: "/signup/checkEmail",
@@ -82,21 +110,36 @@ $(document).ready(function () {
             data: "email=" + $('#email').val(),
             success: function (response) {
                 if (response.success) {
+                    emailForm.removeClass("has-error");
                     emailForm.addClass("has-success");
                     emailOkIcon.show();
+
                     emailNotOkIcon.hide();
-                    signUpBtnObj.removeAttr("disabled");
+                    emailInputErrorObj.hide();
+                    emailBusyErrorObj.hide();
                 } else {
+                    emailForm.removeClass("has-success");
                     emailForm.addClass("has-error");
-                    emailOkIcon.show();
-                    emailNotOkIcon.hide();
+
+                    emailBusyErrorObj.show();
+                    emailNotOkIcon.show();
+                    emailOkIcon.hide();
                 }
-                $("#loading-email").loading('stop');
+                emailLoading.loading('stop');
             },
             error: function (response) {
                 alert(response.error);
             }
         });
+    });
+
+    emailObj.focus(function() {
+        emailBusyErrorObj.hide();
+        emailInputErrorObj.hide();
+        emailNotOkIcon.hide();
+        emailOkIcon.hide();
+        emailForm.removeClass("has-error");
+        emailForm.removeClass("has-success");
     });
 
     signUpBtnObj.click(function (e) {

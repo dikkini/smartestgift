@@ -20,6 +20,7 @@
                 <span id="username-ok-icon" class="glyphicon glyphicon-ok form-control-feedback" style="display: none;"></span>
                 <span id="username-not-ok-icon" class="glyphicon glyphicon-remove form-control-feedback" style="display: none;"></span>
                 <span id="username-input-error" class="required" style="display: none;"><spring:message code="label.username_input_length_error"/></span>
+                <span id="username-busy-error" class="required" style="display: none;"><spring:message code="label.username_busy_error"/></span>
                 <span id="loading-username" class="loading"></span>
             </div>
             <div class="form-group">
@@ -50,6 +51,8 @@
                 <div class="col-xs-4">
                     <input type="email" name="email" class="form-control" id="email" placeholder="<spring:message code="label.email"/>">
                 </div>
+                <span id="email-input-error" class="required" style="display: none;"><spring:message code="label.email_input_error"/></span>
+                <span id="email-busy-error" class="required" style="display: none;"><spring:message code="label.email_busy_error"/></span>
                 <span id="email-ok-icon" class="glyphicon glyphicon-ok form-control-feedback" style="display: none;"></span>
                 <span id="email-not-ok-icon" class="glyphicon glyphicon-remove form-control-feedback" style="display: none;"></span>
                 <span id="loading-email" class="loading"></span>
