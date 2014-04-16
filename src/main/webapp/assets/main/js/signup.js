@@ -15,32 +15,44 @@ $(document).ready(function () {
     var usernameInputErrorObj = $("#username-input-error");
     var usernameBusyErrorObj = $("#username-busy-error");
 
+    var usernameRegexp = new RegExp("^.{5,255}$");
+    var emailRegexp = new RegExp("^[a-zA-Z0-9_.]+@\\w+.\\w+");
+
     var emailInputErrorObj = $("#email-input-error");
     var emailBusyErrorObj = $("#email-busy-error");
 
     var usernameForm = usernameObj.parent().parent();
     var emailForm = emailObj.parent().parent();
+    var firstnameForm = firstnameObj.parent().parent();
     var cityForm = cityObj.parent().parent();
     var passwordForm = passwordObj.parent().parent();
 
-    var signUpBtnObj = $("#sign-up-btn");
-    signUpBtnObj.attr("disabled", "disabled");
-
     $(".loading").loading({width: '25', text: 'Waiting...'});
+
+    function showUsernameInputError() {
+        usernameForm.removeClass("has-success");
+        usernameForm.addClass("has-error");
+        usernameNotOkIcon.show();
+        usernameInputErrorObj.show();
+        usernameOkIcon.hide();
+    }
+
+    function showEmailInputError() {
+        emailForm.removeClass("has-success");
+        emailForm.addClass("has-error");
+        emailOkIcon.hide();
+        emailNotOkIcon.show();
+        emailInputErrorObj.show();
+        emailBusyErrorObj.hide();
+    }
 
     usernameObj.on('focusout', function (e) {
         var ajaxLoadingUsername = $("#loading-username");
         ajaxLoadingUsername.loading('start');
 
         var usernameVal = usernameObj.val();
-        var usernameRegexp = new RegExp("^.{5,255}$");
         if (!usernameRegexp.test(usernameVal)) {
-            usernameForm.removeClass("has-success");
-            usernameForm.addClass("has-error");
-            usernameNotOkIcon.show();
-            usernameInputErrorObj.show();
-            usernameOkIcon.hide();
-
+            showUsernameInputError();
             ajaxLoadingUsername.loading('stop');
             return;
         } else {
@@ -75,29 +87,14 @@ $(document).ready(function () {
         });
     });
 
-    usernameObj.focus(function() {
-        usernameNotOkIcon.hide();
-        usernameOkIcon.hide();
-        usernameInputErrorObj.hide();
-        usernameBusyErrorObj.hide();
-        usernameForm.removeClass("has-error");
-        usernameForm.removeClass("has-success");
-    });
-
     emailObj.on('focusout', function (e) {
         var emailLoading = $("#loading-email");
         emailLoading.loading('start');
 
         var emailVal = emailObj.val();
 
-        var emailRegexp = new RegExp("^[a-zA-Z0-9_.]+@\\w+.\\w+");
         if (!emailRegexp.test(emailVal)) {
-            emailForm.removeClass("has-success");
-            emailForm.addClass("has-error");
-            emailOkIcon.hide();
-            emailNotOkIcon.show();
-            emailInputErrorObj.show();
-            emailBusyErrorObj.hide();
+            showEmailInputError();
             emailLoading.loading('stop');
             return;
         } else {
@@ -133,6 +130,35 @@ $(document).ready(function () {
         });
     });
 
+    cityObj.on('focusout', function(e) {
+        //TODO проверить ID выдавший КЛАДР и вынести в отдельную функцию
+        if (cityObj.val().trim() == "") {
+            cityForm.addClass("has-error");
+            cityOkIcon.hide();
+            cityNotOkIcon.show();
+        } else {
+            cityForm.addClass("has-success")
+            cityOkIcon.show();
+            cityNotOkIcon.hide();
+        }
+    });
+
+    firstnameObj.on('focusout', function(e) {
+        if (firstnameObj.val().trim() == "") {
+            firstnameForm.addClass("has-error");
+        } else {
+            firstnameForm.addClass("has-success")
+        }
+    });
+
+    passwordObj.on('focusout', function(e) {
+        if (passwordObj.val().trim() == "") {
+            passwordForm.addClass("has-error");
+        } else {
+            passwordForm.addClass("has-success")
+        }
+    });
+
     emailObj.focus(function() {
         emailBusyErrorObj.hide();
         emailInputErrorObj.hide();
@@ -142,8 +168,66 @@ $(document).ready(function () {
         emailForm.removeClass("has-success");
     });
 
-    signUpBtnObj.click(function (e) {
+    usernameObj.focus(function() {
+        usernameNotOkIcon.hide();
+        usernameOkIcon.hide();
+        usernameInputErrorObj.hide();
+        usernameBusyErrorObj.hide();
+        usernameForm.removeClass("has-error");
+        usernameForm.removeClass("has-success");
+    });
+
+    firstnameObj.focus(function() {
+        firstnameForm.removeClass("has-error");
+        firstnameForm.removeClass("has-success")
+    });
+
+    cityObj.focus(function() {
+        cityForm.removeClass("has-error");
+        cityForm.removeClass("has-success")
+    });
+
+    passwordObj.focus(function() {
+        passwordForm.removeClass("has-error");
+        passwordForm.removeClass("has-success")
+    });
+
+    $("#sign-up-btn").click(function (e) {
         $("#loading-sign-up").loading('start');
+
+        var validForm = true;
+
+        if (!emailRegexp.test(emailObj.val())) {
+            showEmailInputError();
+            validForm = false;
+        }
+
+        if (!usernameRegexp.test(usernameObj.val())) {
+            showUsernameInputError();
+            validForm = false;
+        }
+
+        if (firstnameObj.val().trim() == "") {
+            firstnameForm.addClass("has-error");
+            validForm = false;
+        }
+
+        //TODO добавить проверку ID полученного из КЛАДР
+        if (cityObj.val().trim() == "") {
+            cityForm.addClass("has-error");
+            validForm = false;
+        }
+
+        if (passwordObj.val().trim() == "") {
+            passwordForm.addClass("has-error");
+            validForm = false;
+        }
+
+        if (!validForm) {
+            $("#loading-sign-up").loading('stop');
+            e.preventDefault();
+            return;
+        }
 
         var data = {};
         $('input').each(function () {
