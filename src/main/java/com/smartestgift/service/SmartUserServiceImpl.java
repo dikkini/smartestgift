@@ -4,8 +4,6 @@ import com.restfb.types.User;
 import com.smartestgift.dao.*;
 import com.smartestgift.dao.model.*;
 import com.smartestgift.security.UserAuthProvider;
-import com.smartestgift.utils.ApplicationConstants;
-import com.smartestgift.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -92,28 +90,9 @@ public class SmartUserServiceImpl implements SmartUserService {
     }
 
     @Override
-    public List<String> checkOccupiedEmailAndUsername(String username, String email) {
-        List<String> result = new ArrayList<>();
-
-        SmartUserDetails smartUserDetailsByEmail = smartUserDetailsDAO.findSmartUserDetailsByEmail(email);
-        SmartUserDetails smartUserDetailsByUsername = smartUserDetailsDAO.findSmartUserDetailsByUsername(username);
-
-        if (smartUserDetailsByEmail != null) {
-            result.add("email");
-        }
-
-        if (smartUserDetailsByUsername != null) {
-            result.add("username");
-        }
-
-        return result;
-    }
-
-    @Override
-    public boolean checkOccupiedUserLogin(String login) {
-        SmartUserDetails userDetailsByUsername = smartUserDetailsDAO.findSmartUserDetailsByUsername(login);
-        SmartUserDetails smartUserDetailsByEmail = smartUserDetailsDAO.findSmartUserDetailsByEmail(login);
-        return userDetailsByUsername == null && smartUserDetailsByEmail == null;
+    public boolean checkOccupiedUsername(String username) {
+        SmartUserDetails userDetailsByUsername = smartUserDetailsDAO.findSmartUserDetailsByUsername(username);
+        return userDetailsByUsername == null;
     }
 
     @Override
@@ -129,7 +108,7 @@ public class SmartUserServiceImpl implements SmartUserService {
 
     @Override
     public void checkUserAddress(SmartUserDetails smartUserDetails) {
-
+        // TODO do it
     }
 
     private SmartUserDetails getSmartUserDetailsFromFacebookUser(User facebookUser) {

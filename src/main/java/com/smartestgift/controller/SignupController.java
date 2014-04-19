@@ -6,8 +6,8 @@ import com.smartestgift.dao.model.SmartUserDetails;
 import com.smartestgift.security.UserAuthProvider;
 import com.smartestgift.service.SmartUserService;
 import com.smartestgift.utils.ApplicationConstants;
+import com.smartestgift.utils.ResponseMessages;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * Created by dikkini on 06.02.14.
@@ -46,9 +47,23 @@ public class SignupController {
             @RequestParam (required = true, value = "firstName") String firstName,
             @RequestParam (required = false, value = "lastName") String lastName) {
 
-        // TODO проверка всех входных данных
-
         AjaxResponse result = new AjaxResponse();
+
+        boolean emailOccupied = smartUserService.checkOccupiedEmail(email);
+        boolean usernameOccupied = smartUserService.checkOccupiedUsername(username);
+
+        if (!emailOccupied) {
+            result.addError(ResponseMessages.EMAIL_EXISTING_ERROR);
+        }
+
+        if (!usernameOccupied) {
+            result.addError(ResponseMessages.USERNAME_EXISTING_ERROR);
+        }
+
+        if (result.getErrors().size() > 0) {
+            result.setSuccess(false);
+            return result;
+        }
 
         StandardPasswordEncoder encoder = new StandardPasswordEncoder();
         String passwordEncoded = encoder.encode(password);
@@ -94,7 +109,7 @@ public class SignupController {
 
     @RequestMapping(value = "/checkLogin", method = RequestMethod.POST)
     public @ResponseBody AjaxResponse checkLogin(@RequestParam(value = "login", required = true) String login) {
-        boolean loginFree = smartUserService.checkOccupiedUserLogin(login);
+        boolean loginFree = smartUserService.checkOccupiedUsername(login);
         AjaxResponse result = new AjaxResponse();
         result.setSuccess(loginFree);
         return result;

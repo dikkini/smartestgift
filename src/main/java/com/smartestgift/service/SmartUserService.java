@@ -58,14 +58,6 @@ public interface SmartUserService {
     public SmartUserDetails findExistSocialUser(String socialId, Integer providerId);
 
     /**
-     * Check user email and username
-     * @param username
-     * @param email
-     * @return
-     */
-    public List<String> checkOccupiedEmailAndUsername(String username, String email);
-
-    /**
      *
      * @param email
      * @return true - free
@@ -74,10 +66,10 @@ public interface SmartUserService {
 
     /**
      *
-     * @param login
+     * @param username
      * @return true - free
      */
-    public boolean checkOccupiedUserLogin(String login);
+    public boolean checkOccupiedUsername(String username);
 
     /**
      *

@@ -6,6 +6,7 @@ import com.restfb.types.User;
 import com.smartestgift.dao.model.SmartUserDetails;
 import com.smartestgift.service.SmartUserService;
 import com.smartestgift.utils.ApplicationConstants;
+import com.smartestgift.utils.ResponseMessages;
 import com.smartestgift.utils.Utils;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
@@ -134,17 +135,18 @@ public class LoginController {
                     if (existSocialUser != null) {
                         smartUserService.authenticateUser(existSocialUser, request);
                     } else {
-                        List<String> errors = smartUserService.checkOccupiedEmailAndUsername(facebookUser.getUsername(),
-                                facebookUser.getEmail());
-                        if (errors.isEmpty()) {
+                        boolean emailIsFree = smartUserService.checkOccupiedEmail(facebookUser.getEmail());
+                        boolean usernameIsFree = smartUserService.checkOccupiedUsername(facebookUser.getUsername());
+
+                        if (emailIsFree && usernameIsFree) {
                             SmartUserDetails newUserFromFacebook = smartUserService.createNewUserFromFacebook(facebookUser);
                             smartUserService.authenticateUser(newUserFromFacebook, request);
                             return "redirect:/profile";
                         } else {
                             request.getSession().setAttribute(facebookUser.getId(), facebookUser);
                             return "redirect:/signup/facebook?id=" + facebookUser.getId() + "&errors="
-                                    + (errors.contains("username") ? "username_error," : "")
-                                    + (errors.contains("email") ? "email_error" : "");
+                                    + (!emailIsFree ? "username_error," : "")
+                                    + (!usernameIsFree ? "email_error" : "");
                         }
                     }
                 } else {
