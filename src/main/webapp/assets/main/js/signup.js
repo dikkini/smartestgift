@@ -193,9 +193,10 @@ $(document).ready(function () {
     });
 
     $("#sign-up-btn").click(function (e) {
-        $("#loading-sign-up").loading('start');
+        var loadingSignUp = $("#loading-sign-up");
+        loadingSignUp.loading('start');
 
-        var validForm = true;
+/*        var validForm = true;
 
         if (!emailRegexp.test(emailObj.val())) {
             showEmailInputError();
@@ -224,10 +225,10 @@ $(document).ready(function () {
         }
 
         if (!validForm) {
-            $("#loading-sign-up").loading('stop');
+            loadingSignUp.loading('stop');
             e.preventDefault();
             return;
-        }
+        }*/
 
         var data = {};
         $('input').each(function () {
@@ -243,9 +244,9 @@ $(document).ready(function () {
                 if (response.success) {
                     window.location = "/profile?successes=signup_success";
                 } else {
-                    window.location = $.updateQueryStringParameter(window.location.href, "errors", response.errors);
+                    $.showNotifications(response);
                 }
-                $("#loading-sign-up").loading('stop');
+                loadingSignUp.loading('stop');
             },
             error: function (response) {
                 alert(response.error);

@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="/assets/ext/jquery/datepicker/css/pickmeup.min.css">
     <link rel="stylesheet" href="/assets/main/css/style.css">
     <link rel="stylesheet" href="/assets/ext/kladr/jquery.kladr.css">
+    <link rel="stylesheet" href="/assets/ext/jquery/notification/pnotify.custom.min.css">
 
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
     <script type="text/javascript" src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
@@ -32,6 +33,8 @@
     <script type="text/javascript" src="/assets/ext/common/stomp.js"></script>
     <script type="text/javascript" src="/assets/main/js/loading.js"></script>
     <script type="text/javascript" src="/assets/main/js/utils.js"></script>
+    <script type="text/javascript" src="/assets/main/js/notifications.js"></script>
+    <script type="text/javascript" src="/assets/ext/jquery/notification/pnotify.custom.min.js"></script>
 </head>
 
 <body>
