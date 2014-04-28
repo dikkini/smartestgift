@@ -31,7 +31,7 @@ public class FileController {
 
     File file = null;
 
-    @RequestMapping(value = "/upload", method = RequestMethod.POST)
+    @RequestMapping(value = "/upload", headers = "content-type=multipart/*", method = RequestMethod.POST)
     public @ResponseBody String uploadFile(MultipartHttpServletRequest request, HttpServletResponse response) {
 
         Iterator<String> itr = request.getFileNames();
@@ -49,7 +49,7 @@ public class FileController {
 
                 // TODO абсолютные пути это плохо
                 try {
-                    FileCopyUtils.copy(mpf.getBytes(), new FileOutputStream("/home/dikkini/" + mpf.getOriginalFilename()));
+                    FileCopyUtils.copy(mpf.getBytes(), new FileOutputStream("/Users/dikkini/temp" + mpf.getOriginalFilename()));
                 } catch (FileNotFoundException e) {
                     FileCopyUtils.copy(mpf.getBytes(), new FileOutputStream("C:\\temp\\" + mpf.getOriginalFilename()));
                 }

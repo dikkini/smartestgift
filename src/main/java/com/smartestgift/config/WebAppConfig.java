@@ -33,6 +33,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.LocaleResolver;
@@ -206,16 +207,25 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
         converters.add(jackson2HttpMessageConverter());
     }
 
+    /*
+    file upload supports
+     */
     @Bean
     public MultipartResolver multipartResolver() {
-        return new StandardServletMultipartResolver();
+        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
+        // TODO size
+        multipartResolver.setMaxUploadSize(500000000);
+        return multipartResolver;
     }
 
     @Bean
     public MappingJackson2HttpMessageConverter jackson2HttpMessageConverter() {
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         converter.setSupportedMediaTypes(Arrays.asList(
-                new MediaType("application", "json", UTF8)
+                new MediaType(MediaType.APPLICATION_JSON.getType(), MediaType.APPLICATION_JSON.getSubtype(), UTF8),
+                new MediaType(MediaType.IMAGE_JPEG.getType(), MediaType.IMAGE_JPEG.getSubtype(), UTF8),
+                new MediaType(MediaType.IMAGE_PNG.getType(), MediaType.IMAGE_PNG.getSubtype(), UTF8),
+                new MediaType(MediaType.MULTIPART_FORM_DATA.getType(), MediaType.MULTIPART_FORM_DATA.getSubtype(), UTF8)
         ));
         return converter;
     }

@@ -12,7 +12,11 @@
 <div class="row">
     <div class="col-xs-3">
         <img height="250px" src="/file/get/${smartUser.file.id}">
-        <button type="button" class="btn btn-default"><spring:message code="label.choosephoto"/></button>
+        <input type="file" name="inputTypeFile" id="inputTypeFile">
+        <span id="loading-file" class="loading"></span>
+        <div id="progress">
+            <div class="bar" style="width: 0%;"></div>
+        </div>
     </div>
     <div class="col-xs-9">
         <form class="form-horizontal login-form" action="/profile/settings/save" method="post">
@@ -93,9 +97,41 @@
 <jsp:include page="../template/bottom.jsp"/>
 
 <script type="text/javascript">
-    $(document).ready(function(){
+    $(document).ready(function () {
+
+        $(".loading").loading({width: '25', text: 'Waiting...'});
+
+        $("#inputTypeFile").fileupload({
+            url: '/file/upload',
+            acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+            maxFileSize: 5000000, // 5 MB
+            // Enable image resizing, except for Android and Opera,
+            // which actually support image resizing, but fail to
+            // send Blob objects via XHR requests:
+            disableImageResize: /Android(?!.*Chrome)|Opera/
+                    .test(window.navigator.userAgent),
+            sequentialUploads: true,
+            progressall: function (e, data) {
+                var progress = parseInt(data.loaded / data.total * 100, 10);
+                $('#progress .bar').css(
+                        'width',
+                                progress + '%'
+                );
+            },
+            add: function (e, data) {
+                var loadingFile = $("#loading-file");
+                data.submit();
+                data.context = loadingFile.text('Uploading...');
+                loadingFile.start();
+                data.submit();
+            },
+            done: function (e, data) {
+                data.context.stop();
+            }
+        });
+
         $('.date').pickmeup({
-            format  : 'm.d.Y'
+            format: 'm.d.Y'
         });
     });
 </script>
