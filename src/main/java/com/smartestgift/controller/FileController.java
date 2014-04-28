@@ -8,8 +8,13 @@ package com.smartestgift.controller;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.smartestgift.dao.FileDAO;
+import com.smartestgift.dao.SmartUserDAO;
 import com.smartestgift.dao.model.File;
 import com.smartestgift.dao.model.FileType;
+import com.smartestgift.dao.model.SmartUserDetails;
+import com.smartestgift.utils.ActiveUser;
+import com.smartestgift.utils.ApplicationConstants;
+import javafx.application.Application;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
@@ -29,30 +34,36 @@ public class FileController {
     @Autowired
     FileDAO fileDAO;
 
+    @Autowired
+    SmartUserDAO smartUserDAO;
+
+    @Autowired
+    Gson gson;
+
     File file = null;
 
-    @RequestMapping(value = "/upload", headers = "content-type=multipart/*", method = RequestMethod.POST)
-    public @ResponseBody String uploadFile(MultipartHttpServletRequest request, HttpServletResponse response) {
+    @RequestMapping(value = "/uploadUserPhoto", headers = "content-type=multipart/*", method = RequestMethod.POST)
+    public @ResponseBody String uploadFile(@ActiveUser SmartUserDetails smartUserDetails,
+                                           MultipartHttpServletRequest request, HttpServletResponse response) {
 
         Iterator<String> itr = request.getFileNames();
         MultipartFile mpf;
-        Gson gson = new GsonBuilder().create();
 
         while (itr.hasNext()) {
 
             mpf = request.getFile(itr.next());
 
             try {
-                file = new File(mpf.getOriginalFilename(), String.valueOf(mpf.getSize() / 1024), new FileType());
+                FileType fileType = fileDAO.findFileTypeById(ApplicationConstants.USER_IMAGE_FILE_TYPE_ID);
+                file = new File(mpf.getOriginalFilename(), String.valueOf(mpf.getSize() / 1024), fileType);
                 fileDAO.store(file);
+                smartUserDetails.getSmartUser().setFile(file);
+                smartUserDAO.merge(smartUserDetails.getSmartUser());
                 System.out.println(mpf.getOriginalFilename() + " uploaded! id = " + file.getId());
 
                 // TODO абсолютные пути это плохо
-                try {
-                    FileCopyUtils.copy(mpf.getBytes(), new FileOutputStream("/Users/dikkini/temp" + mpf.getOriginalFilename()));
-                } catch (FileNotFoundException e) {
-                    FileCopyUtils.copy(mpf.getBytes(), new FileOutputStream("C:\\temp\\" + mpf.getOriginalFilename()));
-                }
+                /*FileCopyUtils.copy(mpf.getBytes(), new FileOutputStream("/Users/dikkini/temp" + mpf.getOriginalFilename()));*/
+                FileCopyUtils.copy(mpf.getBytes(), new FileOutputStream("C:\\temp\\" + mpf.getOriginalFilename()));
 
             } catch (IOException e) {
                 e.printStackTrace();

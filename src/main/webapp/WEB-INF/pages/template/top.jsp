@@ -22,8 +22,10 @@
     <link rel="stylesheet" href="/assets/main/css/style.css">
     <link rel="stylesheet" href="/assets/ext/kladr/jquery.kladr.css">
     <link rel="stylesheet" href="/assets/ext/jquery/notification/pnotify.custom.min.css">
+    <link rel="stylesheet" href="/assets/main/css/fileupload.css">
 
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script type="text/javascript" src="/assets/ext/jquery/jquery-2.0.3.js"></script>
+    <%--<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>--%>
     <script type="text/javascript" src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/assets/ext/jquery/datepicker/jquery.pickmeup.min.js"></script>
     <script type="text/javascript" src="/assets/ext/kladr/jquery.kladr.min.js"></script>
@@ -35,12 +37,15 @@
     <script type="text/javascript" src="/assets/main/js/utils.js"></script>
     <script type="text/javascript" src="/assets/main/js/notifications.js"></script>
     <script type="text/javascript" src="/assets/ext/jquery/notification/pnotify.custom.min.js"></script>
-    <script type="text/javascript" src="/assets/ext/jquery/fileupload/jquery.iframe-transport.js"></script>
+
     <script type="text/javascript" src="/assets/ext/jquery/fileupload/jquery.ui.widget.js"></script>
-    <script type="text/javascript" src="/assets/ext/jquery/fileupload/jquery.fileupload-image.js"></script>
-    <script type="text/javascript" src="/assets/ext/jquery/fileupload/jquery.fileupload-process.js"></script>
-    <script type="text/javascript" src="/assets/ext/jquery/fileupload/jquery.fileupload-validate.js"></script>
+    <script type="text/javascript" src="/assets/ext/jquery/fileupload/jquery.iframe-transport.js"></script>
     <script type="text/javascript" src="/assets/ext/jquery/fileupload/jquery.fileupload.js"></script>
+    <script type="text/javascript" src="/assets/ext/jquery/fileupload/jquery.fileupload-process.js"></script>
+    <script type="text/javascript" src="/assets/ext/jquery/fileupload/jquery.fileupload-image.js"></script>
+    <script type="text/javascript" src="/assets/ext/jquery/fileupload/jquery.fileupload-validate.js"></script>
+    <%--<script type="text/javascript" src="/assets/ext/jquery/fileupload/jquery.fileupload-jquery-ui.js"></script>
+    <script type="text/javascript" src="/assets/ext/jquery/fileupload/jquery.fileupload-ui.js"></script>--%>
 </head>
 
 <body>

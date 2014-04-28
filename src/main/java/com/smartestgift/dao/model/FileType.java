@@ -23,7 +23,7 @@ public class FileType implements Serializable {
     @Column (name = "path")
     protected String path;
 
-    @OneToMany(mappedBy = "type")
+    @OneToMany(mappedBy = "type", fetch = FetchType.EAGER)
     private Set<File> files;
 
     public Integer getId() {

@@ -1,6 +1,7 @@
 package com.smartestgift.dao;
 
 import com.smartestgift.dao.model.File;
+import com.smartestgift.dao.model.FileType;
 import com.smartestgift.dao.model.Gift;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -52,5 +53,10 @@ public class FileDAOImpl implements FileDAO {
         Session session = sessionFactory.getCurrentSession();
         session.merge(dmodel);
         session.flush();
+    }
+
+    @Override
+    public FileType findFileTypeById(Integer typeId) {
+        return (FileType) sessionFactory.getCurrentSession().get(FileType.class, typeId);
     }
 }

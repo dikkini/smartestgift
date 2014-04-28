@@ -25,7 +25,7 @@ public class File implements Serializable {
     protected String size;
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="type_id")
     private FileType type;
 

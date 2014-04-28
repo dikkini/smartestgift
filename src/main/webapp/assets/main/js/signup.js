@@ -196,7 +196,7 @@ $(document).ready(function () {
         var loadingSignUp = $("#loading-sign-up");
         loadingSignUp.loading('start');
 
-/*        var validForm = true;
+        var validForm = true;
 
         if (!emailRegexp.test(emailObj.val())) {
             showEmailInputError();
@@ -228,7 +228,7 @@ $(document).ready(function () {
             loadingSignUp.loading('stop');
             e.preventDefault();
             return;
-        }*/
+        }
 
         var data = {};
         $('input').each(function () {

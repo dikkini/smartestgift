@@ -11,8 +11,12 @@
 
 <div class="row">
     <div class="col-xs-3">
-        <img height="250px" src="/file/get/${smartUser.file.id}">
-        <input type="file" name="inputTypeFile" id="inputTypeFile">
+        <img id="user-photo-img" height="200" src="/file/get/${smartUser.file.id}">
+        <span class="btn btn-success fileinput-button">
+            <i class="glyphicon glyphicon-plus"></i>
+            <span>Choose Photo</span>
+            <input id="inputTypeFile" type="file" name="inputTypeFile">
+        </span>
         <span id="loading-file" class="loading"></span>
         <div id="progress">
             <div class="bar" style="width: 0%;"></div>
@@ -102,7 +106,7 @@
         $(".loading").loading({width: '25', text: 'Waiting...'});
 
         $("#inputTypeFile").fileupload({
-            url: '/file/upload',
+            url: '/file/uploadUserPhoto',
             acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
             maxFileSize: 5000000, // 5 MB
             // Enable image resizing, except for Android and Opera,
@@ -119,14 +123,18 @@
                 );
             },
             add: function (e, data) {
-                var loadingFile = $("#loading-file");
-                data.submit();
-                data.context = loadingFile.text('Uploading...');
-                loadingFile.start();
+                var fileLoading = $("#loading-file");
+                fileLoading.find("span").text('Uploading...');
+                fileLoading.loading('start');
+                data.context = fileLoading;
                 data.submit();
             },
             done: function (e, data) {
-                data.context.stop();
+                var imgSrc = '/file/get/' + data.result.id;
+                data.context.loading('stop');
+                $('#user-photo-img').attr('src', imgSrc).load(function(){
+                    $(this).width;   // Note: $(this).width() will not work for in memory images
+                });
             }
         });
 
