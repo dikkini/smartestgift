@@ -18,9 +18,6 @@
             <input id="inputTypeFile" type="file" name="inputTypeFile">
         </span>
         <span id="loading-file" class="loading"></span>
-        <div id="progress">
-            <div class="bar" style="width: 0%;"></div>
-        </div>
     </div>
     <div class="col-xs-9">
         <form class="form-horizontal login-form" action="/profile/settings/save" method="post">
@@ -117,10 +114,7 @@
             sequentialUploads: true,
             progressall: function (e, data) {
                 var progress = parseInt(data.loaded / data.total * 100, 10);
-                $('#progress .bar').css(
-                        'width',
-                                progress + '%'
-                );
+                $("#loading-file").find("span").text('Uploading.. ' + progress + '%');
             },
             add: function (e, data) {
                 var fileLoading = $("#loading-file");
