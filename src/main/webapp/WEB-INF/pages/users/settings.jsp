@@ -11,13 +11,18 @@
 
 <div class="row">
     <div class="col-xs-3">
-        <img id="user-photo-img" height="200" src="/file/get/${smartUser.file.id}">
-        <span class="btn btn-success fileinput-button">
-            <i class="glyphicon glyphicon-plus"></i>
-            <span>Choose Photo</span>
-            <input id="inputTypeFile" type="file" name="inputTypeFile">
-        </span>
-        <span id="loading-file" class="loading"></span>
+        <fieldset style="height: 359px" class="user-photo">
+            <legend><spring:message code="label.photo"/></legend>
+            <div class="form-group">
+                <img id="user-photo-img" height="200" src="/file/get/${smartUser.file.id}" style="align-self: center; margin-bottom: 20px;">
+                <span class="btn btn-success fileinput-button">
+                    <i class="glyphicon glyphicon-plus"></i>
+                    <span>Choose Photo</span>
+                    <input id="inputTypeFile" type="file" name="inputTypeFile">
+                </span>
+                <span id="loading-file" class="loading"></span>
+            </div>
+        </fieldset>
     </div>
     <div class="col-xs-9">
         <form class="form-horizontal login-form" action="/profile/settings/save" method="post">
