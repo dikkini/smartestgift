@@ -79,24 +79,17 @@
             </ul>
         </div>
         <div style="margin-top: 20px">
-            <div id="conversation-message">
-                <ul style="margin-bottom: 20px; max-height: 250px; overflow: auto;" id="messages-dialog" class="nav nav-pills nav-stacked"><%--messages here--%></ul>
-            </div>
-
-            <div id="new-message-input-form" style="margin-bottom: 20px; display: none;">
-                <ul class="list-group">
-                    <li class="list-group-item">
-                        <input id="input-new-conversation-recipient" data-username="" type="text" class="form-control" placeholder="Username or First name">
-                    </li>
-                    <li class="list-group-item">
-                        <div class="recipient-auto-complete" style="max-height: 250px; overflow: auto;"></div>
-                    </li>
-                </ul>
-            </div>
-
             <ul class="list-group">
+                <li id="new-message-input-form" class="list-group-item">
+                    <input id="input-new-conversation-recipient" data-username="" type="text" class="form-control" placeholder="Username or First name">
+                </li>
                 <li class="list-group-item">
-                    <textarea id="input-new-message" class="form-control" placeholder="Write new message here" style="resize:vertical;"></textarea>
+                    <div id="people-and-messages">
+                        <ul style="margin-bottom: 20px; max-height: 250px; overflow: auto;" id="messages-dialog" class="nav nav-pills nav-stacked"><%--messages here--%></ul>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <textarea id="message-input" class="form-control" placeholder="Write new message here" style="resize:vertical;"></textarea>
                 </li>
                 <li class="list-group-item">
                     <a id="btn-send-message" type="button" style="float: right; cursor: pointer;">Enter - send message</a>
@@ -156,7 +149,6 @@
         }
 
         function renderConversationMessages(messages, isEmpty) {
-            $("#new-message-input-form").hide();
             var messagesDialog = $("#messages-dialog");
             if (isEmpty) {
                 messagesDialog.empty();
@@ -194,12 +186,13 @@
 
         // TODO когда загружаешь все сообщения, срабатывает асинхронный код добавляющий новые сообщения также.
         $(".conversation").click(function() {
+            $("#new-message-input-form").hide();
             stopNewMessageSchedule();
             $(this).find(".list-group-unread-messages-count").text("");
             var conversationUuid = $(this).data("conversation-uuid");
             loadAndRenderAllConversationMessages(conversationUuid);
             $("#messages-title").text($(this).data("conversation-username"));
-            $("#conversation-message").attr("data-conversation-uuid", conversationUuid);
+            $("#people-and-messages").attr("data-conversation-uuid", conversationUuid);
             setTimeout(function() {
                 var jsonstr = JSON.stringify({ 'param': conversationUuid});
                 stompClient.send("/app/setConversation", {}, jsonstr);
@@ -213,7 +206,7 @@
             $("#new-message-input-form").show();
         });
 
-        $("#input-new-message").on('keypress', function(e) {
+        $("#message-input").on('keypress', function(e) {
             // enter key
             if (e.which !== 13) {
                 return;
@@ -235,7 +228,7 @@
 
         function startNewConversationWithUser() {
             var messageDialogObj = $("#messages-dialog");
-            var inputNewMessageObj = $("#input-new-message");
+            var inputNewMessageObj = $("#message-input");
             // TODO username брать из data-username у инпута после зполненения этого аттрибута автокомплитом
             $.ajax({
                 type: "post",
@@ -255,8 +248,8 @@
 
         function sendMessageToUser() {
             var messageDialogObj = $("#messages-dialog");
-            var inputNewMessageObj = $("#input-new-message");
-            var conversationUuid = $("#conversation-message").data("conversation-uuid");
+            var inputNewMessageObj = $("#message-input");
+            var conversationUuid = $("#people-and-messages").data("conversation-uuid");
             $.ajax({
                 type: "post",
                 url: "/messages/sendMessageToUser",
