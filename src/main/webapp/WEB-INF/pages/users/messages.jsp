@@ -85,7 +85,7 @@
                 </li>
                 <li class="list-group-item">
                     <div id="people-and-messages">
-                        <ul style="margin-bottom: 20px; max-height: 250px; overflow: auto;" id="messages-dialog" class="nav nav-pills nav-stacked"><%--messages here--%></ul>
+                        <ul style="margin-bottom: 20px; max-height: 250px; overflow: auto;" id="messages-and-people" class="nav nav-pills nav-stacked"><%--messages here--%></ul>
                     </div>
                 </li>
                 <li class="list-group-item">
@@ -149,7 +149,7 @@
         }
 
         function renderConversationMessages(messages, isEmpty) {
-            var messagesDialog = $("#messages-dialog");
+            var messagesDialog = $("#messages-and-people");
             if (isEmpty) {
                 messagesDialog.empty();
             }
@@ -202,7 +202,7 @@
         $("#btn-new-message").click(function() {
             stopNewMessageSchedule();
             $("#messages-title").text("New Message");
-            $("#messages-dialog").empty();
+            $("#messages-and-people").empty();
             $("#new-message-input-form").show();
         });
 
@@ -219,7 +219,7 @@
         });
 
         function sendMessageOrStartNewConversation() {
-            if ($("#messages-dialog").children().length > 0) {
+            if ($("#messages-and-people").children().length > 0) {
                 sendMessageToUser();
             } else {
                 startNewConversationWithUser();
@@ -227,7 +227,7 @@
         }
 
         function startNewConversationWithUser() {
-            var messageDialogObj = $("#messages-dialog");
+            var messageDialogObj = $("#messages-and-people");
             var inputNewMessageObj = $("#message-input");
             // TODO username брать из data-username у инпута после зполненения этого аттрибута автокомплитом
             $.ajax({
@@ -247,7 +247,7 @@
         }
 
         function sendMessageToUser() {
-            var messageDialogObj = $("#messages-dialog");
+            var messageDialogObj = $("#messages-and-people");
             var inputNewMessageObj = $("#message-input");
             var conversationUuid = $("#people-and-messages").data("conversation-uuid");
             $.ajax({
@@ -295,6 +295,54 @@
         window.onbeforeunload = function() {
             stopNewMessageSchedule();
         };
+
+        // new message code
+        $("#input-new-conversation-recipient").on("keyup", function(e) {
+            var userInput = $(this).val();
+            var messageDialogObj = $("#messages-and-people");
+            messageDialogObj.html("");
+            if (userInput.trim() == "") {
+                return;
+            }
+            $.ajax({
+                type: "post",
+                url: "/messages/findUsers",
+                cache: false,
+                data: "userInput=" + userInput,
+                success: function (response) {
+                    messageDialogObj.html("");
+
+                    response.forEach(function(entry) {
+                        var html =
+                                '<li tabindex="1">' +
+                                    '<div class="list-group">' +
+                                        '<a href="/user/' + entry.username +'" class="list-group-item" style="cursor: pointer">' +
+                                            '<div class="row">' +
+                                                '<div class="col-xs-1">' +
+                                                    '<img height="50" src="/file/get/' + entry.file.id + '">' +
+                                                '</div>' +
+                                                '<div class="col-xs-9">' +
+                                                    '<p class="list-group-item-heading">' +
+                                                        (entry.lastName ? entry.lastName + " " : "") + entry.firstName + (entry.middleName ? " " + entry.middleName : "")  +
+                                                    '</p>' +
+                                                    '<p class="list-group-item-text">' +
+                                                        entry.username +
+                                                    '</p>' +
+                                                '</div>'  +
+                                            '</div>' +
+                                        '</a>' +
+                                    '</div>' +
+                                '</li>';
+
+                        messageDialogObj.append(html);
+                    });
+                },
+                error: function (response) {
+                    //TODO обработка ошибок
+                    alert("error");
+                }
+            });
+        });
     });
 </script>
 

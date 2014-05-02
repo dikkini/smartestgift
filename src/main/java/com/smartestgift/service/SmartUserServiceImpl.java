@@ -1,5 +1,6 @@
 package com.smartestgift.service;
 
+import com.google.gson.Gson;
 import com.restfb.types.User;
 import com.smartestgift.dao.*;
 import com.smartestgift.dao.model.*;
@@ -8,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static com.smartestgift.utils.ApplicationConstants.*;
 
@@ -132,5 +131,34 @@ public class SmartUserServiceImpl implements SmartUserService {
         smartUserDetails.setSocialId(facebookUser.getId());
         smartUserDetails.setRegistrationDate(new Date());
         return smartUserDetails;
+    }
+
+    @Override
+    public List<SmartUser> findUsersByUserInput(String name, SmartUser activeUser) {
+        List<SmartUser> resultList = new ArrayList<>();
+        String[] split = name.split(" ");
+        for (String str : split) {
+            resultList.addAll(smartUserDAO.findSmartUsersLikeUserName(str, activeUser.getUsername()));
+            resultList.addAll(smartUserDAO.findSmartUsersLikeLastName(str, activeUser.getLastName()));
+            resultList.addAll(smartUserDAO.findSmartUsersLikeFirstName(str, activeUser.getFirstName()));
+            resultList.addAll(smartUserDAO.findSmartUsersLikeMiddleName(str, activeUser.getMiddleName()));
+        }
+
+        return removeDuplicates(resultList);
+    }
+
+    private List<SmartUser> removeDuplicates(List<SmartUser> l) {
+        Set<SmartUser> s = new TreeSet<>(new Comparator<SmartUser>() {
+
+            @Override
+            public int compare(SmartUser o1, SmartUser o2) {
+                if (o1.getUuid().equals(o2.getUuid())) {
+                    return 0;
+                }
+                return 1;
+            }
+        });
+        s.addAll(l);
+        return new ArrayList<>(s);
     }
 }

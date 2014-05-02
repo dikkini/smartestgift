@@ -3,11 +3,14 @@ package com.smartestgift.controller;
 import com.google.gson.Gson;
 import com.smartestgift.controller.model.AjaxResponse;
 import com.smartestgift.controller.model.SocketMessage;
+import com.smartestgift.dao.SmartUserDAO;
 import com.smartestgift.dao.model.Conversation;
 import com.smartestgift.dao.model.Message;
+import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserDetails;
 import com.smartestgift.service.ConversationService;
 import com.smartestgift.service.MessageService;
+import com.smartestgift.service.SmartUserService;
 import com.smartestgift.utils.ActiveUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -40,6 +43,9 @@ public class MessageController {
 
     @Autowired
     private MessageService messageService;
+
+    @Autowired
+    private SmartUserService smartUserService;
 
     @Autowired
     private SimpMessagingTemplate template;
@@ -156,5 +162,12 @@ public class MessageController {
         }
 
         return result;
+    }
+
+    @RequestMapping(value = "/findUsers", method = RequestMethod.POST)
+    public @ResponseBody String findUsersByUserInput(@ActiveUser SmartUserDetails smartUserDetails,
+                                                    @RequestParam(value = "userInput", required = true)
+                                                    String userInput) {
+        return gson.toJson(smartUserService.findUsersByUserInput(userInput, smartUserDetails.getSmartUser()));
     }
 }

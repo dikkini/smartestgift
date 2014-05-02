@@ -83,4 +83,12 @@ public interface SmartUserService {
      * @param smartUserDetails
      */
     public void checkUserAddress(SmartUserDetails smartUserDetails);
+
+    /**
+     *
+     * @param name
+     * @param activeUser
+     * @return
+     */
+    public List<SmartUser> findUsersByUserInput(String name, SmartUser activeUser);
 }

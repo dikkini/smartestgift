@@ -6,8 +6,7 @@ import com.smartestgift.dao.model.SmartUserDetails;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.CriteriaSpecification;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,5 +61,41 @@ public class SmartUserDAOImpl implements SmartUserDAO {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
         criteria.add(Restrictions.eq("username", username));
         return (SmartUser) criteria.uniqueResult();
+    }
+
+    @Override
+    public List<SmartUser> findSmartUsersLikeUserName(String username, String activeUsername) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
+        Criterion userLikeCriteria = Restrictions.like("username", username, MatchMode.ANYWHERE);
+        Criterion userNeActive = Restrictions.ne("username", activeUsername);
+        criteria.add(Restrictions.and(userLikeCriteria, userNeActive));
+        return criteria.list();
+    }
+
+    @Override
+    public List<SmartUser> findSmartUsersLikeFirstName(String firstName, String activeFistName) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
+        Criterion firstNameLikeCriteria = Restrictions.ilike("firstName", firstName, MatchMode.ANYWHERE);
+        Criterion firstNameNeActive = Restrictions.ne("firstName", activeFistName);
+        criteria.add(Restrictions.and(firstNameLikeCriteria, firstNameNeActive));
+        return criteria.list();
+    }
+
+    @Override
+    public List<SmartUser> findSmartUsersLikeLastName(String lastName, String activeLastName) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
+        Criterion lastNameLikeCriteria = Restrictions.ilike("lastName", lastName, MatchMode.ANYWHERE);
+        Criterion lastNameNeActive = Restrictions.ne("lastName", activeLastName);
+        criteria.add(Restrictions.and(lastNameLikeCriteria, lastNameNeActive));
+        return criteria.list();
+    }
+
+    @Override
+    public List<SmartUser> findSmartUsersLikeMiddleName(String middleName, String activeMiddleName) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
+        Criterion middleNameLikeCriteria = Restrictions.ilike("middleName", middleName, MatchMode.ANYWHERE);
+        Criterion middleNameNeActive = Restrictions.ne("middleName", activeMiddleName);
+        criteria.add(Restrictions.and(middleNameLikeCriteria, middleNameNeActive));
+        return criteria.list();
     }
 }
