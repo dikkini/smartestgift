@@ -85,6 +85,7 @@
                 </li>
                 <li class="list-group-item">
                     <div id="people-and-messages">
+                        <span id="loading-people-and-messages" class="loading" style=""></span>
                         <ul style="margin-bottom: 20px; max-height: 250px; overflow: auto;" id="messages-and-people" class="nav nav-pills nav-stacked"><%--messages here--%></ul>
                     </div>
                 </li>
@@ -103,6 +104,11 @@
 
 <script type="text/javascript">
     $(document).ready(function(){
+
+        var ajaxPeopleLoading;
+
+        $(".loading").loading({width: '25', text: 'Searching...'});
+
         var stompClient = Stomp.over(socket);
         stompClient.connect({}, function(frame) {
             console.log('Connected: ' + frame);
@@ -296,7 +302,6 @@
             stopNewMessageSchedule();
         };
 
-        // new message code
         $("#input-new-conversation-recipient").on("keyup", function(e) {
             var userInput = $(this).val();
             var messageDialogObj = $("#messages-and-people");
@@ -304,7 +309,9 @@
             if (userInput.trim() == "") {
                 return;
             }
-            $.ajax({
+
+            $("#loading-people-and-messages").loading("start");
+            ajaxPeopleLoading = $.ajax({
                 type: "post",
                 url: "/messages/findUsers",
                 cache: false,
@@ -316,7 +323,7 @@
                         var html =
                                 '<li tabindex="1">' +
                                     '<div class="list-group">' +
-                                        '<a href="/user/' + entry.username +'" class="list-group-item" style="cursor: pointer">' +
+                                        '<a data-username="' + entry.username + '" class="new-message-contact list-group-item" style="cursor: pointer">' +
                                             '<div class="row">' +
                                                 '<div class="col-xs-1">' +
                                                     '<img height="50" src="/file/get/' + entry.file.id + '">' +
@@ -335,13 +342,22 @@
                                 '</li>';
 
                         messageDialogObj.append(html);
+                        $("#loading-people-and-messages").loading("stop");
                     });
                 },
                 error: function (response) {
                     //TODO обработка ошибок
+                    $("#loading-people-and-messages").loading("stop");
                     alert("error");
                 }
             });
+        });
+
+        $("li div a.new-message-contact").on("click", function() {
+            var username = $(this).data("username");
+            $("#input-new-conversation-recipient").val(username);
+            $("#messages-and-people").html("");
+            $("#message-input").focusin();
         });
     });
 </script>
