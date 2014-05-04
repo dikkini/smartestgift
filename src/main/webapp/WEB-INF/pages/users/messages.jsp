@@ -32,17 +32,25 @@
                         </c:when>
                         <c:otherwise>
                              <c:forEach items="${userConversations}" var="conversation">
+                                 <c:choose>
+                                     <c:when test="${conversation.user_from == smartUser}">
+                                         <c:set var="userToConversation" value="${conversation.user_to}" />
+                                     </c:when>
+                                     <c:otherwise>
+                                         <c:set var="userToConversation" value="${conversation.user_from}" />
+                                     </c:otherwise>
+                                 </c:choose>
                                 <li>
                                     <div class="list-group">
-                                        <a data-conversation-username="${conversation.user_to.username}" data-conversation-uuid="${conversation.uuid}" class="list-group-item conversation" style="cursor: pointer;">
+                                        <a data-conversation-username="${userToConversation.username}" data-conversation-uuid="${conversation.uuid}" class="list-group-item conversation" style="cursor: pointer;">
                                             <div class="row">
                                                 <div class="col-xs-3">
-                                                    <img height="50" src="/file/get/${conversation.user_to.file.id}">
+                                                    <img height="50" src="/file/get/${userToConversation.file.id}">
                                                 </div>
                                                 <div class="col-xs-9">
                                                     <p class="list-group-unread-messages-count" style="float: right"></p>
-                                                    <p class="list-group-item-heading">${conversation.user_to.username}</p>
-                                                    <p class="list-group-item-text ellipses">message?</p>
+                                                    <p class="list-group-item-heading">${userToConversation.username}</p>
+                                                    <p class="list-group-item-text ellipses">todo last message</p>
                                                 </div>
                                             </div>
                                         </a>
