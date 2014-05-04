@@ -138,6 +138,9 @@ public class SmartUserServiceImpl implements SmartUserService {
         List<SmartUser> resultList = new ArrayList<>();
         String[] split = name.split(" ");
         for (String str : split) {
+            if (str.equals("")) {
+                continue;
+            }
             resultList.addAll(smartUserDAO.findSmartUsersLikeUserName(str, activeUser.getUsername()));
             resultList.addAll(smartUserDAO.findSmartUsersLikeLastName(str, activeUser.getLastName()));
             resultList.addAll(smartUserDAO.findSmartUsersLikeFirstName(str, activeUser.getFirstName()));

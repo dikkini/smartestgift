@@ -51,12 +51,13 @@ public class ConversationServiceImpl implements ConversationService {
     }
 
     @Override
-    public void createConversation(SmartUser smartUserFrom, String usernameTo, String message) {
+    public Conversation createConversation(SmartUser smartUserFrom, String usernameTo, String message) {
         Conversation conversation = new Conversation();
         conversation.setUser_from(smartUserFrom);
         conversation.setUser_to(smartUserDAO.findSmartUserByUsername(usernameTo));
         conversationDAO.store(conversation);
         messageService.sendMessageToUser(smartUserFrom, message, conversation.getUuid());
+        return conversation;
     }
 
     @Override

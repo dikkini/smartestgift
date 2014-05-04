@@ -66,7 +66,7 @@ public class SmartUserDAOImpl implements SmartUserDAO {
     @Override
     public List<SmartUser> findSmartUsersLikeUserName(String username, String activeUsername) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
-        Criterion userLikeCriteria = Restrictions.like("username", username, MatchMode.ANYWHERE);
+        Criterion userLikeCriteria = Restrictions.ilike("username", username, MatchMode.ANYWHERE);
         Criterion userNeActive = Restrictions.ne("username", activeUsername);
         criteria.add(Restrictions.and(userLikeCriteria, userNeActive));
         return criteria.list();

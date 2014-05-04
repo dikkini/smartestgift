@@ -114,18 +114,14 @@ public class MessageController {
     }
 
     @RequestMapping(value = "/createNewConversation", method = RequestMethod.POST)
-    public @ResponseBody AjaxResponse createNewConversation(@ActiveUser SmartUserDetails smartUserDetails,
+    public @ResponseBody String createNewConversation(@ActiveUser SmartUserDetails smartUserDetails,
                                                                  @RequestParam(value = "message", required = true)
                                                                  String message,
                                                                  @RequestParam(value = "username", required = true)
                                                                  String username) {
         // TODO add additional security checks using username and active user
-        AjaxResponse result = new AjaxResponse();
-        conversationService.createConversation(smartUserDetails.getSmartUser(), username, message);
-        result.setSuccess(true);
-        //TODO добавить в сообщения данное сообщение
-        result.addSuccessMessage("message_sent_success");
-        return result;
+        Conversation conversation = conversationService.createConversation(smartUserDetails.getSmartUser(), username, message);
+        return gson.toJson(conversation);
     }
 
     @MessageMapping("/setUnreadCount")

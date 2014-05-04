@@ -32,7 +32,7 @@ public interface ConversationService {
      * @param usernameTo
      * @param message
      */
-    public void createConversation(SmartUser smartUserFrom, String usernameTo, String message);
+    public Conversation createConversation(SmartUser smartUserFrom, String usernameTo, String message);
 
     /**
      *
