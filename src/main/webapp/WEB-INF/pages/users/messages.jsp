@@ -13,15 +13,15 @@
 
 <div class="row">
     <div class="col-xs-4">
-        <ul class="nav navbar-nav">
+<%--        <ul class="nav navbar-nav">
             <li class="active"><a href="#">Inbox <span class="badge"></span></a></li>
             <li><a href="#">Sent</a></li>
-        </ul>
+        </ul>--%>
         <div class="col-lg-9">
             <div class="input-group">
-                <input type="text" class="form-control" placeholder="Find conversations">
+                <input id="find-conversation-input" type="text" class="form-control" placeholder="Find conversations">
               <span class="input-group-btn">
-                <button style="margin-bottom: 20px" class="btn btn-default" type="button">Search</button>
+                <button id="find-conversation-btn" style="margin-bottom: 20px" class="btn btn-default" type="button">Search</button>
               </span>
             </div>
             <div>
@@ -40,6 +40,7 @@
                                          <c:set var="userToConversation" value="${conversation.user_from}" />
                                      </c:otherwise>
                                  </c:choose>
+                                <span id="loading-conversations" class="loading" style=""></span>
                                 <li>
                                     <div class="list-group">
                                         <a data-conversation-username="${userToConversation.username}" data-conversation-uuid="${conversation.uuid}" class="list-group-item conversation" style="cursor: pointer;">
@@ -108,6 +109,7 @@
     $(document).ready(function(){
 
         var ajaxPeopleLoading = null;
+        var timeoutLoadingConversations = null;
         var newMessageCondition = true;
 
         $(".loading").loading({width: '25', text: 'Waiting...'});
@@ -451,6 +453,35 @@
             var tag = $(this).data("fio");
             inputMessage.data("username",$(this).data("username"));
             inputMessage.val(tag);
+        });
+
+        $("#find-conversation-input").on("keyup", function(e) {
+            if (timeoutLoadingConversations) {
+                clearTimeout(timeoutLoadingConversations);
+            }
+            var ajaxLoadingConversations = $("#loading-conversations");
+            var searchString = $(this).val();
+            var conversations = $("#conversations").find(".conversation");
+
+            if (searchString.trim() == "") {
+                conversations.each(function() {
+                    $(this).show();
+                });
+            }
+
+            timeoutLoadingConversations = setTimeout(function(){
+                ajaxLoadingConversations.loading("start");
+                conversations.each(function() {
+                    var conversationName = $(this).data("conversation-username");
+                    var index = conversationName.indexOf(searchString);
+                    if (index == -1) {
+                        $(this).hide();
+                    } else if ($(this).css('display') == 'none') {
+                        $(this).show();
+                    }
+                });
+                ajaxLoadingConversations.loading("stop");
+            }, 500);
         });
     });
 </script>
