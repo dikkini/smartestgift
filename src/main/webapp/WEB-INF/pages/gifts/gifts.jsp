@@ -30,8 +30,12 @@
                     <div class="col-xs-12">
                         <c:forEach items="${allGiftCategories}" var="giftCategory">
                                 <span class="gift-category">
-                                    <a href="/gifts/${giftCategory.code}"><img height="75" src="<c:out value="/file/get/${giftCategory.file.id}"/>"></a>
-                                    <a href="/gifts/${giftCategory.code}"><c:out value="${giftCategory.name}"/></a>
+                                    <a href="/gifts/${giftCategory.code}">
+                                        <img height="75" src="<c:out value="/file/get/${giftCategory.file.id}"/>">
+                                    </a>
+                                    <a href="/gifts/${giftCategory.code}">
+                                        <c:out value="${giftCategory.name}"/>
+                                    </a>
                                 </span>
                         </c:forEach>
                     </div>
@@ -55,7 +59,9 @@
                                     <c:if test="${gift.addDate < weekAgo}">
                                         <span class="gift-new-label">
                                     </c:if>
-                                        <a href="/${giftCategory.code}/${gift.uuid}"><img height="200" src="/file/get/${giftFiles.id}"></a>
+                                        <a href="/${giftCategory.code}/${gift.uuid}">
+                                            <img height="200" src="/file/get/${giftFiles.id}">
+                                        </a>
                                 </c:forEach>
                                 <p>${gift.name}</p>
                                 <p class="ellipses small">${gift.description}</p>
@@ -70,7 +76,10 @@
                                         <c:set var="giftExist" value="false"/>
                                     </c:when>
                                     <c:otherwise>
-                                        <button data-gift-uuid="<c:out value="${gift.uuid}"/>" class="btn btn-default want-gift-btn"><spring:message code="label.wanttogift"/></button>
+                                        <button data-gift-uuid="<c:out value="${gift.uuid}"/>"
+                                                class="btn btn-default want-gift-btn">
+                                            <spring:message code="label.wanttogift"/>
+                                        </button>
                                     </c:otherwise>
                                 </c:choose>
                             </div>
