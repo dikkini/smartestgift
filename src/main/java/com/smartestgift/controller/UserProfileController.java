@@ -22,9 +22,15 @@ public class UserProfileController {
 
     @RequestMapping(value = "/user/{username}", method = RequestMethod.GET)
     public ModelAndView userProfile(@PathVariable String username) {
-        ModelAndView mav = new ModelAndView("users/user");
+        ModelAndView mav;
         SmartUser smartUser = smartUserDAO.findSmartUserByUsername(username);
-        mav.addObject("smartUser", smartUser);
+        if (smartUser == null) {
+            mav = new ModelAndView("errors/404");
+        } else {
+            mav = new ModelAndView("users/user");
+            mav.addObject("alienSmartUser", smartUser);
+        }
+
         return mav;
     }
 }
