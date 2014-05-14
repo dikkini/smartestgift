@@ -1,10 +1,13 @@
 package com.smartestgift.controller;
 
 import com.smartestgift.controller.model.AjaxResponse;
+import com.smartestgift.controller.model.Page;
 import com.smartestgift.dao.model.*;
 import com.smartestgift.service.GiftService;
 import com.smartestgift.utils.ActiveUser;
 import com.smartestgift.utils.ResponseMessages;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -28,6 +31,9 @@ public class GiftController {
     @Autowired
     GiftService giftService;
 
+    @Autowired
+    SessionFactory sessionFactory;
+
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView giftCategories() {
         List<GiftCategory> allGiftCategories = giftService.findAllGiftCategories();
@@ -41,8 +47,12 @@ public class GiftController {
         List<GiftCategory> allGiftCategories = giftService.findAllGiftCategories();
         ModelAndView mav = new ModelAndView("gifts/gifts");
         mav.addObject("allGiftCategories", allGiftCategories);
+
+        Page page = new Page(sessionFactory.getCurrentSession()
+                .createQuery("from gift where category_id =" + giftCategoryCode), 0, 40);
         GiftCategory giftCategory = giftService.findGiftCategoryByCode(giftCategoryCode);
         mav.addObject("giftCategory", giftCategory);
+        mav.addObject("page", page);
         return mav;
     }
 

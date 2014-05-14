@@ -8,6 +8,7 @@
 
 <jsp:useBean id="allGiftCategories" type="java.util.List<com.smartestgift.dao.model.GiftCategory>" scope="request"/>
 <jsp:useBean id="giftCategory" class="com.smartestgift.dao.model.GiftCategory" scope="request"/>
+<jsp:useBean id="page" class="com.smartestgift.controller.model.Page" scope="request"/>
 <jsp:useBean id="smartUser" class="com.smartestgift.dao.model.SmartUser" scope="request"/>
 
 <c:set var="weekAgo" value="<%=new Date(new Date().getTime() - 60*60*24*1000*7)%>"/>
@@ -86,6 +87,10 @@
                         </c:forEach>
                     </div>
                 </div>
+                <ul class="pager">
+                    <li><a id="pager-prev-btn" class="<c:if test="${!page.previousPage}">disable</c:if>" href="#">Previous</a></li>
+                    <li><a id="pager-next-btn" class="<c:if test="${!page.nextPage}">disable</c:if>" href="#">Next</a></li>
+                </ul>
             </div>
         </div>
     </div>
