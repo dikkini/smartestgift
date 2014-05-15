@@ -33,7 +33,7 @@ public class GiftCategory implements Serializable {
     protected File file;
 
     @OrderBy(value = "addDate")
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "category")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
     private Set<Gift> gifts;
 
     public Integer getId() {

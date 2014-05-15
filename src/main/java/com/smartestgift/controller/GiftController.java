@@ -1,15 +1,13 @@
 package com.smartestgift.controller;
 
+import com.google.gson.Gson;
 import com.smartestgift.controller.model.AjaxResponse;
-import com.smartestgift.controller.model.Page;
 import com.smartestgift.dao.model.*;
 import com.smartestgift.service.GiftService;
 import com.smartestgift.utils.ActiveUser;
 import com.smartestgift.utils.ResponseMessages;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -32,6 +30,9 @@ public class GiftController {
     GiftService giftService;
 
     @Autowired
+    Gson gson;
+
+    @Autowired
     SessionFactory sessionFactory;
 
     @RequestMapping(method = RequestMethod.GET)
@@ -39,20 +40,6 @@ public class GiftController {
         List<GiftCategory> allGiftCategories = giftService.findAllGiftCategories();
         ModelAndView mav = new ModelAndView("gifts/gifts");
         mav.addObject("allGiftCategories", allGiftCategories);
-        return mav;
-    }
-
-    @RequestMapping(value = "/{giftCategoryCode}", method = RequestMethod.GET)
-    public ModelAndView giftCategory(@PathVariable String giftCategoryCode) {
-        List<GiftCategory> allGiftCategories = giftService.findAllGiftCategories();
-        ModelAndView mav = new ModelAndView("gifts/gifts");
-        mav.addObject("allGiftCategories", allGiftCategories);
-
-        Page page = new Page(sessionFactory.getCurrentSession()
-                .createQuery("from gift where category_id =" + giftCategoryCode), 0, 40);
-        GiftCategory giftCategory = giftService.findGiftCategoryByCode(giftCategoryCode);
-        mav.addObject("giftCategory", giftCategory);
-        mav.addObject("page", page);
         return mav;
     }
 

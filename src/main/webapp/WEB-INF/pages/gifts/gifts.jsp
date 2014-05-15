@@ -8,8 +8,8 @@
 
 <jsp:useBean id="allGiftCategories" type="java.util.List<com.smartestgift.dao.model.GiftCategory>" scope="request"/>
 <jsp:useBean id="giftCategory" class="com.smartestgift.dao.model.GiftCategory" scope="request"/>
-<jsp:useBean id="page" class="com.smartestgift.controller.model.Page" scope="request"/>
 <jsp:useBean id="smartUser" class="com.smartestgift.dao.model.SmartUser" scope="request"/>
+<jsp:useBean id="gift" class="com.smartestgift.dao.model.Gift" scope="request"/>
 
 <c:set var="weekAgo" value="<%=new Date(new Date().getTime() - 60*60*24*1000*7)%>"/>
 
@@ -45,56 +45,54 @@
         </div>
     </div>
 </div>
-<c:if test="${giftCategory.id != null}">
-    <div class="row top-buffer">
-        <div class="col-xs-12">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <spring:message code="label.gifts"/> - <c:out value="${giftCategory.name}"/>
-                </div>
-                <div class="panel-body">
-                    <div class="row">
-                        <c:forEach items="${giftCategory.gifts}" var="gift">
-                            <div class="gift col-xs-3">
-                                <c:forEach items="${gift.files}" var="giftFiles" end="0">
-                                    <c:if test="${gift.addDate < weekAgo}">
-                                        <span class="gift-new-label">
-                                    </c:if>
-                                        <a href="/${giftCategory.code}/${gift.uuid}">
-                                            <img height="200" src="/file/get/${giftFiles.id}">
-                                        </a>
-                                </c:forEach>
-                                <p>${gift.name}</p>
-                                <p class="ellipses small">${gift.description}</p>
-                                <c:forEach items="${smartUser.smartUserGifts}" var="smartUserGift">
-                                    <c:if test="${smartUserGift.gift.uuid == gift.uuid}">
-                                        <c:set var="giftExist" value="true"/>
-                                    </c:if>
-                                </c:forEach>
-                                <c:choose>
-                                    <c:when test="${giftExist == true}">
-                                        <spring:message code="label.gift_already_in_wishlist"/>
-                                        <c:set var="giftExist" value="false"/>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <button data-gift-uuid="<c:out value="${gift.uuid}"/>"
-                                                class="btn btn-default want-gift-btn">
-                                            <spring:message code="label.wanttogift"/>
-                                        </button>
-                                    </c:otherwise>
-                                </c:choose>
-                            </div>
-                        </c:forEach>
-                    </div>
-                </div>
-                <ul class="pager">
-                    <li><a id="pager-prev-btn" class="<c:if test="${!page.previousPage}">disable</c:if>" href="#">Previous</a></li>
-                    <li><a id="pager-next-btn" class="<c:if test="${!page.nextPage}">disable</c:if>" href="#">Next</a></li>
-                </ul>
+<div class="row top-buffer" style="display: none;">
+    <div class="col-xs-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <spring:message code="label.gifts"/> - <c:out value="${giftCategory.name}"/>
             </div>
+            <div class="panel-body">
+                <div class="row">
+                    <c:forEach items="${giftCategory.gifts}" var="gift">
+                        <div class="gift col-xs-3">
+                            <c:forEach items="${gift.files}" var="giftFiles" end="0">
+                                <c:if test="${gift.addDate < weekAgo}">
+                                    <span class="gift-new-label">
+                                </c:if>
+                                    <a href="/${giftCategory.code}/${gift.uuid}">
+                                        <img height="200" src="/file/get/${giftFiles.id}">
+                                    </a>
+                            </c:forEach>
+                            <p>${gift.name}</p>
+                            <p class="ellipses small">${gift.description}</p>
+                            <c:forEach items="${smartUser.smartUserGifts}" var="smartUserGift">
+                                <c:if test="${smartUserGift.gift.uuid == gift.uuid}">
+                                    <c:set var="giftExist" value="true"/>
+                                </c:if>
+                            </c:forEach>
+                            <c:choose>
+                                <c:when test="${giftExist == true}">
+                                    <spring:message code="label.gift_already_in_wishlist"/>
+                                    <c:set var="giftExist" value="false"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <button data-gift-uuid="<c:out value="${gift.uuid}"/>"
+                                            class="btn btn-default want-gift-btn">
+                                        <spring:message code="label.wanttogift"/>
+                                    </button>
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
+                    </c:forEach>
+                </div>
+            </div>
+            <ul class="pager">
+                <li><a id="pager-prev-btn" class="<c:if test="${!true}">disable</c:if>" href="#">Previous</a></li>
+                <li><a id="pager-next-btn" class="<c:if test="${!true}">disable</c:if>" href="#">Next</a></li>
+            </ul>
         </div>
     </div>
-</c:if>
+</div>
 
 <jsp:include page="../template/bottom.jsp"/>
 
