@@ -2,6 +2,7 @@ package com.smartestgift.controller;
 
 import com.google.gson.Gson;
 import com.smartestgift.controller.model.AjaxResponse;
+import com.smartestgift.controller.model.Page;
 import com.smartestgift.dao.model.*;
 import com.smartestgift.service.GiftService;
 import com.smartestgift.utils.ActiveUser;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Set;
 
@@ -38,9 +40,15 @@ public class GiftController {
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView giftCategories() {
         List<GiftCategory> allGiftCategories = giftService.findAllGiftCategories();
+        Page page = giftService.getPageOfGifts(1, 1);
         ModelAndView mav = new ModelAndView("gifts/gifts");
         mav.addObject("allGiftCategories", allGiftCategories);
+        mav.addObject("pageGift", page);
         return mav;
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    public void nextPage() {
     }
 
 

@@ -1,5 +1,6 @@
 package com.smartestgift.service;
 
+import com.smartestgift.controller.model.Page;
 import com.smartestgift.dao.GiftCategoryDAO;
 import com.smartestgift.dao.GiftDAO;
 import com.smartestgift.dao.SmartUserDAO;
@@ -12,6 +13,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -21,6 +23,7 @@ import java.util.Set;
  * Email: dikkini@gmail.com
  */
 @Service
+@Transactional
 public class GiftServiceImpl implements GiftService {
 
     @Autowired
@@ -81,5 +84,10 @@ public class GiftServiceImpl implements GiftService {
     @Override
     public GiftCategory findGiftCategoryByCode(String code) {
         return giftCategoryDAO.findByCode(code);
+    }
+
+    @Override
+    public Page getPageOfGifts(int page, int pageSize) {
+        return new Page(sessionFactory.getCurrentSession(), page, pageSize, Gift.class);
     }
 }

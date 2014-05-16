@@ -1,4 +1,7 @@
 <%@ page import="java.util.Date" %>
+<%@ page import="com.smartestgift.dao.model.Gift" %>
+<%@ page import="com.smartestgift.controller.model.Page" %>
+<%@ page import="java.util.List" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -8,6 +11,12 @@
 
 <jsp:useBean id="allGiftCategories" type="java.util.List<com.smartestgift.dao.model.GiftCategory>" scope="request"/>
 <jsp:useBean id="giftCategory" class="com.smartestgift.dao.model.GiftCategory" scope="request"/>
+<jsp:useBean id="pageGift" class="com.smartestgift.controller.model.Page" scope="session">
+    <jsp:setProperty name="session" property="session"/>
+    <jsp:setProperty name="page" property="page"/>
+    <jsp:setProperty name="pageSize" property="pageSize"/>
+    <jsp:setProperty name="cls" property="cls"/>
+</jsp:useBean>
 <jsp:useBean id="smartUser" class="com.smartestgift.dao.model.SmartUser" scope="request"/>
 <jsp:useBean id="gift" class="com.smartestgift.dao.model.Gift" scope="request"/>
 
@@ -31,10 +40,10 @@
                     <div class="col-xs-12">
                         <c:forEach items="${allGiftCategories}" var="giftCategory">
                                 <span class="gift-category">
-                                    <a href="/gifts/${giftCategory.code}">
+                                    <a href="#${giftCategory.code}">
                                         <img height="75" src="<c:out value="/file/get/${giftCategory.file.id}"/>">
                                     </a>
-                                    <a href="/gifts/${giftCategory.code}">
+                                    <a href="#${giftCategory.code}">
                                         <c:out value="${giftCategory.name}"/>
                                     </a>
                                 </span>
@@ -45,15 +54,14 @@
         </div>
     </div>
 </div>
+<div id="test"></div>
 <div class="row top-buffer" style="display: none;">
     <div class="col-xs-12">
         <div class="panel panel-primary">
-            <div class="panel-heading">
-                <spring:message code="label.gifts"/> - <c:out value="${giftCategory.name}"/>
-            </div>
+            <div id="category-name" class="panel-heading"></div>
             <div class="panel-body">
                 <div class="row">
-                    <c:forEach items="${giftCategory.gifts}" var="gift">
+<%--                    <c:forEach items="${giftCategory.gifts}" var="gift">
                         <div class="gift col-xs-3">
                             <c:forEach items="${gift.files}" var="giftFiles" end="0">
                                 <c:if test="${gift.addDate < weekAgo}">
@@ -83,7 +91,7 @@
                                 </c:otherwise>
                             </c:choose>
                         </div>
-                    </c:forEach>
+                    </c:forEach>--%>
                 </div>
             </div>
             <ul class="pager">
@@ -112,5 +120,10 @@
                 }
             });
         });
+        <%
+            List<Gift> glst = pageGift.getNew();
+            for (Gift g : glst) { %>
+            $("#test").append("<%=g.getName()%>");
+        <% } %>
     });
 </script>
