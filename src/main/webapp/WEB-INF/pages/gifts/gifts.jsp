@@ -11,16 +11,8 @@
 
 <jsp:useBean id="allGiftCategories" type="java.util.List<com.smartestgift.dao.model.GiftCategory>" scope="request"/>
 <jsp:useBean id="giftCategory" class="com.smartestgift.dao.model.GiftCategory" scope="request"/>
-<jsp:useBean id="pageGift" class="com.smartestgift.controller.model.Page" scope="session">
-    <jsp:setProperty name="session" property="session"/>
-    <jsp:setProperty name="page" property="page"/>
-    <jsp:setProperty name="pageSize" property="pageSize"/>
-    <jsp:setProperty name="cls" property="cls"/>
-</jsp:useBean>
 <jsp:useBean id="smartUser" class="com.smartestgift.dao.model.SmartUser" scope="request"/>
 <jsp:useBean id="gift" class="com.smartestgift.dao.model.Gift" scope="request"/>
-
-<c:set var="weekAgo" value="<%=new Date(new Date().getTime() - 60*60*24*1000*7)%>"/>
 
 <jsp:include page="../template/top.jsp"/>
 
@@ -54,49 +46,17 @@
         </div>
     </div>
 </div>
-<div id="test"></div>
-<div class="row top-buffer" style="display: none;">
+<div class="row top-buffer">
     <div class="col-xs-12">
         <div class="panel panel-primary">
             <div id="category-name" class="panel-heading"></div>
             <div class="panel-body">
-                <div class="row">
-<%--                    <c:forEach items="${giftCategory.gifts}" var="gift">
-                        <div class="gift col-xs-3">
-                            <c:forEach items="${gift.files}" var="giftFiles" end="0">
-                                <c:if test="${gift.addDate < weekAgo}">
-                                    <span class="gift-new-label">
-                                </c:if>
-                                    <a href="/${giftCategory.code}/${gift.uuid}">
-                                        <img height="200" src="/file/get/${giftFiles.id}">
-                                    </a>
-                            </c:forEach>
-                            <p>${gift.name}</p>
-                            <p class="ellipses small">${gift.description}</p>
-                            <c:forEach items="${smartUser.smartUserGifts}" var="smartUserGift">
-                                <c:if test="${smartUserGift.gift.uuid == gift.uuid}">
-                                    <c:set var="giftExist" value="true"/>
-                                </c:if>
-                            </c:forEach>
-                            <c:choose>
-                                <c:when test="${giftExist == true}">
-                                    <spring:message code="label.gift_already_in_wishlist"/>
-                                    <c:set var="giftExist" value="false"/>
-                                </c:when>
-                                <c:otherwise>
-                                    <button data-gift-uuid="<c:out value="${gift.uuid}"/>"
-                                            class="btn btn-default want-gift-btn">
-                                        <spring:message code="label.wanttogift"/>
-                                    </button>
-                                </c:otherwise>
-                            </c:choose>
-                        </div>
-                    </c:forEach>--%>
+                <div id="gifts" class="row">
                 </div>
             </div>
             <ul class="pager">
-                <li><a id="pager-prev-btn" class="<c:if test="${!true}">disable</c:if>" href="#">Previous</a></li>
-                <li><a id="pager-next-btn" class="<c:if test="${!true}">disable</c:if>" href="#">Next</a></li>
+                <li><a id="pager-prev-btn" class="" href="#">Previous</a></li>
+                <li><a id="pager-next-btn" class="" href="#">Next</a></li>
             </ul>
         </div>
     </div>
@@ -106,6 +66,51 @@
 
 <script type="text/javascript">
     $(document).ready(function(){
+        $("span.gift-category a").click(function() {
+
+        });
+
+        function changePage(next, pageNum, pageSize, categoryCode) {
+            $.ajax({
+                type: "post",
+                url: "/gifts/changePage",
+                cache: false,
+                data: "next=" + next + "&pageNum=" + pageNum + "&pageSize=" + pageSize + "&categoryCode=" + $(this).attr("href").replace("#", ""),
+                success: function (response) {
+                    var results = JSON.parse(response).results;
+                    var today = new Date();
+                    var weeakAgoDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
+                    results.forEach(function(entry) {
+                        var html = '<div class="gift col-xs-3">';
+                        entry.files.forEach(function(file){
+                            var giftDate = new Date(entry.addDate);
+                            var timeDiff = Math.abs(giftDate.getTime() - weeakAgoDate.getTime());
+                            var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                            if (diffDays < 7) {
+                                html += '<span class="gift-new-label">';
+                            }
+                            html += '<a href="/gifts/' + entry.category.code + '/' + entry.uuid + '">';
+                            html += '<img height="200" src="/file/get/'+ file.id +'">';
+                            html += '</a>';
+                        });
+                        html += '<p>' + entry.name + '</p>'
+                        html += '<p class="ellipses small">' + entry.description + '</p>';
+                        // TODO (?) проверка есть ли у пользователя этот подарок в желаемых
+                        html += '<button data-gift-uuid="' + entry.uuid + '"';
+                        html += 'class="btn btn-default want-gift-btn"> <spring:message code="label.wanttogift"/>';
+                        html += '</button>';
+
+                        $("#gifts").append(html);
+                    });
+
+                    $("#category-name").append(results[0].category.name);
+                },
+                error: function (response) {
+                    window.location = "500";
+                }
+            });
+        }
+
         $(".want-gift-btn").click(function() {
             $.ajax({
                 type: "post",
@@ -120,10 +125,5 @@
                 }
             });
         });
-        <%
-            List<Gift> glst = pageGift.getNew();
-            for (Gift g : glst) { %>
-            $("#test").append("<%=g.getName()%>");
-        <% } %>
     });
 </script>

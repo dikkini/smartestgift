@@ -8,7 +8,6 @@ import com.smartestgift.dao.model.Gift;
 import com.smartestgift.dao.model.GiftCategory;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserGift;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -87,7 +86,21 @@ public class GiftServiceImpl implements GiftService {
     }
 
     @Override
-    public Page getPageOfGifts(int page, int pageSize) {
-        return new Page(sessionFactory.getCurrentSession(), page, pageSize, Gift.class);
+    public Page getPageOfGifts(boolean nextPage, int pageNum, int pageSize, String categoryCode) {
+        int offset;
+        if (nextPage) {
+            offset = pageNum+1;
+        } else {
+            offset = pageNum-1;
+        }
+        offset = offset*pageSize;
+        GiftCategory giftCategory = giftCategoryDAO.findByCode(categoryCode);
+
+        List<Gift> giftsLimitSize = giftDAO.findGiftsLimitSize(offset, pageSize, giftCategory);
+        Page page = new Page();
+        page.setResults(giftsLimitSize);
+        page.setPageNum(pageNum);
+        page.setPageSize(pageSize);
+        return page;
     }
 }

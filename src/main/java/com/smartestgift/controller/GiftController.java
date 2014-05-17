@@ -13,7 +13,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Set;
 
@@ -40,15 +39,18 @@ public class GiftController {
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView giftCategories() {
         List<GiftCategory> allGiftCategories = giftService.findAllGiftCategories();
-        Page page = giftService.getPageOfGifts(1, 1);
         ModelAndView mav = new ModelAndView("gifts/gifts");
         mav.addObject("allGiftCategories", allGiftCategories);
-        mav.addObject("pageGift", page);
         return mav;
     }
 
-    @RequestMapping(method = RequestMethod.POST)
-    public void nextPage() {
+    @RequestMapping(value = "/changePage", headers="Accept=application/json", method = RequestMethod.POST)
+    public @ResponseBody String changePage(@RequestParam(required = true, value = "next") boolean next,
+                           @RequestParam(required = true, value = "pageNum") int pageNum,
+                           @RequestParam(required = true, value = "pageSize") int pageSize,
+                           @RequestParam(required = true, value = "categoryCode") String categoryCode) {
+        Page pageOfGifts = giftService.getPageOfGifts(next, pageNum, pageSize, categoryCode);
+        return gson.toJson(pageOfGifts);
     }
 
 

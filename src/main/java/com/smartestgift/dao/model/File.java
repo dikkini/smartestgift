@@ -24,13 +24,12 @@ public class File implements Serializable {
     @Column(name = "size")
     protected String size;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="type_id")
     private FileType type;
 
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "files", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    protected Set<Gift> gifts;
+    private Set<Gift> gifts;
 
     public File() {}
 
