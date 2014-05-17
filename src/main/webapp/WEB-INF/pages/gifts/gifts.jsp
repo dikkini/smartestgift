@@ -49,12 +49,13 @@
 <div class="row top-buffer">
     <div class="col-xs-12">
         <div class="panel panel-primary">
-            <div id="category-name" class="panel-heading"></div>
+            <div id="selected-category" class="panel-heading"></div>
             <div class="panel-body">
                 <div id="gifts" class="row">
+                    <span id="loading-gifts" class="loading" style=""></span>
                 </div>
             </div>
-            <ul class="pager">
+            <ul id="pager" class="pager">
                 <li><a id="pager-prev-btn" class="" href="#">Previous</a></li>
                 <li><a id="pager-next-btn" class="" href="#">Next</a></li>
             </ul>
@@ -66,18 +67,49 @@
 
 <script type="text/javascript">
     $(document).ready(function(){
-        $("span.gift-category a").click(function() {
+        $(".loading").loading({width: '25', text: 'Searching...'});
 
+        $("span.gift-category a").click(function() {
+            $("#loading-gifts").loading("start");
+
+            var giftsCategories = $(".gift-category");
+            giftsCategories.each(function() {
+                $(this).removeClass("selected");
+            });
+            $(this).parent().addClass("selected");
+            var categoryCode =  $(this).attr("href").replace("#", "");
+            changePageAndRender(true, 0, 1, categoryCode);
+            $("#selected-category").data('category-code', categoryCode);
         });
 
-        function changePage(next, pageNum, pageSize, categoryCode) {
+        $("#pager-next-btn").click(function() {
+            var pageNum = $("#pager").data("pageNum");
+            var pageSize = $("#pager").data("pageSize");
+            var categoryCode = $("#selected-category").data('category-code');
+            changePageAndRender(true, pageNum, pageSize, categoryCode);
+        });
+
+
+        $("#pager-prev-btn").click(function() {
+            var pageNum = $(this).parent().data("pageNum");
+            var pageSize = $(this).parent().data("pageSize");
+            var categoryCode = $("#selected-category").data('category-code');
+            changePageAndRender(false, pageNum, pageSize, categoryCode);
+        });
+
+        function changePageAndRender(next, pageNum, pageSize, categoryCode) {
             $.ajax({
                 type: "post",
                 url: "/gifts/changePage",
                 cache: false,
-                data: "next=" + next + "&pageNum=" + pageNum + "&pageSize=" + pageSize + "&categoryCode=" + $(this).attr("href").replace("#", ""),
+                data: "next=" + next + "&pageNum=" + pageNum + "&pageSize=" + pageSize + "&categoryCode=" + categoryCode,
                 success: function (response) {
-                    var results = JSON.parse(response).results;
+                    var giftsContainer = $("#gifts");
+                    if (giftsContainer.children() > 1) {
+                        giftsContainer.empty();
+                    }
+                    var json = JSON.parse(response);
+                    var results = json.results;
                     var today = new Date();
                     var weeakAgoDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
                     results.forEach(function(entry) {
@@ -101,14 +133,21 @@
                         html += '</button>';
 
                         $("#gifts").append(html);
+                        $("#loading-gifts").loading("stop");
                     });
 
-                    $("#category-name").append(results[0].category.name);
+                    setPagerData(json.pageNum, json.pageSize);
                 },
                 error: function (response) {
                     window.location = "500";
                 }
             });
+        }
+
+        function setPagerData(pageNum, pageSize) {
+            var pagerObj = $("#pager");
+            pagerObj.data("pageNum", pageNum);
+            pagerObj.data("pageSize", pageSize);
         }
 
         $(".want-gift-btn").click(function() {

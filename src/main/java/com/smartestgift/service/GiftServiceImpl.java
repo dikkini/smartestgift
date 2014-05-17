@@ -99,7 +99,7 @@ public class GiftServiceImpl implements GiftService {
         List<Gift> giftsLimitSize = giftDAO.findGiftsLimitSize(offset, pageSize, giftCategory);
         Page page = new Page();
         page.setResults(giftsLimitSize);
-        page.setPageNum(pageNum);
+        page.setPageNum(offset);
         page.setPageSize(pageSize);
         return page;
     }
