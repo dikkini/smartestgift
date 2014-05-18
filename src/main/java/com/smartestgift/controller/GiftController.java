@@ -45,11 +45,10 @@ public class GiftController {
     }
 
     @RequestMapping(value = "/changePage", headers="Accept=application/json", method = RequestMethod.POST)
-    public @ResponseBody String changePage(@RequestParam(required = true, value = "next") boolean next,
-                           @RequestParam(required = true, value = "pageNum") int pageNum,
+    public @ResponseBody String changePage(@RequestParam(required = true, value = "pageNum") int pageNum,
                            @RequestParam(required = true, value = "pageSize") int pageSize,
                            @RequestParam(required = true, value = "categoryCode") String categoryCode) {
-        Page pageOfGifts = giftService.getPageOfGifts(next, pageNum, pageSize, categoryCode);
+        Page pageOfGifts = giftService.getPageOfGifts(pageNum, pageSize, categoryCode);
         return gson.toJson(pageOfGifts);
     }
 

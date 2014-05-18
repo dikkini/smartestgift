@@ -86,14 +86,8 @@ public class GiftServiceImpl implements GiftService {
     }
 
     @Override
-    public Page getPageOfGifts(boolean nextPage, int pageNum, int pageSize, String categoryCode) {
-        int offset;
-        if (nextPage) {
-            offset = pageNum+1;
-        } else {
-            offset = pageNum-1;
-        }
-        offset = offset*pageSize;
+    public Page getPageOfGifts(int pageNum, int pageSize, String categoryCode) {
+        int offset = pageNum*pageSize;
         GiftCategory giftCategory = giftCategoryDAO.findByCode(categoryCode);
 
         List<Gift> giftsLimitSize = giftDAO.findGiftsLimitSize(offset, pageSize, giftCategory);

@@ -60,11 +60,10 @@ public interface GiftService {
 
     /**
      *
-     * @param nextPage
      * @param pageNum
      * @param pageSize
      * @param categoryCode
      * @return
      */
-    public Page getPageOfGifts(boolean nextPage, int pageNum, int pageSize, String categoryCode);
+    public Page getPageOfGifts(int pageNum, int pageSize, String categoryCode);
 }

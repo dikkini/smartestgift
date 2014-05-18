@@ -10,6 +10,8 @@ public class Page {
     protected List<?> results;
     protected int pageNum;
     protected int pageSize;
+    protected boolean isNextPage = true;
+    protected boolean isPreviousPage = false;
 
     public List<?> getResults() {
         return results;
@@ -33,5 +35,21 @@ public class Page {
 
     public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
+    }
+
+    public boolean isNextPage() {
+        return isNextPage;
+    }
+
+    public void setNextPage(boolean isNextPage) {
+        this.isNextPage = isNextPage;
+    }
+
+    public boolean isPreviousPage() {
+        return isPreviousPage;
+    }
+
+    public void setPreviousPage(boolean isPreviousPage) {
+        this.isPreviousPage = isPreviousPage;
     }
 }

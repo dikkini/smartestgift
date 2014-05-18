@@ -133,6 +133,11 @@
             $("#loading-gifts").loading("start");
             var pagerObj = $("#pager");
             var pageNum = pagerObj.data("pageNum");
+            if (next) {
+                pageNum += 1;
+            } else {
+                pageNum -= 1;
+            }
             var pageSize = pagerObj.data("pageSize");
             var categoryCode = $("#selected-category").data('category-code');
 
