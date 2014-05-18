@@ -63,8 +63,6 @@
 <script type="text/javascript">
     $(document).ready(function(){
 
-        // TODO показывать юзеру туже выдачу если он ушел со страницы и вернулся
-
         // TODO выставлять название категории
 
         // TODO сделать так чтобы кнопки Next и Previous в пагинации были задзаблейны если нет следующей страницы или предыдущей
@@ -72,6 +70,37 @@
         // TODO сделать выбор количества элементов на странице и поправить код где эта переменная учавствует
 
         $(".loading").loading({width: '25', text: 'Searching...'});
+
+        function processAjaxData(){
+            var pagerObj = $("#pager");
+            var pageNum = pagerObj.data("pageNum");
+            var pageSize = pagerObj.data("pageSize");
+
+            var categoryCode = $("#selected-category").data('category-code');
+
+            window.history.pushState({"pageNum":pageNum,"pageSize":pageSize,"categoryCode":categoryCode},"", window.location.href);
+        }
+
+        jQuery(window).bind('beforeunload', function(e){
+            processAjaxData();
+            e.preventDefault();
+        });
+
+        window.onpopstate = function(e){
+            if(e.state){
+                var pagerObj = $("#pager");
+                var wasPageNum = e.state.pageNum;
+                /*
+                 отнимаем единицу у страницы которая была, и передаем аяксу что загружаем
+                 следующую страницу, таким образом загрузим нужную.
+                */
+                wasPageNum = wasPageNum - 1;
+                pagerObj.data("pageNum", wasPageNum);
+                pagerObj.data("pageSize", e.state.pageSize);
+                $("#selected-category").data('category-code', e.state.categoryCode);
+                changePageAndRender(true);
+            }
+        };
 
         $("span.gift-category a").click(function() {
             // при клике на категорию, выставляем стандартные параметры - 0 страница и дефолтное количество элементов
