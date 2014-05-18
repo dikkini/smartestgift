@@ -51,11 +51,10 @@
         <div class="panel panel-primary">
             <div id="selected-category" class="panel-heading"></div>
             <div class="panel-body">
-                <div id="gifts" class="row">
-                    <span id="loading-gifts" class="loading" style=""></span>
-                </div>
+                <div id="gifts" class="row"></div>
+                <span id="loading-gifts" class="loading" style=""></span>
             </div>
-            <ul id="pager" class="pager">
+            <ul id="pager" class="pager" data-page-num="0" data-page-size="1">
                 <li><a id="pager-prev-btn" class="" href="#">Previous</a></li>
                 <li><a id="pager-next-btn" class="" href="#">Next</a></li>
             </ul>
@@ -70,44 +69,40 @@
         $(".loading").loading({width: '25', text: 'Searching...'});
 
         $("span.gift-category a").click(function() {
-            $("#loading-gifts").loading("start");
-
             var giftsCategories = $(".gift-category");
             giftsCategories.each(function() {
                 $(this).removeClass("selected");
             });
             $(this).parent().addClass("selected");
             var categoryCode =  $(this).attr("href").replace("#", "");
-            changePageAndRender(true, 0, 1, categoryCode);
             $("#selected-category").data('category-code', categoryCode);
+            changePageAndRender(true);
         });
 
         $("#pager-next-btn").click(function() {
-            var pageNum = $("#pager").data("pageNum");
-            var pageSize = $("#pager").data("pageSize");
-            var categoryCode = $("#selected-category").data('category-code');
-            changePageAndRender(true, pageNum, pageSize, categoryCode);
+            changePageAndRender(true);
         });
 
 
         $("#pager-prev-btn").click(function() {
-            var pageNum = $(this).parent().data("pageNum");
-            var pageSize = $(this).parent().data("pageSize");
-            var categoryCode = $("#selected-category").data('category-code');
-            changePageAndRender(false, pageNum, pageSize, categoryCode);
+            changePageAndRender(false);
         });
 
-        function changePageAndRender(next, pageNum, pageSize, categoryCode) {
+        function changePageAndRender(next) {
+            $("#loading-gifts").loading("start");
+            var pagerObj = $("#pager");
+            var pageNum = pagerObj.data("pageNum");
+            var pageSize = pagerObj.data("pageSize");
+            var categoryCode = $("#selected-category").data('category-code');
+
             $.ajax({
                 type: "post",
                 url: "/gifts/changePage",
                 cache: false,
                 data: "next=" + next + "&pageNum=" + pageNum + "&pageSize=" + pageSize + "&categoryCode=" + categoryCode,
                 success: function (response) {
-                    var giftsContainer = $("#gifts");
-                    if (giftsContainer.children() > 1) {
-                        giftsContainer.empty();
-                    }
+                    $("#gifts").empty();
+
                     var json = JSON.parse(response);
                     var results = json.results;
                     var today = new Date();
@@ -136,18 +131,13 @@
                         $("#loading-gifts").loading("stop");
                     });
 
-                    setPagerData(json.pageNum, json.pageSize);
+                    pagerObj.data("pageNum", json.pageNum);
+                    pagerObj.data("pageSize", json.pageSize);
                 },
                 error: function (response) {
                     window.location = "500";
                 }
             });
-        }
-
-        function setPagerData(pageNum, pageSize) {
-            var pagerObj = $("#pager");
-            pagerObj.data("pageNum", pageNum);
-            pagerObj.data("pageSize", pageSize);
         }
 
         $(".want-gift-btn").click(function() {
