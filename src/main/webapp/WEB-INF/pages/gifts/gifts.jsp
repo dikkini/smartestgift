@@ -1,7 +1,3 @@
-<%@ page import="java.util.Date" %>
-<%@ page import="com.smartestgift.dao.model.Gift" %>
-<%@ page import="com.smartestgift.controller.model.Page" %>
-<%@ page import="java.util.List" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -54,7 +50,7 @@
                 <div id="gifts" class="row"></div>
                 <span id="loading-gifts" class="loading" style=""></span>
             </div>
-            <ul id="pager" class="pager" data-page-num="0" data-page-size="1">
+            <ul id="pager" class="pager">
                 <li><a id="pager-prev-btn" class="" href="#">Previous</a></li>
                 <li><a id="pager-next-btn" class="" href="#">Next</a></li>
             </ul>
@@ -69,6 +65,11 @@
         $(".loading").loading({width: '25', text: 'Searching...'});
 
         $("span.gift-category a").click(function() {
+            // при клике на категорию, выставляем стандартные параметры - 0 страница и дефолтное количество элементов
+            var pagerObj = $("#pager");
+            var pageNum = pagerObj.data("pageNum", 0);
+            var pageSize = pagerObj.data("pageSize", 1);
+
             var giftsCategories = $(".gift-category");
             giftsCategories.each(function() {
                 $(this).removeClass("selected");
@@ -79,13 +80,15 @@
             changePageAndRender(true);
         });
 
-        $("#pager-next-btn").click(function() {
+        $("#pager-next-btn").click(function(e) {
             changePageAndRender(true);
+            e.preventDefault();
         });
 
 
-        $("#pager-prev-btn").click(function() {
+        $("#pager-prev-btn").click(function(e) {
             changePageAndRender(false);
+            e.preventDefault();
         });
 
         function changePageAndRender(next) {
