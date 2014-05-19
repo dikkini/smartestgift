@@ -69,6 +69,8 @@
 
         // TODO сделать выбор количества элементов на странице и поправить код где эта переменная учавствует
 
+        // TODO убрать кнопки и вывести надпись что нет элементов, если нет элементо
+
         $(".loading").loading({width: '25', text: 'Searching...'});
 
         function processAjaxData(){
@@ -88,25 +90,19 @@
 
         window.onpopstate = function(e){
             if(e.state){
-                var pagerObj = $("#pager");
                 var wasPageNum = e.state.pageNum;
                 /*
                  отнимаем единицу у страницы которая была, и передаем аяксу что загружаем
                  следующую страницу, таким образом загрузим нужную.
                 */
                 wasPageNum = wasPageNum - 1;
-                pagerObj.data("pageNum", wasPageNum);
-                pagerObj.data("pageSize", e.state.pageSize);
-                $("#selected-category").data('category-code', e.state.categoryCode);
-                changePageAndRender(true);
+
+                changePageAndRender(true, wasPageNum, e.state.pageSize, e.state.categoryCode);
             }
         };
 
         $("span.gift-category a").click(function() {
             // при клике на категорию, выставляем стандартные параметры - 0 страница и дефолтное количество элементов
-            var pagerObj = $("#pager");
-            var pageNum = pagerObj.data("pageNum", 0);
-            var pageSize = pagerObj.data("pageSize", 1);
 
             var giftsCategories = $(".gift-category");
             giftsCategories.each(function() {
@@ -114,32 +110,42 @@
             });
             $(this).parent().addClass("selected");
             var categoryCode =  $(this).attr("href").replace("#", "");
-            $("#selected-category").data('category-code', categoryCode);
-            changePageAndRender(true);
+
+            // 0 - начальная страница, при клике по категории просмотр всегда начинается с 0вой страницы
+            // 1 - размер страницы, щас это 1 - далее // TODO поменять pagesize на переменную из формочки
+            changePageAndRender(true, 0 , 1, categoryCode);
         });
 
         $("#pager-next-btn").click(function(e) {
-            changePageAndRender(true);
+            var pagerObj = $("#pager");
+            var pageNum = pagerObj.data("pageNum");
+            var pageSize = pagerObj.data("pageSize");
+
+            var categoryCode = $("#selected-category").data('category-code');
+            changePageAndRender(true, pageNum, pageSize, categoryCode);
             e.preventDefault();
         });
 
 
         $("#pager-prev-btn").click(function(e) {
-            changePageAndRender(false);
+            var pagerObj = $("#pager");
+            var pageNum = pagerObj.data("pageNum");
+            var pageSize = pagerObj.data("pageSize");
+
+            var categoryCode = $("#selected-category").data('category-code');
+            changePageAndRender(false, pageNum, pageSize, categoryCode);
             e.preventDefault();
         });
 
-        function changePageAndRender(next) {
+        function changePageAndRender(next, pageNum, pageSize, categoryCode) {
             $("#loading-gifts").loading("start");
             var pagerObj = $("#pager");
-            var pageNum = pagerObj.data("pageNum");
+
             if (next) {
                 pageNum += 1;
             } else {
                 pageNum -= 1;
             }
-            var pageSize = pagerObj.data("pageSize");
-            var categoryCode = $("#selected-category").data('category-code');
 
             $.ajax({
                 type: "post",
