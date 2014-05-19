@@ -61,62 +61,59 @@
 <jsp:include page="../template/bottom.jsp"/>
 
 <script type="text/javascript">
-    $(document).ready(function(){
+    $(document).ready(function () {
 
         // TODO выставлять название категории
-
         // TODO сделать так чтобы кнопки Next и Previous в пагинации были задзаблейны если нет следующей страницы или предыдущей
-
         // TODO сделать выбор количества элементов на странице и поправить код где эта переменная учавствует
-
         // TODO убрать кнопки и вывести надпись что нет элементов, если нет элементо
 
         $(".loading").loading({width: '25', text: 'Searching...'});
 
-        function processAjaxData(){
+        function processAjaxData() {
             var pagerObj = $("#pager");
             var pageNum = pagerObj.data("pageNum");
             var pageSize = pagerObj.data("pageSize");
 
             var categoryCode = $("#selected-category").data('category-code');
 
-            window.history.pushState({"pageNum":pageNum,"pageSize":pageSize,"categoryCode":categoryCode},"", window.location.href);
+            window.history.pushState({"pageNum": pageNum, "pageSize": pageSize, "categoryCode": categoryCode}, "", window.location.href);
         }
 
-        jQuery(window).bind('beforeunload', function(e){
+        jQuery(window).bind('beforeunload', function (e) {
             processAjaxData();
             e.preventDefault();
         });
 
-        window.onpopstate = function(e){
-            if(e.state){
+        window.onpopstate = function (e) {
+            if (e.state) {
                 var wasPageNum = e.state.pageNum;
                 /*
                  отнимаем единицу у страницы которая была, и передаем аяксу что загружаем
                  следующую страницу, таким образом загрузим нужную.
-                */
+                 */
                 wasPageNum = wasPageNum - 1;
 
                 changePageAndRender(true, wasPageNum, e.state.pageSize, e.state.categoryCode);
             }
         };
 
-        $("span.gift-category a").click(function() {
+        $("span.gift-category a").click(function () {
             // при клике на категорию, выставляем стандартные параметры - 0 страница и дефолтное количество элементов
 
             var giftsCategories = $(".gift-category");
-            giftsCategories.each(function() {
+            giftsCategories.each(function () {
                 $(this).removeClass("selected");
             });
             $(this).parent().addClass("selected");
-            var categoryCode =  $(this).attr("href").replace("#", "");
+            var categoryCode = $(this).attr("href").replace("#", "");
 
             // 0 - начальная страница, при клике по категории просмотр всегда начинается с 0вой страницы
             // 1 - размер страницы, щас это 1 - далее // TODO поменять pagesize на переменную из формочки
-            changePageAndRender(true, 0 , 1, categoryCode);
+            changePageAndRender(true, 0, 1, categoryCode);
         });
 
-        $("#pager-next-btn").click(function(e) {
+        $("#pager-next-btn").click(function (e) {
             var pagerObj = $("#pager");
             var pageNum = pagerObj.data("pageNum");
             var pageSize = pagerObj.data("pageSize");
@@ -127,7 +124,7 @@
         });
 
 
-        $("#pager-prev-btn").click(function(e) {
+        $("#pager-prev-btn").click(function (e) {
             var pagerObj = $("#pager");
             var pageNum = pagerObj.data("pageNum");
             var pageSize = pagerObj.data("pageSize");
@@ -159,9 +156,9 @@
                     var results = json.results;
                     var today = new Date();
                     var weeakAgoDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
-                    results.forEach(function(entry) {
+                    results.forEach(function (entry) {
                         var html = '<div class="gift col-xs-3">';
-                        entry.files.forEach(function(file){
+                        entry.files.forEach(function (file) {
                             var giftDate = new Date(entry.addDate);
                             var timeDiff = Math.abs(giftDate.getTime() - weeakAgoDate.getTime());
                             var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
@@ -169,7 +166,7 @@
                                 html += '<span class="gift-new-label">';
                             }
                             html += '<a href="/gifts/' + entry.category.code + '/' + entry.uuid + '">';
-                            html += '<img height="200" src="/file/get/'+ file.id +'">';
+                            html += '<img height="200" src="/file/get/' + file.id + '">';
                             html += '</a>';
                         });
                         html += '<p>' + entry.name + '</p>'
@@ -192,7 +189,7 @@
             });
         }
 
-        $(".want-gift-btn").click(function() {
+        $(".want-gift-btn").click(function () {
             $.ajax({
                 type: "post",
                 url: "/gifts/wantGift",
