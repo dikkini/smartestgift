@@ -86,15 +86,31 @@ public class GiftServiceImpl implements GiftService {
     }
 
     @Override
-    public Page getPageOfGifts(int pageNum, int pageSize, String categoryCode) {
+    public Page getPageOfGifts(boolean nextPage, int pageNum, int pageSize, String categoryCode) {
+        boolean isNextPage;
+        boolean isPreviousPage;
         int offset = pageNum*pageSize;
         GiftCategory giftCategory = giftCategoryDAO.findByCode(categoryCode);
 
-        List<Gift> giftsLimitSize = giftDAO.findGiftsLimitSize(offset, pageSize, giftCategory);
+        /*
+        прибавляем в размеру страницы единицу чтобы понять есть ли следующая страница
+         */
+        List<Gift> giftsLimitSize = giftDAO.findGiftsLimitSize(offset, pageSize + 1, giftCategory);
         Page page = new Page();
         page.setResults(giftsLimitSize);
         page.setPageNum(offset);
         page.setPageSize(pageSize);
+
+        if (nextPage) {
+            isPreviousPage = true;
+            isNextPage = giftsLimitSize.size() > pageSize;
+        } else {
+            isNextPage = true;
+            isPreviousPage = pageNum > 1;
+        }
+
+        page.setNextPage(isNextPage);
+        page.setPreviousPage(isPreviousPage);
         return page;
     }
 }
