@@ -100,7 +100,6 @@
 
         $("span.gift-category a").click(function () {
             // при клике на категорию, выставляем стандартные параметры - 0 страница и дефолтное количество элементов
-
             var giftsCategories = $(".gift-category");
             giftsCategories.each(function () {
                 $(this).removeClass("selected");
@@ -117,8 +116,8 @@
             var pagerObj = $("#pager");
             var pageNum = pagerObj.data("pageNum");
             var pageSize = pagerObj.data("pageSize");
-
             var categoryCode = $("#selected-category").data('category-code');
+
             changePageAndRender(true, pageNum, pageSize, categoryCode);
             e.preventDefault();
         });
@@ -128,15 +127,14 @@
             var pagerObj = $("#pager");
             var pageNum = pagerObj.data("pageNum");
             var pageSize = pagerObj.data("pageSize");
-
             var categoryCode = $("#selected-category").data('category-code');
+
             changePageAndRender(false, pageNum, pageSize, categoryCode);
             e.preventDefault();
         });
 
         function changePageAndRender(next, pageNum, pageSize, categoryCode) {
             $("#loading-gifts").loading("start");
-            var pagerObj = $("#pager");
 
             if (next) {
                 pageNum += 1;
@@ -150,7 +148,8 @@
                 cache: false,
                 data: "next=" + next + "&pageNum=" + pageNum + "&pageSize=" + pageSize + "&categoryCode=" + categoryCode,
                 success: function (response) {
-                    $("#gifts").empty();
+                    var giftsContainer = $("#gifts");
+                    giftsContainer.empty();
 
                     var json = JSON.parse(response);
                     var results = json.results;
@@ -176,10 +175,20 @@
                         html += 'class="btn btn-default want-gift-btn"> <spring:message code="label.wanttogift"/>';
                         html += '</button>';
 
-                        $("#gifts").append(html);
-                        $("#loading-gifts").loading("stop");
+                        giftsContainer.append(html);
                     });
 
+                    if (results.size() == 0) {
+                        giftsContainer.append('<h3>' + <spring:message code="label.no_gifts_to_show"/> + '</h3>');
+                    }
+
+                    $("#loading-gifts").loading("stop");
+                    /*
+                    Если вдруг так произошло что пользователь умудрился нажать next page или prev page когда они залочены
+                    что надо проставять в pager object.
+                     */
+                    // TODO отладить этот вопрос
+                    var pagerObj = $("#pager");
                     pagerObj.data("pageNum", json.pageNum);
                     pagerObj.data("pageSize", json.pageSize);
                 },
