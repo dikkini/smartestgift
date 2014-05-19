@@ -168,7 +168,7 @@
                             html += '<img height="200" src="/file/get/' + file.id + '">';
                             html += '</a>';
                         });
-                        html += '<p>' + entry.name + '</p>'
+                        html += '<p>' + entry.name + '</p>';
                         html += '<p class="ellipses small">' + entry.description + '</p>';
                         // TODO (?) проверка есть ли у пользователя этот подарок в желаемых
                         html += '<button data-gift-uuid="' + entry.uuid + '"';
@@ -180,6 +180,20 @@
 
                     if (results.size() == 0) {
                         giftsContainer.append('<h3>' + <spring:message code="label.no_gifts_to_show"/> + '</h3>');
+                    }
+
+                    var previousPageBtn = $("#pager-prev-btn");
+                    var nextPageBtn = $("#pager-next-btn");
+                    if (!json.isNextPage) {
+                        nextPageBtn.hide();
+                    } else {
+                        nextPageBtn.show();
+                    }
+
+                    if (!json.isPreviousPage) {
+                        previousPageBtn.hide();
+                    } else {
+                        previousPageBtn.show();
                     }
 
                     $("#loading-gifts").loading("stop");
