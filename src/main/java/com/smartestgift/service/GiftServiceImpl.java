@@ -65,7 +65,7 @@ public class GiftServiceImpl implements GiftService {
     @Override
     public void deleteGiftFromUser(SmartUser user, Gift gift) {
         Set<SmartUserGift> smartUserGifts = user.getSmartUserGifts();
-        for(Iterator<SmartUserGift> smartUserGiftIterator = smartUserGifts.iterator(); smartUserGiftIterator.hasNext();){
+        for (Iterator<SmartUserGift> smartUserGiftIterator = smartUserGifts.iterator(); smartUserGiftIterator.hasNext(); ) {
             SmartUserGift currentSmartUserGift = smartUserGiftIterator.next();
             if (gift.equals(currentSmartUserGift.getGift())) {
                 smartUserGiftIterator.remove();
@@ -89,7 +89,7 @@ public class GiftServiceImpl implements GiftService {
     public Page getPageOfGifts(boolean nextPage, int pageNum, int pageSize, String categoryCode) {
         boolean isNextPage;
         boolean isPreviousPage;
-        int offset = pageNum*pageSize;
+        int offset = pageNum * pageSize;
         GiftCategory giftCategory = giftCategoryDAO.findByCode(categoryCode);
 
         /*
@@ -102,8 +102,12 @@ public class GiftServiceImpl implements GiftService {
         page.setPageSize(pageSize);
 
         if (nextPage) {
-            isPreviousPage = true;
+            isPreviousPage = pageNum != 0;
             isNextPage = giftsLimitSize.size() > pageSize;
+            if (isNextPage) {
+                // убираем последствия понимания следующей страницы
+                giftsLimitSize.remove(giftsLimitSize.size() - 1);
+            }
         } else {
             isNextPage = true;
             isPreviousPage = pageNum > 1;

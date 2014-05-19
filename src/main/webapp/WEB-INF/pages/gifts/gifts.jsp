@@ -42,15 +42,17 @@
         </div>
     </div>
 </div>
-<div class="row top-buffer">
+<div id="gifts-category" class="row top-buffer">
     <div class="col-xs-12">
         <div class="panel panel-primary">
             <div id="selected-category" class="panel-heading"></div>
             <div class="panel-body">
-                <div id="gifts" class="row"></div>
+                <div id="gifts" class="row">
+                    <h3>There are no gifts.</h3>
+                </div>
                 <span id="loading-gifts" class="loading" style=""></span>
             </div>
-            <ul id="pager" class="pager">
+            <ul id="pager" class="pager" style="display: none;">
                 <li><a id="pager-prev-btn" class="" href="#">Previous</a></li>
                 <li><a id="pager-next-btn" class="" href="#">Next</a></li>
             </ul>
@@ -70,18 +72,17 @@
 
         $(".loading").loading({width: '25', text: 'Searching...'});
 
-        function processAjaxData() {
+        function savePagerDataOnExit() {
             var pagerObj = $("#pager");
             var pageNum = pagerObj.data("pageNum");
             var pageSize = pagerObj.data("pageSize");
-
-            var categoryCode = $("#selected-category").data('category-code');
+            var categoryCode = $(".selected-category").data('category-code');
 
             window.history.pushState({"pageNum": pageNum, "pageSize": pageSize, "categoryCode": categoryCode}, "", window.location.href);
         }
 
         jQuery(window).bind('beforeunload', function (e) {
-            processAjaxData();
+            savePagerDataOnExit();
             e.preventDefault();
         });
 
@@ -93,7 +94,6 @@
                  следующую страницу, таким образом загрузим нужную.
                  */
                 wasPageNum = wasPageNum - 1;
-
                 changePageAndRender(true, wasPageNum, e.state.pageSize, e.state.categoryCode);
             }
         };
@@ -102,21 +102,21 @@
             // при клике на категорию, выставляем стандартные параметры - 0 страница и дефолтное количество элементов
             var giftsCategories = $(".gift-category");
             giftsCategories.each(function () {
-                $(this).removeClass("selected");
+                $(this).removeClass("selected-category");
             });
-            $(this).parent().addClass("selected");
+            $(this).parent().addClass("selected-category");
             var categoryCode = $(this).attr("href").replace("#", "");
 
-            // 0 - начальная страница, при клике по категории просмотр всегда начинается с 0вой страницы
+            // -1 - начальная страница, при клике по категории просмотр всегда начинается с 0вой страницы
             // 1 - размер страницы, щас это 1 - далее // TODO поменять pagesize на переменную из формочки
-            changePageAndRender(true, 0, 1, categoryCode);
+            changePageAndRender(true, -1, 1, categoryCode);
         });
 
         $("#pager-next-btn").click(function (e) {
             var pagerObj = $("#pager");
             var pageNum = pagerObj.data("pageNum");
             var pageSize = pagerObj.data("pageSize");
-            var categoryCode = $("#selected-category").data('category-code');
+            var categoryCode = $(".selected-category a").attr("href").replace("#", "");
 
             changePageAndRender(true, pageNum, pageSize, categoryCode);
             e.preventDefault();
@@ -127,7 +127,7 @@
             var pagerObj = $("#pager");
             var pageNum = pagerObj.data("pageNum");
             var pageSize = pagerObj.data("pageSize");
-            var categoryCode = $("#selected-category").data('category-code');
+            var categoryCode = $(".selected-category a").attr("href").replace("#", "");
 
             changePageAndRender(false, pageNum, pageSize, categoryCode);
             e.preventDefault();
@@ -149,6 +149,7 @@
                 data: "next=" + next + "&pageNum=" + pageNum + "&pageSize=" + pageSize + "&categoryCode=" + categoryCode,
                 success: function (response) {
                     var giftsContainer = $("#gifts");
+                    var pagerObj = $("#pager");
                     giftsContainer.empty();
 
                     var json = JSON.parse(response);
@@ -176,11 +177,14 @@
                         html += '</button>';
 
                         giftsContainer.append(html);
+                        pagerObj.show();
                     });
 
-                    if (results.size() == 0) {
-                        giftsContainer.append('<h3>' + <spring:message code="label.no_gifts_to_show"/> + '</h3>');
-                    }
+                    // TODO fix it. it wont work
+                    <%--if (results.size() == 0) {--%>
+                        <%--var test = '<h3>' + <spring:message code="label.no_gifts_to_show"/> + '</h3>';--%>
+                        <%--giftsContainer.append(test);--%>
+                    <%--}--%>
 
                     var previousPageBtn = $("#pager-prev-btn");
                     var nextPageBtn = $("#pager-next-btn");
@@ -202,7 +206,6 @@
                     что надо проставять в pager object.
                      */
                     // TODO отладить этот вопрос
-                    var pagerObj = $("#pager");
                     pagerObj.data("pageNum", json.pageNum);
                     pagerObj.data("pageSize", json.pageSize);
                 },
