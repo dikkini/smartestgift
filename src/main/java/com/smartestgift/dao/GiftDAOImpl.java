@@ -7,6 +7,8 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.CriteriaSpecification;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,12 +62,24 @@ public class GiftDAOImpl implements GiftDAO {
     }
 
     @Override
-    public List<Gift> findGiftsLimitSize(int offset, int count, GiftCategory category) {
-
+    public List<Gift> findGiftsLimitSizeByCategory(int offset, int count, GiftCategory category) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Gift.class);
         criteria.setFirstResult(offset);
         criteria.setMaxResults(count);
         criteria.add(Restrictions.eq("category", category));
+        criteria.addOrder(org.hibernate.criterion.Order.asc("name"));
+        return criteria.list();
+    }
+
+    @Override
+    public List<Gift> findGiftsLimitSizeBySearchString(int offset, int count, String searchString) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Gift.class);
+        criteria.setFirstResult(offset);
+        criteria.setMaxResults(count);
+        Criterion nameGiftRestriction = Restrictions.ilike("name", searchString, MatchMode.ANYWHERE);
+        Criterion descriptionGiftRestriction= Restrictions.ilike("description", searchString, MatchMode.ANYWHERE);
+        criteria.add(Restrictions.or(nameGiftRestriction, descriptionGiftRestriction));
+        criteria.addOrder(org.hibernate.criterion.Order.asc("name"));
         return criteria.list();
     }
 }

@@ -2,8 +2,11 @@ package com.smartestgift.controller;
 
 import com.google.gson.Gson;
 import com.smartestgift.controller.model.AjaxResponse;
-import com.smartestgift.controller.model.Page;
-import com.smartestgift.dao.model.*;
+import com.smartestgift.controller.model.GiftPage;
+import com.smartestgift.dao.model.Gift;
+import com.smartestgift.dao.model.GiftCategory;
+import com.smartestgift.dao.model.SmartUserDetails;
+import com.smartestgift.dao.model.SmartUserGift;
 import com.smartestgift.service.GiftService;
 import com.smartestgift.utils.ActiveUser;
 import com.smartestgift.utils.ResponseMessages;
@@ -49,8 +52,8 @@ public class GiftController {
                            @RequestParam(required = true, value = "pageNum") int pageNum,
                            @RequestParam(required = true, value = "pageSize") int pageSize,
                            @RequestParam(required = true, value = "categoryCode") String categoryCode) {
-        Page pageOfGifts = giftService.getPageOfGifts(nextPage, pageNum, pageSize, categoryCode);
-        return gson.toJson(pageOfGifts);
+        GiftPage giftPage = giftService.getPageOfGifts(nextPage, pageNum, pageSize, categoryCode);
+        return gson.toJson(giftPage);
     }
 
 
@@ -117,9 +120,21 @@ public class GiftController {
         return result;
     }
 
-    @RequestMapping(value = "/randomGift", method = RequestMethod.GET)
+    @RequestMapping(value = "/randomGift", method = RequestMethod.POST)
     public String getRandomGift() {
         // TODO do :-)
         return "redirect:/gifts/235334";
+    }
+
+    @RequestMapping(value = "/getFindGiftPage", headers="Accept=application/json", method = RequestMethod.POST)
+    public @ResponseBody String getFindGiftPage(@ActiveUser SmartUserDetails smartUserDetails,
+                           @RequestParam(required = true, value = "next") boolean nextPage,
+                           @RequestParam(required = true, value = "searchString") String searchString,
+                           @RequestParam(required = true, value = "pageNum") int pageNum,
+                           @RequestParam(required = true, value = "pageSize") int pageSize) {
+        // TODO security checks
+        GiftPage pageOfGiftsBySearchString = giftService.getPageOfGiftsBySearchString(nextPage, pageNum, pageSize,
+                searchString);
+        return gson.toJson(pageOfGiftsBySearchString);
     }
 }

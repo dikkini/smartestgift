@@ -1,6 +1,6 @@
 package com.smartestgift.service;
 
-import com.smartestgift.controller.model.Page;
+import com.smartestgift.controller.model.GiftPage;
 import com.smartestgift.dao.GiftCategoryDAO;
 import com.smartestgift.dao.GiftDAO;
 import com.smartestgift.dao.SmartUserDAO;
@@ -11,6 +11,7 @@ import com.smartestgift.dao.model.SmartUserGift;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sun.net.www.content.image.gif;
 
 import javax.transaction.Transactional;
 import java.util.Iterator;
@@ -86,39 +87,54 @@ public class GiftServiceImpl implements GiftService {
     }
 
     @Override
-    public Page getPageOfGifts(boolean nextPage, int pageNum, int pageSize, String categoryCode) {
-        boolean isNextPage;
-        boolean isPreviousPage;
-
+    public GiftPage getPageOfGifts(boolean nextPage, int pageNum, int pageSize, String categoryCode) {
         int start = (pageNum - 1) * pageSize;
-        int end = start + pageSize;
-
-        GiftCategory giftCategory = giftCategoryDAO.findByCode(categoryCode);
-
         /*
         прибавляем в размеру страницы единицу чтобы понять есть ли следующая страница
          */
-        List<Gift> giftsLimitSize = giftDAO.findGiftsLimitSize(start, end + 1, giftCategory);
-        Page page = new Page();
-        page.setResults(giftsLimitSize);
-        page.setPageNum(pageNum);
-        page.setPageSize(pageSize);
+        int end = start + pageSize + 1;
 
+        GiftCategory giftCategory = giftCategoryDAO.findByCode(categoryCode);
+
+        List<Gift> giftsLimitSize = giftDAO.findGiftsLimitSizeByCategory(start, end, giftCategory);
+
+        return buildGiftPage(giftsLimitSize, nextPage, pageNum, pageSize, giftCategory);
+    }
+
+    @Override
+    public GiftPage getPageOfGiftsBySearchString(boolean nextPage, int pageNum, int pageSize, String searchString) {
+        int start = (pageNum - 1) * pageSize;
+        /*
+        прибавляем в размеру страницы единицу чтобы понять есть ли следующая страница
+         */
+        int end = start + pageSize + 1;
+
+        List<Gift> giftsLimitSize = giftDAO.findGiftsLimitSizeBySearchString(start, end, searchString);
+
+        return buildGiftPage(giftsLimitSize, nextPage, pageNum, pageSize, null);
+    }
+
+
+    private GiftPage buildGiftPage(List<Gift> gifts, boolean nextPage, int pageNum, int pageSize, GiftCategory giftCategory) {
+        boolean isNextPage;
+        boolean isPreviousPage;
+
+        // TODO может стоить поменять механизм понимания наличия следующей страницы (?)
         if (nextPage) {
             isPreviousPage = pageNum != 1;
-            isNextPage = giftsLimitSize.size() > pageSize;
+            isNextPage = gifts.size() > pageSize;
         } else {
             isNextPage = true;
             isPreviousPage = pageNum > 1;
         }
 
         // убираем последствия понимания следующей страницы
-        if (giftsLimitSize.size() > pageSize) {
-            giftsLimitSize.remove(giftsLimitSize.size() - 1);
+        if (gifts.size() > pageSize) {
+            gifts.remove(gifts.size() - 1);
         }
 
-        page.setNextPage(isNextPage);
-        page.setPreviousPage(isPreviousPage);
-        return page;
+        return new GiftPage(gifts, pageNum, pageSize, isNextPage, isPreviousPage, giftCategory);
     }
+
+
 }

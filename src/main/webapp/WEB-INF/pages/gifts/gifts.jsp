@@ -12,13 +12,6 @@
 
 <jsp:include page="../template/top.jsp"/>
 
-<div class="row">
-    <div class="col-xs-9">
-        <input type="text" class="form-control" placeholder="<spring:message code="label.searchGiftPlaceHolder"/>">
-    </div>
-    <button type="submit" class="btn btn-default"><spring:message code="label.find"/></button>
-    <button type="submit" class="btn btn-default"><spring:message code="label.random_gift"/></button>
-</div>
 <div class="row top-buffer">
     <div class="col-xs-12">
         <div class="panel panel-primary">
@@ -47,8 +40,19 @@
         <div class="panel panel-primary">
             <div class="panel-heading">
                 <div class="row">
-                    <div class="col-xs-12">
+                    <div class="col-xs-1">
                         <span id="loading-gifts" class="loading" style=""></span>
+                    </div>
+                    <div class="col-xs-8">
+                        <div class="col-xs-6">
+                            <input id="find-gift-input" type="text" class="form-control" placeholder="<spring:message code="label.searchGiftPlaceHolder"/>">
+                        </div>
+                        <div class="btn-group">
+                            <button id="find-gift-btn" class="btn btn-default"><spring:message code="label.find"/></button>
+                            <button id="random-gift-btn" class="btn btn-default"><spring:message code="label.random_gift"/></button>
+                        </div>
+                    </div>
+                    <div class="col-xs-3">
                         <div class="btn-group" style="float: right;">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                 Choose Page Size <span class="caret"></span>
@@ -90,31 +94,65 @@
 <jsp:include page="../template/bottom.jsp"/>
 
 <script type="text/javascript">
+    var REGULAR_MODE_PAGE = "REGULAR";
+    var SEARCH_MODE_PAGE = "SEARCH";
     $(document).ready(function () {
-
         var pageSize = 10;
+        var pagerMode = "";
+
+        // TODO выставлять название категории
+
+        $(".loading").loading({width: '25', text: 'Searching...'});
+
+
+        $("#find-gift-btn").click(function() {
+            var ajaxLoadingGifts = $("#loading-gifts");
+            ajaxLoadingGifts.loading("start");
+
+            pagerMode = SEARCH_MODE_PAGE;
+
+            var findGiftInputObj = $("#find-gift-input");
+            var searchString = findGiftInputObj.val();
+            if ($.trim(searchString).length == 0) {
+                alert("wrong search string");
+                ajaxLoadingGifts.loading("stop");
+                return;
+            }
+            findGiftInputObj.data("search-string", searchString);
+
+            getSearchPageOfGiftsAndRender(true, 1, pageSize, searchString);
+        });
 
         $("a.page-size").click(function(e) {
             pageSize = parseInt($(this).text());
-            var categoryCode = $(".selected-category a").attr("href").replace("#", "");
-
-            changePageAndRender(true, 1, pageSize, categoryCode);
+            switch (pagerMode) {
+                case REGULAR_MODE_PAGE:
+                    var categoryCode = $(".selected-category a").attr("href").replace("#", "");
+                    getRegularPageOfGiftsAndRender(true, 1, pageSize, categoryCode);
+                    break;
+                case SEARCH_MODE_PAGE:
+                    var searchString = $("#find-gift-input").data("search-string");
+                    getSearchPageOfGiftsAndRender(true, 1, pageSize, searchString);
+                    break;
+            }
             e.preventDefault();
         });
-
-        // TODO выставлять название категории
-        // TODO сделать так чтобы кнопки Next и Previous в пагинации были задзаблейны если нет следующей страницы или предыдущей
-        // TODO сделать выбор количества элементов на странице и поправить код где эта переменная учавствует
-        // TODO убрать кнопки и вывести надпись что нет элементов, если нет элементо
-
-        $(".loading").loading({width: '25', text: 'Searching...'});
 
         function savePagerDataOnExit() {
             var pagerObj = $("#pager");
             var pageNum = pagerObj.data("pageNum");
-            var categoryCode = $(".selected-category").data('category-code');
+            var categoryCode = $(".selected-category a").attr("href").replace("#", "");
+            var searchString = $("#find-gift-input").data("search-string");
 
-            window.history.pushState({"pageNum": pageNum, "pageSize": pageSize, "categoryCode": categoryCode}, "", window.location.href);
+            var json = {
+                "pagerMode": pagerMode,
+                "pageNum": pageNum,
+                "pageSize": pageSize,
+                "categoryCode":categoryCode,
+                "searchString":searchString
+            };
+
+            window.history.pushState(json, "", window.location.href);
         }
 
         jQuery(window).bind('beforeunload', function (e) {
@@ -124,11 +162,26 @@
 
         window.onpopstate = function (e) {
             if (e.state) {
-                changePageAndRender(true, e.state.pageNum, e.state.pageSize, e.state.categoryCode);
+                pagerMode = e.state.pagerMode;
+                pageSize = e.state.pageSize;
+                switch (pagerMode) {
+                    case REGULAR_MODE_PAGE:
+                        $(".gift-category").each(function () {
+                            if ($(this).find("a").attr("href").replace("#", "") == e.state.categoryCode) {
+                                $(this).addClass("selected-category");
+                            }
+                        });
+                        getRegularPageOfGiftsAndRender(true, e.state.pageNum, e.state.pageSize, e.state.categoryCode);
+                        break;
+                    case SEARCH_MODE_PAGE:
+                        getSearchPageOfGiftsAndRender(true, e.state.pageNum, e.state.pageSize, e.state.searchString);
+                        break;
+                }
             }
         };
 
         $("span.gift-category a").click(function () {
+            pagerMode = REGULAR_MODE_PAGE;
             // при клике на категорию, выставляем стандартные параметры - 0 страница и дефолтное количество элементов
             var giftsCategories = $(".gift-category");
             giftsCategories.each(function () {
@@ -137,15 +190,23 @@
             $(this).parent().addClass("selected-category");
             var categoryCode = $(this).attr("href").replace("#", "");
 
-            changePageAndRender(true, 1, pageSize, categoryCode);
+            getRegularPageOfGiftsAndRender(true, 1, pageSize, categoryCode);
         });
 
         $("#pager-next-btn").click(function (e) {
-            var pagerObj = $("#pager");
-            var pageNum = pagerObj.data("pageNum");
-            var categoryCode = $(".selected-category a").attr("href").replace("#", "");
+            var pageNum = $("#pager").data("pageNum");
 
-            changePageAndRender(true, pageNum+1, pageSize, categoryCode);
+            switch (pagerMode) {
+                case REGULAR_MODE_PAGE:
+                    var categoryCode = $(".selected-category a").attr("href").replace("#", "");
+                    getRegularPageOfGiftsAndRender(true, pageNum+1, pageSize, categoryCode);
+                    break;
+                case SEARCH_MODE_PAGE:
+                    var searchString = $("#find-gift-input").data("search-string");
+                    getSearchPageOfGiftsAndRender(true, pageNum+1, pageSize, searchString);
+                    break;
+            }
+
             e.preventDefault();
         });
 
@@ -153,13 +214,40 @@
         $("#pager-prev-btn").click(function (e) {
             var pagerObj = $("#pager");
             var pageNum = pagerObj.data("pageNum");
-            var categoryCode = $(".selected-category a").attr("href").replace("#", "");
 
-            changePageAndRender(false, pageNum-1, pageSize, categoryCode);
+            switch (pagerMode) {
+                case REGULAR_MODE_PAGE:
+                    var categoryCode = $(".selected-category a").attr("href").replace("#", "");
+                    getRegularPageOfGiftsAndRender(true, pageNum-1, pageSize, categoryCode);
+                    break;
+                case SEARCH_MODE_PAGE:
+                    var searchString = $("#find-gift-input").data("search-string");
+                    getSearchPageOfGiftsAndRender(true, pageNum-1, pageSize, searchString);
+                    break;
+            }
             e.preventDefault();
         });
 
-        function changePageAndRender(next, pageNum, pageSize, categoryCode) {
+        function getSearchPageOfGiftsAndRender(next, pageNum, pageSize, searchString) {
+            $.ajax({
+                type: "post",
+                url: "/gifts/getFindGiftPage",
+                cache: false,
+                data: "next=" + next + "&pageNum=" + pageNum + "&pageSize=" + pageSize + "&searchString=" + searchString,
+                success: function (response) {
+                    var json = JSON.parse(response);
+                    var results = json.results;
+
+                    renderGifts(results, json.pageNum);
+                    renderPagerButtons(json.isNextPage, json.isPreviousPage)
+                },
+                error: function (response) {
+                    window.location = "500";
+                }
+            });
+        }
+
+        function getRegularPageOfGiftsAndRender(next, pageNum, pageSize, categoryCode) {
             $("#loading-gifts").loading("start");
 
             $.ajax({
@@ -168,70 +256,73 @@
                 cache: false,
                 data: "next=" + next + "&pageNum=" + pageNum + "&pageSize=" + pageSize + "&categoryCode=" + categoryCode,
                 success: function (response) {
-                    var giftsContainer = $("#gifts");
-                    var pagerObj = $("#pager");
-                    giftsContainer.empty();
-
                     var json = JSON.parse(response);
                     var results = json.results;
-                    var today = new Date();
-                    var weeakAgoDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
-                    results.forEach(function (entry) {
-                        var html = '<div class="gift col-xs-3">';
-                        entry.files.forEach(function (file) {
-                            var giftDate = new Date(entry.addDate);
-                            var timeDiff = Math.abs(giftDate.getTime() - weeakAgoDate.getTime());
-                            var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-                            if (diffDays < 7) {
-                                html += '<span class="gift-new-label">';
-                            }
-                            html += '<a href="/gifts/' + entry.category.code + '/' + entry.uuid + '">';
-                            html += '<img height="200" src="/file/get/' + file.id + '">';
-                            html += '</a>';
-                        });
-                        html += '<p>' + entry.name + '</p>';
-                        html += '<p class="ellipses small">' + entry.description + '</p>';
-                        // TODO (?) проверка есть ли у пользователя этот подарок в желаемых
-                        html += '<button data-gift-uuid="' + entry.uuid + '"';
-                        html += 'class="btn btn-default want-gift-btn"> <spring:message code="label.wanttogift"/>';
-                        html += '</button>';
 
-                        giftsContainer.append(html);
-                        pagerObj.show();
-                    });
-
-                    // TODO fix it. it wont work
-                    <%--if (results.size() == 0) {--%>
-                        <%--var test = '<h3>' + <spring:message code="label.no_gifts_to_show"/> + '</h3>';--%>
-                        <%--giftsContainer.append(test);--%>
-                    <%--}--%>
-
-                    var previousPageBtn = $("#pager-prev-btn");
-                    var nextPageBtn = $("#pager-next-btn");
-                    if (!json.isNextPage) {
-                        nextPageBtn.hide();
-                    } else {
-                        nextPageBtn.show();
-                    }
-
-                    if (!json.isPreviousPage) {
-                        previousPageBtn.hide();
-                    } else {
-                        previousPageBtn.show();
-                    }
-
-                    $("#loading-gifts").loading("stop");
-                    /*
-                    Если вдруг так произошло что пользователь умудрился нажать next page или prev page когда они залочены
-                    что надо проставять в pager object.
-                     */
-                    // TODO отладить этот вопрос
-                    pagerObj.data("pageNum", json.pageNum);
+                    renderGifts(results);
+                    renderPagerButtons(json.pageNum, json.isNextPage, json.isPreviousPage)
                 },
                 error: function (response) {
                     window.location = "500";
                 }
             });
+        }
+
+        function renderGifts(gifts) {
+            var giftsContainer = $("#gifts");
+            giftsContainer.empty();
+
+            var today = new Date();
+            var weeakAgoDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
+            gifts.forEach(function (entry) {
+                var html = '<div class="gift col-xs-3">';
+                entry.files.forEach(function (file) {
+                    var giftDate = new Date(entry.addDate);
+                    var timeDiff = Math.abs(giftDate.getTime() - weeakAgoDate.getTime());
+                    var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                    if (diffDays < 7) {
+                        html += '<span class="gift-new-label">';
+                    }
+                    html += '<a href="/gifts/' + entry.category.code + '/' + entry.uuid + '">';
+                    html += '<img height="200" src="/file/get/' + file.id + '">';
+                    html += '</a>';
+                });
+                html += '<p>' + entry.name + '</p>';
+                html += '<p class="ellipses small">' + entry.description + '</p>';
+                // TODO (?) проверка есть ли у пользователя этот подарок в желаемых
+                html += '<button data-gift-uuid="' + entry.uuid + '"';
+                html += 'class="btn btn-default want-gift-btn"> <spring:message code="label.wanttogift"/>';
+                html += '</button>';
+
+                giftsContainer.append(html);
+            });
+
+            if (gifts.length == 0) {
+                var test = '<h3><spring:message code="label.no_gifts_to_show"/></h3>';
+                giftsContainer.append(test);
+            }
+
+            $("#loading-gifts").loading("stop");
+        }
+
+        function renderPagerButtons(pageNum, isNextPage, isPreviousPage) {
+            var pagerObj = $("#pager");
+            var previousPageBtn = $("#pager-prev-btn");
+            var nextPageBtn = $("#pager-next-btn");
+            if (!isNextPage) {
+                nextPageBtn.hide();
+            } else {
+                nextPageBtn.show();
+            }
+
+            if (!isPreviousPage) {
+                previousPageBtn.hide();
+            } else {
+                previousPageBtn.show();
+            }
+
+            pagerObj.data("pageNum", pageNum);
+            pagerObj.show();
         }
 
         $(".want-gift-btn").click(function () {

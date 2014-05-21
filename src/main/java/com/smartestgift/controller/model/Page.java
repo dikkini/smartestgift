@@ -3,10 +3,11 @@ package com.smartestgift.controller.model;
 import java.util.List;
 
 /**
- * Created by dikkini on 16.05.14.
+ * Created by dikkini on 21.05.14.
  * Email: dikkini@gmail.com
  */
-public class Page {
+
+public abstract class Page {
     protected List<?> results;
     protected int pageNum;
     protected int pageSize;

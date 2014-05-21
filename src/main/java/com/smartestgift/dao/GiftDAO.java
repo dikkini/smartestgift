@@ -18,5 +18,14 @@ public interface GiftDAO extends Repository<Gift, String> {
      * @param category
      * @return
      */
-    public List<Gift> findGiftsLimitSize(int offset, int count, GiftCategory category);
+    public List<Gift> findGiftsLimitSizeByCategory(int offset, int count, GiftCategory category);
+
+    /**
+     *
+     * @param offset
+     * @param count
+     * @param searchString
+     * @return
+     */
+    public List<Gift> findGiftsLimitSizeBySearchString(int offset, int count, String searchString);
 }
