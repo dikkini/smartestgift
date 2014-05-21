@@ -42,6 +42,9 @@
         </div>
     </div>
 </div>
+<div style="height: 25px">
+    <span id="loading-gifts" class="loading" style=""></span>
+</div>
 <div id="gifts-category" class="row top-buffer">
     <div class="col-xs-12">
         <div class="panel panel-primary">
@@ -50,7 +53,6 @@
                 <div id="gifts" class="row">
                     <h3>There are no gifts.</h3>
                 </div>
-                <span id="loading-gifts" class="loading" style=""></span>
             </div>
             <ul id="pager" class="pager" style="display: none;">
                 <li><a id="pager-prev-btn" class="" href="#">Previous</a></li>
@@ -107,9 +109,9 @@
             $(this).parent().addClass("selected-category");
             var categoryCode = $(this).attr("href").replace("#", "");
 
-            // -1 - начальная страница, при клике по категории просмотр всегда начинается с 0вой страницы
-            // 1 - размер страницы, щас это 1 - далее // TODO поменять pagesize на переменную из формочки
-            changePageAndRender(true, -1, 1, categoryCode);
+            // 0 - начальная страница, при клике по категории просмотр всегда начинается с 0вой страницы
+            // TODO поменять pagesize на переменную из формочки
+            changePageAndRender(true, 0, 3, categoryCode);
         });
 
         $("#pager-next-btn").click(function (e) {
