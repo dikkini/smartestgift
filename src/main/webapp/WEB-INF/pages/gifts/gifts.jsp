@@ -42,8 +42,33 @@
         </div>
     </div>
 </div>
-<div style="height: 25px">
-    <span id="loading-gifts" class="loading" style=""></span>
+<div class="row top-buffer">
+    <div class="col-xs-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <span id="loading-gifts" class="loading" style=""></span>
+                        <div class="btn-group" style="float: right;">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                Choose Page Size <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a class="page-size" href="#">1</a></li>
+                                <li><a class="page-size" href="#">2</a></li>
+                                <li><a class="page-size" href="#">3</a></li>
+                                <li><a class="page-size" href="#">4</a></li>
+                                <li><a class="page-size" href="#">10</a></li>
+                                <li><a class="page-size" href="#">25</a></li>
+                                <li><a class="page-size" href="#">50</a></li>
+                                <li><a class="page-size" href="#">100</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <div id="gifts-category" class="row top-buffer">
     <div class="col-xs-12">
@@ -67,6 +92,16 @@
 <script type="text/javascript">
     $(document).ready(function () {
 
+        var pageSize = 10;
+
+        $("a.page-size").click(function(e) {
+            pageSize = parseInt($(this).text());
+            var categoryCode = $(".selected-category a").attr("href").replace("#", "");
+
+            changePageAndRender(true, 1, pageSize, categoryCode);
+            e.preventDefault();
+        });
+
         // TODO выставлять название категории
         // TODO сделать так чтобы кнопки Next и Previous в пагинации были задзаблейны если нет следующей страницы или предыдущей
         // TODO сделать выбор количества элементов на странице и поправить код где эта переменная учавствует
@@ -77,7 +112,6 @@
         function savePagerDataOnExit() {
             var pagerObj = $("#pager");
             var pageNum = pagerObj.data("pageNum");
-            var pageSize = pagerObj.data("pageSize");
             var categoryCode = $(".selected-category").data('category-code');
 
             window.history.pushState({"pageNum": pageNum, "pageSize": pageSize, "categoryCode": categoryCode}, "", window.location.href);
@@ -90,13 +124,7 @@
 
         window.onpopstate = function (e) {
             if (e.state) {
-                var wasPageNum = e.state.pageNum;
-                /*
-                 отнимаем единицу у страницы которая была, и передаем аяксу что загружаем
-                 следующую страницу, таким образом загрузим нужную.
-                 */
-                wasPageNum = wasPageNum - 1;
-                changePageAndRender(true, wasPageNum, e.state.pageSize, e.state.categoryCode);
+                changePageAndRender(true, e.state.pageNum, e.state.pageSize, e.state.categoryCode);
             }
         };
 
@@ -109,18 +137,15 @@
             $(this).parent().addClass("selected-category");
             var categoryCode = $(this).attr("href").replace("#", "");
 
-            // 0 - начальная страница, при клике по категории просмотр всегда начинается с 0вой страницы
-            // TODO поменять pagesize на переменную из формочки
-            changePageAndRender(true, 0, 3, categoryCode);
+            changePageAndRender(true, 1, pageSize, categoryCode);
         });
 
         $("#pager-next-btn").click(function (e) {
             var pagerObj = $("#pager");
             var pageNum = pagerObj.data("pageNum");
-            var pageSize = pagerObj.data("pageSize");
             var categoryCode = $(".selected-category a").attr("href").replace("#", "");
 
-            changePageAndRender(true, pageNum, pageSize, categoryCode);
+            changePageAndRender(true, pageNum+1, pageSize, categoryCode);
             e.preventDefault();
         });
 
@@ -128,21 +153,14 @@
         $("#pager-prev-btn").click(function (e) {
             var pagerObj = $("#pager");
             var pageNum = pagerObj.data("pageNum");
-            var pageSize = pagerObj.data("pageSize");
             var categoryCode = $(".selected-category a").attr("href").replace("#", "");
 
-            changePageAndRender(false, pageNum, pageSize, categoryCode);
+            changePageAndRender(false, pageNum-1, pageSize, categoryCode);
             e.preventDefault();
         });
 
         function changePageAndRender(next, pageNum, pageSize, categoryCode) {
             $("#loading-gifts").loading("start");
-
-            if (next) {
-                pageNum += 1;
-            } else {
-                pageNum -= 1;
-            }
 
             $.ajax({
                 type: "post",
@@ -209,7 +227,6 @@
                      */
                     // TODO отладить этот вопрос
                     pagerObj.data("pageNum", json.pageNum);
-                    pagerObj.data("pageSize", json.pageSize);
                 },
                 error: function (response) {
                     window.location = "500";
