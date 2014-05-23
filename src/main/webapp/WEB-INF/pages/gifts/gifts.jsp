@@ -40,10 +40,10 @@
         <div class="panel panel-primary">
             <div class="panel-heading">
                 <div class="row">
-                    <div class="col-xs-1">
+                    <div class="col-xs-3">
                         <span id="loading-gifts" class="loading" style=""></span>
                     </div>
-                    <div class="col-xs-8">
+                    <div class="col-xs-7">
                         <div class="col-xs-6">
                             <input id="find-gift-input" type="text" class="form-control" placeholder="<spring:message code="label.searchGiftPlaceHolder"/>">
                         </div>
@@ -52,16 +52,12 @@
                             <button id="random-gift-btn" class="btn btn-default"><spring:message code="label.random_gift"/></button>
                         </div>
                     </div>
-                    <div class="col-xs-3">
-                        <div class="btn-group" style="float: right;">
+                    <div class="col-xs-2">
+                        <div id="choose-page-size-btn" class="btn-group" style="float: right; display: none;">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                 Choose Page Size <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a class="page-size" href="#">1</a></li>
-                                <li><a class="page-size" href="#">2</a></li>
-                                <li><a class="page-size" href="#">3</a></li>
-                                <li><a class="page-size" href="#">4</a></li>
                                 <li><a class="page-size" href="#">10</a></li>
                                 <li><a class="page-size" href="#">25</a></li>
                                 <li><a class="page-size" href="#">50</a></li>
@@ -78,14 +74,18 @@
     <div class="col-xs-12">
         <div class="panel panel-primary">
             <div id="selected-category" class="panel-heading"></div>
+            <ul class="pager" style="display: none;">
+                <li><a class="pager-prev-btn" href="#">Previous</a></li>
+                <li><a class="pager-next-btn" href="#">Next</a></li>
+            </ul>
             <div class="panel-body">
                 <div id="gifts" class="row">
                     <h3>There are no gifts.</h3>
                 </div>
             </div>
-            <ul id="pager" class="pager" style="display: none;">
-                <li><a id="pager-prev-btn" class="" href="#">Previous</a></li>
-                <li><a id="pager-next-btn" class="" href="#">Next</a></li>
+            <ul class="pager" style="display: none;">
+                <li><a class="pager-prev-btn" href="#">Previous</a></li>
+                <li><a class="pager-next-btn" href="#">Next</a></li>
             </ul>
         </div>
     </div>
@@ -124,7 +124,7 @@
 
         $("a.page-size").click(function(e) {
             pageSize = parseInt($(this).text());
-            var countAll = $("#pager").data("countAll");
+            var countAll = $(".pager").data("countAll");
             switch (pagerMode) {
                 case REGULAR_MODE_PAGE:
                     var categoryCode = $(".selected-category a").attr("href").replace("#", "");
@@ -151,8 +151,8 @@
             renderRegularPageOfGifts(-1, 1, pageSize, categoryCode);
         });
 
-        $("#pager-next-btn").click(function (e) {
-            var pagerObj = $("#pager");
+        $(".pager-next-btn").click(function (e) {
+            var pagerObj = $(".pager");
             var pageNum = pagerObj.data("pageNum");
             var countAll = pagerObj.data("countAll");
 
@@ -171,8 +171,8 @@
         });
 
 
-        $("#pager-prev-btn").click(function (e) {
-            var pagerObj = $("#pager");
+        $(".pager-prev-btn").click(function (e) {
+            var pagerObj = $(".pager");
             var pageNum = pagerObj.data("pageNum");
             var countAll = pagerObj.data("countAll");
 
@@ -234,7 +234,16 @@
                 success: function (response) {
                     var json = JSON.parse(response);
                     var results = json.results;
-
+                    if (results.length == 0) {
+                        var noGiftsError = '<h3><spring:message code="label.no_gifts_to_show"/></h3>';
+                        var giftsContainer = $("#gifts");
+                        giftsContainer.empty();
+                        giftsContainer.append(noGiftsError);
+                        renderPagerButtons(-1, 0, false, false);
+                        $("#choose-page-size-btn").hide();
+                        $("#loading-gifts").loading("stop");
+                        return;
+                    }
                     renderGifts(results);
                     renderPagerButtons(json.countAll, json.pageNum, json.isNextPage, json.isPreviousPage)
                 },
@@ -273,18 +282,14 @@
                 giftsContainer.append(html);
             });
 
-            if (gifts.length == 0) {
-                var test = '<h3><spring:message code="label.no_gifts_to_show"/></h3>';
-                giftsContainer.append(test);
-            }
-
+            $("#choose-page-size-btn").show();
             $("#loading-gifts").loading("stop");
         }
 
         function renderPagerButtons(countAll, pageNum, isNextPage, isPreviousPage) {
-            var pagerObj = $("#pager");
-            var previousPageBtn = $("#pager-prev-btn");
-            var nextPageBtn = $("#pager-next-btn");
+            var pagerObj = $(".pager");
+            var previousPageBtn = $(".pager-prev-btn");
+            var nextPageBtn = $(".pager-next-btn");
             if (!isNextPage) {
                 nextPageBtn.hide();
             } else {
@@ -308,7 +313,7 @@
         });
 
         function savePagerDataOnExit() {
-            var pagerObj = $("#pager");
+            var pagerObj = $(".pager");
             var pageNum = pagerObj.data("pageNum");
             var countAll = pagerObj.data("countAll");
             var categoryCode = $(".selected-category a").attr("href").replace("#", "");

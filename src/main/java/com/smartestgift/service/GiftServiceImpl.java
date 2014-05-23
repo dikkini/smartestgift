@@ -96,7 +96,7 @@ public class GiftServiceImpl implements GiftService {
         int end = start + pageSize - 1;
 
         boolean isNextPage = end < countAll;
-        boolean isPreviousPage = start != 1;
+        boolean isPreviousPage = start != 0;
 
         GiftCategory giftCategory = giftCategoryDAO.findByCode(categoryCode);
 
@@ -115,7 +115,7 @@ public class GiftServiceImpl implements GiftService {
         int end = start + pageSize - 1;
 
         boolean isNextPage = end < countAll;
-        boolean isPreviousPage = start != 1;
+        boolean isPreviousPage = start != 0;
 
         List<Gift> gifts = giftDAO.findGiftsLimitSizeBySearchString(start, pageSize, searchString);
 
