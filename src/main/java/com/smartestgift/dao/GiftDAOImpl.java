@@ -3,13 +3,8 @@ package com.smartestgift.dao;
 import com.smartestgift.dao.model.Gift;
 import com.smartestgift.dao.model.GiftCategory;
 import com.smartestgift.dao.model.SmartUser;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.criterion.CriteriaSpecification;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.*;
+import org.hibernate.criterion.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -81,5 +76,17 @@ public class GiftDAOImpl implements GiftDAO {
         criteria.add(Restrictions.or(nameGiftRestriction, descriptionGiftRestriction));
         criteria.addOrder(org.hibernate.criterion.Order.asc("name"));
         return criteria.list();
+    }
+
+    @Override
+    public Long findCountAllGiftsByCategoryCode(String categoryCode) {
+        return (Long) sessionFactory.getCurrentSession().createCriteria(Gift.class)
+                .setProjection(Projections.rowCount()).uniqueResult();
+    }
+
+    @Override
+    public Long findCountAllGiftsBySearchString(String searchString) {
+        return (Long) sessionFactory.getCurrentSession().createCriteria(Gift.class)
+                .setProjection(Projections.rowCount()).uniqueResult();
     }
 }

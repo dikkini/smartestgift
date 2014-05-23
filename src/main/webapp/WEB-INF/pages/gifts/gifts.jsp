@@ -119,19 +119,20 @@
             }
             findGiftInputObj.data("search-string", searchString);
 
-            getSearchPageOfGiftsAndRender(true, 1, pageSize, searchString);
+            renderSearchPageOfGifts(-1, 1, pageSize, searchString);
         });
 
         $("a.page-size").click(function(e) {
             pageSize = parseInt($(this).text());
+            var countAll = $("#pager").data("countAll");
             switch (pagerMode) {
                 case REGULAR_MODE_PAGE:
                     var categoryCode = $(".selected-category a").attr("href").replace("#", "");
-                    getRegularPageOfGiftsAndRender(true, 1, pageSize, categoryCode);
+                    renderRegularPageOfGifts(countAll, 1, pageSize, categoryCode);
                     break;
                 case SEARCH_MODE_PAGE:
                     var searchString = $("#find-gift-input").data("search-string");
-                    getSearchPageOfGiftsAndRender(true, 1, pageSize, searchString);
+                    renderSearchPageOfGifts(countAll, 1, pageSize, searchString);
                     break;
             }
             e.preventDefault();
@@ -147,20 +148,22 @@
             $(this).parent().addClass("selected-category");
             var categoryCode = $(this).attr("href").replace("#", "");
 
-            getRegularPageOfGiftsAndRender(true, 1, pageSize, categoryCode);
+            renderRegularPageOfGifts(-1, 1, pageSize, categoryCode);
         });
 
         $("#pager-next-btn").click(function (e) {
-            var pageNum = $("#pager").data("pageNum");
+            var pagerObj = $("#pager");
+            var pageNum = pagerObj.data("pageNum");
+            var countAll = pagerObj.data("countAll");
 
             switch (pagerMode) {
                 case REGULAR_MODE_PAGE:
                     var categoryCode = $(".selected-category a").attr("href").replace("#", "");
-                    getRegularPageOfGiftsAndRender(true, pageNum+1, pageSize, categoryCode);
+                    renderRegularPageOfGifts(countAll, pageNum+1, pageSize, categoryCode);
                     break;
                 case SEARCH_MODE_PAGE:
                     var searchString = $("#find-gift-input").data("search-string");
-                    getSearchPageOfGiftsAndRender(true, pageNum+1, pageSize, searchString);
+                    renderSearchPageOfGifts(countAll, pageNum+1, pageSize, searchString);
                     break;
             }
 
@@ -171,15 +174,16 @@
         $("#pager-prev-btn").click(function (e) {
             var pagerObj = $("#pager");
             var pageNum = pagerObj.data("pageNum");
+            var countAll = pagerObj.data("countAll");
 
             switch (pagerMode) {
                 case REGULAR_MODE_PAGE:
                     var categoryCode = $(".selected-category a").attr("href").replace("#", "");
-                    getRegularPageOfGiftsAndRender(true, pageNum-1, pageSize, categoryCode);
+                    renderRegularPageOfGifts(countAll, pageNum-1, pageSize, categoryCode);
                     break;
                 case SEARCH_MODE_PAGE:
                     var searchString = $("#find-gift-input").data("search-string");
-                    getSearchPageOfGiftsAndRender(true, pageNum-1, pageSize, searchString);
+                    renderSearchPageOfGifts(countAll, pageNum-1, pageSize, searchString);
                     break;
             }
             e.preventDefault();
@@ -200,18 +204,18 @@
             });
         });
 
-        function getSearchPageOfGiftsAndRender(next, pageNum, pageSize, searchString) {
+        function renderSearchPageOfGifts(countAll, pageNum, pageSize, searchString) {
             $.ajax({
                 type: "post",
                 url: "/gifts/getFindGiftPage",
                 cache: false,
-                data: "next=" + next + "&pageNum=" + pageNum + "&pageSize=" + pageSize + "&searchString=" + searchString,
+                data: "countAll=" + countAll + "&pageNum=" + pageNum + "&pageSize=" + pageSize + "&searchString=" + searchString,
                 success: function (response) {
                     var json = JSON.parse(response);
                     var results = json.results;
 
-                    renderGifts(results, json.pageNum);
-                    renderPagerButtons(json.isNextPage, json.isPreviousPage)
+                    renderGifts(results);
+                    renderPagerButtons(json.countAll, json.pageNum, json.isNextPage, json.isPreviousPage)
                 },
                 error: function (response) {
                     window.location = "500";
@@ -219,20 +223,20 @@
             });
         }
 
-        function getRegularPageOfGiftsAndRender(next, pageNum, pageSize, categoryCode) {
+        function renderRegularPageOfGifts(countAll, pageNum, pageSize, categoryCode) {
             $("#loading-gifts").loading("start");
 
             $.ajax({
                 type: "post",
                 url: "/gifts/changePage",
                 cache: false,
-                data: "next=" + next + "&pageNum=" + pageNum + "&pageSize=" + pageSize + "&categoryCode=" + categoryCode,
+                data: "countAll=" + countAll + "&pageNum=" + pageNum + "&pageSize=" + pageSize + "&categoryCode=" + categoryCode,
                 success: function (response) {
                     var json = JSON.parse(response);
                     var results = json.results;
 
                     renderGifts(results);
-                    renderPagerButtons(json.pageNum, json.isNextPage, json.isPreviousPage)
+                    renderPagerButtons(json.countAll, json.pageNum, json.isNextPage, json.isPreviousPage)
                 },
                 error: function (response) {
                     window.location = "500";
@@ -277,7 +281,7 @@
             $("#loading-gifts").loading("stop");
         }
 
-        function renderPagerButtons(pageNum, isNextPage, isPreviousPage) {
+        function renderPagerButtons(countAll, pageNum, isNextPage, isPreviousPage) {
             var pagerObj = $("#pager");
             var previousPageBtn = $("#pager-prev-btn");
             var nextPageBtn = $("#pager-next-btn");
@@ -294,6 +298,7 @@
             }
 
             pagerObj.data("pageNum", pageNum);
+            pagerObj.data("countAll", countAll);
             pagerObj.show();
         }
 
@@ -305,12 +310,14 @@
         function savePagerDataOnExit() {
             var pagerObj = $("#pager");
             var pageNum = pagerObj.data("pageNum");
+            var countAll = pagerObj.data("countAll");
             var categoryCode = $(".selected-category a").attr("href").replace("#", "");
             var searchString = $("#find-gift-input").data("search-string");
 
             var json = {
                 "pagerMode": pagerMode,
                 "pageNum": pageNum,
+                "countAll": countAll,
                 "pageSize": pageSize,
                 "categoryCode":categoryCode,
                 "searchString":searchString
@@ -330,10 +337,10 @@
                                 $(this).addClass("selected-category");
                             }
                         });
-                        getRegularPageOfGiftsAndRender(true, e.state.pageNum, e.state.pageSize, e.state.categoryCode);
+                        renderRegularPageOfGifts(e.state.countAll, e.state.pageNum, e.state.pageSize, e.state.categoryCode);
                         break;
                     case SEARCH_MODE_PAGE:
-                        getSearchPageOfGiftsAndRender(true, e.state.pageNum, e.state.pageSize, e.state.searchString);
+                        renderSearchPageOfGifts(e.state.countAll, e.state.pageNum, e.state.pageSize, e.state.searchString);
                         break;
                 }
             }

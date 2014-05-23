@@ -60,21 +60,21 @@ public interface GiftService {
 
     /**
      *
-     * @param nextPage
+     * @param countAll
      * @param pageNum
      * @param pageSize
      * @param categoryCode
      * @return
      */
-    public GiftPage getPageOfGifts(boolean nextPage, int pageNum, int pageSize, String categoryCode);
+    public GiftPage getPageOfGifts(Long countAll, int pageNum, int pageSize, String categoryCode);
 
     /**
      *
-     * @param nextPage
+     * @param countAll
      * @param pageNum
      * @param pageSize
      * @param searchString
      * @return
      */
-    public GiftPage getPageOfGiftsBySearchString(boolean nextPage, int pageNum, int pageSize, String searchString);
+    public GiftPage getPageOfGiftsBySearchString(Long countAll, int pageNum, int pageSize, String searchString);
 }

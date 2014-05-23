@@ -11,6 +11,7 @@ public abstract class Page {
     protected List<?> results;
     protected int pageNum;
     protected int pageSize;
+    protected Long countAll;
     protected boolean isNextPage = true;
     protected boolean isPreviousPage = false;
 
@@ -36,6 +37,14 @@ public abstract class Page {
 
     public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
+    }
+
+    public Long getCountAll() {
+        return countAll;
+    }
+
+    public void setCountAll(Long countAll) {
+        this.countAll = countAll;
     }
 
     public boolean isNextPage() {

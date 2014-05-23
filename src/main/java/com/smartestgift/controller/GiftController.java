@@ -48,11 +48,11 @@ public class GiftController {
     }
 
     @RequestMapping(value = "/changePage", headers="Accept=application/json", method = RequestMethod.POST)
-    public @ResponseBody String changePage(@RequestParam(required = true, value = "next") boolean nextPage,
-                           @RequestParam(required = true, value = "pageNum") int pageNum,
-                           @RequestParam(required = true, value = "pageSize") int pageSize,
-                           @RequestParam(required = true, value = "categoryCode") String categoryCode) {
-        GiftPage giftPage = giftService.getPageOfGifts(nextPage, pageNum, pageSize, categoryCode);
+    public @ResponseBody String changePage(@RequestParam(required = true, value = "countAll") Long countAll,
+                                           @RequestParam(required = true, value = "pageNum") int pageNum,
+                                           @RequestParam(required = true, value = "pageSize") int pageSize,
+                                           @RequestParam(required = true, value = "categoryCode") String categoryCode) {
+        GiftPage giftPage = giftService.getPageOfGifts(countAll, pageNum, pageSize, categoryCode);
         return gson.toJson(giftPage);
     }
 
@@ -128,12 +128,12 @@ public class GiftController {
 
     @RequestMapping(value = "/getFindGiftPage", headers="Accept=application/json", method = RequestMethod.POST)
     public @ResponseBody String getFindGiftPage(@ActiveUser SmartUserDetails smartUserDetails,
-                           @RequestParam(required = true, value = "next") boolean nextPage,
-                           @RequestParam(required = true, value = "searchString") String searchString,
-                           @RequestParam(required = true, value = "pageNum") int pageNum,
-                           @RequestParam(required = true, value = "pageSize") int pageSize) {
+                                                @RequestParam(required = true, value = "countAll") Long countAll,
+                                                @RequestParam(required = true, value = "searchString") String searchString,
+                                                @RequestParam(required = true, value = "pageNum") int pageNum,
+                                                @RequestParam(required = true, value = "pageSize") int pageSize) {
         // TODO security checks
-        GiftPage pageOfGiftsBySearchString = giftService.getPageOfGiftsBySearchString(nextPage, pageNum, pageSize,
+        GiftPage pageOfGiftsBySearchString = giftService.getPageOfGiftsBySearchString(countAll, pageNum, pageSize,
                 searchString);
         return gson.toJson(pageOfGiftsBySearchString);
     }

@@ -87,54 +87,43 @@ public class GiftServiceImpl implements GiftService {
     }
 
     @Override
-    public GiftPage getPageOfGifts(boolean nextPage, int pageNum, int pageSize, String categoryCode) {
-        int start = (pageNum - 1) * pageSize;
-        /*
-        прибавляем в размеру страницы единицу чтобы понять есть ли следующая страница
-         */
-        int end = start + pageSize + 1;
+    public GiftPage getPageOfGifts(Long countAll, int pageNum, int pageSize, String categoryCode) {
+        if (countAll == -1) {
+            countAll = giftDAO.findCountAllGiftsByCategoryCode(categoryCode);
+        }
+
+        int start;
+        if (pageNum == 1) {
+            start = 0;
+        } else {
+            start = pageNum * pageSize - pageSize + 1;
+        }
+        int end = start + pageSize - 1;
+
+        boolean isNextPage = end < countAll;
+        boolean isPreviousPage = start != 1;
 
         GiftCategory giftCategory = giftCategoryDAO.findByCode(categoryCode);
 
-        List<Gift> giftsLimitSize = giftDAO.findGiftsLimitSizeByCategory(start, end, giftCategory);
+        List<Gift> gifts = giftDAO.findGiftsLimitSizeByCategory(start, pageSize, giftCategory);
 
-        return buildGiftPage(giftsLimitSize, nextPage, pageNum, pageSize, giftCategory);
+        return new GiftPage(gifts, pageNum, pageSize, isNextPage, isPreviousPage, giftCategory, countAll);
     }
 
     @Override
-    public GiftPage getPageOfGiftsBySearchString(boolean nextPage, int pageNum, int pageSize, String searchString) {
-        int start = (pageNum - 1) * pageSize;
-        /*
-        прибавляем в размеру страницы единицу чтобы понять есть ли следующая страница
-         */
-        int end = start + pageSize + 1;
-
-        List<Gift> giftsLimitSize = giftDAO.findGiftsLimitSizeBySearchString(start, end, searchString);
-
-        return buildGiftPage(giftsLimitSize, nextPage, pageNum, pageSize, null);
-    }
-
-
-    private GiftPage buildGiftPage(List<Gift> gifts, boolean nextPage, int pageNum, int pageSize, GiftCategory giftCategory) {
-        boolean isNextPage;
-        boolean isPreviousPage;
-
-        // TODO может стоить поменять механизм понимания наличия следующей страницы (?)
-        if (nextPage) {
-            isPreviousPage = pageNum != 1;
-            isNextPage = gifts.size() > pageSize;
-        } else {
-            isNextPage = true;
-            isPreviousPage = pageNum > 1;
+    public GiftPage getPageOfGiftsBySearchString(Long countAll, int pageNum, int pageSize, String searchString) {
+        if (countAll == -1) {
+            countAll = giftDAO.findCountAllGiftsBySearchString(searchString);
         }
 
-        // убираем последствия понимания следующей страницы
-        if (gifts.size() > pageSize) {
-            gifts.remove(gifts.size() - 1);
-        }
+        int start = pageNum * pageSize - pageSize + 1;
+        int end = start + pageSize - 1;
 
-        return new GiftPage(gifts, pageNum, pageSize, isNextPage, isPreviousPage, giftCategory);
+        boolean isNextPage = end < countAll;
+        boolean isPreviousPage = start != 1;
+
+        List<Gift> gifts = giftDAO.findGiftsLimitSizeBySearchString(start, pageSize, searchString);
+
+        return new GiftPage(gifts, pageNum, pageSize, isNextPage, isPreviousPage, null, countAll);
     }
-
-
 }
