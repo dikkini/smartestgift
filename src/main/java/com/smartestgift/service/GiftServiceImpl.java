@@ -92,12 +92,7 @@ public class GiftServiceImpl implements GiftService {
             countAll = giftDAO.findCountAllGiftsByCategoryCode(categoryCode);
         }
 
-        int start;
-        if (pageNum == 1) {
-            start = 0;
-        } else {
-            start = pageNum * pageSize - pageSize + 1;
-        }
+        int start = pageNum * pageSize - pageSize;
         int end = start + pageSize - 1;
 
         boolean isNextPage = end < countAll;
@@ -116,7 +111,7 @@ public class GiftServiceImpl implements GiftService {
             countAll = giftDAO.findCountAllGiftsBySearchString(searchString);
         }
 
-        int start = pageNum * pageSize - pageSize + 1;
+        int start = pageNum * pageSize - pageSize;
         int end = start + pageSize - 1;
 
         boolean isNextPage = end < countAll;
