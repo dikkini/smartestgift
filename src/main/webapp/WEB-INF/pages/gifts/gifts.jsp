@@ -35,6 +35,7 @@
         </div>
     </div>
 </div>
+<div id="shadow"></div>
 <div class="row top-buffer">
     <div class="col-xs-12">
         <div class="panel panel-primary">
@@ -94,26 +95,33 @@
 <jsp:include page="../template/bottom.jsp"/>
 
 <script type="text/javascript">
-    var REGULAR_MODE_PAGE = "REGULAR";
-    var SEARCH_MODE_PAGE = "SEARCH";
     $(document).ready(function () {
+        // default page size value
         var pageSize = 10;
+        // no mode on loading page
         var pagerMode = "";
+        var REGULAR_MODE_PAGE = "REGULAR";
+        var SEARCH_MODE_PAGE = "SEARCH";
+
+        var ajaxLoadingGifts = $("#loading-gifts");
+        var giftsContainer = $("#gifts");
+        var pagerObj = $(".pager");
+        var blockingDiv = $("#shadow");
 
         // TODO выставлять название категории
 
         $(".loading").loading({width: '25', text: 'Searching...'});
 
         $("#find-gift-btn").click(function() {
-            var ajaxLoadingGifts = $("#loading-gifts");
             ajaxLoadingGifts.loading("start");
-
+            blockingDiv.addClass("blocker");
             pagerMode = SEARCH_MODE_PAGE;
 
             var findGiftInputObj = $("#find-gift-input");
             var searchString = findGiftInputObj.val();
             if ($.trim(searchString).length == 0) {
                 alert("wrong search string");
+                blockingDiv.removeClass("blocker");
                 ajaxLoadingGifts.loading("stop");
                 return;
             }
@@ -123,6 +131,7 @@
         });
 
         $("a.page-size").click(function(e) {
+            blockingDiv.addClass("blocker");
             pageSize = parseInt($(this).text());
             var countAll = $(".pager").data("countAll");
             switch (pagerMode) {
@@ -139,11 +148,10 @@
         });
 
         $("span.gift-category a").click(function () {
-            var ajaxLoadingGifts = $("#loading-gifts");
             ajaxLoadingGifts.loading("start");
-
+            blockingDiv.addClass("blocker");
             pagerMode = REGULAR_MODE_PAGE;
-            // при клике на категорию, выставляем стандартные параметры - 0 страница и дефолтное количество элементов
+
             var giftsCategories = $(".gift-category");
             giftsCategories.each(function () {
                 $(this).removeClass("selected-category");
@@ -155,7 +163,6 @@
         });
 
         $(".pager-next-btn").click(function (e) {
-            var pagerObj = $(".pager");
             var pageNum = pagerObj.data("pageNum");
             var countAll = pagerObj.data("countAll");
 
@@ -174,7 +181,6 @@
         });
 
         $(".pager-prev-btn").click(function (e) {
-            var pagerObj = $(".pager");
             var pageNum = pagerObj.data("pageNum");
             var countAll = pagerObj.data("countAll");
 
@@ -191,7 +197,7 @@
             e.preventDefault();
         });
 
-        $(".want-gift-btn").click(function () {
+        giftsContainer.on("click", ".want-gift-btn", function () {
             $.ajax({
                 type: "post",
                 url: "/gifts/wantGift",
@@ -207,6 +213,8 @@
         });
 
         function renderSearchPageOfGifts(countAll, pageNum, pageSize, searchString) {
+            ajaxLoadingGifts.loading("start");
+            blockingDiv.addClass("blocker");
             $.ajax({
                 type: "post",
                 url: "/gifts/getFindGiftPage",
@@ -217,12 +225,12 @@
                     var results = json.results;
                     if (results.length == 0) {
                         var noGiftsError = '<h3><spring:message code="label.no_gifts_to_show"/></h3>';
-                        var giftsContainer = $("#gifts");
                         giftsContainer.empty();
                         giftsContainer.append(noGiftsError);
                         renderPagerButtons(-1, 0, false, false);
                         $("#choose-page-size-btn").hide();
-                        $("#loading-gifts").loading("stop");
+                        blockingDiv.removeClass("blocker");
+                        ajaxLoadingGifts.loading("stop");
                         return;
                     }
                     renderGifts(results);
@@ -235,6 +243,8 @@
         }
 
         function renderRegularPageOfGifts(countAll, pageNum, pageSize, categoryCode) {
+            ajaxLoadingGifts.loading("start");
+            blockingDiv.addClass("blocker");
             $.ajax({
                 type: "post",
                 url: "/gifts/changePage",
@@ -245,12 +255,13 @@
                     var results = json.results;
                     if (results.length == 0) {
                         var noGiftsError = '<h3><spring:message code="label.no_gifts_to_show"/></h3>';
-                        var giftsContainer = $("#gifts");
+
                         giftsContainer.empty();
                         giftsContainer.append(noGiftsError);
                         renderPagerButtons(-1, 0, false, false);
                         $("#choose-page-size-btn").hide();
-                        $("#loading-gifts").loading("stop");
+                        blockingDiv.removeClass("blocker");
+                        ajaxLoadingGifts.loading("stop");
                         return;
                     }
                     renderGifts(results);
@@ -263,7 +274,7 @@
         }
 
         function renderGifts(gifts) {
-            var giftsContainer = $("#gifts");
+            ajaxLoadingGifts.loading("start");
             giftsContainer.empty();
 
             var today = new Date();
@@ -292,11 +303,11 @@
             });
 
             $("#choose-page-size-btn").show();
-            $("#loading-gifts").loading("stop");
+            blockingDiv.removeClass("blocker");
+            ajaxLoadingGifts.loading("stop");
         }
 
         function renderPagerButtons(countAll, pageNum, isNextPage, isPreviousPage) {
-            var pagerObj = $(".pager");
             var previousPageBtn = $(".pager-prev-btn");
             var nextPageBtn = $(".pager-next-btn");
             if (!isNextPage) {
@@ -322,7 +333,6 @@
         });
 
         function savePagerDataOnExit() {
-            var pagerObj = $(".pager");
             var pageNum = pagerObj.data("pageNum");
             var countAll = pagerObj.data("countAll");
             var categoryCode = $(".selected-category a").attr("href").replace("#", "");

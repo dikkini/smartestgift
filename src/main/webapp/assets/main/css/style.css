@@ -92,3 +92,5 @@ css for link design
     background-color: rgba(255, 255, 255, .3);
     border-radius: 0.5em;
 }
+
+.blocker{z-index:1000;height:100%;width:100%;/*background: gray;*/opacity:0.7; position: absolute;}
