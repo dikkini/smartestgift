@@ -170,7 +170,6 @@
             e.preventDefault();
         });
 
-
         $(".pager-prev-btn").click(function (e) {
             var pagerObj = $(".pager");
             var pageNum = pagerObj.data("pageNum");
