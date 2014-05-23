@@ -139,6 +139,9 @@
         });
 
         $("span.gift-category a").click(function () {
+            var ajaxLoadingGifts = $("#loading-gifts");
+            ajaxLoadingGifts.loading("start");
+
             pagerMode = REGULAR_MODE_PAGE;
             // при клике на категорию, выставляем стандартные параметры - 0 страница и дефолтное количество элементов
             var giftsCategories = $(".gift-category");
@@ -212,9 +215,18 @@
                 success: function (response) {
                     var json = JSON.parse(response);
                     var results = json.results;
-
+                    if (results.length == 0) {
+                        var noGiftsError = '<h3><spring:message code="label.no_gifts_to_show"/></h3>';
+                        var giftsContainer = $("#gifts");
+                        giftsContainer.empty();
+                        giftsContainer.append(noGiftsError);
+                        renderPagerButtons(-1, 0, false, false);
+                        $("#choose-page-size-btn").hide();
+                        $("#loading-gifts").loading("stop");
+                        return;
+                    }
                     renderGifts(results);
-                    renderPagerButtons(json.countAll, json.pageNum, json.isNextPage, json.isPreviousPage)
+                    renderPagerButtons(json.countAll, json.pageNum, json.isNextPage, json.isPreviousPage);
                 },
                 error: function (response) {
                     window.location = "500";
@@ -223,8 +235,6 @@
         }
 
         function renderRegularPageOfGifts(countAll, pageNum, pageSize, categoryCode) {
-            $("#loading-gifts").loading("start");
-
             $.ajax({
                 type: "post",
                 url: "/gifts/changePage",
@@ -244,7 +254,7 @@
                         return;
                     }
                     renderGifts(results);
-                    renderPagerButtons(json.countAll, json.pageNum, json.isNextPage, json.isPreviousPage)
+                    renderPagerButtons(json.countAll, json.pageNum, json.isNextPage, json.isPreviousPage);
                 },
                 error: function (response) {
                     window.location = "500";

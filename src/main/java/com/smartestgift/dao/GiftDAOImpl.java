@@ -86,7 +86,10 @@ public class GiftDAOImpl implements GiftDAO {
 
     @Override
     public Long findCountAllGiftsBySearchString(String searchString) {
+        Criterion nameGiftRestriction = Restrictions.ilike("name", searchString, MatchMode.ANYWHERE);
+        Criterion descriptionGiftRestriction= Restrictions.ilike("description", searchString, MatchMode.ANYWHERE);
         return (Long) sessionFactory.getCurrentSession().createCriteria(Gift.class)
+                .add(Restrictions.or(nameGiftRestriction, descriptionGiftRestriction))
                 .setProjection(Projections.rowCount()).uniqueResult();
     }
 }
