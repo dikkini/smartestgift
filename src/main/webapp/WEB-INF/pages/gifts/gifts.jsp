@@ -44,7 +44,7 @@
                     <div class="col-xs-3">
                         <span id="loading-gifts" class="loading" style=""></span>
                     </div>
-                    <div class="col-xs-7">
+                    <div class="col-xs-6">
                         <div class="col-xs-6">
                             <input id="find-gift-input" type="text" class="form-control" placeholder="<spring:message code="label.searchGiftPlaceHolder"/>">
                         </div>
@@ -53,17 +53,19 @@
                             <button id="random-gift-btn" class="btn btn-default"><spring:message code="label.random_gift"/></button>
                         </div>
                     </div>
-                    <div class="col-xs-2">
-                        <div id="choose-page-size-btn" class="btn-group" style="float: right; display: none;">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                Choose Page Size <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a class="page-size" href="#">10</a></li>
-                                <li><a class="page-size" href="#">25</a></li>
-                                <li><a class="page-size" href="#">50</a></li>
-                                <li><a class="page-size" href="#">100</a></li>
-                            </ul>
+                    <div class="col-xs-3">
+                        <div class="row">
+                            <div class="col-xs-7">
+                                <label for="page-size-select">Choose page size</label>
+                            </div>
+                            <div class="col-xs-5">
+                                <select id="page-size-select" class="form-control">
+                                    <option>10</option>
+                                    <option>25</option>
+                                    <option>50</option>
+                                    <option>100</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -228,7 +230,7 @@
                         giftsContainer.empty();
                         giftsContainer.append(noGiftsError);
                         renderPagerButtons(-1, 0, false, false);
-                        $("#choose-page-size-btn").hide();
+                        $("#page-size-container").hide();
                         blockingDiv.removeClass("blocker");
                         ajaxLoadingGifts.loading("stop");
                         return;
@@ -258,7 +260,7 @@
                         giftsContainer.empty();
                         giftsContainer.append(noGiftsError);
                         renderPagerButtons(-1, 0, false, false);
-                        $("#choose-page-size-btn").hide();
+                        $("#page-size-container").hide();
                         blockingDiv.removeClass("blocker");
                         ajaxLoadingGifts.loading("stop");
                         return;
@@ -295,13 +297,13 @@
                 html += '<p class="ellipses small">' + entry.description + '</p>';
                 // TODO (?) проверка есть ли у пользователя этот подарок в желаемых
                 html += '<button data-gift-uuid="' + entry.uuid + '"';
-                html += 'class="btn btn-default want-gift-btn"> <spring:message code="label.wanttogift"/>';
+                html += 'class="btn btn-default want-gift-btn" data-toggle="modal" data-target="#want-gift-modal"> <spring:message code="label.wanttogift"/>';
                 html += '</button>';
 
                 giftsContainer.append(html);
             });
 
-            $("#choose-page-size-btn").show();
+            $("#page-size-container").show();
             blockingDiv.removeClass("blocker");
             ajaxLoadingGifts.loading("stop");
         }
