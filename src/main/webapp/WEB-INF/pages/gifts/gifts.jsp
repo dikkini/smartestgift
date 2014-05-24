@@ -255,7 +255,6 @@
                     var results = json.results;
                     if (results.length == 0) {
                         var noGiftsError = '<h3><spring:message code="label.no_gifts_to_show"/></h3>';
-
                         giftsContainer.empty();
                         giftsContainer.append(noGiftsError);
                         renderPagerButtons(-1, 0, false, false);
