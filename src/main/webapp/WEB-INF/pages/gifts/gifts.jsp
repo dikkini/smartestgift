@@ -54,9 +54,9 @@
                         </div>
                     </div>
                     <div class="col-xs-3">
-                        <div class="row">
-                            <div class="col-xs-7">
-                                <label for="page-size-select">Choose page size</label>
+                        <div class="page-size-container row">
+                            <div class="col-xs-5">
+                                <label for="page-size-select">Page size</label>
                             </div>
                             <div class="col-xs-5">
                                 <select id="page-size-select" class="form-control">
@@ -132,9 +132,9 @@
             renderSearchPageOfGifts(-1, 1, pageSize, searchString);
         });
 
-        $("a.page-size").click(function(e) {
+        $("#page-size-select").change(function(e) {
             blockingDiv.addClass("blocker");
-            pageSize = parseInt($(this).text());
+            pageSize = parseInt($(this).val());
             var countAll = $(".pager").data("countAll");
             switch (pagerMode) {
                 case REGULAR_MODE_PAGE:
@@ -200,7 +200,8 @@
         });
 
         giftsContainer.on("click", ".want-gift-btn", function () {
-            $.ajax({
+            /*$("#want-gift-modal").modal("show");*/
+/*            $.ajax({
                 type: "post",
                 url: "/gifts/wantGift",
                 cache: false,
@@ -211,7 +212,7 @@
                 error: function (response) {
                     window.location = "500";
                 }
-            });
+            });*/
         });
 
         function renderSearchPageOfGifts(countAll, pageNum, pageSize, searchString) {
@@ -372,3 +373,5 @@
         };
     });
 </script>
+
+<jsp:include page="/WEB-INF/pages/template/want-gift-modal.jsp"/>
