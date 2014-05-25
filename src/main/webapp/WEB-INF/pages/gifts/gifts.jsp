@@ -114,6 +114,10 @@
 
         $(".loading").loading({width: '25', text: 'Searching...'});
 
+        $('#end-date-input').pickmeup({
+            flat	: true
+        });
+
         $("#find-gift-btn").click(function() {
             ajaxLoadingGifts.loading("start");
             blockingDiv.addClass("blocker");
