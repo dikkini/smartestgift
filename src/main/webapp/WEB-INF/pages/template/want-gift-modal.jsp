@@ -18,7 +18,7 @@
                 <div class="row">
                     <div class="col-xs-6">
                         <label for="end-date-input">Choose end date</label>
-                        <input id="end-date-input" name="birthdate" type="date" class="form-control" min="<fmt:formatDate value="${now}" pattern="dd-MM-yyyy"/>">
+                        <input id="end-date-input" name="birthdate" class="form-control">
                     </div>
                     <div class="col-xs-6">
                         <label for="internet-shop-select">Choose price and internet shop</label>
