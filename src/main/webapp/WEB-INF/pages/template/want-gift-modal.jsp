@@ -7,12 +7,13 @@
 
 <jsp:useBean id="now" class="java.util.Date" scope="page" />
 
-<div class="modal fade" id="want-gift-modal" tabindex="-1" role="dialog" aria-labelledby="want-gift-modal-title" aria-hidden="true">
+<div class="modal fade" id="want-gift-modal" tabindex="-1" role="dialog"
+     aria-labelledby="want-gift-modal-title" data-backdrop="static" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="want-gift-modal-title">I want </h4>
+                <h4 class="modal-title" id="want-gift-modal-title"></h4>
             </div>
             <div class="modal-body">
                 <div class="row">
@@ -28,8 +29,36 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Don't want</button>
-                <button type="button" class="btn btn-primary">Want it!</button>
+                <button id="accept-want-gift-btn" type="button" class="btn btn-primary">Want it!</button>
             </div>
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    // TODO понять влияет ли стоимость подарка на сумму
+    $("#end-date-input").datepicker({
+        maxDate: ""
+    });
+    $("#accept-want-gift-btn").click(function(e) {
+        var giftUuid = $(this).data("uuid");
+        var endDate = $("#end-date-input").val();
+        try {
+            new Date(endDate)
+        }
+        catch (e) {
+            // TODO нотификейнеш
+            alert("bad date");
+            e.preventDefault();
+            return;
+        }
+
+        var priceAndShop = $("#internet-shop-select").val(); // TODO выбирать идентификатор магазина
+
+        console.log(giftUuid);
+        console.log(endDate);
+        console.log(priceAndShop);
+    });
+});
+</script>

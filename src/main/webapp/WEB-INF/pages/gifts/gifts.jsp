@@ -212,19 +212,8 @@ $(document).ready(function () {
     });
 
     giftsContainer.on("click", ".want-gift-btn", function () {
-        /*$("#want-gift-modal").modal("show");*/
-        /*            $.ajax({
-         type: "post",
-         url: "/gifts/wantGift",
-         cache: false,
-         data: "giftuuid=" + $(this).data("gift-uuid"),
-         success: function (response) {
-         alert("OK");
-         },
-         error: function (response) {
-         window.location = "500";
-         }
-         });*/
+        $("#want-gift-modal-title").html("I want " + $(this).data("name"));
+        $("#accept-want-gift-btn").data("uuid", $(this).data("uuid"));
     });
 
     function renderSearchPageOfGifts(countAll, pageNum, pageSize, searchString) {
@@ -310,7 +299,9 @@ $(document).ready(function () {
             html += '<p class="ellipses small">' + entry.description + '</p>';
             // TODO (?) проверка есть ли у пользователя этот подарок в желаемых
             html += '<button data-gift-uuid="' + entry.uuid + '"';
-            html += 'class="btn btn-default want-gift-btn" data-toggle="modal" data-target="#want-gift-modal"> <spring:message code="label.wanttogift"/>';
+            html += 'class="btn btn-default want-gift-btn" data-uuid="'+ entry.uuid + '" data-name="' + entry.name +'"' +
+                    'data-toggle="modal" data-target="#want-gift-modal">'
+                    + '<spring:message code="label.wanttogift"/>';
             html += '</button>';
 
             giftsContainer.append(html);
