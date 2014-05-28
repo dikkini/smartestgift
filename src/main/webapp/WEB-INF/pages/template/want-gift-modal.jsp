@@ -71,12 +71,27 @@ $(document).ready(function() {
     $("#accept-want-gift-btn").click(function(e) {
         var giftUuid = $(this).data("uuid");
         var endDate = $("#end-date-input").val();
-        if (!isValidDate(endDate)) {
+/*        if (!isValidDate(endDate)) {
             e.preventDefault();
             return;
-        }
+        }*/
 
         var priceAndShop = $("#internet-shop-select").val(); // TODO выбирать идентификатор магазина
+
+        $.ajax({
+            type: "post",
+            url: "/gifts/findGiftShops",
+            cache: false,
+            data: "giftUuid=" + giftUuid,
+            success: function (response) {
+                var json = JSON.parse(response);
+                console.log(response);
+                console.log(json);
+            },
+            error: function (response) {
+                window.location = "500";
+            }
+        });
 
         console.log(giftUuid);
         console.log(endDate);

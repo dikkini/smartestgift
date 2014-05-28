@@ -34,11 +34,21 @@ INSERT INTO public.gift_category (id, code, name, description, file_id) VALUES (
 INSERT INTO public.gift_category (id, code, name, description, file_id) VALUES (5, 'expensive', 'Дорого и бесценно', 'Подарок бесценнен, а дорогой подарок еще дороже', 5);
 
 
+INSERT INTO public.shop (uuid, name, description) VALUES ('510de47e-3477-426e-96fe-c99c58af431a', 'Shop Number 1', 'Some Description 1');
+INSERT INTO public.shop (uuid, name, description) VALUES ('510de47e-3477-426e-96fe-c99c58af452b', 'Shop Number 2', 'Some Description 2');
+INSERT INTO public.shop (uuid, name, description) VALUES ('510de47e-3477-426e-96fe-c99c58af483c', 'Shop Number 3', 'Some Description 3');
+INSERT INTO public.shop (uuid, name, description) VALUES ('510de47e-3477-426e-96fe-c99c58af414d', 'Shop Number 4', 'Some Description 4');
+
+
 INSERT INTO public.gift (uuid, name, description, add_date, category_id) VALUES ('510de47e-3477-426e-96fe-c99c58af464a', 'iPhone 4',  'Супер новмодный телефон - будь как все!', now(),                 1);
 INSERT INTO public.gift (uuid, name, description, add_date, category_id) VALUES ('510de47e-3477-426e-96fe-c99c58af464b', 'iPhone 4s', 'Супер новмодный телефон - будь как все!', '2014-01-13 13:29:14', 1);
 INSERT INTO public.gift (uuid, name, description, add_date, category_id) VALUES ('510de47e-3477-426e-96fe-c99c58af464c', 'iPhone 5c', 'Супер новмодный телефон - будь как все!', '2013-02-13 13:29:14', 1);
 INSERT INTO public.gift (uuid, name, description, add_date, category_id) VALUES ('510de47e-3477-426e-96fe-c99c58af464d', 'iPhone 5s', 'Супер новмодный телефон - будь как все!', '2012-02-13 13:29:14', 1);
 
+INSERT INTO public.gift_shop (uuid, shop_uuid, gift_uuid, price, discount) VALUES ('510de47e-3477-426e-96fe-c99c183f561s', '510de47e-3477-426e-96fe-c99c58af431a', '510de47e-3477-426e-96fe-c99c58af464a', '100', 0);
+INSERT INTO public.gift_shop (uuid, shop_uuid, gift_uuid, price, discount) VALUES ('510de47e-3477-426e-96fe-c99c58ae152b', '510de47e-3477-426e-96fe-c99c58af452b', '510de47e-3477-426e-96fe-c99c58af464b', '110', 0);
+INSERT INTO public.gift_shop (uuid, shop_uuid, gift_uuid, price, discount) VALUES ('510de47e-3477-426e-96fe-c99c58ab283c', '510de47e-3477-426e-96fe-c99c58af483c', '510de47e-3477-426e-96fe-c99c58af464c', '111', 0);
+INSERT INTO public.gift_shop (uuid, shop_uuid, gift_uuid, price, discount) VALUES ('510de47e-3477-426e-96fe-c99c58as314d', '510de47e-3477-426e-96fe-c99c58af414d', '510de47e-3477-426e-96fe-c99c58af464d', '001', 0);
 
 INSERT INTO public.gift_file (id, file_id, gift_uuid) VALUES (1, 6, '510de47e-3477-426e-96fe-c99c58af464a');
 INSERT INTO public.gift_file (id, file_id, gift_uuid) VALUES (2, 7, '510de47e-3477-426e-96fe-c99c58af464b');

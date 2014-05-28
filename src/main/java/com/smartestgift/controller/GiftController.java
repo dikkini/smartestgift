@@ -3,10 +3,7 @@ package com.smartestgift.controller;
 import com.google.gson.Gson;
 import com.smartestgift.controller.model.AjaxResponse;
 import com.smartestgift.controller.model.GiftPage;
-import com.smartestgift.dao.model.Gift;
-import com.smartestgift.dao.model.GiftCategory;
-import com.smartestgift.dao.model.SmartUserDetails;
-import com.smartestgift.dao.model.SmartUserGift;
+import com.smartestgift.dao.model.*;
 import com.smartestgift.service.GiftService;
 import com.smartestgift.utils.ActiveUser;
 import com.smartestgift.utils.ResponseMessages;
@@ -137,5 +134,13 @@ public class GiftController {
         GiftPage pageOfGiftsBySearchString = giftService.getPageOfGiftsBySearchString(countAll, pageNum, pageSize,
                 searchString);
         return gson.toJson(pageOfGiftsBySearchString);
+    }
+
+    @RequestMapping(value = "/findGiftShops", headers="Accept=application/json", method = RequestMethod.POST)
+    public @ResponseBody String findGiftShops(@ActiveUser SmartUserDetails smartUserDetails,
+                                             @RequestParam(required = true, value = "giftUuid") String giftUuid) {
+        // TODO security checks
+        List<GiftShop> giftShops = giftService.findGiftShops(giftUuid);
+        return gson.toJson(giftShops);
     }
 }

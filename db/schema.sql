@@ -12,7 +12,9 @@ DROP TABLE public.auth_provider CASCADE;
 DROP TABLE public.role CASCADE;
 DROP TABLE public.user_details CASCADE;
 DROP TABLE public.persistent_login CASCADE;
+DROP TABLE public.shop CASCADE;
 DROP TABLE public.gift CASCADE;
+DROP TABLE public.gift_shop CASCADE;
 DROP TABLE public.user_gift CASCADE;
 DROP TABLE public.gift_category CASCADE;
 DROP TABLE public.file_type CASCADE;
@@ -89,13 +91,29 @@ CREATE TABLE public.persistent_login
   last_used TIMESTAMP                                             NOT NULL
 );
 
+CREATE TABLE public.shop
+(
+  uuid        VARCHAR(36) PRIMARY KEY,
+  name        VARCHAR(255) NOT NULL,
+  description VARCHAR(255)
+);
+
 CREATE TABLE public.gift
 (
-  uuid        VARCHAR(36) UNIQUE PRIMARY KEY NOT NULL,
-  name        VARCHAR(255)                   NOT NULL,
-  description TEXT,
-  category_id INT                            NOT NULL,
-  add_date    TIMESTAMP                      NOT NULL
+  uuid           VARCHAR(36) UNIQUE PRIMARY KEY            NOT NULL,
+  name           VARCHAR(255)                              NOT NULL,
+  description    TEXT,
+  category_id    INT                                       NOT NULL,
+  add_date       TIMESTAMP                                 NOT NULL
+);
+
+CREATE TABLE public.gift_shop
+(
+  uuid      VARCHAR(36) PRIMARY KEY,
+  shop_uuid VARCHAR(36) REFERENCES public.shop (uuid)  NOT NULL,
+  gift_uuid VARCHAR(36) REFERENCES public.gift (uuid)   NOT NULL,
+  price     DECIMAL                                     NOT NULL,
+  discount  INT DEFAULT 0
 );
 
 

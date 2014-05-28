@@ -3,11 +3,9 @@ package com.smartestgift.service;
 import com.smartestgift.controller.model.GiftPage;
 import com.smartestgift.dao.GiftCategoryDAO;
 import com.smartestgift.dao.GiftDAO;
+import com.smartestgift.dao.GiftShopDAO;
 import com.smartestgift.dao.SmartUserDAO;
-import com.smartestgift.dao.model.Gift;
-import com.smartestgift.dao.model.GiftCategory;
-import com.smartestgift.dao.model.SmartUser;
-import com.smartestgift.dao.model.SmartUserGift;
+import com.smartestgift.dao.model.*;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,6 +35,9 @@ public class GiftServiceImpl implements GiftService {
 
     @Autowired
     SmartUserDAO smartUserDAO;
+
+    @Autowired
+    GiftShopDAO giftShopDAO;
 
     @Override
     public Gift findGiftByUuid(String uuid) {
@@ -121,4 +122,12 @@ public class GiftServiceImpl implements GiftService {
 
         return new GiftPage(gifts, pageNum, pageSize, isNextPage, isPreviousPage, null, countAll);
     }
+
+    @Override
+    public List<GiftShop> findGiftShops(String giftUuid) {
+        Gift gift = giftDAO.find(giftUuid);
+        return giftShopDAO.findGiftShopsByGiftUuid(gift);
+    }
+
+
 }

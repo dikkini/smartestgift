@@ -1,10 +1,7 @@
 package com.smartestgift.service;
 
 import com.smartestgift.controller.model.GiftPage;
-import com.smartestgift.dao.model.Gift;
-import com.smartestgift.dao.model.GiftCategory;
-import com.smartestgift.dao.model.SmartUser;
-import com.smartestgift.dao.model.SmartUserGift;
+import com.smartestgift.dao.model.*;
 
 import java.util.List;
 import java.util.Set;
@@ -77,4 +74,11 @@ public interface GiftService {
      * @return
      */
     public GiftPage getPageOfGiftsBySearchString(Long countAll, int pageNum, int pageSize, String searchString);
+
+    /**
+     *
+     * @param giftUuid
+     * @return
+     */
+    public List<GiftShop> findGiftShops(String giftUuid);
 }
