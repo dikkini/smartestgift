@@ -72,6 +72,7 @@ public class GiftController {
 
     // TODO add event to news feed
     // TODO sending email to a friends of users if option checked true to send
+    // TODO check valid end date of gift collaboration
     @RequestMapping(value = "/wantGift", method = RequestMethod.POST)
     public @ResponseBody AjaxResponse wantGift(@ActiveUser SmartUserDetails smartUserDetails,
                                                @RequestParam(required = true, value = "giftuuid") String giftUuid) {
