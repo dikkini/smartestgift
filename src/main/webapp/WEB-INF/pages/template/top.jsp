@@ -9,7 +9,6 @@
 
 <jsp:useBean id="user" class="com.smartestgift.dao.model.SmartUserDetails" scope="request"/>
 
-
 <!DOCTYPE HTML>
 
 <html lang="en">
@@ -18,16 +17,15 @@
     <title><spring:message code="label.title"/></title>
     <meta name="viewport" content="width=device-width">
     <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/assets/ext/jquery/datepicker/css/pickmeup.min.css">
     <link rel="stylesheet" href="/assets/main/css/style.css">
     <link rel="stylesheet" href="/assets/ext/kladr/jquery.kladr.css">
     <link rel="stylesheet" href="/assets/ext/jquery/notification/pnotify.custom.min.css">
     <link rel="stylesheet" href="/assets/main/css/fileupload.css">
+    <link rel="stylesheet" href="/assets/ext/jquery/ui-1.10.4/css/ui-darkness/jquery-ui-1.10.4.custom.min.css">
 
     <script type="text/javascript" src="/assets/ext/jquery/jquery-2.0.3.js"></script>
-    <%--<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>--%>
+    <script type="text/javascript" src="/assets/ext/jquery/ui-1.10.4/js/jquery-ui-1.10.4.custom.min.js"></script>
     <script type="text/javascript" src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/assets/ext/jquery/datepicker/jquery.pickmeup.min.js"></script>
     <script type="text/javascript" src="/assets/ext/kladr/jquery.kladr.min.js"></script>
     <script type="text/javascript" src="/assets/ext/bootbox/bootbox.min.js"></script>
     <script type="text/javascript" src="/assets/ext/common/modernizr.js"></script>
@@ -44,8 +42,6 @@
     <script type="text/javascript" src="/assets/ext/jquery/fileupload/jquery.fileupload-process.js"></script>
     <script type="text/javascript" src="/assets/ext/jquery/fileupload/jquery.fileupload-image.js"></script>
     <script type="text/javascript" src="/assets/ext/jquery/fileupload/jquery.fileupload-validate.js"></script>
-    <%--<script type="text/javascript" src="/assets/ext/jquery/fileupload/jquery.fileupload-jquery-ui.js"></script>
-    <script type="text/javascript" src="/assets/ext/jquery/fileupload/jquery.fileupload-ui.js"></script>--%>
 </head>
 
 <body>

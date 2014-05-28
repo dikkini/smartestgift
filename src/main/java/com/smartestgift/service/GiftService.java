@@ -1,5 +1,6 @@
 package com.smartestgift.service;
 
+import com.smartestgift.controller.model.GiftPage;
 import com.smartestgift.dao.model.Gift;
 import com.smartestgift.dao.model.GiftCategory;
 import com.smartestgift.dao.model.SmartUser;
@@ -56,4 +57,24 @@ public interface GiftService {
      * @return
      */
     public GiftCategory findGiftCategoryByCode(String code);
+
+    /**
+     *
+     * @param countAll
+     * @param pageNum
+     * @param pageSize
+     * @param categoryCode
+     * @return
+     */
+    public GiftPage getPageOfGifts(Long countAll, int pageNum, int pageSize, String categoryCode);
+
+    /**
+     *
+     * @param countAll
+     * @param pageNum
+     * @param pageSize
+     * @param searchString
+     * @return
+     */
+    public GiftPage getPageOfGiftsBySearchString(Long countAll, int pageNum, int pageSize, String searchString);
 }

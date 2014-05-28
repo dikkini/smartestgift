@@ -152,6 +152,8 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
             setProperty("hibernate.connection.charSet", "UTF-8");
             setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQL82Dialect");
             setProperty("hibernate.show_sql", "true");
+            setProperty("hibernate.format_sql", "true");
+            setProperty("hibernate.enable_lazy_load_no_trans", "true");
         }};
     }
 
