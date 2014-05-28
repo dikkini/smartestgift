@@ -60,6 +60,12 @@ $.clearRequestFromNotifications = function(uri) {
     return rtn;
 };
 
+function isValidDate(d) {
+    if ( Object.prototype.toString.call(d) !== "[object Date]" )
+        return false;
+    return !isNaN(d.getTime());
+};
+
 
 /**
  * token:     description:             example:
@@ -103,4 +109,4 @@ Date.prototype.customFormat = function(formatString){
     mm=(m=dateObject.getMinutes())<10?('0'+m):m;
     ss=(s=dateObject.getSeconds())<10?('0'+s):s;
     return formatString.replace("#hhh#",hhh).replace("#hh#",hh).replace("#h#",h).replace("#mm#",mm).replace("#m#",m).replace("#ss#",ss).replace("#s#",s).replace("#ampm#",ampm).replace("#AMPM#",AMPM);
-}
+};
