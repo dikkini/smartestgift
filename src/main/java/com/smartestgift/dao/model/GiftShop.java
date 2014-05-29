@@ -4,6 +4,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * Created by dikkini on 28/05/14.
@@ -20,12 +21,19 @@ public class GiftShop implements Serializable {
     protected String uuid;
 
     @OneToOne
-    @JoinColumn (name = "shop-uuid")
+    @JoinColumn (name = "shop_uuid")
     protected Shop shop;
 
     @OneToOne
-    @JoinColumn (name = "gift-uuid")
+    @JoinColumn (name = "gift_uuid")
     protected Gift gift;
+
+    // TODO сделать модель цены с валютой и прочей ерундой
+    @Column(name = "price")
+    protected BigDecimal price;
+
+    @Column(name = "discount")
+    protected Integer discount;
 
     public String getUuid() {
         return uuid;
@@ -49,5 +57,21 @@ public class GiftShop implements Serializable {
 
     public void setGift(Gift gift) {
         this.gift = gift;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public Integer getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(Integer discount) {
+        this.discount = discount;
     }
 }

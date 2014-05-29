@@ -13,13 +13,13 @@
         <spring-security.version>3.2.2.RELEASE</spring-security.version>
 
         <db.name>smartestgiftdb</db.name>
-<!--        <db.host>172.25.29.197</db.host>-->
-        <db.host>109.120.165.66</db.host>
+        <db.host>172.25.29.197</db.host>
+        <!--<db.host>109.120.165.66</db.host>-->
         <db.port>5432</db.port>
-        <db.username>smartestgiftdbadmin</db.username>
-        <db.password>smartestgiftdbadmin</db.password>
-<!--        <db.username>dikkini</db.username>
-        <db.password>asddsa</db.password>-->
+<!--        <db.username>smartestgiftdbadmin</db.username>
+        <db.password>smartestgiftdbadmin</db.password>-->
+        <db.username>dikkini</db.username>
+        <db.password>asddsa</db.password>
         <db.name.postfix></db.name.postfix>
         <!--PostgreSQL 9.1 and below-->
         <db.pid>procpid</db.pid>
