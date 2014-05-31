@@ -34,7 +34,7 @@ public class Gift implements Serializable {
     @JoinColumn(name="category_id")
     protected GiftCategory category;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "pk.gift")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "pk.giftShop")
     protected Set<SmartUserGift> smartUserGifts;
 
     @ManyToMany(fetch = FetchType.EAGER,  cascade = {CascadeType.PERSIST, CascadeType.MERGE})

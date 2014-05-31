@@ -12,7 +12,6 @@
 <!DOCTYPE HTML>
 
 <html lang="en">
-
 <head>
     <title><spring:message code="label.title"/></title>
     <meta name="viewport" content="width=device-width">

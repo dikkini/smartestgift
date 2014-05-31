@@ -53,12 +53,12 @@
                 <li class="list-group-item">
                     <blockquote>
                         <p>
-                            <a href="/gifts/gift/<c:out value="${smartUserGift.gift.uuid}"/>"><c:out value="${smartUserGift.gift.name}"/></a>
+                            <a href="/gifts/gift/<c:out value="${smartUserGift.giftShop.gift.uuid}"/>"><c:out value="${smartUserGift.giftShop.gift.name}"/></a>
                         </p>
-                        <p class="ellipses"><c:out value="${smartUserGift.gift.description}"/></p>
+                        <p class="ellipses"><c:out value="${smartUserGift.giftShop.gift.description}"/></p>
                         <small><spring:message code="label.collected_money_for_gift"/>: <c:out value="${smartUserGift.moneyCollect}"/> </small>
                     </blockquote>
-                    <button data-gift-uuid="<c:out value="${smartUserGift.gift.uuid}"/>" class="btn btn-default un-want-gift-btn"><spring:message code="label.un_want_gift_button"/></button>
+                    <button data-gift-uuid="<c:out value="${smartUserGift.giftShop.gift.uuid}"/>" class="btn bgiftShoplt un-want-gift-btn"><spring:message code="label.un_want_gift_button"/></button>
                 </li>
             </c:forEach>
             <c:if test="${fn:length(smartUser.smartUserGifts) > 3}">

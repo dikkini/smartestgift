@@ -241,10 +241,6 @@ $(document).ready(function () {
         });
     });
 
-    function findGiftShops(giftUuid) {
-
-    }
-
     function renderSearchPageOfGifts(countAll, pageNum, pageSize, searchString) {
         ajaxLoadingGifts.loading("start");
         blockingDiv.addClass("blocker");

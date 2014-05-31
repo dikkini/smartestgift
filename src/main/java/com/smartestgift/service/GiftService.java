@@ -20,27 +20,34 @@ public interface GiftService {
     public Gift findGiftByUuid(String uuid);
 
     /**
+     *
+     * @param uuid
+     * @return
+     */
+    public GiftShop findGiftShopByUuid(String uuid);
+
+    /**
      * if the user has this gift
      * @param smartUserGifts Set of SmartUserGift
-     * @param gift Gift
+     * @param giftShop Gift in specific shop
      * @return true - had
      */
-    public boolean smartUserHasGift(Set<SmartUserGift> smartUserGifts, Gift gift);
+    public boolean smartUserHasGiftShop(Set<SmartUserGift> smartUserGifts, GiftShop giftShop);
 
     /**
      * Add gift to user
      * @param user SmartUser model
-     * @param gift Gift model
+     * @param giftShop Gift model
      */
-    public void addGiftToUserWishes(SmartUser user, Gift gift);
+    public void addGiftShopToUserWishes(SmartUser user, GiftShop giftShop);
 
     /**
      *
      * @param user
-     * @param gift
+     * @param giftShop
      * @return
      */
-    public void deleteGiftFromUser(SmartUser user, Gift gift);
+    public void deleteGiftFromUser(SmartUser user, GiftShop giftShop);
 
     /**
      *

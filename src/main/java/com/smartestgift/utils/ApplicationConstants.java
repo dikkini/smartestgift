@@ -11,7 +11,7 @@ public class ApplicationConstants {
     public static final String FACEBOOK_EXCHANGE_KEY = "";
     public static final String FACEBOOK_KEY_WORD = "facebook-auth-key";
 
-    public static final String INPUT_DATE_FORMAT_PATTERN = "yyyy-MM-dd";
+    public static final String INPUT_DATE_FORMAT_PATTERN = "dd.MM.yyyy";
 
     // Auth providers ids
     public static final Integer APPLICATION_AUTH_PROVIDER_ID = 1;

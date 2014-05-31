@@ -41,7 +41,8 @@
 $(document).ready(function() {
 
     $("#end-date-input").datepicker({
-        minDate: "0"
+        minDate: "0",
+        dateFormat: 'dd.mm.yyy' // TODO вывести константу
     });
 
     $("#internet-shop-select").change(function() {
@@ -61,6 +62,19 @@ $(document).ready(function() {
         var giftUuid = $(this).data("uuid");
         var endDate = $("#end-date-input").val();
         var priceAndShop = $("#internet-shop-select").val();
+
+        $.ajax({
+            type: "post",
+            url: "/gifts/wantGift",
+            cache: false,
+            data: "giftUuid=" + giftUuid + "&shopUuid=" + priceAndShop + "&endDate=" + endDate,
+            success: function (response) {
+                alert("OK");
+            },
+            error: function (response) {
+                window.location = "500";
+            }
+        });
     });
 });
 </script>

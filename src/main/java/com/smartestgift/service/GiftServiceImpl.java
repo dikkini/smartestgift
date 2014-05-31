@@ -45,9 +45,14 @@ public class GiftServiceImpl implements GiftService {
     }
 
     @Override
-    public boolean smartUserHasGift(Set<SmartUserGift> smartUserGifts, Gift gift) {
+    public GiftShop findGiftShopByUuid(String uuid) {
+        return giftShopDAO.find(uuid);
+    }
+
+    @Override
+    public boolean smartUserHasGiftShop(Set<SmartUserGift> smartUserGifts, GiftShop giftShop) {
         for (SmartUserGift smartuserGift : smartUserGifts) {
-            if (smartuserGift.getGift().equals(gift)) {
+            if (smartuserGift.getGiftShop().equals(giftShop)) {
                 return true;
             }
         }
@@ -55,21 +60,21 @@ public class GiftServiceImpl implements GiftService {
     }
 
     @Override
-    public void addGiftToUserWishes(SmartUser user, Gift gift) {
+    public void addGiftShopToUserWishes(SmartUser user, GiftShop giftShop) {
         SmartUserGift smartUserGift = new SmartUserGift();
         smartUserGift.setSmartUser(user);
-        smartUserGift.setGift(gift);
+        smartUserGift.setGiftShop(giftShop);
         smartUserGift.setMoneyCollect(0);
         user.getSmartUserGifts().add(smartUserGift);
         smartUserDAO.merge(user);
     }
 
     @Override
-    public void deleteGiftFromUser(SmartUser user, Gift gift) {
+    public void deleteGiftFromUser(SmartUser user, GiftShop giftShop) {
         Set<SmartUserGift> smartUserGifts = user.getSmartUserGifts();
         for (Iterator<SmartUserGift> smartUserGiftIterator = smartUserGifts.iterator(); smartUserGiftIterator.hasNext(); ) {
             SmartUserGift currentSmartUserGift = smartUserGiftIterator.next();
-            if (gift.equals(currentSmartUserGift.getGift())) {
+            if (giftShop.equals(currentSmartUserGift.getGiftShop())) {
                 smartUserGiftIterator.remove();
                 break;
             }

@@ -10,10 +10,12 @@ import java.io.Serializable;
  */
 @Embeddable
 public class SmartUserGiftId implements Serializable {
+
     @ManyToOne
     private SmartUser user;
+
     @ManyToOne
-    private Gift gift;
+    private GiftShop giftShop;
 
     public SmartUser getUser() {
         return user;
@@ -23,12 +25,12 @@ public class SmartUserGiftId implements Serializable {
         this.user = smartUser;
     }
 
-    public Gift getGift() {
-        return gift;
+    public GiftShop getGiftShop() {
+        return giftShop;
     }
 
-    public void setGift(Gift gift) {
-        this.gift = gift;
+    public void setGiftShop(GiftShop giftShop) {
+        this.giftShop = giftShop;
     }
 
     public boolean equals(Object o) {
@@ -38,7 +40,7 @@ public class SmartUserGiftId implements Serializable {
         SmartUserGiftId that = (SmartUserGiftId) o;
 
         return !(user != null ? !user.equals(that.user) : that.user != null) &&
-                !(gift != null ? !gift.equals(that.gift) : that.gift != null);
+                !(giftShop != null ? !giftShop.equals(that.giftShop) : that.giftShop != null);
 
     }
 }

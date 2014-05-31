@@ -12,8 +12,8 @@ import java.io.Serializable;
 @AssociationOverrides({
         @AssociationOverride(name = "pk.user",
                 joinColumns = @JoinColumn(name = "user_uuid")),
-        @AssociationOverride(name = "pk.gift",
-                joinColumns = @JoinColumn(name = "gift_uuid")) })
+        @AssociationOverride(name = "pk.giftShop",
+                joinColumns = @JoinColumn(name = "gift_shop_uuid")) })
 public class SmartUserGift implements Serializable {
 
     @EmbeddedId
@@ -40,12 +40,12 @@ public class SmartUserGift implements Serializable {
     }
 
     @Transient
-    public Gift getGift() {
-        return getPk().getGift();
+    public GiftShop getGiftShop() {
+        return getPk().getGiftShop();
     }
 
-    public void setGift(Gift gift) {
-        getPk().setGift(gift);
+    public void setGiftShop(GiftShop giftShop) {
+        getPk().setGiftShop(giftShop);
     }
 
     public Integer getMoneyCollect() {

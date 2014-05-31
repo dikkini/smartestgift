@@ -100,22 +100,21 @@ CREATE TABLE public.shop
 
 CREATE TABLE public.gift
 (
-  uuid           VARCHAR(36) UNIQUE PRIMARY KEY            NOT NULL,
-  name           VARCHAR(255)                              NOT NULL,
-  description    TEXT,
-  category_id    INT                                       NOT NULL,
-  add_date       TIMESTAMP                                 NOT NULL
+  uuid        VARCHAR(36) UNIQUE PRIMARY KEY            NOT NULL,
+  name        VARCHAR(255)                              NOT NULL,
+  description TEXT,
+  category_id INT                                       NOT NULL,
+  add_date    TIMESTAMP                                 NOT NULL
 );
 
 CREATE TABLE public.gift_shop
 (
   uuid      VARCHAR(36) PRIMARY KEY,
-  shop_uuid VARCHAR(36) REFERENCES public.shop (uuid)  NOT NULL,
+  shop_uuid VARCHAR(36) REFERENCES public.shop (uuid)   NOT NULL,
   gift_uuid VARCHAR(36) REFERENCES public.gift (uuid)   NOT NULL,
   price     DECIMAL                                     NOT NULL,
   discount  INT DEFAULT 0
 );
-
 
 CREATE TABLE public.gift_file
 (
@@ -126,10 +125,11 @@ CREATE TABLE public.gift_file
 
 CREATE TABLE public.user_gift
 (
-  user_uuid    VARCHAR(36) REFERENCES public.users (uuid)  NOT NULL,
-  gift_uuid    VARCHAR(36) REFERENCES public.gift (uuid)   NOT NULL,
-  moneyCollect INT                                         NOT NULL,
-  PRIMARY KEY (user_uuid, gift_uuid)
+  user_uuid      VARCHAR(36) REFERENCES public.users (uuid)       NOT NULL,
+  gift_shop_uuid VARCHAR(36) REFERENCES public.gift_shop (uuid)   NOT NULL,
+  moneyCollect   INT                                              NOT NULL,
+  endDate        TIMESTAMP NOT NULL,
+  PRIMARY KEY (user_uuid, gift_shop_uuid)
 );
 
 CREATE TABLE public.gift_category
