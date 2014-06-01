@@ -40,10 +40,14 @@
 <script type="text/javascript">
 $(document).ready(function() {
 
-    $("#end-date-input").datepicker({
+    var endDateObj = $("#end-date-input");
+
+    endDateObj.datepicker({
         minDate: "0",
         dateFormat: 'dd.mm.yy' // TODO вывести константу
     });
+
+    endDateObj.prop('disabled', true);
 
     $("#internet-shop-select").change(function() {
         var price = parseInt($(this).find(':selected').data("price"));
@@ -55,12 +59,21 @@ $(document).ready(function() {
             maxDate = priceIndex;
         }
         maxDate = "+"+maxDate+"M";
-        $('#end-date-input').datepicker('option', 'maxDate', maxDate);
+        endDateObj.datepicker('option', 'maxDate', maxDate);
+        endDateObj.prop('disabled', false);
     });
 
     $("#accept-want-gift-btn").click(function(e) {
-        var endDate = $("#end-date-input").val();
+        var endDate = endDateObj.val();
         var giftShopUuid = $("#internet-shop-select").val();
+
+
+        // TODO date check (or it would be dont by field checker in a future world
+        if ($.trim(endDate) == "" || giftShopUuid == "") {
+            alert("wrong end date or shop");
+            e.preventDefault();
+            return;
+        }
 
         $.ajax({
             type: "post",
