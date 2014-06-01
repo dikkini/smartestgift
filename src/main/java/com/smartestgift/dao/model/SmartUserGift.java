@@ -2,6 +2,7 @@ package com.smartestgift.dao.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by dikkini on 01.03.14.
@@ -19,8 +20,11 @@ public class SmartUserGift implements Serializable {
     @EmbeddedId
     protected SmartUserGiftId pk = new SmartUserGiftId();
 
-    @Column
+    @Column(name = "moneyCollect")
     protected Integer moneyCollect;
+
+    @Column(name = "endDate")
+    protected Date endDate;
 
     public SmartUserGiftId getPk() {
         return pk;
@@ -54,6 +58,14 @@ public class SmartUserGift implements Serializable {
 
     public void setMoneyCollect(Integer moneyCollect) {
         this.moneyCollect = moneyCollect;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 
     public boolean equals(Object o) {
