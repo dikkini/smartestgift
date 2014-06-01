@@ -74,32 +74,33 @@ public class GiftController {
     // TODO add event to news feed
     // TODO sending email to a friends of users if option checked true to send
     // TODO check valid end date of gift collaboration
-    @RequestMapping(value = "/wantGift", method = RequestMethod.POST)
+    @RequestMapping(value = "/wantGift", headers="Accept=application/json", method = RequestMethod.POST)
     public @ResponseBody AjaxResponse wantGift(@ActiveUser SmartUserDetails smartUserDetails,
-                                               @RequestParam(required = true, value = "giftuuid") String giftUuid,
                                                @RequestParam(required = true, value = "giftShopUuid") String giftShopUuid,
                                                @RequestParam(required = true, value = "endDate") String endDateStr) {
         AjaxResponse result = new AjaxResponse();
 
-        if (!isUUID(giftUuid) || !isUUID(giftShopUuid)) {
+        // TODO проверить uuidы или проверить проверку на правильность uuidов
+/*        if (!isUUID(giftUuid) || !isUUID(shopUuid)) {
             result.setSuccess(false);
             result.addError(ResponseMessages.INTERNAL_ERROR);
             return result;
-        }
+        }*/
 
         // TODO при локализации севрсиа, добавить в форматирование даты текущую локаль языка
+        Date endDate;
         try {
-            Date endDate = new SimpleDateFormat(ApplicationConstants.INPUT_DATE_FORMAT_PATTERN).parse(endDateStr);
+            endDate = new SimpleDateFormat(ApplicationConstants.INPUT_DATE_FORMAT_PATTERN).parse(endDateStr);
         } catch (ParseException e) {
             result.setSuccess(false);
             result.addError(ResponseMessages.INTERNAL_ERROR);
             return result;
         }
 
-        GiftShop giftShop = giftService.findGiftShopByUuid(giftUuid);
+        GiftShop giftShop = giftService.findGiftShopByUuid(giftShopUuid);
 
         if (!giftService.smartUserHasGiftShop(smartUserDetails.getSmartUser().getSmartUserGifts(), giftShop)) {
-            giftService.addGiftShopToUserWishes(smartUserDetails.getSmartUser(), giftShop);
+            giftService.addGiftShopToUserWishes(smartUserDetails.getSmartUser(), giftShop, endDate);
             result.setSuccess(true);
             result.addSuccessMessage(USER_ADD_GIFT_SUCCESS);
         } else {

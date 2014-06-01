@@ -42,7 +42,7 @@ $(document).ready(function() {
 
     $("#end-date-input").datepicker({
         minDate: "0",
-        dateFormat: 'dd.mm.yyy' // TODO вывести константу
+        dateFormat: 'dd.mm.yy' // TODO вывести константу
     });
 
     $("#internet-shop-select").change(function() {
@@ -59,15 +59,14 @@ $(document).ready(function() {
     });
 
     $("#accept-want-gift-btn").click(function(e) {
-        var giftUuid = $(this).data("uuid");
         var endDate = $("#end-date-input").val();
-        var priceAndShop = $("#internet-shop-select").val();
+        var giftShopUuid = $("#internet-shop-select").val();
 
         $.ajax({
             type: "post",
             url: "/gifts/wantGift",
             cache: false,
-            data: "giftUuid=" + giftUuid + "&shopUuid=" + priceAndShop + "&endDate=" + endDate,
+            data: "giftShopUuid=" + giftShopUuid + "&endDate=" + endDate,
             success: function (response) {
                 alert("OK");
             },
