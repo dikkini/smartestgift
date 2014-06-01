@@ -1,10 +1,7 @@
 package com.smartestgift.service;
 
 import com.smartestgift.controller.model.GiftPage;
-import com.smartestgift.dao.GiftCategoryDAO;
-import com.smartestgift.dao.GiftDAO;
-import com.smartestgift.dao.GiftShopDAO;
-import com.smartestgift.dao.SmartUserDAO;
+import com.smartestgift.dao.*;
 import com.smartestgift.dao.model.*;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +9,7 @@ import org.springframework.stereotype.Service;
 import sun.net.www.content.image.gif;
 
 import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -29,6 +27,9 @@ public class GiftServiceImpl implements GiftService {
 
     @Autowired
     GiftDAO giftDAO;
+
+    @Autowired
+    ShopDAO shopDAO;
 
     @Autowired
     SessionFactory sessionFactory;
@@ -52,7 +53,7 @@ public class GiftServiceImpl implements GiftService {
     @Override
     public boolean smartUserHasGiftShop(Set<SmartUserGift> smartUserGifts, GiftShop giftShop) {
         for (SmartUserGift smartuserGift : smartUserGifts) {
-            if (smartuserGift.getGiftShop().equals(giftShop)) {
+            if (smartuserGift.getGiftShop().getUuid().equals(giftShop.getUuid())) {
                 return true;
             }
         }
@@ -60,11 +61,12 @@ public class GiftServiceImpl implements GiftService {
     }
 
     @Override
-    public void addGiftShopToUserWishes(SmartUser user, GiftShop giftShop) {
+    public void addGiftShopToUserWishes(SmartUser user, GiftShop giftShop, Date endDate) {
         SmartUserGift smartUserGift = new SmartUserGift();
         smartUserGift.setSmartUser(user);
         smartUserGift.setGiftShop(giftShop);
         smartUserGift.setMoneyCollect(0);
+        smartUserGift.setEndDate(endDate);
         user.getSmartUserGifts().add(smartUserGift);
         smartUserDAO.merge(user);
     }
@@ -132,6 +134,14 @@ public class GiftServiceImpl implements GiftService {
     public List<GiftShop> findGiftShops(String giftUuid) {
         Gift gift = giftDAO.find(giftUuid);
         return giftShopDAO.findGiftShopsByGiftUuid(gift);
+    }
+
+    @Override
+    public GiftShop findGiftShopByGiftAndShop(String giftUuid, String shopUuid) {
+        Gift gift = giftDAO.find(giftUuid);
+        Shop shop = shopDAO.find(shopUuid);
+
+        return giftShopDAO.findGiftShopByGiftAndShop(gift, shop);
     }
 
 

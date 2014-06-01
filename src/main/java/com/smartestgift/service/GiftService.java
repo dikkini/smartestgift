@@ -3,6 +3,7 @@ package com.smartestgift.service;
 import com.smartestgift.controller.model.GiftPage;
 import com.smartestgift.dao.model.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -38,8 +39,9 @@ public interface GiftService {
      * Add gift to user
      * @param user SmartUser model
      * @param giftShop Gift model
+     * @param endDate date when user plan to collect all money for the gift
      */
-    public void addGiftShopToUserWishes(SmartUser user, GiftShop giftShop);
+    public void addGiftShopToUserWishes(SmartUser user, GiftShop giftShop, Date endDate);
 
     /**
      *
@@ -88,4 +90,12 @@ public interface GiftService {
      * @return
      */
     public List<GiftShop> findGiftShops(String giftUuid);
+
+    /**
+     *
+     * @param giftUuid
+     * @param shopUuid
+     * @return
+     */
+    public GiftShop findGiftShopByGiftAndShop(String giftUuid, String shopUuid);
 }
