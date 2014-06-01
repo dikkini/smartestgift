@@ -111,7 +111,7 @@ public class GiftController {
 
     @RequestMapping(value = "/unWantGift", method = RequestMethod.POST)
     public @ResponseBody AjaxResponse unWantGift(@ActiveUser SmartUserDetails smartUserDetails,
-                                                 @RequestParam(required = true, value = "giftShopUuid")
+                                                 @RequestParam(required = true, value = "giftshopuuid")
                                                     String giftShopUuid) {
         AjaxResponse result = new AjaxResponse();
 

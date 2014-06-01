@@ -58,7 +58,7 @@
                         <p class="ellipses"><c:out value="${smartUserGift.giftShop.gift.description}"/></p>
                         <small><spring:message code="label.collected_money_for_gift"/>: <c:out value="${smartUserGift.moneyCollect}"/> </small>
                     </blockquote>
-                    <button data-gift-uuid="<c:out value="${smartUserGift.giftShop.gift.uuid}"/>" class="btn bgiftShoplt un-want-gift-btn"><spring:message code="label.un_want_gift_button"/></button>
+                    <button data-giftshop-uuid="<c:out value="${smartUserGift.giftShop.uuid}"/>" class="btn bgiftShoplt un-want-gift-btn"><spring:message code="label.un_want_gift_button"/></button>
                 </li>
             </c:forEach>
             <c:if test="${fn:length(smartUser.smartUserGifts) > 3}">
@@ -77,7 +77,7 @@
                 type: "post",
                 url: "/gifts/unWantGift",
                 cache: false,
-                data: "giftuuid=" + $(this).data("gift-uuid"),
+                data: "giftshopuuid=" + $(this).data("giftshop-uuid"),
                 success: function (response) {
                     window.location = $.updateNotifyBlockRequest(window.location.href, response.successes, response.errors, response.information);
                 },
