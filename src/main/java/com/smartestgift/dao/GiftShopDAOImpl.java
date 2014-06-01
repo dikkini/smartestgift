@@ -2,6 +2,7 @@ package com.smartestgift.dao;
 
 import com.smartestgift.dao.model.Gift;
 import com.smartestgift.dao.model.GiftShop;
+import com.smartestgift.dao.model.Shop;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -64,5 +65,13 @@ public class GiftShopDAOImpl implements GiftShopDAO {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(GiftShop.class);
         criteria.add(Restrictions.eq("gift", gift));
         return (List<GiftShop>) criteria.list();
+    }
+
+    @Override
+    public GiftShop findGiftShopByGiftAndShop(Gift gift, Shop shop) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(GiftShop.class);
+        criteria.add(Restrictions.eq("gift", gift));
+        criteria.add(Restrictions.eq("shop", shop));
+        return null;
     }
 }

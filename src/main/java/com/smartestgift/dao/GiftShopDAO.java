@@ -2,6 +2,7 @@ package com.smartestgift.dao;
 
 import com.smartestgift.dao.model.Gift;
 import com.smartestgift.dao.model.GiftShop;
+import com.smartestgift.dao.model.Shop;
 
 import java.util.List;
 
@@ -16,4 +17,12 @@ public interface GiftShopDAO extends Repository<GiftShop, String> {
      * @return
      */
     public List<GiftShop> findGiftShopsByGiftUuid(Gift gift);
+
+    /**
+     *
+     * @param gift
+     * @param shop
+     * @return
+     */
+    public GiftShop findGiftShopByGiftAndShop(Gift gift, Shop shop);
 }
