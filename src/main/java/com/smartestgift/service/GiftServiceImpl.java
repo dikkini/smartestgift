@@ -76,7 +76,7 @@ public class GiftServiceImpl implements GiftService {
         Set<SmartUserGift> smartUserGifts = user.getSmartUserGifts();
         for (Iterator<SmartUserGift> smartUserGiftIterator = smartUserGifts.iterator(); smartUserGiftIterator.hasNext(); ) {
             SmartUserGift currentSmartUserGift = smartUserGiftIterator.next();
-            if (giftShop.equals(currentSmartUserGift.getGiftShop())) {
+            if (giftShop.getUuid().equals(currentSmartUserGift.getGiftShop().getUuid())) {
                 smartUserGiftIterator.remove();
                 break;
             }
