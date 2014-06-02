@@ -68,7 +68,8 @@ public class GiftController {
     public ModelAndView giftPage(@PathVariable String giftCategoryCode, @PathVariable String giftUuid) {
         // TODO check what to do with giftcategorycode
         Gift gift = giftService.findGiftByUuid(giftUuid);
-        return new ModelAndView("gifts/gift", "gift", gift);
+        List<GiftShop> giftShops = giftService.findGiftShops(giftUuid);
+        return new ModelAndView("gifts/gift").addObject("gift", gift).addObject("giftShops", giftShops);
     }
 
     // TODO add event to news feed
