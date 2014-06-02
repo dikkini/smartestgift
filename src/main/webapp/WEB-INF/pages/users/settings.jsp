@@ -71,7 +71,7 @@
                 <div class="form-group">
                     <label for="input-birthdate" class="col-sm-4 control-label">Birth Date</label>
                     <div class="col-xs-4">
-                        <input id="input-birthdate" name="birthdate" type="date" class="form-control" placeholder="<spring:message code="label.birthdate"/>" value="<fmt:formatDate value="${smartUser.birthDate}" pattern="yyyy-MM-dd" />">
+                        <input id="input-birthdate" name="birthdate" class="form-control" placeholder="<spring:message code="label.birthdate"/>" value="<fmt:formatDate value="${smartUser.birthDate}" pattern="yyyy-MM-dd" />">
                     </div>
                 </div>
 
@@ -105,6 +105,12 @@
 <script type="text/javascript">
     $(document).ready(function () {
 
+        $("#input-birthdate").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd.mm.yy' // TODO вывести константу
+        });
+
         $(".loading").loading({width: '25', text: 'Waiting...'});
 
         $("#inputTypeFile").fileupload({
@@ -135,10 +141,6 @@
                     $(this).width;   // Note: $(this).width() will not work for in memory images
                 });
             }
-        });
-
-        $('.date').pickmeup({
-            format: 'm.d.Y'
         });
     });
 </script>
