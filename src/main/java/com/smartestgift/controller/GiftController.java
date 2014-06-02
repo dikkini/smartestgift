@@ -117,11 +117,12 @@ public class GiftController {
                                                     String giftShopUuid) {
         AjaxResponse result = new AjaxResponse();
 
-        if (!isUUID(giftShopUuid)) {
-            result.setSuccess(false);
-            result.addError(ResponseMessages.INTERNAL_ERROR);
-            return result;
-        }
+        // TODO проверить uuidы или проверить проверку на правильность uuidов
+//        if (!isUUID(giftShopUuid)) {
+//            result.setSuccess(false);
+//            result.addError(ResponseMessages.INTERNAL_ERROR);
+//            return result;
+//        }
 
         GiftShop giftShop = giftService.findGiftShopByUuid(giftShopUuid);
 
