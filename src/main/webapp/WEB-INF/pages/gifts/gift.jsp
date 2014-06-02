@@ -69,7 +69,7 @@
 
 <jsp:include page="../template/bottom.jsp"/>
 
-<jsp:include page="../template/want-gift-modal.jsp"/>
+<jsp:include page="want-gift-modal.jsp"/>
 
 <script type="text/javascript">
     $(document).ready(function(){
