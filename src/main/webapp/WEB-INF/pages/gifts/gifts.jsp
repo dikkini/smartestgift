@@ -212,7 +212,7 @@ $(document).ready(function () {
     });
 
     giftsContainer.on("click", ".want-gift-btn", function () {
-        var giftUuid = $(this).data("uuid");
+        var giftUuid = $(this).data("gift-uuid");
         $.ajax({
             type: "post",
             url: "/gifts/findGiftShops",
@@ -228,9 +228,7 @@ $(document).ready(function () {
                     $("#internet-shop-select").append(option);
                 });
                 // set name of the gift
-                $("#want-gift-modal-title").html("I want " + $(this).data("name"));
-                // set gift uuid
-                $("#accept-want-gift-btn").data("uuid", giftUuid);
+                $("#want-gift-modal-title").html("I want " + $(this).data("gift-name"));
 
                 // open modal
                 $("#want-gift-modal").modal("show");
@@ -324,7 +322,7 @@ $(document).ready(function () {
             html += '<p class="ellipses small">' + entry.description + '</p>';
             // TODO (?) проверка есть ли у пользователя этот подарок в желаемых
             html += '<button data-gift-uuid="' + entry.uuid + '" class="btn btn-default want-gift-btn" ' +
-                    'data-uuid="'+ entry.uuid + '" data-name="' + entry.name +'">' +
+                    '" data-gift-name="' + entry.name +'">' +
                     '<spring:message code="label.wanttogift"/> </button>';
 
             giftsContainer.append(html);
