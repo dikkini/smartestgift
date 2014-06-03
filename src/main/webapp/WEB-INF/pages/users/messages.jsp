@@ -406,7 +406,7 @@
         function getContactsByUserTyping(userInput) {
             $.ajax({
                 type: "post",
-                url: "/messages/findUsers",
+                url: "/searchPeople",
                 cache: false,
                 data: "userInput=" + userInput,
                 success: function (response) {
