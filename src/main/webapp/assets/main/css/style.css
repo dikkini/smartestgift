@@ -67,8 +67,7 @@ css for link design
 }
 
 .gift {
-    margin-bottom: 20px;
-!important;
+    margin-bottom: 20px !important;
 }
 
 .gift-price {
@@ -115,3 +114,12 @@ css for link design
 * html .ui-autocomplete {
     height: 100px;
 }
+
+/*
+override default style of jquery ui for autocomplete for best look
+*/
+.ui-menu
+.ui-menu-item {
+    list-style-image: none !important;
+}
+

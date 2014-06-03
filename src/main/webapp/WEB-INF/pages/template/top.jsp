@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="/assets/ext/kladr/jquery.kladr.css">
     <link rel="stylesheet" href="/assets/ext/jquery/notification/pnotify.custom.min.css">
     <link rel="stylesheet" href="/assets/main/css/fileupload.css">
-    <link rel="stylesheet" href="/assets/ext/jquery/ui-1.10.4/css/ui-darkness/jquery-ui-1.10.4.custom.min.css">
+    <link rel="stylesheet" href="/assets/ext/jquery/ui-1.10.4/css/custom-theme/jquery-ui-1.10.4.custom.min.css">
 
     <script type="text/javascript" src="/assets/ext/jquery/jquery-2.0.3.js"></script>
     <script type="text/javascript" src="/assets/ext/jquery/ui-1.10.4/js/jquery-ui-1.10.4.custom.min.js"></script>
@@ -206,14 +206,12 @@
                     "<li>" +
                         "<a>" +
                             "<div class='row'>" +
-                                "<div class='col-xs-2'>" +
+                                "<div class='col-xs-3'>" +
                                     "<img height='50' src='/file/get/" + item.fileId + "'>" +
                                 "</div>" +
                                 "<div class='col-xs-9'>" +
                                     "<h5>" +
-                                        "<small>" +
-                                            item.lastName + " " + item.firstname + " " + item.middleName +
-                                        "</small>" +
+                                        (item.lastName == null ? "  " :  item.lastName + " ") + item.firstname + " " + (item.middleName == null ? "" :  " " + item.middleName) +
                                     "</h5>" +
                                 "</div>" +
                             "</div>" +
