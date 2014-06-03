@@ -93,7 +93,7 @@
                         <sec:authorize access="isAuthenticated()">
                             <li>
                                 <form class="navbar-form navbar-right" role="search">
-                                    <div class="form-group">
+                                    <div class="col-xs-12 form-group">
                                         <input id="global-people-search-input" type="text" class="form-control"
                                                placeholder="Search people">
                                     </div>
@@ -209,17 +209,12 @@
                                 "<div class='col-xs-2'>" +
                                     "<img height='50' src='/file/get/" + item.fileId + "'>" +
                                 "</div>" +
-                                "<div class='col-xs-10'>" +
-                                        "<div>" +
-                                            "<h6>" +
-                                                "<small>" +
-                                                    item.lastName + " " + item.firstname + " " + item.middleName +
-                                                "</small>" +
-                                            "</h6>" +
-                                        "</div>" +
-                                        "<div>" +
-                                            item.uuid +
-                                        "</div>" +
+                                "<div class='col-xs-9'>" +
+                                    "<h5>" +
+                                        "<small>" +
+                                            item.lastName + " " + item.firstname + " " + item.middleName +
+                                        "</small>" +
+                                    "</h5>" +
                                 "</div>" +
                             "</div>" +
                         "</a>" +
