@@ -1,11 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<fmt:requestEncoding value="utf-8" />
+<fmt:requestEncoding value="utf-8"/>
 
-<sec:authentication var="user" property="principal" />
+<sec:authentication var="user" property="principal"/>
 
 <jsp:useBean id="user" class="com.smartestgift.dao.model.SmartUserDetails" scope="request"/>
 
@@ -45,7 +45,7 @@
 
 <body>
 <form name="refreshForm">
-    <input type="hidden" name="visited" value="" />
+    <input type="hidden" name="visited" value=""/>
 </form>
 <div class="header">
     <header>
@@ -65,7 +65,8 @@
             <div class="container">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+                        <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span
+                            class="icon-bar"></span><span class="icon-bar"></span>
                     </button>
                 </div>
                 <div class="collapse navbar-collapse">
@@ -78,7 +79,8 @@
                                 <a href="<c:url value="/gifts/my"/>"><spring:message code="label.mygifts"/></a>
                             </li>
                             <li>
-                                <a href="<c:url value="/messages"/>"><spring:message code="label.messages"/> <span id="countUnreadMessages" class="badge"></span></a>
+                                <a href="<c:url value="/messages"/>"><spring:message code="label.messages"/> <span
+                                        id="countUnreadMessages" class="badge"></span></a>
                             </li>
                         </sec:authorize>
                         <sec:authorize access="isAnonymous()">
@@ -87,8 +89,16 @@
                             </li>
                         </sec:authorize>
                     </ul>
-                    <ul id="login_signup_logged" class="nav navbar-nav navbar-right">
+                    <ul class="nav navbar-nav navbar-right">
                         <sec:authorize access="isAuthenticated()">
+                            <li>
+                                <form class="navbar-form navbar-right" role="search">
+                                    <div class="form-group">
+                                        <input id="global-people-search-input" type="text" class="form-control"
+                                               placeholder="Search people">
+                                    </div>
+                                </form>
+                            </li>
                             <li>
                                 <p class="navbar-text navbar-right"><spring:message code="label.signed"/>
                                     <a href="/profile" class="navbar-link">
@@ -109,7 +119,8 @@
                                 <a href="<c:url value="/login"/>"><spring:message code="label.login"/></a>
                             </li>
                             <li>
-                                <a href="<c:url value="/signup"/>"><p class="navbar-right"><spring:message code="label.signup"/></p></a>
+                                <a href="<c:url value="/signup"/>"><p class="navbar-right"><spring:message
+                                        code="label.signup"/></p></a>
                             </li>
                         </sec:authorize>
                     </ul>
@@ -121,18 +132,100 @@
 
 <script type="text/javascript">
     var socket;
-    $(document).ready(function() {
+    $(document).ready(function () {
         <sec:authorize access="isAuthenticated()">
-            socket = new SockJS('/messages');
-            var stompClient = Stomp.over(socket);
-            stompClient.connect({}, function(frame) {
-                stompClient.send("/app/setUnreadCount", {}, {});
+        socket = new SockJS('/messages');
+        var stompClient = Stomp.over(socket);
+        stompClient.connect({}, function (frame) {
+            stompClient.send("/app/setUnreadCount", {}, {});
 //                console.log('Connected: ' + frame);
-                stompClient.subscribe('/user/' + '${user.username}' + '/getUnreadMessagesCount', function(response) {
-                    response = JSON.parse(response.body);
-                    $("#countUnreadMessages").text(response);
-                });
+            stompClient.subscribe('/user/' + '${user.username}' + '/getUnreadMessagesCount', function (response) {
+                response = JSON.parse(response.body);
+                $("#countUnreadMessages").text(response);
             });
+        });
+
+        var cache = {};
+        $("#global-people-search-input").autocomplete({
+            minLength: 4,
+            select: function (event, ui) {
+                console.log("select event:" + event);
+                console.log("select ui:" + ui);
+                // TODO action on select from autocomplete
+                /*alert( ui.item ?
+                 "Selected: " + ui.item.value + " aka " + ui.item.id :
+                 "Nothing selected, input was " + this.value );*/
+            },
+            source: function (request, response) {
+                var term = request.term;
+                if (term in cache) {
+                    var data = JSON.parse(cache[term]);
+                    response($.map(data, function (item) {
+                        return {
+                            uuid: item.uuid,
+                            username: item.username,
+                            firstname: item.firstName,
+                            lastName: item.lastName,
+                            middleName: item.middleName,
+                            fileId: item.file.id
+                        }
+                    }));
+                    return;
+                }
+
+                $.ajax({
+                    async: false, // Important - this makes this a blocking call
+                    url: '/searchPeople',
+                    type: 'post',
+                    data: {searchPeopleStr: term},
+                    dataType: "json",
+                    success: function (data) {
+                        cache[ term ] = data;
+                        data = JSON.parse(data);
+                        // todo do :-)
+                        response($.map(data, function (item) {
+                            return {
+                                uuid: item.uuid,
+                                username: item.username,
+                                firstname: item.firstName,
+                                lastName: item.lastName,
+                                middleName: item.middleName,
+                                fileId: item.file.id
+                            }
+                        }));
+
+                    },
+                    error: function (data) {
+                        alert("bad");
+                    }
+                });
+
+            }
+        }).data("ui-autocomplete")._renderItem = function (ul, item) {
+            var html =
+                    "<li>" +
+                        "<a>" +
+                            "<div class='row'>" +
+                                "<div class='col-xs-2'>" +
+                                    "<img height='50' src='/file/get/" + item.fileId + "'>" +
+                                "</div>" +
+                                "<div class='col-xs-10'>" +
+                                        "<div>" +
+                                            "<h6>" +
+                                                "<small>" +
+                                                    item.lastName + " " + item.firstname + " " + item.middleName +
+                                                "</small>" +
+                                            "</h6>" +
+                                        "</div>" +
+                                        "<div>" +
+                                            item.uuid +
+                                        "</div>" +
+                                "</div>" +
+                            "</div>" +
+                        "</a>" +
+                    "</li>";
+            return ul.append(html);
+        };
         </sec:authorize>
     });
 </script>
