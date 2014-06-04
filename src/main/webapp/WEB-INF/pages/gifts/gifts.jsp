@@ -125,6 +125,9 @@ $(document).ready(function () {
         changeYear: true
     });
 
+    $("#random-gift-btn").click(function() {
+        window.location = "/randomGift";
+    });
 
     $("#find-gift-btn").click(function () {
         ajaxLoadingGifts.loading("start");
@@ -314,12 +317,13 @@ $(document).ready(function () {
                 if (diffDays < 7) {
                     html += '<span class="gift-new-label">';
                 }
-                html += '<a href="/gifts/' + entry.category.code + '/' + entry.uuid + '">' +
+                // TODO пределать на append jquery object механизм
+                html += '<a href="/gifts/' + entry.uuid + '">' +
                             '<img height="200" src="/file/get/' + file.id + '">' +
                         '</a>';
             });
-            html += '<p>' + entry.name + '</p>';
-            html += '<p class="ellipses small">' + entry.description + '</p>';
+            html += '<a href="/gifts/' + entry.uuid + '">' + '<p>' + entry.name + '</p>';
+            html += '<p class="ellipses small">' + entry.description + '</p>'  + '</a>';
             // TODO (?) проверка есть ли у пользователя этот подарок в желаемых
             html += '<button data-gift-uuid="' + entry.uuid + '" class="btn btn-default want-gift-btn" ' +
                     '" data-gift-name="' + entry.name +'">' +
