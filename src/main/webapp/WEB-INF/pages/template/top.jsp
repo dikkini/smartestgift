@@ -83,6 +83,9 @@
                                 <a href="<c:url value="/messages"/>"><spring:message code="label.messages"/> <span
                                         id="countUnreadMessages" class="badge"></span></a>
                             </li>
+                            <li>
+                                <a href="<c:url value="/users"/>"><spring:message code="label.users"/></a>
+                            </li>
                         </sec:authorize>
                         <sec:authorize access="isAnonymous()">
                             <li>
@@ -159,7 +162,8 @@
                 }
                 $.each(giftItems, function (index, item) {
                     var gift = {
-                        type: 'gift',
+                        type: "${constants.GIFTS_SEARCH_RESULTS}",
+                        uuid: item.uuid,
                         name: item.name,
                         descr: item.description,
                         price: item.price,
@@ -173,15 +177,19 @@
                 }
                 $.each(userItems, function (index, item) {
                     var user = {
-                        type: 'user',
+                        type: "${constants.USERS_SEARCH_RESULTS}",
+                        username: item.username,
                         name: (item.lastName == null ? "  " : item.lastName + " ") + item.firstName + " " + (item.middleName == null ? "" : " " + item.middleName),
                         imgId: item.file.id
                     };
                     that._renderItemData(ul, user);
                 });
+
+            globalSearchInputObj.removeClass("loading-input");
             };
 
-        $("#global-search-input").autocomplete({
+        var globalSearchInputObj = $("#global-search-input");
+        globalSearchInputObj.autocomplete({
             create: function () {
                 //access to jQuery Autocomplete widget differs depending
                 //on jQuery UI version - you can also try .data('autocomplete')
@@ -194,21 +202,25 @@
                 $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
             },
             select: function (event, ui) {
-                console.log("select event:" + event);
-                console.log("select ui:" + ui);
-                // TODO action on select from autocomplete
-                /*alert( ui.item ?
-                 "Selected: " + ui.item.value + " aka " + ui.item.id :
-                 "Nothing selected, input was " + this.value );*/
+                switch (ui.item.type) {
+                    case "${constants.USERS_SEARCH_RESULTS}":
+                        window.location = "/user/" + ui.item.username;
+                        break;
+                    case "${constants.GIFTS_SEARCH_RESULTS}":
+                        window.location = "/gifts/" + ui.item.uuid;
+                        break;
+                }
             },
-            delay: 500,
+            delay: 300,
             source: function (request, response) {
+                globalSearchInputObj.addClass("loading-input");
                 var that = this;
 
                 var term = request.term;
                 if (term in cache) {
                     var data = JSON.parse(cache[term]);
                     response({items:data});
+                    globalSearchInputObj.removeClass("loading-input");
                     return;
                 }
 
@@ -224,13 +236,14 @@
                     },
                     error: function (data) {
                         alert("bad");
+                        globalSearchInputObj.removeClass("loading-input");
                     }
                 });
 
             }
         }).data("ui-autocomplete")._renderItem = function (ul, item) {
+            var li = $("<li>").data("ui-autocomplete-item", item);
             var html =
-                    "<li>" +
                         "<a>" +
                             "<div class='row'>" +
                                 "<div class='col-xs-4'>" +
@@ -242,9 +255,9 @@
                                     "</h5>" +
                                 "</div>" +
                             "</div>" +
-                        "</a>" +
-                    "</li>";
-            return ul.append(html);
+                        "</a>";
+            li.append(html);
+            return ul.append(li);
         };
         </sec:authorize>
     });
