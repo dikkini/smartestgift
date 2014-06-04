@@ -165,7 +165,7 @@
                         price: item.price,
                         imgId: item.files[0].id
                     };
-                    that._renderItemData(ul, item);
+                    that._renderItemData(ul, gift);
                 });
 
                 if (userItems.length > 0) {
@@ -233,10 +233,10 @@
                     "<li>" +
                         "<a>" +
                             "<div class='row'>" +
-                                "<div class='col-xs-3'>" +
+                                "<div class='col-xs-4'>" +
                                     "<img height='50' src='/file/get/" + item.imgId + "'>" +
                                 "</div>" +
-                                "<div class='col-xs-9'>" +
+                                "<div class='col-xs-8'>" +
                                     "<h5>" +
                                         item.name +
                                     "</h5>" +
