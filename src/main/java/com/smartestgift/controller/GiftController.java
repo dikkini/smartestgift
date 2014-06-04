@@ -64,8 +64,8 @@ public class GiftController {
         return new ModelAndView("gifts/my", "gifts", gifts);
     }
 
-    @RequestMapping(value = "/{giftCategoryCode}/{giftUuid}", method = RequestMethod.GET)
-    public ModelAndView giftPage(@PathVariable String giftCategoryCode, @PathVariable String giftUuid) {
+    @RequestMapping(value = "/{giftUuid}", method = RequestMethod.GET)
+    public ModelAndView giftPage(@PathVariable String giftUuid) {
         // TODO check what to do with giftcategorycode
         Gift gift = giftService.findGiftByUuid(giftUuid);
         List<GiftShop> giftShops = giftService.findGiftShops(giftUuid);
