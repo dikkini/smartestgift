@@ -8,6 +8,7 @@
 <sec:authentication var="user" property="principal"/>
 
 <jsp:useBean id="user" class="com.smartestgift.dao.model.SmartUserDetails" scope="request"/>
+<jsp:useBean id="constants" class="com.smartestgift.utils.ApplicationConstants" scope="request"/>
 
 <!DOCTYPE HTML>
 
@@ -94,8 +95,8 @@
                             <li>
                                 <form class="navbar-form navbar-right" role="search">
                                     <div class="col-xs-12 form-group">
-                                        <input id="global-people-search-input" type="text" class="form-control"
-                                               placeholder="Search people">
+                                        <input id="global-search-input" type="text" class="form-control"
+                                               placeholder="Search people and gifts">
                                     </div>
                                 </form>
                             </li>
@@ -146,8 +147,52 @@
         });
 
         var cache = {};
-        $("#global-people-search-input").autocomplete({
-            minLength: 4,
+
+        var customRenderMenu = function(ul, items){
+                var that = this,
+                        currentCategory = "";
+                var giftItems = items[0].gift;
+                var userItems = items[0].user;
+
+                if (giftItems.length > 0) {
+                    ul.append("<li class='ui-autocomplete-category'>" + "GIFTS" + "</li>");
+                }
+                $.each(giftItems, function (index, item) {
+                    var gift = {
+                        type: 'gift',
+                        name: item.name,
+                        descr: item.description,
+                        price: item.price,
+                        imgId: item.files[0].id
+                    };
+                    that._renderItemData(ul, item);
+                });
+
+                if (userItems.length > 0) {
+                    ul.append("<li class='ui-autocomplete-category'>" + "USERS" + "</li>");
+                }
+                $.each(userItems, function (index, item) {
+                    var user = {
+                        type: 'user',
+                        name: (item.lastName == null ? "  " : item.lastName + " ") + item.firstName + " " + (item.middleName == null ? "" : " " + item.middleName),
+                        imgId: item.file.id
+                    };
+                    that._renderItemData(ul, user);
+                });
+            };
+
+        $("#global-search-input").autocomplete({
+            create: function () {
+                //access to jQuery Autocomplete widget differs depending
+                //on jQuery UI version - you can also try .data('autocomplete')
+                $(this).data('ui-autocomplete')._renderMenu = customRenderMenu;
+            },
+            open: function() {
+                $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+            },
+            close: function() {
+                $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+            },
             select: function (event, ui) {
                 console.log("select event:" + event);
                 console.log("select ui:" + ui);
@@ -156,44 +201,26 @@
                  "Selected: " + ui.item.value + " aka " + ui.item.id :
                  "Nothing selected, input was " + this.value );*/
             },
+            delay: 500,
             source: function (request, response) {
+                var that = this;
+
                 var term = request.term;
                 if (term in cache) {
                     var data = JSON.parse(cache[term]);
-                    response($.map(data, function (item) {
-                        return {
-                            uuid: item.uuid,
-                            username: item.username,
-                            firstname: item.firstName,
-                            lastName: item.lastName,
-                            middleName: item.middleName,
-                            fileId: item.file.id
-                        }
-                    }));
+                    response({items:data});
                     return;
                 }
 
                 $.ajax({
-                    async: false, // Important - this makes this a blocking call
-                    url: '/searchPeople',
+                    url: '/globalSearch',
                     type: 'post',
-                    data: {searchPeopleStr: term},
+                    data: {searchString: term},
                     dataType: "json",
                     success: function (data) {
                         cache[ term ] = data;
                         data = JSON.parse(data);
-                        // todo do :-)
-                        response($.map(data, function (item) {
-                            return {
-                                uuid: item.uuid,
-                                username: item.username,
-                                firstname: item.firstName,
-                                lastName: item.lastName,
-                                middleName: item.middleName,
-                                fileId: item.file.id
-                            }
-                        }));
-
+                        response({items:data});
                     },
                     error: function (data) {
                         alert("bad");
@@ -207,11 +234,11 @@
                         "<a>" +
                             "<div class='row'>" +
                                 "<div class='col-xs-3'>" +
-                                    "<img height='50' src='/file/get/" + item.fileId + "'>" +
+                                    "<img height='50' src='/file/get/" + item.imgId + "'>" +
                                 "</div>" +
                                 "<div class='col-xs-9'>" +
                                     "<h5>" +
-                                        (item.lastName == null ? "  " :  item.lastName + " ") + item.firstname + " " + (item.middleName == null ? "" :  " " + item.middleName) +
+                                        item.name +
                                     "</h5>" +
                                 "</div>" +
                             "</div>" +

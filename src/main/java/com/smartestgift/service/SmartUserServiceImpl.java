@@ -5,6 +5,7 @@ import com.restfb.types.User;
 import com.smartestgift.dao.*;
 import com.smartestgift.dao.model.*;
 import com.smartestgift.security.UserAuthProvider;
+import com.smartestgift.utils.ApplicationConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,9 @@ public class SmartUserServiceImpl implements SmartUserService {
 
     @Autowired
     private SmartUserDAO smartUserDAO;
+
+    @Autowired
+    private GiftDAO giftDAO;
 
     @Autowired
     private UserAuthProvider userAuthProvider;
@@ -59,7 +63,9 @@ public class SmartUserServiceImpl implements SmartUserService {
         smartUserDetails.setAuthProvider(authProvider);
         smartUserDetails.setRole(role);
 
-        smartUserDetailsDAO.store(smartUserDetails);
+        smartUser.setSmartUserDetails(smartUserDetails);
+
+        smartUserDAO.store(smartUser);
 
         return smartUserDetails;
     }
@@ -148,6 +154,18 @@ public class SmartUserServiceImpl implements SmartUserService {
         }
 
         return removeDuplicates(resultList);
+    }
+
+    // TODO вынести метод в api (?)
+    @Override
+    public Map<String, List> findUsersAndGiftsByUserInput(String searchString, SmartUser activeUser) {
+        List<SmartUser> usersByUserInput = this.findUsersByUserInput(searchString, activeUser);
+        List<Gift> giftsBySearchString = giftDAO.findGiftsBySearchString(searchString);
+        Map<String, List> result = new HashMap<>();
+        result.put(ApplicationConstants.GIFTS_SEARCH_RESULTS, giftsBySearchString);
+        result.put(ApplicationConstants.USERS_SEARCH_RESULTS, usersByUserInput);
+
+        return result;
     }
 
     private List<SmartUser> removeDuplicates(List<SmartUser> l) {

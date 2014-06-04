@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by dikkini on 29.01.14.
@@ -50,5 +51,14 @@ public class IndexController {
                 smartUserDetails.getSmartUser());
 
         return gson.toJson(usersByUserInput);
+    }
+
+    @RequestMapping(value = "/globalSearch", headers = "Accept=application/json", method = RequestMethod.POST)
+    public @ResponseBody String globlSearch(@ActiveUser SmartUserDetails smartUserDetails,
+                                            @RequestParam(required = true, value = "searchString") String searchString) {
+        Map<String, List> usersAndGiftsByUserInput = smartUserService.findUsersAndGiftsByUserInput(searchString,
+                smartUserDetails.getSmartUser());
+
+        return gson.toJson(usersAndGiftsByUserInput);
     }
 }

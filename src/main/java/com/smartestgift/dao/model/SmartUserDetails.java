@@ -30,7 +30,8 @@ public class SmartUserDetails implements Serializable, UserDetails {
     @Column(name = "user_uuid", unique = true, nullable = false)
     protected String userUuid;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY,
+            cascade = {CascadeType.REMOVE, CascadeType.MERGE})
     @PrimaryKeyJoinColumn
     protected SmartUser smartUser;
 
