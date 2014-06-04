@@ -53,7 +53,7 @@
                 <li class="list-group-item">
                     <blockquote>
                         <p>
-                            <a href="/gifts/gift/<c:out value="${smartUserGift.giftShop.gift.uuid}"/>"><c:out value="${smartUserGift.giftShop.gift.name}"/></a>
+                            <a href="/gifts/<c:out value="${smartUserGift.giftShop.gift.uuid}"/>"><c:out value="${smartUserGift.giftShop.gift.name}"/></a>
                         </p>
                         <p class="ellipses"><c:out value="${smartUserGift.giftShop.gift.description}"/></p>
                         <small><spring:message code="label.collected_money_for_gift"/>: <c:out value="${smartUserGift.moneyCollect}"/> </small>
