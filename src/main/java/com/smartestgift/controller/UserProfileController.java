@@ -15,21 +15,27 @@ import org.springframework.web.servlet.ModelAndView;
  * Email: dikkini@gmail.com
  */
 @Controller
+@RequestMapping(value = "/users")
 public class UserProfileController {
 
     @Autowired
     SmartUserDAO smartUserDAO;
 
-    @RequestMapping(value = "/user/{username}", method = RequestMethod.GET)
-    public ModelAndView userProfile(@PathVariable String username) {
+    @RequestMapping(value = "/all", method = RequestMethod.GET)
+    public ModelAndView allUsers() {
+        return new ModelAndView("users/all");
+    }
+
+    @RequestMapping(value = "/{username}", method = RequestMethod.GET)
+    public ModelAndView user(@PathVariable String username) {
         ModelAndView mav;
         SmartUser smartUser = smartUserDAO.findSmartUserByUsername(username);
         if (smartUser == null) {
-            mav = new ModelAndView("errors/404");
-        } else {
-            mav = new ModelAndView("users/user");
-            mav.addObject("alienSmartUser", smartUser);
+            return new ModelAndView("errors/404");
         }
+
+        mav = new ModelAndView("users/user");
+        mav.addObject("alienSmartUser", smartUser);
 
         return mav;
     }

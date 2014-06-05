@@ -84,7 +84,7 @@
                                         id="countUnreadMessages" class="badge"></span></a>
                             </li>
                             <li>
-                                <a href="<c:url value="/users"/>"><spring:message code="label.users"/></a>
+                                <a href="<c:url value="/users/all"/>"><spring:message code="label.users"/></a>
                             </li>
                         </sec:authorize>
                         <sec:authorize access="isAnonymous()">
@@ -204,7 +204,7 @@
             select: function (event, ui) {
                 switch (ui.item.type) {
                     case "${constants.USERS_SEARCH_RESULTS}":
-                        window.location = "/user/" + ui.item.username;
+                        window.location = "/users/" + ui.item.username;
                         break;
                     case "${constants.GIFTS_SEARCH_RESULTS}":
                         window.location = "/gifts/" + ui.item.uuid;
