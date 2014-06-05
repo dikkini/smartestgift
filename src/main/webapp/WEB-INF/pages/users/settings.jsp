@@ -25,7 +25,7 @@
         </fieldset>
     </div>
     <div class="col-xs-9">
-        <form class="form-horizontal login-form" action="/profile/settings/save" method="post">
+        <form class="form-horizontal login-form" action="/profile/settings/save.do" method="post">
             <fieldset class="personal-information">
                 <legend><spring:message code="label.personalinfo"/></legend>
                 <div class="form-group">

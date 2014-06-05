@@ -41,7 +41,7 @@ public class ProfileController {
         return new ModelAndView("users/settings");
     }
 
-    @RequestMapping(value = "/profile/settings/save", method = RequestMethod.POST)
+    @RequestMapping(value = "/profile/settings/save.do", method = RequestMethod.POST)
     public String saveSettings(@ActiveUser SmartUserDetails smartUserDetails,
             @RequestParam(required = true, value = "firstName") String firstName,
             @RequestParam(required = true, value = "lastName") String lastName,
