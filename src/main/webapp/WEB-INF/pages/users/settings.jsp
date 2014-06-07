@@ -14,7 +14,7 @@
         <fieldset style="height: 359px" class="user-photo">
             <legend><spring:message code="label.photo"/></legend>
             <div class="form-group">
-                <img id="user-photo-img" height="200" src="/file/get/${smartUser.file.id}" style="align-self: center; margin-bottom: 20px;">
+                <img id="user-photo-img" width="200" height="200" src="/file/get/${smartUser.file.id}" style="align-self: center; margin-bottom: 20px;">
                 <span class="btn btn-success fileinput-button">
                     <i class="glyphicon glyphicon-plus"></i>
                     <span>Choose Photo</span>

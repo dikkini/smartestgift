@@ -13,7 +13,7 @@
 <div class="row">
     <div class="col-xs-3">
         <div class="panel">
-            <img height="200" src="/file/get/${smartUser.file.id}">
+            <img width="200" height="200" src="/file/get/${smartUser.file.id}">
         </div>
 
         <div class="panel panel-primary">

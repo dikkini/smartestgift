@@ -295,7 +295,6 @@
 
         function startNewConversationWithUser() {
             var inputNewMessageObj = $("#message-input");
-            // TODO username брать из data-username у инпута после зполненения этого аттрибута автокомплитом
             $.ajax({
                 type: "post",
                 url: "/messages/createNewConversation",

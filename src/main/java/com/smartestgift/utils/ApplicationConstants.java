@@ -38,6 +38,9 @@ public class ApplicationConstants {
     public static final String USERS_SEARCH_RESULTS = "user";
     public static final Integer GLOBAL_SEARCH_RESULTS_COUNT = 15;
 
+    // People List
+    public static final Integer PEOPLE_SEARCH_RESULTS_COUNT = 10;
+
 
     public static String getFACEBOOK_APP_ID() {
         return FACEBOOK_APP_ID;
@@ -113,5 +116,9 @@ public class ApplicationConstants {
 
     public Integer getGlobalSearchResultsCount() {
         return GLOBAL_SEARCH_RESULTS_COUNT;
+    }
+
+    public Integer getPeopleSearchResultsCount() {
+        return PEOPLE_SEARCH_RESULTS_COUNT;
     }
 }

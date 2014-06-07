@@ -100,4 +100,12 @@ public interface SmartUserService {
      * @return
      */
     public Map<String, List> findUsersAndGiftsByUserInput(String searchString, SmartUser activeUser);
+
+    /**
+     *
+     * @param offset
+     * @param smartUser
+     * @return
+     */
+    public List<SmartUser> findUsersWithOffset(int offset, SmartUser smartUser);
 }

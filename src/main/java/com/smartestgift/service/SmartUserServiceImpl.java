@@ -168,6 +168,11 @@ public class SmartUserServiceImpl implements SmartUserService {
         return result;
     }
 
+    @Override
+    public List<SmartUser> findUsersWithOffset(int offset, SmartUser smartUser) {
+        return smartUserDAO.findSmartUsersByOffset(offset, smartUser.getUuid());
+    }
+
     private List<SmartUser> removeDuplicates(List<SmartUser> l) {
         Set<SmartUser> s = new TreeSet<>(new Comparator<SmartUser>() {
 

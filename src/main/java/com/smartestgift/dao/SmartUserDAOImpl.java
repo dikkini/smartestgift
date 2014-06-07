@@ -103,4 +103,14 @@ public class SmartUserDAOImpl implements SmartUserDAO {
         criteria.add(Restrictions.and(middleNameLikeCriteria, middleNameNeActive));
         return criteria.list();
     }
+
+    @Override
+    public List<SmartUser> findSmartUsersByOffset(int offset, String activeUserUuid) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
+        criteria.setMaxResults(ApplicationConstants.PEOPLE_SEARCH_RESULTS_COUNT);
+        criteria.setFirstResult(offset);
+        Criterion currentUserRestriction = Restrictions.ne("uuid", activeUserUuid);
+        criteria.add(currentUserRestriction);
+        return criteria.list();
+    }
 }
