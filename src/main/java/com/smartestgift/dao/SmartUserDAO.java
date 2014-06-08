@@ -50,4 +50,12 @@ public interface SmartUserDAO extends Repository<SmartUser, String> {
      * @return
      */
     public List<SmartUser> findSmartUsersLikeMiddleName(String middleName, String activeUsername);
+
+    /**
+     *
+     * @param offset
+     * @param activeUserUuid
+     * @return
+     */
+    public List<SmartUser> findSmartUsersByOffset(int offset, String activeUserUuid);
 }

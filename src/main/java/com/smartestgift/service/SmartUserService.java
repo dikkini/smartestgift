@@ -6,6 +6,7 @@ import com.smartestgift.dao.model.SmartUserDetails;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by dikkini on 18.02.14.
@@ -91,4 +92,20 @@ public interface SmartUserService {
      * @return
      */
     public List<SmartUser> findUsersByUserInput(String name, SmartUser activeUser);
+
+    /**
+     *
+     * @param searchString
+     * @param activeUser
+     * @return
+     */
+    public Map<String, List> findUsersAndGiftsByUserInput(String searchString, SmartUser activeUser);
+
+    /**
+     *
+     * @param offset
+     * @param smartUser
+     * @return
+     */
+    public List<SmartUser> findUsersWithOffset(int offset, SmartUser smartUser);
 }

@@ -1,18 +1,18 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<fmt:requestEncoding value="utf-8" />
+<fmt:requestEncoding value="utf-8"/>
 
-<sec:authentication var="user" property="principal" />
+<sec:authentication var="user" property="principal"/>
 
 <jsp:useBean id="user" class="com.smartestgift.dao.model.SmartUserDetails" scope="request"/>
+<jsp:useBean id="constants" class="com.smartestgift.utils.ApplicationConstants" scope="request"/>
 
 <!DOCTYPE HTML>
 
 <html lang="en">
-
 <head>
     <title><spring:message code="label.title"/></title>
     <meta name="viewport" content="width=device-width">
@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="/assets/ext/kladr/jquery.kladr.css">
     <link rel="stylesheet" href="/assets/ext/jquery/notification/pnotify.custom.min.css">
     <link rel="stylesheet" href="/assets/main/css/fileupload.css">
-    <link rel="stylesheet" href="/assets/ext/jquery/ui-1.10.4/css/ui-darkness/jquery-ui-1.10.4.custom.min.css">
+    <link rel="stylesheet" href="/assets/ext/jquery/ui-1.10.4/css/custom-theme/jquery-ui-1.10.4.custom.min.css">
 
     <script type="text/javascript" src="/assets/ext/jquery/jquery-2.0.3.js"></script>
     <script type="text/javascript" src="/assets/ext/jquery/ui-1.10.4/js/jquery-ui-1.10.4.custom.min.js"></script>
@@ -46,7 +46,7 @@
 
 <body>
 <form name="refreshForm">
-    <input type="hidden" name="visited" value="" />
+    <input type="hidden" name="visited" value=""/>
 </form>
 <div class="header">
     <header>
@@ -66,7 +66,8 @@
             <div class="container">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+                        <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span
+                            class="icon-bar"></span><span class="icon-bar"></span>
                     </button>
                 </div>
                 <div class="collapse navbar-collapse">
@@ -79,7 +80,11 @@
                                 <a href="<c:url value="/gifts/my"/>"><spring:message code="label.mygifts"/></a>
                             </li>
                             <li>
-                                <a href="<c:url value="/messages"/>"><spring:message code="label.messages"/> <span id="countUnreadMessages" class="badge"></span></a>
+                                <a href="<c:url value="/messages"/>"><spring:message code="label.messages"/> <span
+                                        id="countUnreadMessages" class="badge"></span></a>
+                            </li>
+                            <li>
+                                <a href="<c:url value="/users/all"/>"><spring:message code="label.users"/></a>
                             </li>
                         </sec:authorize>
                         <sec:authorize access="isAnonymous()">
@@ -88,8 +93,16 @@
                             </li>
                         </sec:authorize>
                     </ul>
-                    <ul id="login_signup_logged" class="nav navbar-nav navbar-right">
+                    <ul class="nav navbar-nav navbar-right">
                         <sec:authorize access="isAuthenticated()">
+                            <li>
+                                <form class="navbar-form navbar-right" role="search">
+                                    <div class="col-xs-12 form-group">
+                                        <input id="global-search-input" type="text" class="form-control"
+                                               placeholder="Search people and gifts">
+                                    </div>
+                                </form>
+                            </li>
                             <li>
                                 <p class="navbar-text navbar-right"><spring:message code="label.signed"/>
                                     <a href="/profile" class="navbar-link">
@@ -110,7 +123,8 @@
                                 <a href="<c:url value="/login"/>"><spring:message code="label.login"/></a>
                             </li>
                             <li>
-                                <a href="<c:url value="/signup"/>"><p class="navbar-right"><spring:message code="label.signup"/></p></a>
+                                <a href="<c:url value="/signup"/>"><p class="navbar-right"><spring:message
+                                        code="label.signup"/></p></a>
                             </li>
                         </sec:authorize>
                     </ul>
@@ -122,18 +136,129 @@
 
 <script type="text/javascript">
     var socket;
-    $(document).ready(function() {
+    $(document).ready(function () {
         <sec:authorize access="isAuthenticated()">
-            socket = new SockJS('/messages');
-            var stompClient = Stomp.over(socket);
-            stompClient.connect({}, function(frame) {
-                stompClient.send("/app/setUnreadCount", {}, {});
+        socket = new SockJS('/messages');
+        var stompClient = Stomp.over(socket);
+        stompClient.connect({}, function (frame) {
+            stompClient.send("/app/setUnreadCount", {}, {});
 //                console.log('Connected: ' + frame);
-                stompClient.subscribe('/user/' + '${user.username}' + '/getUnreadMessagesCount', function(response) {
-                    response = JSON.parse(response.body);
-                    $("#countUnreadMessages").text(response);
-                });
+            stompClient.subscribe('/user/' + '${user.username}' + '/getUnreadMessagesCount', function (response) {
+                response = JSON.parse(response.body);
+                $("#countUnreadMessages").text(response);
             });
+        });
+
+        var cache = {};
+
+        var customRenderMenu = function(ul, items){
+                var that = this,
+                        currentCategory = "";
+                var giftItems = items[0].gift;
+                var userItems = items[0].user;
+
+                if (giftItems.length > 0) {
+                    ul.append("<li class='ui-autocomplete-category'>" + "GIFTS" + "</li>");
+                }
+                $.each(giftItems, function (index, item) {
+                    var gift = {
+                        type: "${constants.GIFTS_SEARCH_RESULTS}",
+                        uuid: item.uuid,
+                        name: item.name,
+                        descr: item.description,
+                        price: item.price,
+                        imgId: item.files[0].id
+                    };
+                    that._renderItemData(ul, gift);
+                });
+
+                if (userItems.length > 0) {
+                    ul.append("<li class='ui-autocomplete-category'>" + "USERS" + "</li>");
+                }
+                $.each(userItems, function (index, item) {
+                    var user = {
+                        type: "${constants.USERS_SEARCH_RESULTS}",
+                        username: item.username,
+                        name: (item.lastName == null ? "  " : item.lastName + " ") + item.firstName + " " + (item.middleName == null ? "" : " " + item.middleName),
+                        imgId: item.file.id
+                    };
+                    that._renderItemData(ul, user);
+                });
+
+            globalSearchInputObj.removeClass("loading-input");
+            };
+
+        var globalSearchInputObj = $("#global-search-input");
+        globalSearchInputObj.autocomplete({
+            create: function () {
+                //access to jQuery Autocomplete widget differs depending
+                //on jQuery UI version - you can also try .data('autocomplete')
+                $(this).data('ui-autocomplete')._renderMenu = customRenderMenu;
+            },
+            open: function() {
+                $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+            },
+            close: function() {
+                $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+            },
+            select: function (event, ui) {
+                switch (ui.item.type) {
+                    case "${constants.USERS_SEARCH_RESULTS}":
+                        window.location = "/users/" + ui.item.username;
+                        break;
+                    case "${constants.GIFTS_SEARCH_RESULTS}":
+                        window.location = "/gifts/" + ui.item.uuid;
+                        break;
+                }
+            },
+            delay: 300,
+            source: function (request, response) {
+                globalSearchInputObj.addClass("loading-input");
+                var that = this;
+
+                var term = request.term;
+                if (term in cache) {
+                    var data = JSON.parse(cache[term]);
+                    response({items:data});
+                    globalSearchInputObj.removeClass("loading-input");
+                    return;
+                }
+
+                $.ajax({
+                    url: '/globalSearch',
+                    type: 'post',
+                    data: {searchString: term},
+                    dataType: "json",
+                    success: function (data) {
+                        cache[ term ] = data;
+                        data = JSON.parse(data);
+                        response({items:data});
+                    },
+                    error: function (data) {
+                        alert("bad");
+                        globalSearchInputObj.removeClass("loading-input");
+                    }
+                });
+
+            }
+        }).data("ui-autocomplete")._renderItem = function (ul, item) {
+            var li = $("<li>").data("ui-autocomplete-item", item);
+            var html =
+                        "<a>" +
+                            "<div class='row'>" +
+                                "<div class='col-xs-4'>" +
+                                    "<img height='50' src='/file/get/" + item.imgId + "'>" +
+                                "</div>" +
+                                "<div class='col-xs-8'>" +
+                                    "<h5>" +
+                                        item.name +
+                                    "</h5>" +
+                                "</div>" +
+                            "</div>" +
+                        "</a>";
+            li.append(html);
+            return ul.append(li);
+        };
         </sec:authorize>
     });
 </script>

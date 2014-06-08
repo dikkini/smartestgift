@@ -64,6 +64,7 @@ public class FileController {
                 // TODO абсолютные пути это плохо
                 /*FileCopyUtils.copy(mpf.getBytes(), new FileOutputStream("/Users/dikkini/temp" + mpf.getOriginalFilename()));*/
                 FileCopyUtils.copy(mpf.getBytes(), new FileOutputStream("C:\\temp\\" + mpf.getOriginalFilename()));
+                FileCopyUtils.copy(mpf.getBytes(), new FileOutputStream("/Volumes/Storage/temp/" + mpf.getOriginalFilename()));
 
             } catch (IOException e) {
                 e.printStackTrace();

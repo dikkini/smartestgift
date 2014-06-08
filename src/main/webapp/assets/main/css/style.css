@@ -67,8 +67,7 @@ css for link design
 }
 
 .gift {
-    margin-bottom: 20px;
-!important;
+    margin-bottom: 20px !important;
 }
 
 .gift-price {
@@ -100,4 +99,43 @@ css for link design
     /*background: gray;*/
     opacity: 0.7;
     position: absolute;
+}
+
+.ui-autocomplete {
+    max-height: 100%;
+    overflow-y: auto;
+    /* prevent horizontal scrollbar */
+    overflow-x: hidden;
+}
+
+.ui-autocomplete-category {
+    font-weight: bold;
+    padding: .2em .4em;
+    margin: .8em 0 .2em;
+    line-height: 0.5;
+}
+
+/* IE 6 doesn't support max-height
+ * we use height instead, but this forces the menu to always be this tall
+ */
+* html .ui-autocomplete {
+    height: 250px;
+}
+
+/*
+override default style of jquery ui for autocomplete for best look
+*/
+.ui-menu
+.ui-menu-item {
+    list-style-image: none !important;
+}
+
+.loading-input {
+    background: #fff url('http://www.hsi.com.hk/HSI-Net/pages/images/en/share/ajax-loader.gif') no-repeat right center;
+}
+
+.container {
+    margin-left: auto;
+    margin-right: auto;
+    width: 960px
 }

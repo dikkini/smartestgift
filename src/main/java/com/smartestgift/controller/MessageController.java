@@ -159,11 +159,4 @@ public class MessageController {
 
         return result;
     }
-
-    @RequestMapping(value = "/findUsers", method = RequestMethod.POST)
-    public @ResponseBody String findUsersByUserInput(@ActiveUser SmartUserDetails smartUserDetails,
-                                                    @RequestParam(value = "userInput", required = true)
-                                                    String userInput) {
-        return gson.toJson(smartUserService.findUsersByUserInput(userInput, smartUserDetails.getSmartUser()));
-    }
 }

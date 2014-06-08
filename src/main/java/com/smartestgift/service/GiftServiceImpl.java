@@ -1,19 +1,15 @@
 package com.smartestgift.service;
 
 import com.smartestgift.controller.model.GiftPage;
-import com.smartestgift.dao.GiftCategoryDAO;
-import com.smartestgift.dao.GiftDAO;
-import com.smartestgift.dao.SmartUserDAO;
-import com.smartestgift.dao.model.Gift;
-import com.smartestgift.dao.model.GiftCategory;
-import com.smartestgift.dao.model.SmartUser;
-import com.smartestgift.dao.model.SmartUserGift;
+import com.smartestgift.dao.*;
+import com.smartestgift.dao.model.*;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sun.net.www.content.image.gif;
 
 import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -33,10 +29,16 @@ public class GiftServiceImpl implements GiftService {
     GiftDAO giftDAO;
 
     @Autowired
+    ShopDAO shopDAO;
+
+    @Autowired
     SessionFactory sessionFactory;
 
     @Autowired
     SmartUserDAO smartUserDAO;
+
+    @Autowired
+    GiftShopDAO giftShopDAO;
 
     @Override
     public Gift findGiftByUuid(String uuid) {
@@ -44,9 +46,14 @@ public class GiftServiceImpl implements GiftService {
     }
 
     @Override
-    public boolean smartUserHasGift(Set<SmartUserGift> smartUserGifts, Gift gift) {
+    public GiftShop findGiftShopByUuid(String uuid) {
+        return giftShopDAO.find(uuid);
+    }
+
+    @Override
+    public boolean smartUserHasGiftShop(Set<SmartUserGift> smartUserGifts, GiftShop giftShop) {
         for (SmartUserGift smartuserGift : smartUserGifts) {
-            if (smartuserGift.getGift().equals(gift)) {
+            if (smartuserGift.getGiftShop().getUuid().equals(giftShop.getUuid())) {
                 return true;
             }
         }
@@ -54,21 +61,22 @@ public class GiftServiceImpl implements GiftService {
     }
 
     @Override
-    public void addGiftToUserWishes(SmartUser user, Gift gift) {
+    public void addGiftShopToUserWishes(SmartUser user, GiftShop giftShop, Date endDate) {
         SmartUserGift smartUserGift = new SmartUserGift();
         smartUserGift.setSmartUser(user);
-        smartUserGift.setGift(gift);
+        smartUserGift.setGiftShop(giftShop);
         smartUserGift.setMoneyCollect(0);
+        smartUserGift.setEndDate(endDate);
         user.getSmartUserGifts().add(smartUserGift);
         smartUserDAO.merge(user);
     }
 
     @Override
-    public void deleteGiftFromUser(SmartUser user, Gift gift) {
+    public void deleteGiftFromUser(SmartUser user, GiftShop giftShop) {
         Set<SmartUserGift> smartUserGifts = user.getSmartUserGifts();
         for (Iterator<SmartUserGift> smartUserGiftIterator = smartUserGifts.iterator(); smartUserGiftIterator.hasNext(); ) {
             SmartUserGift currentSmartUserGift = smartUserGiftIterator.next();
-            if (gift.equals(currentSmartUserGift.getGift())) {
+            if (giftShop.getUuid().equals(currentSmartUserGift.getGiftShop().getUuid())) {
                 smartUserGiftIterator.remove();
                 break;
             }
@@ -121,4 +129,20 @@ public class GiftServiceImpl implements GiftService {
 
         return new GiftPage(gifts, pageNum, pageSize, isNextPage, isPreviousPage, null, countAll);
     }
+
+    @Override
+    public List<GiftShop> findGiftShops(String giftUuid) {
+        Gift gift = giftDAO.find(giftUuid);
+        return giftShopDAO.findGiftShopsByGiftUuid(gift);
+    }
+
+    @Override
+    public GiftShop findGiftShopByGiftAndShop(String giftUuid, String shopUuid) {
+        Gift gift = giftDAO.find(giftUuid);
+        Shop shop = shopDAO.find(shopUuid);
+
+        return giftShopDAO.findGiftShopByGiftAndShop(gift, shop);
+    }
+
+
 }

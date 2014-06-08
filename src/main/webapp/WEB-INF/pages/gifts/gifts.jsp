@@ -100,7 +100,7 @@
 
 <jsp:include page="../template/bottom.jsp"/>
 
-<jsp:include page="../template/want-gift-modal.jsp"/>
+<jsp:include page="want-gift-modal.jsp"/>
 
 <script type="text/javascript">
 $(document).ready(function () {
@@ -125,6 +125,9 @@ $(document).ready(function () {
         changeYear: true
     });
 
+    $("#random-gift-btn").click(function() {
+        window.location = "/randomGift";
+    });
 
     $("#find-gift-btn").click(function () {
         ajaxLoadingGifts.loading("start");
@@ -212,8 +215,31 @@ $(document).ready(function () {
     });
 
     giftsContainer.on("click", ".want-gift-btn", function () {
-        $("#want-gift-modal-title").html("I want " + $(this).data("name"));
-        $("#accept-want-gift-btn").data("uuid", $(this).data("uuid"));
+        var giftUuid = $(this).data("gift-uuid");
+        $.ajax({
+            type: "post",
+            url: "/gifts/findGiftShops",
+            cache: false,
+            data: "giftUuid=" + giftUuid,
+            success: function (response) {
+                var json = JSON.parse(response);
+                // set shops and price
+                json.forEach(function(shopGift) {
+                    var option = $('<option>').val(shopGift.uuid)
+                            .text(shopGift.shop.name + " - " + shopGift.price);
+                    option.data("price", shopGift.price);
+                    $("#internet-shop-select").append(option);
+                });
+                // set name of the gift
+                $("#want-gift-modal-title").html("I want " + $(this).data("gift-name"));
+
+                // open modal
+                $("#want-gift-modal").modal("show");
+            },
+            error: function (response) {
+                window.location = "500";
+            }
+        });
     });
 
     function renderSearchPageOfGifts(countAll, pageNum, pageSize, searchString) {
@@ -291,18 +317,17 @@ $(document).ready(function () {
                 if (diffDays < 7) {
                     html += '<span class="gift-new-label">';
                 }
-                html += '<a href="/gifts/' + entry.category.code + '/' + entry.uuid + '">';
-                html += '<img height="200" src="/file/get/' + file.id + '">';
-                html += '</a>';
+                // TODO пределать на append jquery object механизм
+                html += '<a href="/gifts/' + entry.uuid + '">' +
+                            '<img height="200" src="/file/get/' + file.id + '">' +
+                        '</a>';
             });
-            html += '<p>' + entry.name + '</p>';
-            html += '<p class="ellipses small">' + entry.description + '</p>';
+            html += '<a href="/gifts/' + entry.uuid + '">' + '<p>' + entry.name + '</p>';
+            html += '<p class="ellipses small">' + entry.description + '</p>'  + '</a>';
             // TODO (?) проверка есть ли у пользователя этот подарок в желаемых
-            html += '<button data-gift-uuid="' + entry.uuid + '"';
-            html += 'class="btn btn-default want-gift-btn" data-uuid="'+ entry.uuid + '" data-name="' + entry.name +'"' +
-                    'data-toggle="modal" data-target="#want-gift-modal">'
-                    + '<spring:message code="label.wanttogift"/>';
-            html += '</button>';
+            html += '<button data-gift-uuid="' + entry.uuid + '" class="btn btn-default want-gift-btn" ' +
+                    '" data-gift-name="' + entry.name +'">' +
+                    '<spring:message code="label.wanttogift"/> </button>';
 
             giftsContainer.append(html);
         });

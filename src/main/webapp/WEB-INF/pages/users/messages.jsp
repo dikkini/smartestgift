@@ -295,7 +295,6 @@
 
         function startNewConversationWithUser() {
             var inputNewMessageObj = $("#message-input");
-            // TODO username брать из data-username у инпута после зполненения этого аттрибута автокомплитом
             $.ajax({
                 type: "post",
                 url: "/messages/createNewConversation",
@@ -406,14 +405,14 @@
         function getContactsByUserTyping(userInput) {
             $.ajax({
                 type: "post",
-                url: "/messages/findUsers",
+                url: "/searchPeople",
                 cache: false,
-                data: "userInput=" + userInput,
+                data: "searchPeopleStr=" + userInput,
                 success: function (response) {
                     var messageDialogObj = $("#messages-and-people");
                     messageDialogObj.html("");
 
-                    response.forEach(function(entry) {
+                    JSON.parse(response).forEach(function(entry) {
                         var html =
                                 '<li data-username="' + entry.username + '"class="contact" tabindex="1" data-fio="' + (entry.lastName ? entry.lastName + " " : "") + entry.firstName + (entry.middleName ? " " + entry.middleName : "") + '">' +
                                         '<div class="list-group">' +

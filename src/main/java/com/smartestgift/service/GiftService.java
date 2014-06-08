@@ -1,11 +1,9 @@
 package com.smartestgift.service;
 
 import com.smartestgift.controller.model.GiftPage;
-import com.smartestgift.dao.model.Gift;
-import com.smartestgift.dao.model.GiftCategory;
-import com.smartestgift.dao.model.SmartUser;
-import com.smartestgift.dao.model.SmartUserGift;
+import com.smartestgift.dao.model.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -23,27 +21,35 @@ public interface GiftService {
     public Gift findGiftByUuid(String uuid);
 
     /**
+     *
+     * @param uuid
+     * @return
+     */
+    public GiftShop findGiftShopByUuid(String uuid);
+
+    /**
      * if the user has this gift
      * @param smartUserGifts Set of SmartUserGift
-     * @param gift Gift
+     * @param giftShop Gift in specific shop
      * @return true - had
      */
-    public boolean smartUserHasGift(Set<SmartUserGift> smartUserGifts, Gift gift);
+    public boolean smartUserHasGiftShop(Set<SmartUserGift> smartUserGifts, GiftShop giftShop);
 
     /**
      * Add gift to user
      * @param user SmartUser model
-     * @param gift Gift model
+     * @param giftShop Gift model
+     * @param endDate date when user plan to collect all money for the gift
      */
-    public void addGiftToUserWishes(SmartUser user, Gift gift);
+    public void addGiftShopToUserWishes(SmartUser user, GiftShop giftShop, Date endDate);
 
     /**
      *
      * @param user
-     * @param gift
+     * @param giftShop
      * @return
      */
-    public void deleteGiftFromUser(SmartUser user, Gift gift);
+    public void deleteGiftFromUser(SmartUser user, GiftShop giftShop);
 
     /**
      *
@@ -77,4 +83,19 @@ public interface GiftService {
      * @return
      */
     public GiftPage getPageOfGiftsBySearchString(Long countAll, int pageNum, int pageSize, String searchString);
+
+    /**
+     *
+     * @param giftUuid
+     * @return
+     */
+    public List<GiftShop> findGiftShops(String giftUuid);
+
+    /**
+     *
+     * @param giftUuid
+     * @param shopUuid
+     * @return
+     */
+    public GiftShop findGiftShopByGiftAndShop(String giftUuid, String shopUuid);
 }

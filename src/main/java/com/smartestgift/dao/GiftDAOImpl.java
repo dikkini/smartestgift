@@ -3,6 +3,7 @@ package com.smartestgift.dao;
 import com.smartestgift.dao.model.Gift;
 import com.smartestgift.dao.model.GiftCategory;
 import com.smartestgift.dao.model.SmartUser;
+import com.smartestgift.utils.ApplicationConstants;
 import org.hibernate.*;
 import org.hibernate.criterion.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +72,17 @@ public class GiftDAOImpl implements GiftDAO {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Gift.class);
         criteria.setFirstResult(offset);
         criteria.setMaxResults(count);
+        Criterion nameGiftRestriction = Restrictions.ilike("name", searchString, MatchMode.ANYWHERE);
+        Criterion descriptionGiftRestriction= Restrictions.ilike("description", searchString, MatchMode.ANYWHERE);
+        criteria.add(Restrictions.or(nameGiftRestriction, descriptionGiftRestriction));
+        criteria.addOrder(org.hibernate.criterion.Order.asc("name"));
+        return criteria.list();
+    }
+
+    @Override
+    public List<Gift> findGiftsBySearchString(String searchString) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Gift.class);
+        criteria.setMaxResults(ApplicationConstants.GLOBAL_SEARCH_RESULTS_COUNT);
         Criterion nameGiftRestriction = Restrictions.ilike("name", searchString, MatchMode.ANYWHERE);
         Criterion descriptionGiftRestriction= Restrictions.ilike("description", searchString, MatchMode.ANYWHERE);
         criteria.add(Restrictions.or(nameGiftRestriction, descriptionGiftRestriction));

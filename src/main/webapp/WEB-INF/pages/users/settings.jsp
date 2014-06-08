@@ -14,7 +14,7 @@
         <fieldset style="height: 359px" class="user-photo">
             <legend><spring:message code="label.photo"/></legend>
             <div class="form-group">
-                <img id="user-photo-img" height="200" src="/file/get/${smartUser.file.id}" style="align-self: center; margin-bottom: 20px;">
+                <img id="user-photo-img" width="200" height="200" src="/file/get/${smartUser.file.id}" style="align-self: center; margin-bottom: 20px;">
                 <span class="btn btn-success fileinput-button">
                     <i class="glyphicon glyphicon-plus"></i>
                     <span>Choose Photo</span>
@@ -25,7 +25,7 @@
         </fieldset>
     </div>
     <div class="col-xs-9">
-        <form class="form-horizontal login-form" action="/profile/settings/save" method="post">
+        <form class="form-horizontal login-form" action="/profile/settings/save.do" method="post">
             <fieldset class="personal-information">
                 <legend><spring:message code="label.personalinfo"/></legend>
                 <div class="form-group">
@@ -71,7 +71,7 @@
                 <div class="form-group">
                     <label for="input-birthdate" class="col-sm-4 control-label">Birth Date</label>
                     <div class="col-xs-4">
-                        <input id="input-birthdate" name="birthdate" type="date" class="form-control" placeholder="<spring:message code="label.birthdate"/>" value="<fmt:formatDate value="${smartUser.birthDate}" pattern="yyyy-MM-dd" />">
+                        <input id="input-birthdate" name="birthdate" class="form-control" placeholder="<spring:message code="label.birthdate"/>" value="<fmt:formatDate value="${smartUser.birthDate}" pattern="yyyy-MM-dd" />">
                     </div>
                 </div>
 
@@ -105,6 +105,12 @@
 <script type="text/javascript">
     $(document).ready(function () {
 
+        $("#input-birthdate").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'dd.mm.yy' // TODO вывести константу
+        });
+
         $(".loading").loading({width: '25', text: 'Waiting...'});
 
         $("#inputTypeFile").fileupload({
@@ -135,10 +141,6 @@
                     $(this).width;   // Note: $(this).width() will not work for in memory images
                 });
             }
-        });
-
-        $('.date').pickmeup({
-            format: 'm.d.Y'
         });
     });
 </script>

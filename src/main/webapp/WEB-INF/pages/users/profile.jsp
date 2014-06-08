@@ -13,7 +13,7 @@
 <div class="row">
     <div class="col-xs-3">
         <div class="panel">
-            <img height="200" src="/file/get/${smartUser.file.id}">
+            <img width="200" height="200" src="/file/get/${smartUser.file.id}">
         </div>
 
         <div class="panel panel-primary">
@@ -53,12 +53,12 @@
                 <li class="list-group-item">
                     <blockquote>
                         <p>
-                            <a href="/gifts/gift/<c:out value="${smartUserGift.gift.uuid}"/>"><c:out value="${smartUserGift.gift.name}"/></a>
+                            <a href="/gifts/<c:out value="${smartUserGift.giftShop.gift.uuid}"/>"><c:out value="${smartUserGift.giftShop.gift.name}"/></a>
                         </p>
-                        <p class="ellipses"><c:out value="${smartUserGift.gift.description}"/></p>
+                        <p class="ellipses"><c:out value="${smartUserGift.giftShop.gift.description}"/></p>
                         <small><spring:message code="label.collected_money_for_gift"/>: <c:out value="${smartUserGift.moneyCollect}"/> </small>
                     </blockquote>
-                    <button data-gift-uuid="<c:out value="${smartUserGift.gift.uuid}"/>" class="btn btn-default un-want-gift-btn"><spring:message code="label.un_want_gift_button"/></button>
+                    <button data-giftshop-uuid="<c:out value="${smartUserGift.giftShop.uuid}"/>" class="btn bgiftShoplt un-want-gift-btn"><spring:message code="label.un_want_gift_button"/></button>
                 </li>
             </c:forEach>
             <c:if test="${fn:length(smartUser.smartUserGifts) > 3}">
@@ -77,7 +77,7 @@
                 type: "post",
                 url: "/gifts/unWantGift",
                 cache: false,
-                data: "giftuuid=" + $(this).data("gift-uuid"),
+                data: "giftshopuuid=" + $(this).data("giftshop-uuid"),
                 success: function (response) {
                     window.location = $.updateNotifyBlockRequest(window.location.href, response.successes, response.errors, response.information);
                 },

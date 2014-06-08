@@ -31,6 +31,13 @@ public interface GiftDAO extends Repository<Gift, String> {
 
     /**
      *
+     * @param searchString
+     * @return
+     */
+    public List<Gift> findGiftsBySearchString(String searchString);
+
+    /**
+     *
      * @param categoryCode
      * @return
      */

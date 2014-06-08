@@ -2,6 +2,7 @@ package com.smartestgift.dao.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by dikkini on 01.03.14.
@@ -12,15 +13,18 @@ import java.io.Serializable;
 @AssociationOverrides({
         @AssociationOverride(name = "pk.user",
                 joinColumns = @JoinColumn(name = "user_uuid")),
-        @AssociationOverride(name = "pk.gift",
-                joinColumns = @JoinColumn(name = "gift_uuid")) })
+        @AssociationOverride(name = "pk.giftShop",
+                joinColumns = @JoinColumn(name = "gift_shop_uuid")) })
 public class SmartUserGift implements Serializable {
 
     @EmbeddedId
     protected SmartUserGiftId pk = new SmartUserGiftId();
 
-    @Column
+    @Column(name = "moneyCollect")
     protected Integer moneyCollect;
+
+    @Column(name = "endDate")
+    protected Date endDate;
 
     public SmartUserGiftId getPk() {
         return pk;
@@ -40,12 +44,12 @@ public class SmartUserGift implements Serializable {
     }
 
     @Transient
-    public Gift getGift() {
-        return getPk().getGift();
+    public GiftShop getGiftShop() {
+        return getPk().getGiftShop();
     }
 
-    public void setGift(Gift gift) {
-        getPk().setGift(gift);
+    public void setGiftShop(GiftShop giftShop) {
+        getPk().setGiftShop(giftShop);
     }
 
     public Integer getMoneyCollect() {
@@ -54,6 +58,14 @@ public class SmartUserGift implements Serializable {
 
     public void setMoneyCollect(Integer moneyCollect) {
         this.moneyCollect = moneyCollect;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 
     public boolean equals(Object o) {

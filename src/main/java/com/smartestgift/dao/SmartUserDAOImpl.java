@@ -3,6 +3,7 @@ package com.smartestgift.dao;
 import com.smartestgift.dao.SmartUserDAO;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserDetails;
+import com.smartestgift.utils.ApplicationConstants;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -66,6 +67,7 @@ public class SmartUserDAOImpl implements SmartUserDAO {
     @Override
     public List<SmartUser> findSmartUsersLikeUserName(String username, String activeUsername) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
+        criteria.setMaxResults(ApplicationConstants.GLOBAL_SEARCH_RESULTS_COUNT);
         Criterion userLikeCriteria = Restrictions.ilike("username", username, MatchMode.ANYWHERE);
         Criterion userNeActive = Restrictions.ne("username", activeUsername);
         criteria.add(Restrictions.and(userLikeCriteria, userNeActive));
@@ -75,6 +77,7 @@ public class SmartUserDAOImpl implements SmartUserDAO {
     @Override
     public List<SmartUser> findSmartUsersLikeFirstName(String firstName, String activeFistName) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
+        criteria.setMaxResults(ApplicationConstants.GLOBAL_SEARCH_RESULTS_COUNT);
         Criterion firstNameLikeCriteria = Restrictions.ilike("firstName", firstName, MatchMode.ANYWHERE);
         Criterion firstNameNeActive = Restrictions.ne("firstName", activeFistName);
         criteria.add(Restrictions.and(firstNameLikeCriteria, firstNameNeActive));
@@ -84,6 +87,7 @@ public class SmartUserDAOImpl implements SmartUserDAO {
     @Override
     public List<SmartUser> findSmartUsersLikeLastName(String lastName, String activeLastName) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
+        criteria.setMaxResults(ApplicationConstants.GLOBAL_SEARCH_RESULTS_COUNT);
         Criterion lastNameLikeCriteria = Restrictions.ilike("lastName", lastName, MatchMode.ANYWHERE);
         Criterion lastNameNeActive = Restrictions.ne("lastName", activeLastName);
         criteria.add(Restrictions.and(lastNameLikeCriteria, lastNameNeActive));
@@ -93,9 +97,20 @@ public class SmartUserDAOImpl implements SmartUserDAO {
     @Override
     public List<SmartUser> findSmartUsersLikeMiddleName(String middleName, String activeMiddleName) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
+        criteria.setMaxResults(ApplicationConstants.GLOBAL_SEARCH_RESULTS_COUNT);
         Criterion middleNameLikeCriteria = Restrictions.ilike("middleName", middleName, MatchMode.ANYWHERE);
         Criterion middleNameNeActive = Restrictions.ne("middleName", activeMiddleName);
         criteria.add(Restrictions.and(middleNameLikeCriteria, middleNameNeActive));
+        return criteria.list();
+    }
+
+    @Override
+    public List<SmartUser> findSmartUsersByOffset(int offset, String activeUserUuid) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
+        criteria.setMaxResults(ApplicationConstants.PEOPLE_SEARCH_RESULTS_COUNT);
+        criteria.setFirstResult(offset);
+        Criterion currentUserRestriction = Restrictions.ne("uuid", activeUserUuid);
+        criteria.add(currentUserRestriction);
         return criteria.list();
     }
 }
