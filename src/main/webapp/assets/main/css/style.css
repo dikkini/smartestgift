@@ -133,3 +133,9 @@ override default style of jquery ui for autocomplete for best look
 .loading-input {
     background: #fff url('http://www.hsi.com.hk/HSI-Net/pages/images/en/share/ajax-loader.gif') no-repeat right center;
 }
+
+.container {
+    margin-left: auto;
+    margin-right: auto;
+    width: 960px
+}
