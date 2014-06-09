@@ -6,7 +6,6 @@ import com.smartestgift.dao.model.*;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sun.net.www.content.image.gif;
 
 import javax.transaction.Transactional;
 import java.util.Date;

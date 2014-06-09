@@ -6,17 +6,11 @@ package com.smartestgift.controller;
  */
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.smartestgift.dao.FileDAO;
-import com.smartestgift.dao.SmartUserDAO;
 import com.smartestgift.dao.model.File;
-import com.smartestgift.dao.model.FileType;
 import com.smartestgift.dao.model.SmartUserDetails;
 import com.smartestgift.service.FileService;
 import com.smartestgift.service.SmartUserService;
 import com.smartestgift.utils.ActiveUser;
-import com.smartestgift.utils.ApplicationConstants;
-import javafx.application.Application;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
@@ -26,7 +20,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Iterator;
 
 @Controller
