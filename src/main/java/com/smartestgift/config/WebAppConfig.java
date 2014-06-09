@@ -7,6 +7,12 @@ import com.smartestgift.handler.UserInterceptor;
 import javassist.Modifier;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.concurrent.ConcurrentMapCache;
+import org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean;
+import org.springframework.cache.interceptor.CacheProxyFactoryBean;
+import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -55,12 +61,20 @@ import java.util.*;
 @Configuration
 @EnableWebMvc
 @ComponentScan("com.smartestgift")
+@EnableCaching()
 @EnableTransactionManagement
 public class WebAppConfig extends WebMvcConfigurerAdapter {
     private static final Charset UTF8 = Charset.forName("UTF-8");
 
     @Autowired
     Environment env;
+
+    @Bean
+    public CacheManager cacheManager() {
+        SimpleCacheManager cacheManager = new SimpleCacheManager();
+        cacheManager.setCaches(Arrays.asList(new ConcurrentMapCache("files")));
+        return cacheManager;
+    }
 
     //Enable serving static resources even when DispatcherServlet is mapped to /
     @Override

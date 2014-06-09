@@ -12,6 +12,8 @@ import com.smartestgift.dao.SmartUserDAO;
 import com.smartestgift.dao.model.File;
 import com.smartestgift.dao.model.FileType;
 import com.smartestgift.dao.model.SmartUserDetails;
+import com.smartestgift.service.FileService;
+import com.smartestgift.service.SmartUserService;
 import com.smartestgift.utils.ActiveUser;
 import com.smartestgift.utils.ApplicationConstants;
 import javafx.application.Application;
@@ -32,37 +34,33 @@ import java.util.Iterator;
 public class FileController {
 
     @Autowired
-    FileDAO fileDAO;
+    private SmartUserService smartUserService;
 
     @Autowired
-    SmartUserDAO smartUserDAO;
+    private FileService fileService;
 
     @Autowired
-    Gson gson;
-
-    File file = null;
+    private Gson gson;
 
     @RequestMapping(value = "/uploadUserPhoto", headers = "content-type=multipart/*", method = RequestMethod.POST)
     public @ResponseBody String uploadFile(@ActiveUser SmartUserDetails smartUserDetails,
+                                           @RequestParam (required = true, value = "fileTypeId") Integer fileTypeId,
                                            MultipartHttpServletRequest request, HttpServletResponse response) {
 
         Iterator<String> itr = request.getFileNames();
         MultipartFile mpf;
+        File file = null;
 
         while (itr.hasNext()) {
 
             mpf = request.getFile(itr.next());
 
             try {
-                FileType fileType = fileDAO.findFileTypeById(ApplicationConstants.USER_IMAGE_FILE_TYPE_ID);
-                file = new File(mpf.getOriginalFilename(), String.valueOf(mpf.getSize() / 1024), fileType);
-                fileDAO.store(file);
-                smartUserDetails.getSmartUser().setFile(file);
-                smartUserDAO.merge(smartUserDetails.getSmartUser());
-                System.out.println(mpf.getOriginalFilename() + " uploaded! id = " + file.getId());
+                //Long fileSize = mpf.getSize() / 1024;
+                file = fileService.uploadFile(mpf.getOriginalFilename(), fileTypeId);
+                smartUserService.updateUserFile(smartUserDetails.getSmartUser(), file);
 
                 // TODO абсолютные пути это плохо
-                /*FileCopyUtils.copy(mpf.getBytes(), new FileOutputStream("/Users/dikkini/temp" + mpf.getOriginalFilename()));*/
                 FileCopyUtils.copy(mpf.getBytes(), new FileOutputStream("C:\\temp\\" + mpf.getOriginalFilename()));
                 FileCopyUtils.copy(mpf.getBytes(), new FileOutputStream("/Volumes/Storage/temp/" + mpf.getOriginalFilename()));
 
@@ -73,17 +71,17 @@ public class FileController {
         return gson.toJson(file);
     }
 
-    @RequestMapping(value = "/get/{value}", method = RequestMethod.GET)
-    public void getFileById(HttpServletResponse response, @PathVariable Integer value) {
-        File getFile = fileDAO.find(value);
-        java.io.File file = new java.io.File(getFile.getType().getPath() + getFile.getName());
+    @RequestMapping(value = "/get/{fileId}", method = RequestMethod.GET)
+    public void getFileById(HttpServletResponse response, @PathVariable Integer fileId) {
+        File file = fileService.getFile(fileId);
+        java.io.File ioFile = new java.io.File(file.getType().getPath() + file.getName());
 
         try {
-            FileInputStream fis = new FileInputStream(file);
-            response.setContentType(getFile.getType().getName());
-            response.setHeader("Content-disposition", "attachment; filename=\"" + getFile.getName() + "\"");
+            FileInputStream fis = new FileInputStream(ioFile);
+            response.setContentType(file.getType().getName());
+            response.setHeader("Content-disposition", "attachment; filename=\"" + ioFile.getName() + "\"");
             ServletOutputStream outputStream = response.getOutputStream();
-            byte[] buf = new byte[(int) file.length()];
+            byte[] buf = new byte[(int) ioFile.length()];
 
             int c;
             while ((c = fis.read(buf, 0, buf.length)) > 0) {
@@ -98,7 +96,6 @@ public class FileController {
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public void deleteFileById(HttpServletResponse response,
                                @RequestParam(value = "fileId", required = true) Integer fileId) {
-        File file = fileDAO.find(fileId);
-        fileDAO.delete(file);
+        fileService.deleteFile(fileId);
     }
 }

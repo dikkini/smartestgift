@@ -7,16 +7,16 @@ INSERT INTO public.file_type (id, name, path) VALUES (1, 'USER_IMAGE', 'C:\\temp
 INSERT INTO public.file_type (id, name, path) VALUES (2, 'CATEGORY_IMAGE', 'C:\\temp\\');
 INSERT INTO public.file_type (id, name, path) VALUES (3, 'GIFT_IMAGE', 'C:\\temp\\');
 
-INSERT INTO public.file (id, name, size, type_id) VALUES (1, 'category_technology', '1', 2);
-INSERT INTO public.file (id, name, size, type_id) VALUES (2, 'category_women', '1', 2);
-INSERT INTO public.file (id, name, size, type_id) VALUES (3, 'category_men', '1', 2);
-INSERT INTO public.file (id, name, size, type_id) VALUES (4, 'category_children', '1', 2);
-INSERT INTO public.file (id, name, size, type_id) VALUES (5, 'category_big_price', '1', 2);
-INSERT INTO public.file (id, name, size, type_id) VALUES (6, 'iphone4', '1', 3);
-INSERT INTO public.file (id, name, size, type_id) VALUES (7, 'iphone4s', '1', 3);
-INSERT INTO public.file (id, name, size, type_id) VALUES (8, 'iphone5c', '1', 3);
-INSERT INTO public.file (id, name, size, type_id) VALUES (9, 'iphone5s', '1', 3);
-INSERT INTO public.file (id, name, size, type_id) VALUES (10, 'user_no_photo', '1', 1);
+INSERT INTO public.file (id, name, type_id) VALUES (1, 'category_technology', 2);
+INSERT INTO public.file (id, name, type_id) VALUES (2, 'category_women', 2);
+INSERT INTO public.file (id, name, type_id) VALUES (3, 'category_men', 2);
+INSERT INTO public.file (id, name, type_id) VALUES (4, 'category_children', 2);
+INSERT INTO public.file (id, name, type_id) VALUES (5, 'category_big_price', 2);
+INSERT INTO public.file (id, name, type_id) VALUES (6, 'iphone4', 3);
+INSERT INTO public.file (id, name, type_id) VALUES (7, 'iphone4s', 3);
+INSERT INTO public.file (id, name, type_id) VALUES (8, 'iphone5c', 3);
+INSERT INTO public.file (id, name, type_id) VALUES (9, 'iphone5s', 3);
+INSERT INTO public.file (id, name, type_id) VALUES (10, 'user_no_photo', 1);
 
 INSERT INTO public.users (uuid, username, first_name, last_name, middle_name, birth_date, gender, address, address_visible, profile_visible, cellphone, cellphone_visible, file_id) VALUES ('2d0767d8-effb-41f2-8910-5729a460527d', 'dikkini', 'Артур', 'Карапетов', null, null, null, null, false, true, null, false, 10);
 INSERT INTO public.user_details (user_uuid, username, password, email, enabled, social_id, auth_provider_id, role_id, accountnonexpired, credentialsnonexpired, accountnonlocked, registration_date) VALUES ('2d0767d8-effb-41f2-8910-5729a460527d', 'dikkini', '94e2768be13e7b4840eb7ebca27cff6ff5a8445dc472b66fc1bdc595226dc8d40a3741f2aff33d57', 'dikkini@gmail.com', true, null, 1, 2, true, true, true, '2014-02-13 13:29:14');
@@ -136,7 +136,6 @@ INSERT INTO public.users (uuid, username, first_name, last_name, middle_name, bi
 INSERT INTO public.users (uuid, username, first_name, last_name, middle_name, birth_date, gender, address, address_visible, profile_visible, cellphone, cellphone_visible, file_id) VALUES ('b1146209-p7ea-4db3-8e74-od1b5bbb6cf5', 'reytest15', 'Проверочный15', 'Очень15', 'Валерьевна', null, null, '', false, true, '', false, 10);
 INSERT INTO public.users (uuid, username, first_name, last_name, middle_name, birth_date, gender, address, address_visible, profile_visible, cellphone, cellphone_visible, file_id) VALUES ('b1246209-q7ea-4db3-8e74-pd1b5bbb6cf5', 'rewtest16', 'Проверочный16', 'Очень16', 'Валерьевна', null, null, '', false, true, '', false, 10);
 INSERT INTO public.users (uuid, username, first_name, last_name, middle_name, birth_date, gender, address, address_visible, profile_visible, cellphone, cellphone_visible, file_id) VALUES ('b1346209-r7ea-4db3-8e74-qd1b5bbb6cf5', 'reqtest17', 'Проверочный17', 'Очень17', 'Валерьевна', null, null, '', false, true, '', false, 10);
---
 INSERT INTO public.users (uuid, username, first_name, last_name, middle_name, birth_date, gender, address, address_visible, profile_visible, cellphone, cellphone_visible, file_id) VALUES ('b6346209-a7ea-4dre-8e74-ad1b5bbb6cf5', 'qqtest1',   'Проверочный1', 'Очень1', 'Валерьевна', null, null, '', false, true, '', false, 10);
 INSERT INTO public.users (uuid, username, first_name, last_name, middle_name, birth_date, gender, address, address_visible, profile_visible, cellphone, cellphone_visible, file_id) VALUES ('b6346209-a7ea-4dre-8e74-bd1b5bbb6cf5', 'qqtest2',   'Проверочный2', 'Очень2', 'Валерьевна', null, null, '', false, true, '', false, 10);
 INSERT INTO public.users (uuid, username, first_name, last_name, middle_name, birth_date, gender, address, address_visible, profile_visible, cellphone, cellphone_visible, file_id) VALUES ('b6346209-a7ea-4dre-8e74-cd1b5bbb6cf5', 'qqtest3',   'Проверочный3', 'Очень3', 'Валерьевна', null, null, '', false, true, '', false, 10);

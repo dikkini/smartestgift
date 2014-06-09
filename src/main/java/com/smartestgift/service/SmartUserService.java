@@ -1,6 +1,7 @@
 package com.smartestgift.service;
 
 import com.restfb.types.User;
+import com.smartestgift.dao.model.File;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserDetails;
 
@@ -108,4 +109,11 @@ public interface SmartUserService {
      * @return
      */
     public List<SmartUser> findUsersWithOffset(int offset, SmartUser smartUser);
+
+    /**
+     *
+     * @param smartUser
+     * @param file
+     */
+    public void updateUserFile(SmartUser smartUser, File file);
 }

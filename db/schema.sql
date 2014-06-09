@@ -46,7 +46,6 @@ CREATE TABLE public.file
 (
   id      SERIAL PRIMARY KEY,
   name    VARCHAR                              NOT NULL,
-  size    VARCHAR                              NOT NULL,
   type_id INT REFERENCES public.file_type (id) NOT NULL
 );
 

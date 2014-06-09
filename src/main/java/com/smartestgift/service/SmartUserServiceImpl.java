@@ -173,6 +173,12 @@ public class SmartUserServiceImpl implements SmartUserService {
         return smartUserDAO.findSmartUsersByOffset(offset, smartUser.getUuid());
     }
 
+    @Override
+    public void updateUserFile(SmartUser smartUser, File file) {
+        smartUser.setFile(file);
+        smartUserDAO.merge(smartUser);
+    }
+
     private List<SmartUser> removeDuplicates(List<SmartUser> l) {
         Set<SmartUser> s = new TreeSet<>(new Comparator<SmartUser>() {
 
