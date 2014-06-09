@@ -1,8 +1,10 @@
 package com.smartestgift.dao.model;
 
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -11,6 +13,7 @@ import java.util.Date;
  * Email: dikkini@gmail.com
  */
 @Entity
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "message")
 public class Message implements Serializable {
     @Id
