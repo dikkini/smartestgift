@@ -27,7 +27,6 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    @Cacheable("files")
     public File getFile(Integer fileId) {
         return fileDAO.find(fileId);
     }
