@@ -1,6 +1,8 @@
 package com.smartestgift.dao.model;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -11,6 +13,7 @@ import java.util.Set;
  * Email: dikkini@gmail.com
  */
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table (name = "file")
 public class File implements Serializable {
     @Id
