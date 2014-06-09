@@ -44,6 +44,12 @@
             <id>java-net</id>
             <url>https://maven.java.net/content/repositories/releases</url>
         </repository>
+        <repository>
+            <id>terracotta-releases</id>
+            <url>http://www.terracotta.org/download/reflector/releases</url>
+            <releases><enabled>true</enabled></releases>
+            <snapshots><enabled>false</enabled></snapshots>
+        </repository>
     </repositories>
 
     <build>
@@ -156,6 +162,12 @@
             <groupId>postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>9.1-901-1.jdbc4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache-core</artifactId>
+            <version>2.6.8</version>
         </dependency>
 
         <!-- Spring -->
@@ -279,6 +291,11 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
             <version>5.0.3.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-ehcache</artifactId>
+            <version>4.3.4.Final</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>

@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
-import org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean;
-import org.springframework.cache.interceptor.CacheProxyFactoryBean;
 import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -19,28 +17,19 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.env.Environment;
+import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-import org.springframework.scheduling.TaskScheduler;
-import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
-import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.*;
@@ -51,7 +40,10 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Properties;
 
 /**
  * Created by dikkini on 18.03.14.
@@ -95,17 +87,43 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
     }
 
     @Bean
-    LocalSessionFactoryBean sessionFactory() {
-        LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-        sessionFactory.setDataSource(dataSource());
-        sessionFactory.setPackagesToScan("com.smartestgift.*");
-        sessionFactory.setHibernateProperties(hibernateProperties());
+    public SessionFactory sessionFactory() {
+        LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
+        sessionFactoryBean.setDataSource(dataSource());
+        sessionFactoryBean.setPackagesToScan("com.smartestgift.*");
 
-        return sessionFactory;
+        Properties hibernateProperties = new Properties();
+        hibernateProperties.put("hibernate.connection.characterEncoding", "UTF-8");
+        hibernateProperties.put("hibernate.connection.charSet", "UTF-8");
+        hibernateProperties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQL82Dialect");
+        hibernateProperties.put("hibernate.show_sql", "true");
+        hibernateProperties.put("hibernate.format_sql", "true");
+        //hibernateProperties.put("hibernate.generate_statistics", env.getProperty("hibernate.generate_statistics"));
+        hibernateProperties.put("hibernate.enable_lazy_load_no_trans", "true");
+
+        // second level cache
+        hibernateProperties.put("hibernate.cache.use_second_level_cache", "true");
+        hibernateProperties.put("hibernate.cache.use_query_cache", "true");
+        hibernateProperties.put("hibernate.cache.region.factory_class", "org.hibernate.cache.ehcache.EhCacheRegionFactory");
+        //hibernateProperties.put("net.sf.ehcache.configurationResourceName", env.getProperty("net.sf.ehcache.configurationResourceName"));
+
+        // testing
+        hibernateProperties.put("hibernate.bytecode.use_reflection_optimizer", false);
+        hibernateProperties.put("hibernate.check_nullability", false);
+        hibernateProperties.put("hibernate.search.autoregister_listeners", false);
+        sessionFactoryBean.setHibernateProperties(hibernateProperties);
+
+        try {
+            sessionFactoryBean.afterPropertiesSet();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return sessionFactoryBean.getObject();
     }
 
     //Set up JPA and transactionManager
-    @Bean
+/*    @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
         emf.setDataSource(dataSource());
@@ -120,12 +138,19 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
         emf.setJpaVendorAdapter(va);
 
         return emf;
+    }*/
+
+    @Bean
+    public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
+        return new PersistenceExceptionTranslationPostProcessor();
     }
 
     @Bean
     @Autowired
-    PlatformTransactionManager transactionManager(SessionFactory sessionFactory) {
-        return new HibernateTransactionManager(sessionFactory);
+    public HibernateTransactionManager transactionManager(SessionFactory sessionFactory) {
+        HibernateTransactionManager txManager = new HibernateTransactionManager();
+        txManager.setSessionFactory(sessionFactory);
+        return txManager;
     }
 
     @Override
@@ -138,10 +163,10 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        OpenEntityManagerInViewInterceptor interceptor = new OpenEntityManagerInViewInterceptor();
-        interceptor.setEntityManagerFactory(entityManagerFactory().getObject());
+        //OpenEntityManagerInViewInterceptor interceptor = new OpenEntityManagerInViewInterceptor();
+        //interceptor.setEntityManagerFactory(entityManagerFactory().getObject());
 
-        registry.addWebRequestInterceptor(interceptor);
+        //registry.addWebRequestInterceptor(interceptor);
         registry.addInterceptor(localeChangeInterceptor());
         registry.addInterceptor(new UserInterceptor()).addPathPatterns("/**")
                 .excludePathPatterns("/", "/login/**", "/signup/**");
@@ -154,17 +179,6 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
         resolver.setSuffix(".jsp");
         resolver.setViewClass(JstlView.class);
         return resolver;
-    }
-
-    private Properties hibernateProperties() {
-        return new Properties() {{
-            setProperty("hibernate.connection.characterEncoding", "UTF-8");
-            setProperty("hibernate.connection.charSet", "UTF-8");
-            setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQL82Dialect");
-            setProperty("hibernate.show_sql", "true");
-            setProperty("hibernate.format_sql", "true");
-            setProperty("hibernate.enable_lazy_load_no_trans", "true");
-        }};
     }
 
     @Bean
