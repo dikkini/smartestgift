@@ -25,6 +25,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
+import org.springframework.orm.hibernate4.support.OpenSessionInViewInterceptor;
 import org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -163,10 +164,10 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        //OpenEntityManagerInViewInterceptor interceptor = new OpenEntityManagerInViewInterceptor();
-        //interceptor.setEntityManagerFactory(entityManagerFactory().getObject());
+        OpenSessionInViewInterceptor sessionInViewInterceptor = new OpenSessionInViewInterceptor();
+        sessionInViewInterceptor.setSessionFactory(sessionFactory());
 
-        //registry.addWebRequestInterceptor(interceptor);
+        registry.addWebRequestInterceptor(sessionInViewInterceptor  );
         registry.addInterceptor(localeChangeInterceptor());
         registry.addInterceptor(new UserInterceptor()).addPathPatterns("/**")
                 .excludePathPatterns("/", "/login/**", "/signup/**");
