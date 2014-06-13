@@ -68,6 +68,7 @@ public class SmartUserGift implements Serializable {
         this.endDate = endDate;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof SmartUserGift)) return false;
@@ -78,6 +79,7 @@ public class SmartUserGift implements Serializable {
 
     }
 
+    @Override
     public int hashCode() {
         return (getPk() != null ? getPk().hashCode() : 0);
     }

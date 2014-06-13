@@ -68,6 +68,7 @@ public class SmartUserFriend implements Serializable {
         this.friendTypeId = friendTypeId;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof SmartUserFriend)) return false;
@@ -78,6 +79,7 @@ public class SmartUserFriend implements Serializable {
 
     }
 
+    @Override
     public int hashCode() {
         return (getPk() != null ? getPk().hashCode() : 0);
     }
