@@ -179,6 +179,47 @@ public class SmartUserServiceImpl implements SmartUserService {
         smartUserDAO.merge(smartUser);
     }
 
+    @Override
+    public void addRequestSmartUserFriend(SmartUser activeUser, String friendUsername) {
+        SmartUserFriend userNewFriend = new SmartUserFriend();
+        userNewFriend.setFriend(smartUserDAO.findSmartUserByUsername(friendUsername));
+        userNewFriend.setFriendAddDate(new Date());
+        userNewFriend.setFriendTypeId(ApplicationConstants.USER_FRIEND_REQUEST_TYPE);
+        userNewFriend.setSmartUser(activeUser);
+
+        activeUser.getSmartUserFriends().add(userNewFriend);
+
+        smartUserDAO.merge(activeUser);
+    }
+
+    @Override
+    public void removeSmartUserFriend(SmartUser activeUser, String friendUsername) {
+        SmartUser friend = smartUserDAO.findSmartUserByUsername(friendUsername);
+        SmartUserFriend smartUserFriend = smartUserDAO.findSmartUserFriend(activeUser, friend);
+        smartUserDAO.removeSmartUserFriend(smartUserFriend);
+        smartUserDAO.merge(activeUser);
+    }
+
+    @Override
+    public List<SmartUserFriend> findAllSmartUserFriends(SmartUser activeUser) {
+        return smartUserDAO.findAllSmartUserFriends(activeUser);
+    }
+
+    @Override
+    public void changeSmartUserFriendType(SmartUser activeUser, String friendUsername, int typeId) {
+        SmartUser friend = smartUserDAO.findSmartUserByUsername(friendUsername);
+        Set<SmartUserFriend> smartUserFriends = activeUser.getSmartUserFriends();
+
+        for (SmartUserFriend currentSmartUserFriend : smartUserFriends) {
+            if (friend.getUuid().equals(currentSmartUserFriend.getFriend().getUuid())) {
+                currentSmartUserFriend.setFriendTypeId(typeId);
+                break;
+            }
+        }
+
+        smartUserDAO.merge(activeUser);
+    }
+
     private List<SmartUser> removeDuplicates(List<SmartUser> l) {
         Set<SmartUser> s = new TreeSet<>(new Comparator<SmartUser>() {
 

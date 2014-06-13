@@ -63,11 +63,14 @@ public class SmartUser implements Serializable, Annotation {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "smartUser", cascade = CascadeType.ALL)
     private SmartUserDetails smartUserDetails;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "pk.user", cascade=CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.user", cascade = CascadeType.ALL)
     private Set<SmartUserGift> smartUserGifts;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.user", cascade = CascadeType.ALL)
+    private Set<SmartUserFriend> smartUserFriends;
+
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name="file_id")
+    @JoinColumn(name = "file_id")
     protected File file;
 
     public SmartUser() {}
@@ -182,6 +185,14 @@ public class SmartUser implements Serializable, Annotation {
 
     public void setSmartUserGifts(Set<SmartUserGift> smartUserGifts) {
         this.smartUserGifts = smartUserGifts;
+    }
+
+    public Set<SmartUserFriend> getSmartUserFriends() {
+        return smartUserFriends;
+    }
+
+    public void setSmartUserFriends(Set<SmartUserFriend> smartUserFriends) {
+        this.smartUserFriends = smartUserFriends;
     }
 
     public File getFile() {

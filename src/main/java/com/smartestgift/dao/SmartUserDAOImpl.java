@@ -1,8 +1,7 @@
 package com.smartestgift.dao;
 
 import com.smartestgift.dao.SmartUserDAO;
-import com.smartestgift.dao.model.SmartUser;
-import com.smartestgift.dao.model.SmartUserDetails;
+import com.smartestgift.dao.model.*;
 import com.smartestgift.utils.ApplicationConstants;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -112,5 +111,51 @@ public class SmartUserDAOImpl implements SmartUserDAO {
         Criterion currentUserRestriction = Restrictions.ne("uuid", activeUserUuid);
         criteria.add(currentUserRestriction);
         return criteria.list();
+    }
+
+    @Override
+    public void removeSmartUserFriend(SmartUserFriend smartUserFriend) {
+        Session session = sessionFactory.getCurrentSession();
+        session.delete(smartUserFriend);
+        session.flush();
+    }
+
+    @Override
+    public void removeSmartUserGift(SmartUserGift smartUserGift) {
+        Session session = sessionFactory.getCurrentSession();
+        session.delete(smartUserGift);
+        session.flush();
+    }
+
+    @Override
+    public List<SmartUserFriend> findAllSmartUserFriends(SmartUser activeUser) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUserFriend.class);
+        criteria.add(Restrictions.eq("pk.user", activeUser));
+        criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
+        return criteria.list();
+    }
+
+    @Override
+    public SmartUserFriend findSmartUserFriend(SmartUser activeUser, SmartUser friend) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUserFriend.class);
+        SmartUserFriendId smartUserFriendId = new SmartUserFriendId();
+        smartUserFriendId.setUser(activeUser);
+        smartUserFriendId.setFriend(friend);
+
+        criteria.add(Restrictions.eq("pk", smartUserFriendId));
+        criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
+        return (SmartUserFriend) criteria.uniqueResult();
+    }
+
+    @Override
+    public SmartUserGift findSmartUserGift(SmartUser user, GiftShop giftShop) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUserGift.class);
+        SmartUserGiftId smartUserGiftId = new SmartUserGiftId();
+        smartUserGiftId.setUser(user);
+        smartUserGiftId.setGiftShop(giftShop);
+
+        criteria.add(Restrictions.eq("pk", smartUserGiftId));
+        criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
+        return (SmartUserGift) criteria.uniqueResult();
     }
 }

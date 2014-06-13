@@ -11,6 +11,7 @@ DROP TABLE public.users CASCADE;
 DROP TABLE public.auth_provider CASCADE;
 DROP TABLE public.role CASCADE;
 DROP TABLE public.user_details CASCADE;
+DROP TABLE public.user_friend CASCADE;
 DROP TABLE public.persistent_login CASCADE;
 DROP TABLE public.shop CASCADE;
 DROP TABLE public.gift CASCADE;
@@ -24,10 +25,11 @@ DROP TABLE public.message CASCADE;
 DROP TABLE public.conversation CASCADE;
 DROP TABLE public.message_status CASCADE;
 
-CREATE TABLE public.auth_provider
+
+CREATE TABLE public.message_status
 (
-  id   SERIAL PRIMARY KEY,
-  name VARCHAR NOT NULL
+  id     SERIAL PRIMARY KEY,
+  status VARCHAR(20) NOT NULL
 );
 
 CREATE TABLE public.file_type
@@ -35,6 +37,12 @@ CREATE TABLE public.file_type
   id   SERIAL PRIMARY KEY,
   name VARCHAR NOT NULL,
   path VARCHAR NOT NULL
+);
+
+CREATE TABLE public.auth_provider
+(
+  id   SERIAL PRIMARY KEY,
+  name VARCHAR NOT NULL
 );
 
 CREATE TABLE public.role (
@@ -82,6 +90,15 @@ CREATE TABLE public.user_details
   registration_date     TIMESTAMP DEFAULT now()                                 NOT NULL
 );
 
+CREATE TABLE public.user_friend
+(
+  user_uuid     VARCHAR(36) REFERENCES public.users (uuid) NOT NULL,
+  friend_uuid   VARCHAR(36) REFERENCES public.users (uuid) NOT NULL,
+  friendAddDate TIMESTAMP                                  NOT NULL,
+  friendTypeId  INT                                        NOT NULL,
+  PRIMARY KEY (user_uuid, friend_uuid)
+);
+
 CREATE TABLE public.persistent_login
 (
   username  VARCHAR(64) UNIQUE REFERENCES public.users (username) NOT NULL,
@@ -127,7 +144,7 @@ CREATE TABLE public.user_gift
   user_uuid      VARCHAR(36) REFERENCES public.users (uuid)       NOT NULL,
   gift_shop_uuid VARCHAR(36) REFERENCES public.gift_shop (uuid)   NOT NULL,
   moneyCollect   INT                                              NOT NULL,
-  endDate        TIMESTAMP NOT NULL,
+  endDate        TIMESTAMP                                        NOT NULL,
   PRIMARY KEY (user_uuid, gift_shop_uuid)
 );
 
@@ -146,12 +163,6 @@ CREATE TABLE public.conversation
   uuid           VARCHAR(36) PRIMARY KEY,
   user_from_uuid VARCHAR(36) REFERENCES public.users (uuid)    NOT NULL,
   user_to_uuid   VARCHAR(36) REFERENCES public.users (uuid)    NOT NULL
-);
-
-CREATE TABLE public.message_status
-(
-  id     SERIAL PRIMARY KEY,
-  status VARCHAR(20) NOT NULL
 );
 
 CREATE TABLE public.message

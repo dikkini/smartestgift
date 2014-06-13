@@ -43,6 +43,23 @@
         var peopleContainer = $("#people");
         var processing = false;
 
+        $(document).on("click", ".add-friend-btn", function() {
+            var friendUsername = $(this).data("username");
+            $.ajax({
+                async: true,
+                type: "post",
+                url: "/users/addFriendRequest.do",
+                cache: false,
+                data: "friendUsername=" + friendUsername,
+                success: function (response) {
+                    alert(response.success);
+                },
+                error: function (response) {
+                    alert(response);
+                }
+            });
+        });
+
         function getAndRender() {
             $("#loading-people").loading("start");
             $.ajax({
@@ -55,24 +72,26 @@
 
                     JSON.parse(response).forEach(function(entry) {
                         var html =
-                                '<li class="user" data-username="' + entry.username + '"class="contact" tabindex="1" data-fio="' + (entry.lastName ? entry.lastName + " " : "") + entry.firstName + (entry.middleName ? " " + entry.middleName : "") + '">' +
-                                '<div class="list-group">' +
-                                '<a class="list-group-item" style="cursor: pointer">' +
-                                '<div class="row">' +
-                                '<div class="col-xs-2">' +
-                                '<img height="50" src="/file/get/' + entry.file.id + '">' +
-                                '</div>' +
-                                '<div class="col-xs-8">' +
-                                '<p class="list-group-item-heading">' +
-                                (entry.lastName ? entry.lastName + " " : "") + entry.firstName + (entry.middleName ? " " + entry.middleName : "")  +
-                                '</p>' +
-                                '<p class="list-group-item-text">' +
-                                entry.username +
-                                '</p>' +
-                                '</div>'  +
-                                '</div>' +
-                                '</a>' +
-                                '</div>' +
+                                '<li class="contact" tabindex="1" data-fio="' + (entry.lastName ? entry.lastName + " " : "") + entry.firstName + (entry.middleName ? " " + entry.middleName : "") + '">' +
+                                    '<div class="list-group">' +
+                                        '<a class="user list-group-item" data-username="' + entry.username + '"style="cursor: pointer">' +
+                                        '<div class="row">' +
+                                            '<div class="col-xs-2">' +
+                                                '<img height="50" src="/file/get/' + entry.file.id + '">' +
+                                            '</div>' +
+                                            '<div class="col-xs-8">' +
+                                                '<p class="list-group-item-heading">' +
+                                                    (entry.lastName ? entry.lastName + " " : "") + entry.firstName + (entry.middleName ? " " + entry.middleName : "")  +
+                                                '</p>' +
+                                                '<p class="list-group-item-text">' +
+                                                    entry.username +
+                                                '</p>' +
+                                            '</div>'  +
+                                        '</div>' +
+                                        '</a>' +
+                                        '<button style="float: right;" class="btn btn-default add-friend-btn" data-username="'+entry.username+'">Add Friend</button>' +
+                                        '<div class="clearfix">' +
+                                    '</div>' +
                                 '</li>';
 
                         peopleContainer.append(html);
@@ -91,9 +110,10 @@
 
         getAndRender();
 
+        // TODO стандартную пагинацию и включение стандартной пагинации если выключен javascript
         $(document).scroll(function() {
             if (processing)
-                return false;
+                return;
 
             if ($(window).scrollTop() >= ($(document).height() - $(window).height())*0.7){
                 processing = true; //sets a processing AJAX request flag
