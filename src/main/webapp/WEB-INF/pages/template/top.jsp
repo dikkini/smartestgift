@@ -138,7 +138,7 @@
     var socket;
     $(document).ready(function () {
         <sec:authorize access="isAuthenticated()">
-        socket = new SockJS('/messages');
+/*        socket = new SockJS('/messages');
         var stompClient = Stomp.over(socket);
         stompClient.connect({}, function (frame) {
             stompClient.send("/app/setUnreadCount", {}, {});
@@ -146,7 +146,7 @@
                 response = JSON.parse(response.body);
                 $("#countUnreadMessages").text(response);
             });
-        });
+        });*/
 
         var cache = {};
 
