@@ -81,7 +81,7 @@
                             </li>
                             <li>
                                 <a href="<c:url value="/messages"/>"><spring:message code="label.messages"/> <span
-                                        id="countUnreadMessages" class="badge"></span></a>
+                                        id="countUnreadMessages" class="badge">0</span></a>
                             </li>
                             <li>
                                 <a href="<c:url value="/users/all"/>"><spring:message code="label.users"/></a>
@@ -142,7 +142,6 @@
         var stompClient = Stomp.over(socket);
         stompClient.connect({}, function (frame) {
             stompClient.send("/app/setUnreadCount", {}, {});
-//                console.log('Connected: ' + frame);
             stompClient.subscribe('/user/' + '${user.username}' + '/getUnreadMessagesCount', function (response) {
                 response = JSON.parse(response.body);
                 $("#countUnreadMessages").text(response);
