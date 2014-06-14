@@ -189,15 +189,15 @@ public class SmartUserServiceImpl implements SmartUserService {
 
         activeUser.getSmartUserFriends().add(userNewFriend);
 
-        smartUserDAO.merge(activeUser);
+        smartUserDAO.store(activeUser);
     }
 
     @Override
     public void removeSmartUserFriend(SmartUser activeUser, String friendUsername) {
         SmartUser friend = smartUserDAO.findSmartUserByUsername(friendUsername);
         SmartUserFriend smartUserFriend = smartUserDAO.findSmartUserFriend(activeUser, friend);
-        smartUserDAO.removeSmartUserFriend(smartUserFriend);
-        smartUserDAO.merge(activeUser);
+        activeUser.getSmartUserFriends().remove(smartUserFriend);
+        smartUserDAO.store(activeUser);
     }
 
     @Override
