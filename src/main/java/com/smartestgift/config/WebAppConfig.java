@@ -123,24 +123,6 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
         return sessionFactoryBean.getObject();
     }
 
-    //Set up JPA and transactionManager
-/*    @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
-        LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
-        emf.setDataSource(dataSource());
-        emf.setPackagesToScan("com.smartestgift.*");
-
-        //let Hibernate know which database we're using.
-        //note that this is vendor specific, not JPA
-        Map opts = emf.getJpaPropertyMap();
-        opts.put("hibernate.dialect", env.getProperty("hibernate.dialect"));
-
-        HibernateJpaVendorAdapter va = new HibernateJpaVendorAdapter();
-        emf.setJpaVendorAdapter(va);
-
-        return emf;
-    }*/
-
     @Bean
     public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
         return new PersistenceExceptionTranslationPostProcessor();
@@ -184,7 +166,7 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
 
     @Bean
     public MessageSource messageSource() {
-        final ReloadableResourceBundleMessageSource ret = new ReloadableResourceBundleMessageSource();
+        ReloadableResourceBundleMessageSource ret = new ReloadableResourceBundleMessageSource();
         ret.setBasename("/assets/messages");
         ret.setDefaultEncoding("UTF-8");
         return ret;
@@ -199,15 +181,8 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
 
     @Bean
     public LocaleResolver localeResolver() {
-        final CookieLocaleResolver ret = new CookieLocaleResolver();
+        CookieLocaleResolver ret = new CookieLocaleResolver();
         ret.setDefaultLocale(Locale.ENGLISH);
-        return ret;
-    }
-
-    @Bean
-    public HandlerMapping handlerMapping() {
-        final DefaultAnnotationHandlerMapping ret = new DefaultAnnotationHandlerMapping();
-        ret.setInterceptors(new Object[] { localeChangeInterceptor() });
         return ret;
     }
 
