@@ -69,7 +69,7 @@ public class SmartUser implements Serializable, Annotation {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.user", cascade = CascadeType.ALL)
     private Set<SmartUserFriend> smartUserFriends;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "file_id")
     protected File file;
 
@@ -224,6 +224,23 @@ public class SmartUser implements Serializable, Annotation {
         if (!uuid.equals(smartUser.uuid)) return false;
 
         return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = uuid.hashCode();
+        result = 31 * result + username.hashCode();
+        result = 31 * result + (birthDate != null ? birthDate.hashCode() : 0);
+        result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
+        result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
+        result = 31 * result + (middleName != null ? middleName.hashCode() : 0);
+        result = 31 * result + (gender != null ? gender.hashCode() : 0);
+        result = 31 * result + (address != null ? address.hashCode() : 0);
+        result = 31 * result + (addressVisible ? 1 : 0);
+        result = 31 * result + (profileVisible ? 1 : 0);
+        result = 31 * result + (cellPhone != null ? cellPhone.hashCode() : 0);
+        result = 31 * result + (cellPhoneVisible ? 1 : 0);
+        return result;
     }
 
     @Override
