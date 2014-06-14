@@ -70,12 +70,12 @@
             });
         });
 
-        $(".").click(function() {
+        $(".remove-friend-btn").click(function() {
             var friendUsername = $(this).data("username");
             $.ajax({
                 async: true,
                 type: "post",
-                url: "/users/acceptFriendRequest.do",
+                url: "/users/removeFriend.do",
                 cache: false,
                 data: "friendUsername=" + friendUsername,
                 success: function (response) {
