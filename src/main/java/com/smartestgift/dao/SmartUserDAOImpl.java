@@ -54,7 +54,6 @@ public class SmartUserDAOImpl implements SmartUserDAO {
         Session session = sessionFactory.getCurrentSession();
         session.merge(dmodel);
         session.flush();
-        session.refresh(dmodel);
     }
 
     @Override
@@ -151,11 +150,9 @@ public class SmartUserDAOImpl implements SmartUserDAO {
     @Override
     public SmartUserGift findSmartUserGift(SmartUser user, GiftShop giftShop) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUserGift.class);
-        SmartUserGiftId smartUserGiftId = new SmartUserGiftId();
-        smartUserGiftId.setUser(user);
-        smartUserGiftId.setGiftShop(giftShop);
 
-        criteria.add(Restrictions.eq("pk", smartUserGiftId));
+        criteria.add(Restrictions.eq("pk.user", user));
+        criteria.add(Restrictions.eq("pk.giftShop", giftShop));
         criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
         return (SmartUserGift) criteria.uniqueResult();
     }
