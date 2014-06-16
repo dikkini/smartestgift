@@ -98,23 +98,17 @@ public class GiftController {
             return result;
         }
 
-        GiftShop giftShop = giftService.findGiftShopByUuid(giftShopUuid);
+        giftService.addGiftShopToUserWishes(smartUserDetails.getSmartUser(), giftShopUuid, endDate);
+        result.setSuccess(true);
+        result.addSuccessMessage(USER_ADD_GIFT_SUCCESS);
 
-        if (!giftService.smartUserHasGiftShop(smartUserDetails.getSmartUser().getSmartUserGifts(), giftShop)) {
-            giftService.addGiftShopToUserWishes(smartUserDetails.getSmartUser(), giftShop, endDate);
-            result.setSuccess(true);
-            result.addSuccessMessage(USER_ADD_GIFT_SUCCESS);
-        } else {
-            result.setSuccess(false);
-            result.addError(USER_HAD_GIFT_ERROR);
-        }
         return result;
     }
 
     @RequestMapping(value = "/unWantGift", method = RequestMethod.POST)
     public @ResponseBody AjaxResponse unWantGift(@ActiveUser SmartUserDetails smartUserDetails,
                                                  @RequestParam(required = true, value = "giftshopuuid")
-                                                    String giftShopUuid) {
+                                                 String giftShopUuid) {
         AjaxResponse result = new AjaxResponse();
 
         // TODO проверить uuidы или проверить проверку на правильность uuidов
@@ -123,17 +117,10 @@ public class GiftController {
 //            result.addError(ResponseMessages.INTERNAL_ERROR);
 //            return result;
 //        }
+        giftService.deleteGiftFromUser(smartUserDetails.getSmartUser(), giftShopUuid);
+        result.setSuccess(true);
+        result.addSuccessMessage(DELETE_GIFT_FROM_USER_SUCCESS);
 
-        GiftShop giftShop = giftService.findGiftShopByUuid(giftShopUuid);
-
-        if (giftService.smartUserHasGiftShop(smartUserDetails.getSmartUser().getSmartUserGifts(), giftShop)) {
-            giftService.deleteGiftFromUser(smartUserDetails.getSmartUser(), giftShop);
-            result.setSuccess(true);
-            result.addSuccessMessage(DELETE_GIFT_FROM_USER_SUCCESS);
-        } else {
-            result.setSuccess(false);
-            result.addError(DELETE_GIFT_FROM_USER_ERROR);
-        }
         return result;
     }
 
