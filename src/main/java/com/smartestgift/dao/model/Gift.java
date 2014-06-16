@@ -34,9 +34,6 @@ public class Gift implements Serializable {
     @JoinColumn(name="category_id")
     protected GiftCategory category;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "pk.giftShop")
-    protected Set<SmartUserGift> smartUserGifts;
-
     @ManyToMany(fetch = FetchType.EAGER,  cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "gift_file",
             joinColumns = {
@@ -86,14 +83,6 @@ public class Gift implements Serializable {
 
     public void setCategory(GiftCategory category) {
         this.category = category;
-    }
-
-    public Set<SmartUserGift> getSmartUserGifts() {
-        return smartUserGifts;
-    }
-
-    public void setSmartUserGifts(Set<SmartUserGift> smartUserGifts) {
-        this.smartUserGifts = smartUserGifts;
     }
 
     public Set<File> getFiles() {
