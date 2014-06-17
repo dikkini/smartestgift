@@ -98,9 +98,14 @@ public class GiftController {
             return result;
         }
 
-        giftService.addGiftShopToUserWishes(smartUserDetails.getSmartUser(), giftShopUuid, endDate);
-        result.setSuccess(true);
-        result.addSuccessMessage(USER_ADD_GIFT_SUCCESS);
+        if (!giftService.hasSmartUserGiftShop(smartUserDetails.getSmartUser(), giftShopUuid)) {
+            giftService.addGiftShopToUserWishes(smartUserDetails.getSmartUser(), giftShopUuid, endDate);
+            result.setSuccess(true);
+            result.addSuccessMessage(USER_ADD_GIFT_SUCCESS);
+        } else {
+            result.setSuccess(false);
+            result.addSuccessMessage(USER_HAD_GIFT_INFO);
+        }
 
         return result;
     }
@@ -117,9 +122,15 @@ public class GiftController {
 //            result.addError(ResponseMessages.INTERNAL_ERROR);
 //            return result;
 //        }
-        giftService.deleteGiftFromUser(smartUserDetails.getSmartUser(), giftShopUuid);
-        result.setSuccess(true);
-        result.addSuccessMessage(DELETE_GIFT_FROM_USER_SUCCESS);
+        if (giftService.hasSmartUserGiftShop(smartUserDetails.getSmartUser(), giftShopUuid)) {
+            giftService.deleteGiftFromUser(smartUserDetails.getSmartUser(), giftShopUuid);
+            result.setSuccess(true);
+            result.addSuccessMessage(DELETE_GIFT_FROM_USER_SUCCESS);
+        } else {
+            result.setSuccess(false);
+            result.addError(DELETE_GIFT_FROM_USER_ERROR);
+            result.addInformation(USER_NOT_HAD_GIFT_INFO);
+        }
 
         return result;
     }

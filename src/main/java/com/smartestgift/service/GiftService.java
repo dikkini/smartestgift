@@ -28,6 +28,14 @@ public interface GiftService {
     public GiftShop findGiftShopByUuid(String uuid);
 
     /**
+     *
+     * @param user
+     * @param giftShopUuid
+     * @return
+     */
+    public boolean hasSmartUserGiftShop(SmartUser user, String giftShopUuid);
+
+    /**
      * Add gift to user
      * @param user SmartUser model
      * @param giftShopUuid Gift model

@@ -50,9 +50,16 @@ public class GiftServiceImpl implements GiftService {
     }
 
     @Override
-    public void addGiftShopToUserWishes(SmartUser user, String giftShopUuid, Date endDate) {
+    public boolean hasSmartUserGiftShop(SmartUser user, String giftShopUuid) {
         GiftShop giftShop = giftShopDAO.find(giftShopUuid);
+        SmartUserGift smartUserGift = smartUserDAO.findSmartUserGift(user, giftShop);
+        return smartUserGift != null;
+    }
 
+    @Override
+    public void addGiftShopToUserWishes(SmartUser user, String giftShopUuid, Date endDate) {
+        smartUserDAO.store(user);
+        GiftShop giftShop = giftShopDAO.find(giftShopUuid);
         SmartUserGift smartUserGift = new SmartUserGift();
         smartUserGift.setSmartUser(user);
         smartUserGift.setGiftShop(giftShop);
@@ -65,6 +72,7 @@ public class GiftServiceImpl implements GiftService {
     @Override
     public void deleteGiftFromUser(SmartUser user, String giftShopUuid) {
         GiftShop giftShop = giftShopDAO.find(giftShopUuid);
+        smartUserDAO.store(user);
         SmartUserGift smartUserGift = smartUserDAO.findSmartUserGift(user, giftShop);
         user.getSmartUserGifts().remove(smartUserGift);
         smartUserDAO.store(user);
