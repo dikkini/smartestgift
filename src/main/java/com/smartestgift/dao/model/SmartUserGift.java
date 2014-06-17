@@ -71,16 +71,22 @@ public class SmartUserGift implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof SmartUserGift)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
         SmartUserGift that = (SmartUserGift) o;
 
-        return !(getPk() != null ? !getPk().equals(that.getPk()) : that.getPk() != null);
+        if (endDate != null ? !endDate.equals(that.endDate) : that.endDate != null) return false;
+        if (moneyCollect != null ? !moneyCollect.equals(that.moneyCollect) : that.moneyCollect != null) return false;
+        if (pk != null ? !pk.equals(that.pk) : that.pk != null) return false;
 
+        return true;
     }
 
     @Override
     public int hashCode() {
-        return (getPk() != null ? getPk().hashCode() : 0);
+        int result = pk != null ? pk.hashCode() : 0;
+        result = 31 * result + (moneyCollect != null ? moneyCollect.hashCode() : 0);
+        result = 31 * result + (endDate != null ? endDate.hashCode() : 0);
+        return result;
     }
 }
