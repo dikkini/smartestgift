@@ -1,6 +1,5 @@
 package com.smartestgift.dao;
 
-import com.smartestgift.dao.model.Gift;
 import com.smartestgift.dao.model.GiftCategory;
 import org.hibernate.Criteria;
 import org.hibernate.Session;

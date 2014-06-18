@@ -3,9 +3,7 @@ package com.smartestgift.service;
 import com.smartestgift.dao.FileDAO;
 import com.smartestgift.dao.model.File;
 import com.smartestgift.dao.model.FileType;
-import com.smartestgift.utils.ApplicationConstants;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 /**

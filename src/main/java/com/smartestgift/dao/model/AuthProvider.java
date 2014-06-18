@@ -20,7 +20,7 @@ public class AuthProvider implements Serializable {
     protected String name;
 
     @OneToMany(mappedBy = "authProvider")
-    private Set<SmartUserDetails> smartUsers;
+    private Set<SmartUser> smartUsers;
 
     public AuthProvider() {}
 
@@ -43,14 +43,6 @@ public class AuthProvider implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Set<SmartUserDetails> getSmartUsers() {
-        return smartUsers;
-    }
-
-    public void setSmartUsers(Set<SmartUserDetails> smartUsers) {
-        this.smartUsers = smartUsers;
     }
 
     @Override

@@ -3,13 +3,16 @@ package com.smartestgift.controller;
 import com.google.gson.Gson;
 import com.smartestgift.controller.model.AjaxResponse;
 import com.smartestgift.controller.model.GiftPage;
-import com.smartestgift.dao.model.*;
+import com.smartestgift.dao.model.Gift;
+import com.smartestgift.dao.model.GiftCategory;
+import com.smartestgift.dao.model.GiftShop;
+import com.smartestgift.dao.model.SmartUserGift;
 import com.smartestgift.service.GiftService;
-import com.smartestgift.utils.ActiveUser;
+import com.smartestgift.service.SmartUserService;
 import com.smartestgift.utils.ApplicationConstants;
 import com.smartestgift.utils.ResponseMessages;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -21,7 +24,6 @@ import java.util.List;
 import java.util.Set;
 
 import static com.smartestgift.utils.ResponseMessages.*;
-import static com.smartestgift.utils.Utils.isUUID;
 
 /**
  * Created by dikkini on 14.02.14.
@@ -32,13 +34,13 @@ import static com.smartestgift.utils.Utils.isUUID;
 public class GiftController {
 
     @Autowired
-    GiftService giftService;
+    private GiftService giftService;
 
     @Autowired
-    Gson gson;
+    private SmartUserService smartUserService;
 
     @Autowired
-    SessionFactory sessionFactory;
+    private Gson gson;
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView giftCategories() {
@@ -59,8 +61,8 @@ public class GiftController {
 
 
     @RequestMapping(value = "/my", method = RequestMethod.GET)
-    public ModelAndView myGifts(@ActiveUser SmartUserDetails smartUserDetails) {
-        Set<SmartUserGift> gifts = smartUserDetails.getSmartUser().getSmartUserGifts();
+    public ModelAndView myGifts(Authentication authentication) {
+        Set<SmartUserGift> gifts = smartUserService.findUserByUsername(authentication.getName()).getSmartUserGifts();
         return new ModelAndView("gifts/my", "gifts", gifts);
     }
 
@@ -76,7 +78,7 @@ public class GiftController {
     // TODO sending email to a friends of users if option checked true to send
     // TODO check valid end date of gift collaboration
     @RequestMapping(value = "/wantGift", headers="Accept=application/json", method = RequestMethod.POST)
-    public @ResponseBody AjaxResponse wantGift(@ActiveUser SmartUserDetails smartUserDetails,
+    public @ResponseBody AjaxResponse wantGift(Authentication authentication,
                                                @RequestParam(required = true, value = "giftShopUuid") String giftShopUuid,
                                                @RequestParam(required = true, value = "endDate") String endDateStr) {
         AjaxResponse result = new AjaxResponse();
@@ -98,8 +100,8 @@ public class GiftController {
             return result;
         }
 
-        if (!giftService.hasSmartUserGiftShop(smartUserDetails.getSmartUser(), giftShopUuid)) {
-            giftService.addGiftShopToUserWishes(smartUserDetails.getSmartUser(), giftShopUuid, endDate);
+        if (!giftService.hasSmartUserGiftShop(smartUserService.findUserByUsername(authentication.getName()), giftShopUuid)) {
+            giftService.addGiftShopToUserWishes(smartUserService.findUserByUsername(authentication.getName()), giftShopUuid, endDate);
             result.setSuccess(true);
             result.addSuccessMessage(USER_ADD_GIFT_SUCCESS);
         } else {
@@ -111,7 +113,7 @@ public class GiftController {
     }
 
     @RequestMapping(value = "/unWantGift", method = RequestMethod.POST)
-    public @ResponseBody AjaxResponse unWantGift(@ActiveUser SmartUserDetails smartUserDetails,
+    public @ResponseBody AjaxResponse unWantGift(Authentication authentication,
                                                  @RequestParam(required = true, value = "giftshopuuid")
                                                  String giftShopUuid) {
         AjaxResponse result = new AjaxResponse();
@@ -122,8 +124,8 @@ public class GiftController {
 //            result.addError(ResponseMessages.INTERNAL_ERROR);
 //            return result;
 //        }
-        if (giftService.hasSmartUserGiftShop(smartUserDetails.getSmartUser(), giftShopUuid)) {
-            giftService.deleteGiftFromUser(smartUserDetails.getSmartUser(), giftShopUuid);
+        if (giftService.hasSmartUserGiftShop(smartUserService.findUserByUsername(authentication.getName()), giftShopUuid)) {
+            giftService.deleteGiftFromUser(smartUserService.findUserByUsername(authentication.getName()), giftShopUuid);
             result.setSuccess(true);
             result.addSuccessMessage(DELETE_GIFT_FROM_USER_SUCCESS);
         } else {
@@ -142,7 +144,7 @@ public class GiftController {
     }
 
     @RequestMapping(value = "/getFindGiftPage", headers="Accept=application/json", method = RequestMethod.POST)
-    public @ResponseBody String getFindGiftPage(@ActiveUser SmartUserDetails smartUserDetails,
+    public @ResponseBody String getFindGiftPage(Authentication authentication,
                                                 @RequestParam(required = true, value = "countAll") Long countAll,
                                                 @RequestParam(required = true, value = "searchString") String searchString,
                                                 @RequestParam(required = true, value = "pageNum") int pageNum,
@@ -154,7 +156,7 @@ public class GiftController {
     }
 
     @RequestMapping(value = "/findGiftShops", headers="Accept=application/json", method = RequestMethod.POST)
-    public @ResponseBody String findGiftShops(@ActiveUser SmartUserDetails smartUserDetails,
+    public @ResponseBody String findGiftShops(Authentication authentication,
                                              @RequestParam(required = true, value = "giftUuid") String giftUuid) {
         // TODO security checks
         List<GiftShop> giftShops = giftService.findGiftShops(giftUuid);

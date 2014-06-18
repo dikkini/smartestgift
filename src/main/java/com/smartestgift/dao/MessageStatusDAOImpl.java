@@ -1,13 +1,10 @@
 package com.smartestgift.dao;
 
-import com.smartestgift.dao.model.Message;
 import com.smartestgift.dao.model.MessageStatus;
-import com.smartestgift.dao.model.SmartUser;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.CriteriaSpecification;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

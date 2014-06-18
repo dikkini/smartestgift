@@ -1,8 +1,5 @@
 package com.smartestgift.dao.model;
 
-import org.hibernate.annotations.Sort;
-import org.hibernate.annotations.SortType;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;

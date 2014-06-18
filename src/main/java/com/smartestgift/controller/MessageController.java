@@ -3,19 +3,16 @@ package com.smartestgift.controller;
 import com.google.gson.Gson;
 import com.smartestgift.controller.model.AjaxResponse;
 import com.smartestgift.controller.model.SocketMessage;
-import com.smartestgift.dao.SmartUserDAO;
 import com.smartestgift.dao.model.Conversation;
 import com.smartestgift.dao.model.Message;
-import com.smartestgift.dao.model.SmartUser;
-import com.smartestgift.dao.model.SmartUserDetails;
 import com.smartestgift.service.ConversationService;
 import com.smartestgift.service.MessageService;
 import com.smartestgift.service.SmartUserService;
-import com.smartestgift.utils.ActiveUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -56,20 +53,20 @@ public class MessageController {
     private Map<String, ScheduledFuture<?>> conversationSchedulers = new HashMap<>();
 
     @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView messages(@ActiveUser SmartUserDetails smartUserDetails) {
-        List<Conversation> userConversations = conversationService.findConversationsByUser(smartUserDetails.getSmartUser());
+    public ModelAndView messages(Authentication authentication) {
+        List<Conversation> userConversations = conversationService.findConversationsByUser(smartUserService.findUserByUsername(authentication.getName()));
         ModelAndView mav = new ModelAndView("users/messages");
         mav.addObject("userConversations", userConversations);
         return mav;
     }
 
     @RequestMapping(value = "/getConversationMessages", headers="Accept=application/json", method = RequestMethod.POST)
-    public @ResponseBody String getConversationMessages(@ActiveUser SmartUserDetails smartUserDetails,
+    public @ResponseBody String getConversationMessages(Authentication authentication,
                                                               @RequestParam(value = "conversationUuid", required = true)
                                                                                               String conversationUuid) {
         Conversation conversationByUuid = conversationService.findConversationByUuid(conversationUuid);
         // TODO add additional security checks using username and active user
-        List<Message> messagesInConversation = messageService.findMessagesInConversation(smartUserDetails.getSmartUser(),
+        List<Message> messagesInConversation = messageService.findMessagesInConversation(smartUserService.findUserByUsername(authentication.getName()),
                 conversationByUuid);
         return gson.toJson(messagesInConversation);
     }
@@ -100,40 +97,40 @@ public class MessageController {
     }
 
     @RequestMapping(value = "/sendMessageToUser", method = RequestMethod.POST)
-    public @ResponseBody AjaxResponse sendMessageToUser(@ActiveUser SmartUserDetails smartUserDetails,
+    public @ResponseBody AjaxResponse sendMessageToUser(Authentication authentication,
                                                         @RequestParam(value = "message", required = true)
                                                         String message,
                                                         @RequestParam(value = "conversation-uuid", required = true)
                                                         String conversationUuid) {
         // TODO add additional security checks using username and active user
         AjaxResponse result = new AjaxResponse();
-        messageService.sendMessageToUser(smartUserDetails.getSmartUser(), message, conversationUuid);
+        messageService.sendMessageToUser(smartUserService.findUserByUsername(authentication.getName()), message, conversationUuid);
         result.setSuccess(true);
         result.addSuccessMessage("message_sent_success");
         return result;
     }
 
     @RequestMapping(value = "/createNewConversation", method = RequestMethod.POST)
-    public @ResponseBody String createNewConversation(@ActiveUser SmartUserDetails smartUserDetails,
+    public @ResponseBody String createNewConversation(Authentication authentication,
                                                                  @RequestParam(value = "message", required = true)
                                                                  String message,
                                                                  @RequestParam(value = "username", required = true)
                                                                  String username) {
         // TODO add additional security checks using username and active user
-        Conversation conversation = conversationService.createConversation(smartUserDetails.getSmartUser(), username, message);
+        Conversation conversation = conversationService.createConversation(smartUserService.findUserByUsername(authentication.getName()), username, message);
         return gson.toJson(conversation);
     }
 
     @MessageMapping("/setUnreadCount")
-    public void getCountUserUnreadMessages(final Principal p) {
+    public void getCountUserUnreadMessages(final Authentication authentication) {
         // TODO add additional security checks using username and active user
         new ConcurrentTaskScheduler().scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
                 try {
-                    Integer countUserUnreadMessages = messageService.findCountUserUnreadMessages(p.getName());
+                    Integer countUserUnreadMessages = messageService.findCountUserUnreadMessages(authentication.getName());
                     if (countUserUnreadMessages != 0) {
-                        template.convertAndSendToUser(p.getName(), "/getUnreadMessagesCount", countUserUnreadMessages);
+                        template.convertAndSendToUser(authentication.getName(), "/getUnreadMessagesCount", countUserUnreadMessages);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -146,10 +143,10 @@ public class MessageController {
     @RequestMapping(value = "/stopNewMessagesSchedulers", method = RequestMethod.POST)
     public
     @ResponseBody
-    AjaxResponse stopNewMessagesSchedulers(@ActiveUser SmartUserDetails smartUserDetails) {
+    AjaxResponse stopNewMessagesSchedulers(Authentication authentication) {
         AjaxResponse result = new AjaxResponse();
         try {
-            ScheduledFuture<?> scheduledFutures = conversationSchedulers.get(smartUserDetails.getUsername());
+            ScheduledFuture<?> scheduledFutures = conversationSchedulers.get(authentication.getName());
             scheduledFutures.cancel(true);
             result.setSuccess(true);
         } catch (Exception e) {

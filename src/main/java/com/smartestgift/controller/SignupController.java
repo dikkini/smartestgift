@@ -2,8 +2,7 @@ package com.smartestgift.controller;
 
 import com.restfb.types.User;
 import com.smartestgift.controller.model.AjaxResponse;
-import com.smartestgift.dao.model.SmartUserDetails;
-import com.smartestgift.security.UserAuthProvider;
+import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.service.SmartUserService;
 import com.smartestgift.utils.ApplicationConstants;
 import com.smartestgift.utils.ResponseMessages;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 /**
  * Created by dikkini on 06.02.14.
@@ -28,10 +26,7 @@ import java.util.List;
 public class SignupController {
 
     @Autowired
-    UserAuthProvider authProvider;
-
-    @Autowired
-    SmartUserService smartUserService;
+    private SmartUserService smartUserService;
 
 
     @RequestMapping(method = RequestMethod.GET)
@@ -68,10 +63,10 @@ public class SignupController {
         StandardPasswordEncoder encoder = new StandardPasswordEncoder();
         String passwordEncoded = encoder.encode(password);
 
-        SmartUserDetails newUser = smartUserService.createNewUser(username, email, passwordEncoded, firstName, lastName,
+        SmartUser newUser = smartUserService.createNewUser(username, email, passwordEncoded, firstName, lastName,
                 ApplicationConstants.APPLICATION_AUTH_PROVIDER_ID, ApplicationConstants.USER_ROLE_ID);
 
-        authProvider.authenticateUser(newUser, request);
+        smartUserService.authenticateUser(newUser.getUsername(), newUser.getPassword(), request);
 
         result.setSuccess(true);
         return result;
@@ -81,9 +76,9 @@ public class SignupController {
     public ModelAndView socialSignUpPage(HttpServletRequest request,
                                          @RequestParam (required = true, value = "id") String socialId,
                                          @RequestParam(required = true, value = "errors") String[] errors) {
-        SmartUserDetails smartUserDetails = (SmartUserDetails) request.getSession().getAttribute(socialId);
+        SmartUser SmartUser = (SmartUser) request.getSession().getAttribute(socialId);
         ModelAndView mav = new ModelAndView("signupSocial");
-        mav.addObject("smartUserDetails", smartUserDetails);
+        mav.addObject("SmartUser", SmartUser);
         mav.addObject("errors", errors);
         return mav;
     }
@@ -99,9 +94,9 @@ public class SignupController {
         AjaxResponse response = new AjaxResponse();
 
         User facebookUser = (User) request.getSession().getAttribute(socialId);
-        SmartUserDetails newUserFromFacebook = smartUserService.createNewUserFromFacebook(facebookUser, username,
+        SmartUser newUserFromFacebook = smartUserService.createNewUserFromFacebook(facebookUser, username,
                 email, firstName, lastName, socialId);
-        authProvider.authenticateUser(newUserFromFacebook, request);
+        smartUserService.authenticateUser(newUserFromFacebook.getUsername(), newUserFromFacebook.getPassword(), request);
 
         response.setSuccess(true);
         return response;

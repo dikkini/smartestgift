@@ -2,8 +2,6 @@ package com.smartestgift.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.smartestgift.handler.CurrentUserHandlerMethodArgumentResolver;
-import com.smartestgift.handler.UserInterceptor;
 import javassist.Modifier;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,17 +24,13 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.orm.hibernate4.support.OpenSessionInViewInterceptor;
-import org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
-import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
-import org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
@@ -151,8 +145,6 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
 
         registry.addWebRequestInterceptor(sessionInViewInterceptor  );
         registry.addInterceptor(localeChangeInterceptor());
-        registry.addInterceptor(new UserInterceptor()).addPathPatterns("/**")
-                .excludePathPatterns("/", "/login/**", "/signup/**");
     }
 
     @Bean
@@ -184,16 +176,6 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
         CookieLocaleResolver ret = new CookieLocaleResolver();
         ret.setDefaultLocale(Locale.ENGLISH);
         return ret;
-    }
-
-    @Override
-    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-        argumentResolvers.add(currentUserHandlerMethodArgumentResolver());
-    }
-
-    @Bean
-    public CurrentUserHandlerMethodArgumentResolver currentUserHandlerMethodArgumentResolver() {
-        return new CurrentUserHandlerMethodArgumentResolver();
     }
 
     @Override

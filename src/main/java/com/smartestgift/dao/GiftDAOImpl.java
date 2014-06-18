@@ -2,9 +2,10 @@ package com.smartestgift.dao;
 
 import com.smartestgift.dao.model.Gift;
 import com.smartestgift.dao.model.GiftCategory;
-import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.utils.ApplicationConstants;
-import org.hibernate.*;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.criterion.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,11 +1,9 @@
 package com.smartestgift.dao.model;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.lang.annotation.Annotation;
 import java.util.Date;
 import java.util.Set;
 
@@ -15,7 +13,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "users")
-public class SmartUser implements Serializable, Annotation {
+public class SmartUser implements Serializable {
 
     @Id
     @GeneratedValue(generator = "system-uuid", strategy = GenerationType.IDENTITY)
@@ -25,6 +23,25 @@ public class SmartUser implements Serializable, Annotation {
 
     @Column(name = "username")
     protected String username;
+
+    @Column(name = "password")
+    protected String password;
+
+    @Column(name = "email")
+    protected String email;
+
+    @Column(name = "enabled")
+    protected boolean enabled = true;
+
+    @ManyToOne
+    @JoinColumn(name = "auth_provider_id")
+    private AuthProvider authProvider;
+
+    @Column(name = "registration_date")
+    protected Date registrationDate;
+
+    @Column(name = "social_id")
+    protected String socialId;
 
     @Column(name = "birth_date")
     protected Date birthDate;
@@ -60,13 +77,10 @@ public class SmartUser implements Serializable, Annotation {
     @Column(name = "cellPhone_visible")
     protected boolean cellPhoneVisible = false;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "smartUser", cascade = CascadeType.ALL)
-    private SmartUserDetails smartUserDetails;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.user", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<SmartUserGift> smartUserGifts;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.user", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<SmartUserFriend> smartUserFriends;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
@@ -79,16 +93,60 @@ public class SmartUser implements Serializable, Annotation {
         return uuid;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
-
     public String getUsername() {
         return username;
     }
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public AuthProvider getAuthProvider() {
+        return authProvider;
+    }
+
+    public void setAuthProvider(AuthProvider authProvider) {
+        this.authProvider = authProvider;
+    }
+
+    public Date getRegistrationDate() {
+        return registrationDate;
+    }
+
+    public void setRegistrationDate(Date registrationDate) {
+        this.registrationDate = registrationDate;
+    }
+
+    public String getSocialId() {
+        return socialId;
+    }
+
+    public void setSocialId(String socialId) {
+        this.socialId = socialId;
     }
 
     public Date getBirthDate() {
@@ -171,14 +229,6 @@ public class SmartUser implements Serializable, Annotation {
         this.cellPhoneVisible = cellPhoneVisible;
     }
 
-    public SmartUserDetails getSmartUserDetails() {
-        return smartUserDetails;
-    }
-
-    public void setSmartUserDetails(SmartUserDetails smartUserDetails) {
-        this.smartUserDetails = smartUserDetails;
-    }
-
     public Set<SmartUserGift> getSmartUserGifts() {
         return smartUserGifts;
     }
@@ -206,20 +256,33 @@ public class SmartUser implements Serializable, Annotation {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof SmartUser)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
         SmartUser smartUser = (SmartUser) o;
 
         if (addressVisible != smartUser.addressVisible) return false;
         if (cellPhoneVisible != smartUser.cellPhoneVisible) return false;
+        if (enabled != smartUser.enabled) return false;
         if (profileVisible != smartUser.profileVisible) return false;
         if (address != null ? !address.equals(smartUser.address) : smartUser.address != null) return false;
+        if (authProvider != null ? !authProvider.equals(smartUser.authProvider) : smartUser.authProvider != null)
+            return false;
         if (birthDate != null ? !birthDate.equals(smartUser.birthDate) : smartUser.birthDate != null) return false;
         if (cellPhone != null ? !cellPhone.equals(smartUser.cellPhone) : smartUser.cellPhone != null) return false;
-        if (!firstName.equals(smartUser.firstName)) return false;
+        if (email != null ? !email.equals(smartUser.email) : smartUser.email != null) return false;
+        if (file != null ? !file.equals(smartUser.file) : smartUser.file != null) return false;
+        if (firstName != null ? !firstName.equals(smartUser.firstName) : smartUser.firstName != null) return false;
         if (gender != null ? !gender.equals(smartUser.gender) : smartUser.gender != null) return false;
         if (lastName != null ? !lastName.equals(smartUser.lastName) : smartUser.lastName != null) return false;
         if (middleName != null ? !middleName.equals(smartUser.middleName) : smartUser.middleName != null) return false;
+        if (password != null ? !password.equals(smartUser.password) : smartUser.password != null) return false;
+        if (registrationDate != null ? !registrationDate.equals(smartUser.registrationDate) : smartUser.registrationDate != null)
+            return false;
+        if (smartUserFriends != null ? !smartUserFriends.equals(smartUser.smartUserFriends) : smartUser.smartUserFriends != null)
+            return false;
+        if (smartUserGifts != null ? !smartUserGifts.equals(smartUser.smartUserGifts) : smartUser.smartUserGifts != null)
+            return false;
+        if (socialId != null ? !socialId.equals(smartUser.socialId) : smartUser.socialId != null) return false;
         if (!username.equals(smartUser.username)) return false;
         if (!uuid.equals(smartUser.uuid)) return false;
 
@@ -230,6 +293,12 @@ public class SmartUser implements Serializable, Annotation {
     public int hashCode() {
         int result = uuid.hashCode();
         result = 31 * result + username.hashCode();
+        result = 31 * result + (password != null ? password.hashCode() : 0);
+        result = 31 * result + (email != null ? email.hashCode() : 0);
+        result = 31 * result + (enabled ? 1 : 0);
+        result = 31 * result + (authProvider != null ? authProvider.hashCode() : 0);
+        result = 31 * result + (registrationDate != null ? registrationDate.hashCode() : 0);
+        result = 31 * result + (socialId != null ? socialId.hashCode() : 0);
         result = 31 * result + (birthDate != null ? birthDate.hashCode() : 0);
         result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
         result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
@@ -240,11 +309,9 @@ public class SmartUser implements Serializable, Annotation {
         result = 31 * result + (profileVisible ? 1 : 0);
         result = 31 * result + (cellPhone != null ? cellPhone.hashCode() : 0);
         result = 31 * result + (cellPhoneVisible ? 1 : 0);
+        result = 31 * result + (smartUserGifts != null ? smartUserGifts.hashCode() : 0);
+        result = 31 * result + (smartUserFriends != null ? smartUserFriends.hashCode() : 0);
+        result = 31 * result + (file != null ? file.hashCode() : 0);
         return result;
-    }
-
-    @Override
-    public Class<? extends Annotation> annotationType() {
-        return null;
     }
 }

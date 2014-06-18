@@ -1,11 +1,13 @@
 package com.smartestgift.service;
 
 import com.smartestgift.controller.model.GiftPage;
-import com.smartestgift.dao.model.*;
+import com.smartestgift.dao.model.Gift;
+import com.smartestgift.dao.model.GiftCategory;
+import com.smartestgift.dao.model.GiftShop;
+import com.smartestgift.dao.model.SmartUser;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by dikkini on 28.02.14.

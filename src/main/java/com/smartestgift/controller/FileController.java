@@ -7,11 +7,10 @@ package com.smartestgift.controller;
 
 import com.google.gson.Gson;
 import com.smartestgift.dao.model.File;
-import com.smartestgift.dao.model.SmartUserDetails;
 import com.smartestgift.service.FileService;
 import com.smartestgift.service.SmartUserService;
-import com.smartestgift.utils.ActiveUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +38,7 @@ public class FileController {
     private Gson gson;
 
     @RequestMapping(value = "/uploadUserPhoto", headers = "content-type=multipart/*", method = RequestMethod.POST)
-    public @ResponseBody String uploadFile(@ActiveUser SmartUserDetails smartUserDetails,
+    public @ResponseBody String uploadFile(Authentication authentication,
                                            @RequestParam (required = true, value = "fileTypeId") Integer fileTypeId,
                                            MultipartHttpServletRequest request, HttpServletResponse response) {
 
@@ -54,7 +53,7 @@ public class FileController {
             try {
                 //Long fileSize = mpf.getSize() / 1024;
                 file = fileService.uploadFile(mpf.getOriginalFilename(), fileTypeId);
-                smartUserService.updateUserFile(smartUserDetails.getSmartUser(), file);
+                smartUserService.updateUserFile(smartUserService.findUserByUsername(authentication.getName()), file);
 
                 // TODO абсолютные пути это плохо
                 FileCopyUtils.copy(mpf.getBytes(), new FileOutputStream("C:\\temp\\" + mpf.getOriginalFilename()));

@@ -9,7 +9,7 @@ import java.util.Date;
  * Email: dikkini@gmail.com
  */
 @Entity
-@Table(name = "user_gift")
+@Table(name = "user_gifts")
 @AssociationOverrides({
         @AssociationOverride(name = "pk.user",
                 joinColumns = @JoinColumn(name = "user_uuid")),
@@ -84,8 +84,7 @@ public class SmartUserGift implements Serializable {
 
     @Override
     public int hashCode() {
-        int result = pk != null ? pk.hashCode() : 0;
-        result = 31 * result + (moneyCollect != null ? moneyCollect.hashCode() : 0);
+        int result = 31 + (moneyCollect != null ? moneyCollect.hashCode() : 0);
         result = 31 * result + (endDate != null ? endDate.hashCode() : 0);
         return result;
     }

@@ -3,7 +3,6 @@ package com.smartestgift.service;
 import com.restfb.types.User;
 import com.smartestgift.dao.model.File;
 import com.smartestgift.dao.model.SmartUser;
-import com.smartestgift.dao.model.SmartUserDetails;
 import com.smartestgift.dao.model.SmartUserFriend;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +16,19 @@ import java.util.Map;
 public interface SmartUserService {
 
     /**
+     *
+     * @param username
+     * @return
+     */
+    public SmartUser findUserByUsername(String username);
+
+    /**
+     *
+     * @param smartUser
+     */
+    public void saveUser(SmartUser smartUser);
+
+    /**
      * Create new user
      * @param username username
      * @param email email
@@ -27,7 +39,7 @@ public interface SmartUserService {
      * @param roleId role id (from ApplicationConstants)
      * @return SmartUserDetails model
      */
-    public SmartUserDetails createNewUser(String username, String email, String passwordEncoded, String firstName,
+    public SmartUser createNewUser(String username, String email, String passwordEncoded, String firstName,
                                           String lastName, Integer authProviderId, Integer roleId);
 
     /**
@@ -41,7 +53,7 @@ public interface SmartUserService {
      * @param socialId social id
      * @return SmartUserDetails model
      */
-    public SmartUserDetails createNewUserFromFacebook(User facebookUser, String username, String email, String firstName,
+    public SmartUser createNewUserFromFacebook(User facebookUser, String username, String email, String firstName,
                                                       String lastName, String socialId);
 
     /**
@@ -49,7 +61,7 @@ public interface SmartUserService {
      * @param facebookUser
      * @return
      */
-    public SmartUserDetails createNewUserFromFacebook(User facebookUser);
+    public SmartUser createNewUserFromFacebook(User facebookUser);
 
 
     /**
@@ -58,7 +70,7 @@ public interface SmartUserService {
      * @param providerId
      * @return
      */
-    public SmartUserDetails findExistSocialUser(String socialId, Integer providerId);
+    public SmartUser findExistSocialUser(String socialId, Integer providerId);
 
     /**
      *
@@ -76,16 +88,17 @@ public interface SmartUserService {
 
     /**
      *
-     * @param smartUserDetails
+     * @param userName
+     * @param password
      * @param request
      */
-    public void authenticateUser(SmartUserDetails smartUserDetails, HttpServletRequest request);
+    public void authenticateUser(String userName, String password, HttpServletRequest request);
 
     /**
      *
-     * @param smartUserDetails
+     * @param smartUser
      */
-    public void checkUserAddress(SmartUserDetails smartUserDetails);
+    public void checkUserAddress(SmartUser smartUser);
 
     /**
      *

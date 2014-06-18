@@ -1,7 +1,6 @@
 package com.smartestgift.dao;
 
 import com.smartestgift.dao.model.Conversation;
-import com.smartestgift.dao.model.Message;
 import com.smartestgift.dao.model.SmartUser;
 import org.hibernate.Criteria;
 import org.hibernate.Session;

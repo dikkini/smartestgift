@@ -1,6 +1,5 @@
 package com.smartestgift.dao;
 
-import com.smartestgift.dao.Repository;
 import com.smartestgift.dao.model.*;
 
 import java.util.List;
@@ -17,6 +16,20 @@ public interface SmartUserDAO extends Repository<SmartUser, String> {
      * @return модель пользователя с деталями
      */
     public SmartUser findSmartUserByUsername(String username);
+
+    /**
+     *
+     * @param socialId
+     * @return
+     */
+    public SmartUser findUserBySocialIdAndAuthProvider(String socialId, AuthProvider facebookAuthProvider);
+
+    /**
+     * Поиск пользователя по email
+     * @param email email
+     * @return
+     */
+    public SmartUser findSmartUserByEmail(String email);
 
     /**
      *

@@ -35,7 +35,7 @@ public class Gift implements Serializable {
     protected GiftCategory category;
 
     @ManyToMany(fetch = FetchType.EAGER,  cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "gift_file",
+    @JoinTable(name = "gift_files",
             joinColumns = {
                     @JoinColumn(name = "gift_uuid", nullable = false, updatable = false)
             },

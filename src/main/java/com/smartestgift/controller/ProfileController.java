@@ -1,22 +1,16 @@
 package com.smartestgift.controller;
 
-import com.smartestgift.dao.SmartUserDAO;
 import com.smartestgift.dao.model.SmartUser;
-import com.smartestgift.dao.model.SmartUserDetails;
-import com.smartestgift.utils.ActiveUser;
+import com.smartestgift.service.SmartUserService;
 import com.smartestgift.utils.ApplicationConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import java.security.Principal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -29,11 +23,12 @@ import java.util.Date;
 public class ProfileController {
 
     @Autowired
-    SmartUserDAO smartUserDAO;
+    private SmartUserService smartUserService;
 
     @RequestMapping(value = "/profile", method = RequestMethod.GET)
-    public ModelAndView profile() {
-        return new ModelAndView("users/profile");
+    public ModelAndView profile(Authentication authentication) {
+        SmartUser smartUser = smartUserService.findUserByUsername(authentication.getName());
+        return new ModelAndView("users/profile").addObject("smartUser", smartUser);
     }
 
     @RequestMapping(value = "/profile/settings", method = RequestMethod.GET)
@@ -42,7 +37,7 @@ public class ProfileController {
     }
 
     @RequestMapping(value = "/profile/settings/save.do", method = RequestMethod.POST)
-    public String saveSettings(@ActiveUser SmartUserDetails smartUserDetails,
+    public String saveSettings(Authentication authentication,
             @RequestParam(required = true, value = "firstName") String firstName,
             @RequestParam(required = true, value = "lastName") String lastName,
             @RequestParam(required = true, value = "middleName") String middleName,
@@ -52,7 +47,7 @@ public class ProfileController {
             @RequestParam(required = false, value = "profileVisible") boolean profileVisible,
             @RequestParam(required = true, value = "cellphone") String cellPhone,
             @RequestParam(required = false, value = "cellphoneVisible") boolean cellphoneVisible) {
-        SmartUser smartUser = smartUserDetails.getSmartUser();
+        SmartUser smartUser = smartUserService.findUserByUsername(authentication.getName());
         smartUser.setFirstName(firstName);
         smartUser.setLastName(lastName);
         smartUser.setMiddleName(middleName);
@@ -69,7 +64,7 @@ public class ProfileController {
         } catch (ParseException e) {
             smartUser.setBirthDate(null);
         }
-        smartUserDAO.store(smartUser);
+        smartUserService.saveUser(smartUser);
         return "redirect:/profile";
     }
 }

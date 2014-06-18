@@ -4,12 +4,11 @@ import com.google.gson.Gson;
 import com.smartestgift.controller.model.AjaxResponse;
 import com.smartestgift.dao.SmartUserDAO;
 import com.smartestgift.dao.model.SmartUser;
-import com.smartestgift.dao.model.SmartUserDetails;
 import com.smartestgift.dao.model.SmartUserFriend;
 import com.smartestgift.service.SmartUserService;
-import com.smartestgift.utils.ActiveUser;
 import com.smartestgift.utils.ApplicationConstants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -39,8 +38,8 @@ public class UserProfileController {
     }
 
     @RequestMapping(value = "/myfriends", method = RequestMethod.GET)
-    public ModelAndView myFriends(@ActiveUser SmartUserDetails smartUserDetails) {
-        List<SmartUserFriend> allSmartUserFriends = smartUserService.findAllSmartUserFriends(smartUserDetails.getSmartUser());
+    public ModelAndView myFriends(Authentication authentication) {
+        List<SmartUserFriend> allSmartUserFriends = smartUserService.findAllSmartUserFriends(smartUserService.findUserByUsername(authentication.getName()));
         return new ModelAndView("users/myfriends").addObject("smartUserFriends", allSmartUserFriends);
     }
 
@@ -61,19 +60,19 @@ public class UserProfileController {
     @RequestMapping(value = "/findPeople.do", headers = "Accept=application/json", method = RequestMethod.POST)
     public
     @ResponseBody
-    String findPeople(@ActiveUser SmartUserDetails smartUserDetails,
+    String findPeople(Authentication authentication,
                       @RequestParam(value = "offset", required = true) int offset) {
-        List<SmartUser> usersWithOffset = smartUserService.findUsersWithOffset(offset, smartUserDetails.getSmartUser());
+        List<SmartUser> usersWithOffset = smartUserService.findUsersWithOffset(offset, smartUserService.findUserByUsername(authentication.getName()));
         return gson.toJson(usersWithOffset);
     }
 
     @RequestMapping(value = "/addFriendRequest.do", headers = "Accept=application/json", method = RequestMethod.POST)
     public
     @ResponseBody
-    AjaxResponse addFriendRequest(@ActiveUser SmartUserDetails smartUserDetails,
+    AjaxResponse addFriendRequest(Authentication authentication,
                                   @RequestParam(value = "friendUsername", required = true) String friendUsername) {
         AjaxResponse response = new AjaxResponse();
-        smartUserService.addRequestSmartUserFriend(smartUserDetails.getSmartUser(), friendUsername);
+        smartUserService.addRequestSmartUserFriend(smartUserService.findUserByUsername(authentication.getName()), friendUsername);
         response.setSuccess(true);
         return response;
     }
@@ -81,10 +80,10 @@ public class UserProfileController {
     @RequestMapping(value = "/removeFriend.do", headers = "Accept=application/json", method = RequestMethod.POST)
     public
     @ResponseBody
-    AjaxResponse removeFriend(@ActiveUser SmartUserDetails smartUserDetails,
+    AjaxResponse removeFriend(Authentication authentication,
                               @RequestParam(value = "friendUsername", required = true) String friendUsername) {
         AjaxResponse response = new AjaxResponse();
-        smartUserService.removeSmartUserFriend(smartUserDetails.getSmartUser(), friendUsername);
+        smartUserService.removeSmartUserFriend(smartUserService.findUserByUsername(authentication.getName()), friendUsername);
         response.setSuccess(true);
         return response;
     }
@@ -92,10 +91,10 @@ public class UserProfileController {
     @RequestMapping(value = "/acceptFriendRequest.do", headers = "Accept=application/json", method = RequestMethod.POST)
     public
     @ResponseBody
-    AjaxResponse acceptFriendRequest(@ActiveUser SmartUserDetails smartUserDetails,
+    AjaxResponse acceptFriendRequest(Authentication authentication,
                                      @RequestParam(value = "friendUsername", required = true) String friendUsername) {
         AjaxResponse response = new AjaxResponse();
-        smartUserService.changeSmartUserFriendType(smartUserDetails.getSmartUser(), friendUsername, ApplicationConstants.USER_FRIEND_FRIEND_TYPE);
+        smartUserService.changeSmartUserFriendType(smartUserService.findUserByUsername(authentication.getName()), friendUsername, ApplicationConstants.USER_FRIEND_FRIEND_TYPE);
         response.setSuccess(true);
         return response;
     }
@@ -103,10 +102,10 @@ public class UserProfileController {
     @RequestMapping(value = "/declineFriendRequest.do", headers = "Accept=application/json", method = RequestMethod.POST)
     public
     @ResponseBody
-    AjaxResponse declineFriendRequest(@ActiveUser SmartUserDetails smartUserDetails,
+    AjaxResponse declineFriendRequest(Authentication authentication,
                                       @RequestParam(value = "friendUsername", required = true) String friendUsername) {
         AjaxResponse response = new AjaxResponse();
-        smartUserService.removeSmartUserFriend(smartUserDetails.getSmartUser(), friendUsername);
+        smartUserService.removeSmartUserFriend(smartUserService.findUserByUsername(authentication.getName()), friendUsername);
         response.setSuccess(true);
         return response;
     }
@@ -114,10 +113,10 @@ public class UserProfileController {
     @RequestMapping(value = "/blockFriend.do", headers = "Accept=application/json", method = RequestMethod.POST)
     public
     @ResponseBody
-    AjaxResponse blockFriend(@ActiveUser SmartUserDetails smartUserDetails,
+    AjaxResponse blockFriend(Authentication authentication,
                              @RequestParam(value = "friendUuid", required = true) String friendUuid) {
         AjaxResponse response = new AjaxResponse();
-        smartUserService.changeSmartUserFriendType(smartUserDetails.getSmartUser(), friendUuid, ApplicationConstants.USER_FRIEND_BLOCK_TYPE);
+        smartUserService.changeSmartUserFriendType(smartUserService.findUserByUsername(authentication.getName()), friendUuid, ApplicationConstants.USER_FRIEND_BLOCK_TYPE);
         response.setSuccess(true);
         return response;
     }

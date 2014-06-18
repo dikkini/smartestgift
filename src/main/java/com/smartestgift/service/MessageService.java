@@ -1,6 +1,8 @@
 package com.smartestgift.service;
 
-import com.smartestgift.dao.model.*;
+import com.smartestgift.dao.model.Conversation;
+import com.smartestgift.dao.model.Message;
+import com.smartestgift.dao.model.SmartUser;
 
 import java.util.List;
 

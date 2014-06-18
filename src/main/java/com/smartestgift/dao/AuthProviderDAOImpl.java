@@ -1,7 +1,6 @@
 package com.smartestgift.dao;
 
 import com.smartestgift.dao.model.AuthProvider;
-import com.smartestgift.utils.ApplicationConstants;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.CriteriaSpecification;

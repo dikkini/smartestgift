@@ -2,7 +2,6 @@ package com.smartestgift.dao;
 
 import com.smartestgift.dao.model.File;
 import com.smartestgift.dao.model.FileType;
-import com.smartestgift.dao.model.Gift;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

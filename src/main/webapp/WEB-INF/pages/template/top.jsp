@@ -7,7 +7,7 @@
 
 <sec:authentication var="user" property="principal"/>
 
-<jsp:useBean id="user" class="com.smartestgift.dao.model.SmartUserDetails" scope="request"/>
+<jsp:useBean id="smartUser" class="com.smartestgift.dao.model.SmartUser" scope="request"/>
 <jsp:useBean id="constants" class="com.smartestgift.utils.ApplicationConstants" scope="request"/>
 
 <!DOCTYPE HTML>
@@ -106,8 +106,8 @@
                             <li>
                                 <p class="navbar-text navbar-right"><spring:message code="label.signed"/>
                                     <a href="/profile" class="navbar-link">
-                                        <c:out value="${user.smartUser.firstName}"/>
-                                        <c:out value="${user.smartUser.lastName}"/>
+                                        <c:out value="${smartUser.firstName}"/>
+                                        <c:out value="${smartUser.lastName}"/>
                                     </a>
                                 </p>
                             </li>

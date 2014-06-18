@@ -1,15 +1,19 @@
 package com.smartestgift.service;
 
-import com.google.gson.Gson;
 import com.restfb.types.User;
 import com.smartestgift.dao.*;
 import com.smartestgift.dao.model.*;
-import com.smartestgift.security.UserAuthProvider;
 import com.smartestgift.utils.ApplicationConstants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.*;
 
 import static com.smartestgift.utils.ApplicationConstants.*;
@@ -25,16 +29,10 @@ public class SmartUserServiceImpl implements SmartUserService {
     private AuthProviderDAO authProviderDAO;
 
     @Autowired
-    private SmartUserDetailsDAO smartUserDetailsDAO;
-
-    @Autowired
     private SmartUserDAO smartUserDAO;
 
     @Autowired
     private GiftDAO giftDAO;
-
-    @Autowired
-    private UserAuthProvider userAuthProvider;
 
     @Autowired
     private RoleDAO roleDAO;
@@ -42,81 +40,97 @@ public class SmartUserServiceImpl implements SmartUserService {
     @Autowired
     private FileDAO fileDAO;
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
     @Override
-    public SmartUserDetails createNewUser(String username, String email, String passwordEncoded, String firstName, String lastName, Integer authProviderId, Integer roleId) {
+    public SmartUser findUserByUsername(String username) {
+        return smartUserDAO.findSmartUserByUsername(username);
+    }
+
+    @Override
+    public void saveUser(SmartUser smartUser) {
+        smartUserDAO.store(smartUser);
+    }
+
+    @Override
+    public SmartUser createNewUser(String username, String email, String passwordEncoded, String firstName, String lastName, Integer authProviderId, Integer roleId) {
+
+        Role role = roleDAO.find(roleId);
+        AuthProvider authProvider = authProviderDAO.find(authProviderId);
 
         SmartUser smartUser = new SmartUser();
         smartUser.setUsername(username);
         smartUser.setFirstName(firstName);
         smartUser.setLastName(lastName);
         smartUser.setFile(fileDAO.find(FILE_USER_NO_PHOTO_ID));
-
-        Role role = roleDAO.find(roleId);
-        AuthProvider authProvider = authProviderDAO.find(authProviderId);
-
-        SmartUserDetails smartUserDetails = new SmartUserDetails();
-        smartUserDetails.setSmartUser(smartUser);
-        smartUserDetails.setUsername(username);
-        smartUserDetails.setEmail(email);
-        smartUserDetails.setPassword(passwordEncoded);
-        smartUserDetails.setRegistrationDate(new Date());
-        smartUserDetails.setAuthProvider(authProvider);
-        smartUserDetails.setRole(role);
-
-        smartUser.setSmartUserDetails(smartUserDetails);
+        smartUser.setUsername(username);
+        smartUser.setEmail(email);
+        smartUser.setPassword(passwordEncoded);
+        smartUser.setRegistrationDate(new Date());
+        smartUser.setAuthProvider(authProvider);
+        //smartUser.setRole(role);
 
         smartUserDAO.store(smartUser);
 
-        return smartUserDetails;
+        return smartUser;
     }
 
     @Override
-    public SmartUserDetails createNewUserFromFacebook(User facebookUser, String username, String email, String firstName, String lastName, String socialId) {
-        SmartUserDetails smartUserDetails = getSmartUserDetailsFromFacebookUser(facebookUser);
-        SmartUser smartUser = smartUserDetails.getSmartUser();
+    public SmartUser createNewUserFromFacebook(User facebookUser, String username, String email, String firstName, String lastName, String socialId) {
+        SmartUser smartUser = getSmartUserDetailsFromFacebookUser(facebookUser);
         smartUser.setUsername(username);
         smartUser.setLastName(lastName);
         smartUser.setFirstName(firstName);
         smartUser.setFile(fileDAO.find(FILE_USER_NO_PHOTO_ID));
-
-        smartUserDetails.setSocialId(socialId);
-        return smartUserDetails;
+        smartUser.setSocialId(socialId);
+        
+        return smartUser;
     }
 
     @Override
-    public SmartUserDetails createNewUserFromFacebook(User facebookUser) {
+    public SmartUser createNewUserFromFacebook(User facebookUser) {
         return getSmartUserDetailsFromFacebookUser(facebookUser);
     }
 
     @Override
-    public SmartUserDetails findExistSocialUser(String socialId, Integer providerId) {
+    public SmartUser findExistSocialUser(String socialId, Integer providerId) {
         AuthProvider authProvider = authProviderDAO.find(providerId);
-        return smartUserDetailsDAO.findUserBySocialIdAndAuthProvider(socialId, authProvider);
+        return smartUserDAO.findUserBySocialIdAndAuthProvider(socialId, authProvider);
     }
 
     @Override
     public boolean checkOccupiedUsername(String username) {
-        SmartUserDetails userDetailsByUsername = smartUserDetailsDAO.findSmartUserDetailsByUsername(username);
+        SmartUser userDetailsByUsername = smartUserDAO.findSmartUserByUsername(username);
         return userDetailsByUsername == null;
     }
 
     @Override
     public boolean checkOccupiedEmail(String email) {
-        SmartUserDetails smartUserDetailsByEmail = smartUserDetailsDAO.findSmartUserDetailsByEmail(email);
+        SmartUser smartUserDetailsByEmail = smartUserDAO.findSmartUserByEmail(email);
         return smartUserDetailsByEmail == null;
     }
 
     @Override
-    public void authenticateUser(SmartUserDetails smartUserDetails, HttpServletRequest request) {
-        userAuthProvider.authenticateUser(smartUserDetails, request);
+    public void authenticateUser(String userName, String password, HttpServletRequest request) {
+        UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(userName, password);
+
+        // Authenticate the user
+        Authentication authentication = authenticationManager.authenticate(authRequest);
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        securityContext.setAuthentication(authentication);
+
+        // Create a new session and add the security context.
+        HttpSession session = request.getSession(true);
+        session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
     }
 
     @Override
-    public void checkUserAddress(SmartUserDetails smartUserDetails) {
+    public void checkUserAddress(SmartUser SmartUser) {
         // TODO do it
     }
 
-    private SmartUserDetails getSmartUserDetailsFromFacebookUser(User facebookUser) {
+    private SmartUser getSmartUserDetailsFromFacebookUser(User facebookUser) {
         SmartUser smartUser = new SmartUser();
         smartUser.setUsername(facebookUser.getUsername());
         smartUser.setLastName(facebookUser.getLastName());
@@ -124,19 +138,16 @@ public class SmartUserServiceImpl implements SmartUserService {
         smartUser.setMiddleName(facebookUser.getMiddleName());
         smartUser.setBirthDate(facebookUser.getBirthdayAsDate());
         smartUser.setAddress(facebookUser.getHometownName());
+        //SmartUser.setRole(roleDAO.find(USER_ROLE_ID));
+        smartUser.setAuthProvider(authProviderDAO.find(FACEBOOK_AUTH_PROVIDER_ID));
+        smartUser.setEmail(facebookUser.getEmail());
+        smartUser.setSocialId(facebookUser.getId());
+        smartUser.setRegistrationDate(new Date());
         // TODO photo take from facebook
         smartUser.setFile(fileDAO.find(FILE_USER_NO_PHOTO_ID));
         // TODO determine gender and fill it
         //smartUser.setGender(facebookUser.getGender());
-
-        SmartUserDetails smartUserDetails = new SmartUserDetails();
-        smartUserDetails.setSmartUser(smartUser);
-        smartUserDetails.setRole(roleDAO.find(USER_ROLE_ID));
-        smartUserDetails.setAuthProvider(authProviderDAO.find(FACEBOOK_AUTH_PROVIDER_ID));
-        smartUserDetails.setEmail(facebookUser.getEmail());
-        smartUserDetails.setSocialId(facebookUser.getId());
-        smartUserDetails.setRegistrationDate(new Date());
-        return smartUserDetails;
+        return smartUser;
     }
 
     @Override

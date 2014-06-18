@@ -9,7 +9,7 @@ import java.util.Date;
  * Email: dikkini@gmail.com
  */
 @Entity
-@Table(name = "user_friend")
+@Table(name = "user_friends")
 @AssociationOverrides({
         @AssociationOverride(name = "pk.user",
                 joinColumns = @JoinColumn(name = "user_uuid")),
@@ -71,16 +71,22 @@ public class SmartUserFriend implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof SmartUserFriend)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
         SmartUserFriend that = (SmartUserFriend) o;
 
-        return !(getPk() != null ? !getPk().equals(that.getPk()) : that.getPk() != null);
+        if (friendTypeId != that.friendTypeId) return false;
+        if (friendAddDate != null ? !friendAddDate.equals(that.friendAddDate) : that.friendAddDate != null)
+            return false;
+        if (pk != null ? !pk.equals(that.pk) : that.pk != null) return false;
 
+        return true;
     }
 
     @Override
     public int hashCode() {
-        return (getPk() != null ? getPk().hashCode() : 0);
+        int result = friendAddDate != null ? friendAddDate.hashCode() : 0;
+        result = 31 * result + friendTypeId;
+        return result;
     }
 }

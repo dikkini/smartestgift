@@ -3,10 +3,10 @@ package com.smartestgift.controller;
 import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
 import com.restfb.types.User;
-import com.smartestgift.dao.model.SmartUserDetails;
+import com.smartestgift.dao.model.SmartUser;
+import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.service.SmartUserService;
 import com.smartestgift.utils.ApplicationConstants;
-import com.smartestgift.utils.ResponseMessages;
 import com.smartestgift.utils.Utils;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
@@ -26,7 +26,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 
 /**
  * Created by dikkini on 27.01.14.
@@ -129,18 +128,19 @@ public class LoginController {
                     // In this user object, you will have the details you want from Facebook,
                     // Since we have the access token with us, can play around and see what more can be done
 
-                    SmartUserDetails existSocialUser = smartUserService.findExistSocialUser(facebookUser.getId(),
+                    SmartUser existSocialUser = smartUserService.findExistSocialUser(facebookUser.getId(),
                             ApplicationConstants.FACEBOOK_AUTH_PROVIDER_ID);
 
                     if (existSocialUser != null) {
-                        smartUserService.authenticateUser(existSocialUser, request);
+                        smartUserService.authenticateUser(existSocialUser.getUsername(), existSocialUser.getPassword(), request);
                     } else {
                         boolean emailIsFree = smartUserService.checkOccupiedEmail(facebookUser.getEmail());
                         boolean usernameIsFree = smartUserService.checkOccupiedUsername(facebookUser.getUsername());
 
                         if (emailIsFree && usernameIsFree) {
-                            SmartUserDetails newUserFromFacebook = smartUserService.createNewUserFromFacebook(facebookUser);
-                            smartUserService.authenticateUser(newUserFromFacebook, request);
+                            SmartUser newUserFromFacebook = smartUserService.createNewUserFromFacebook(facebookUser);
+                            smartUserService.authenticateUser(newUserFromFacebook.getUsername(),
+                                    newUserFromFacebook.getPassword(), request);
                             return "redirect:/profile";
                         } else {
                             request.getSession().setAttribute(facebookUser.getId(), facebookUser);

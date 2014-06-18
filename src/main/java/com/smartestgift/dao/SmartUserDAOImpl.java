@@ -1,12 +1,14 @@
 package com.smartestgift.dao;
 
-import com.smartestgift.dao.SmartUserDAO;
 import com.smartestgift.dao.model.*;
 import com.smartestgift.utils.ApplicationConstants;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.*;
+import org.hibernate.criterion.CriteriaSpecification;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,6 +62,21 @@ public class SmartUserDAOImpl implements SmartUserDAO {
     public SmartUser findSmartUserByUsername(String username) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
         criteria.add(Restrictions.eq("username", username));
+        return (SmartUser) criteria.uniqueResult();
+    }
+
+    @Override
+    public SmartUser findUserBySocialIdAndAuthProvider(String socialId, AuthProvider facebookAuthProvider) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
+        criteria.add(Restrictions.eq("socialId", socialId));
+        criteria.add(Restrictions.eq("authProvider", facebookAuthProvider));
+        return (SmartUser) criteria.uniqueResult();
+    }
+
+    @Override
+    public SmartUser findSmartUserByEmail(String email) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
+        criteria.add(Restrictions.eq("email", email));
         return (SmartUser) criteria.uniqueResult();
     }
 
