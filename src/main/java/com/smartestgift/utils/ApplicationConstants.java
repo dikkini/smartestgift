@@ -33,6 +33,11 @@ public class ApplicationConstants {
     public static final Integer MESSAGE_STATUS_NEW = 1;
     public static final Integer MESSAGE_STATUS_READ = 2;
 
+    // User Friend Type
+    public static final int USER_FRIEND_REQUEST_TYPE = 1;
+    public static final int USER_FRIEND_FRIEND_TYPE = 2;
+    public static final int USER_FRIEND_BLOCK_TYPE = 3;
+
     // Global Search hashmap keys for results
     public static final String GIFTS_SEARCH_RESULTS = "gift";
     public static final String USERS_SEARCH_RESULTS = "user";

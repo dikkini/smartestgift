@@ -28,28 +28,28 @@ public interface GiftService {
     public GiftShop findGiftShopByUuid(String uuid);
 
     /**
-     * if the user has this gift
-     * @param smartUserGifts Set of SmartUserGift
-     * @param giftShop Gift in specific shop
-     * @return true - had
+     *
+     * @param user
+     * @param giftShopUuid
+     * @return
      */
-    public boolean smartUserHasGiftShop(Set<SmartUserGift> smartUserGifts, GiftShop giftShop);
+    public boolean hasSmartUserGiftShop(SmartUser user, String giftShopUuid);
 
     /**
      * Add gift to user
      * @param user SmartUser model
-     * @param giftShop Gift model
+     * @param giftShopUuid Gift model
      * @param endDate date when user plan to collect all money for the gift
      */
-    public void addGiftShopToUserWishes(SmartUser user, GiftShop giftShop, Date endDate);
+    public void addGiftShopToUserWishes(SmartUser user, String giftShopUuid, Date endDate);
 
     /**
      *
      * @param user
-     * @param giftShop
+     * @param giftShopUuid
      * @return
      */
-    public void deleteGiftFromUser(SmartUser user, GiftShop giftShop);
+    public void deleteGiftFromUser(SmartUser user, String giftShopUuid);
 
     /**
      *

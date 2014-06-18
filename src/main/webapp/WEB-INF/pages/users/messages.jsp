@@ -114,92 +114,15 @@
 
         $(".loading").loading({width: '25', text: 'Waiting...'});
 
+        var socket = new SockJS('/messages');
         var stompClient = Stomp.over(socket);
         stompClient.connect({}, function(frame) {
-            console.log('Connected: ' + frame);
-            subscribe();
-        });
-
-        function unsubscribe() {
-            stompClient.unsubscribe('/user/${smartUser.username}/getNewConversationMessages');
-        }
-
-        function subscribe() {
             stompClient.subscribe('/user/${smartUser.username}/getNewConversationMessages', function(response) {
                 var body = JSON.parse(response.body);
                 var messages = JSON.parse(body);
                 renderConversationMessages(messages, false);
             });
-        }
-
-        function stopNewMessageSchedule() {
-            $.ajax({
-                async: false, // Important - this makes this a blocking call
-                url: '/messages/stopNewMessagesSchedulers',
-                type: 'post',
-                data: {}
-            });
-        }
-
-        function loadAndRenderAllConversationMessages(conversationUuid) {
-            $.ajax({
-                type: "post",
-                url: "/messages/getConversationMessages",
-                cache: false,
-                data: "conversationUuid=" + conversationUuid,
-                dataType: "json",
-                success: function (response) {
-                    response = JSON.parse(response);
-                    renderConversationMessages(response, true);
-
-                    setTimeout(function() {
-                        var jsonstr = JSON.stringify({ 'param': conversationUuid});
-                        stompClient.send("/app/setConversation", {}, jsonstr);
-                    }, 3000)
-                },
-                error: function (response) {
-                    //TODO обработка ошибок
-                    alert("error");
-                }
-            });
-        }
-
-        function renderConversationMessages(messages, isEmpty) {
-            var messagesDialog = $("#messages-and-people");
-            if (isEmpty) {
-                messagesDialog.empty();
-            }
-
-            messages.forEach(function(entry) {
-                var html =
-                        '<li tabindex="1">' +
-                            '<div class="list-group">' +
-                                '<a class="list-group-item" style="cursor: pointer">' +
-                                    '<div class="row">' +
-                                        '<div class="col-xs-1">' +
-                                            '<img height="50" src="/file/get/' + entry.smartUser.file.id + '">' +
-                                        '</div>' +
-                                        '<div class="col-xs-9">' +
-                                            '<p class="list-group-item-heading">' +
-                                                entry.smartUser.username +
-                                            '</p>' +
-                                            '<p class="list-group-item-text">' +
-                                                entry.message +
-                                            '</p>' +
-                                        '</div>'  +
-                                        '<div class="col-xs-2">' +
-                                            new Date(entry.date).customFormat("#DD#.#MM#.#YYYY#") +
-                                        '</div>' +
-                                    '</div>' +
-                                '</a>' +
-                            '</div>' +
-                        '</li>';
-
-                messagesDialog.append(html);
-                messagesDialog.find('li').last().addClass('active-li').focus();
-            });
-            $("#loading-messages").loading("stop");
-        }
+        });
 
         // TODO когда загружаешь все сообщения, срабатывает асинхронный код добавляющий новые сообщения также.
         $("#conversations").on("click", ".conversation", function() {
@@ -245,6 +168,59 @@
                 sendMessageOrStartNewConversation();
             }
         });
+
+        $("#input-new-conversation-contact").on("keyup", function(e) {
+            if (ajaxPeopleLoading) {
+                clearTimeout(ajaxPeopleLoading);
+            }
+            var userInput = $(this).val();
+            var messageDialogObj = $("#messages-and-people");
+            messageDialogObj.html("");
+            if (userInput.trim() == "") {
+                return;
+            }
+
+            $("#loading-people-and-messages").loading("start");
+            ajaxPeopleLoading = setTimeout(getContactsByUserTyping(userInput), 1000);
+        });
+
+        $("#messages-and-people").on("click", ".contact", function() {
+            var inputMessage = $("#input-new-conversation-contact");
+            $("#messages-and-people").html("");
+            var tag = $(this).data("fio");
+            inputMessage.data("username",$(this).data("username"));
+            inputMessage.val(tag);
+        });
+
+        $("#find-conversation-input").on("keyup", function(e) {
+            if (timeoutLoadingConversations) {
+                clearTimeout(timeoutLoadingConversations);
+            }
+            var ajaxLoadingConversations = $("#loading-conversations");
+            var searchString = $(this).val();
+            var conversations = $("#conversations").find(".conversation");
+
+            if (searchString.trim() == "") {
+                conversations.each(function() {
+                    $(this).show();
+                });
+            }
+
+            timeoutLoadingConversations = setTimeout(function(){
+                ajaxLoadingConversations.loading("start");
+                conversations.each(function() {
+                    var conversationName = $(this).data("conversation-username");
+                    var index = conversationName.indexOf(searchString);
+                    if (index == -1) {
+                        $(this).hide();
+                    } else if ($(this).css('display') == 'none') {
+                        $(this).show();
+                    }
+                });
+                ajaxLoadingConversations.loading("stop");
+            }, 500);
+        });
+
 
         function checkContactAndMessageBeforeSend() {
             var messageInput = $("#message-input");
@@ -304,22 +280,22 @@
                 success: function (response) {
                     $("#new-message-input-form").hide();
                     var html =
-                                '<li>' +
+                            '<li>' +
                                     '<div class="list-group">' +
-                                        '<a data-conversation-username="'+ response.user_to.username +'" data-conversation-uuid="'+ response.uuid + '" class="list-group-item conversation" style="cursor: pointer;">' +
-                                            '<div class="row">' +
-                                                '<div class="col-xs-3">' +
-                                                    '<img height="50" src="/file/get/'+response.user_to.file.id + '">' +
-                                                '</div>' +
-                                                '<div class="col-xs-9">' +
-                                                    '<p class="list-group-unread-messages-count" style="float: right"/>' +
-                                                    '<p class="list-group-item-heading">'+ response.user_to.username + '</p>' +
-                                                    '<p class="list-group-item-text ellipses">message?</p>' +
-                                                '</div>' +
-                                            '</div>' +
-                                        '</a>' +
+                                    '<a data-conversation-username="'+ response.user_to.username +'" data-conversation-uuid="'+ response.uuid + '" class="list-group-item conversation" style="cursor: pointer;">' +
+                                    '<div class="row">' +
+                                    '<div class="col-xs-3">' +
+                                    '<img height="50" src="/file/get/'+response.user_to.file.id + '">' +
                                     '</div>' +
-                                '</li>';
+                                    '<div class="col-xs-9">' +
+                                    '<p class="list-group-unread-messages-count" style="float: right"/>' +
+                                    '<p class="list-group-item-heading">'+ response.user_to.username + '</p>' +
+                                    '<p class="list-group-item-text ellipses">message?</p>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</a>' +
+                                    '</div>' +
+                                    '</li>';
                     $("#messages-title").text(response.user_to.username);
                     $("#conversations").append(html);
                     loadAndRenderAllConversationMessages(response.uuid);
@@ -347,27 +323,27 @@
                     } else {
                         var html =
                                 '<li tabindex="1">' +
-                                    '<div class="list-group">' +
+                                        '<div class="list-group">' +
                                         '<a class="list-group-item" style="cursor: pointer">' +
-                                            '<div class="row">' +
-                                                '<div class="col-xs-1">' +
-                                                    '<img height="50" src="/file/get/' + '${smartUser.file.id}' + '">' +
-                                                '</div>' +
-                                                '<div class="col-xs-9">' +
-                                                    '<p class="list-group-item-heading">' +
-                                                        '${smartUser.username}' +
-                                                    '</p>' +
-                                                    '<p class="list-group-item-text">' +
-                                                        message +
-                                                    '</p>' +
-                                                '</div>'  +
-                                                '<div class="col-xs-2">' +
-                                                    new Date().customFormat("#DD#.#MM#.#YYYY#") +
-                                                '</div>' +
-                                            '</div>' +
+                                        '<div class="row">' +
+                                        '<div class="col-xs-1">' +
+                                        '<img height="50" src="/file/get/' + '${smartUser.file.id}' + '">' +
+                                        '</div>' +
+                                        '<div class="col-xs-9">' +
+                                        '<p class="list-group-item-heading">' +
+                                        '${smartUser.username}' +
+                                        '</p>' +
+                                        '<p class="list-group-item-text">' +
+                                        message +
+                                        '</p>' +
+                                        '</div>'  +
+                                        '<div class="col-xs-2">' +
+                                        new Date().customFormat("#DD#.#MM#.#YYYY#") +
+                                        '</div>' +
+                                        '</div>' +
                                         '</a>' +
-                                    '</div>' +
-                                '</li>';
+                                        '</div>' +
+                                        '</li>';
 
                         inputNewMessageObj.val("");
                         messageDialogObj.append(html);
@@ -383,24 +359,74 @@
             });
         }
 
-        window.onbeforeunload = function() {
-            stopNewMessageSchedule();
-        };
+        function stopNewMessageSchedule() {
+            $.ajax({
+                async: false, // Important - this makes this a blocking call
+                url: '/messages/stopNewMessagesSchedulers',
+                type: 'post',
+                data: {}
+            });
+        }
 
-        $("#input-new-conversation-contact").on("keyup", function(e) {
-            if (ajaxPeopleLoading) {
-                clearTimeout(ajaxPeopleLoading);
-            }
-            var userInput = $(this).val();
-            var messageDialogObj = $("#messages-and-people");
-            messageDialogObj.html("");
-            if (userInput.trim() == "") {
-                return;
+        function loadAndRenderAllConversationMessages(conversationUuid) {
+            $.ajax({
+                type: "post",
+                url: "/messages/getConversationMessages",
+                cache: false,
+                data: "conversationUuid=" + conversationUuid,
+                dataType: "json",
+                success: function (response) {
+                    response = JSON.parse(response);
+                    renderConversationMessages(response, true);
+
+                    setTimeout(function() {
+                        var jsonstr = JSON.stringify({ 'param': conversationUuid});
+                        stompClient.send("/app/setConversation", {}, jsonstr);
+                    }, 3000)
+                },
+                error: function (response) {
+                    //TODO обработка ошибок
+                    alert("error");
+                }
+            });
+        }
+
+        function renderConversationMessages(messages, isEmpty) {
+            var messagesDialog = $("#messages-and-people");
+            if (isEmpty) {
+                messagesDialog.empty();
             }
 
-            $("#loading-people-and-messages").loading("start");
-            ajaxPeopleLoading = setTimeout(getContactsByUserTyping(userInput), 1000);
-        });
+            messages.forEach(function(entry) {
+                var html =
+                        '<li tabindex="1">' +
+                                '<div class="list-group">' +
+                                '<a class="list-group-item" style="cursor: pointer">' +
+                                '<div class="row">' +
+                                '<div class="col-xs-1">' +
+                                '<img height="50" src="/file/get/' + entry.smartUser.file.id + '">' +
+                                '</div>' +
+                                '<div class="col-xs-9">' +
+                                '<p class="list-group-item-heading">' +
+                                entry.smartUser.username +
+                                '</p>' +
+                                '<p class="list-group-item-text">' +
+                                entry.message +
+                                '</p>' +
+                                '</div>'  +
+                                '<div class="col-xs-2">' +
+                                new Date(entry.date).customFormat("#DD#.#MM#.#YYYY#") +
+                                '</div>' +
+                                '</div>' +
+                                '</a>' +
+                                '</div>' +
+                                '</li>';
+
+                messagesDialog.append(html);
+                messagesDialog.find('li').last().addClass('active-li').focus();
+            });
+            $("#loading-messages").loading("stop");
+        }
 
         function getContactsByUserTyping(userInput) {
             $.ajax({
@@ -446,42 +472,9 @@
             });
         }
 
-        $("#messages-and-people").on("click", ".contact", function() {
-            var inputMessage = $("#input-new-conversation-contact");
-            $("#messages-and-people").html("");
-            var tag = $(this).data("fio");
-            inputMessage.data("username",$(this).data("username"));
-            inputMessage.val(tag);
-        });
-
-        $("#find-conversation-input").on("keyup", function(e) {
-            if (timeoutLoadingConversations) {
-                clearTimeout(timeoutLoadingConversations);
-            }
-            var ajaxLoadingConversations = $("#loading-conversations");
-            var searchString = $(this).val();
-            var conversations = $("#conversations").find(".conversation");
-
-            if (searchString.trim() == "") {
-                conversations.each(function() {
-                    $(this).show();
-                });
-            }
-
-            timeoutLoadingConversations = setTimeout(function(){
-                ajaxLoadingConversations.loading("start");
-                conversations.each(function() {
-                    var conversationName = $(this).data("conversation-username");
-                    var index = conversationName.indexOf(searchString);
-                    if (index == -1) {
-                        $(this).hide();
-                    } else if ($(this).css('display') == 'none') {
-                        $(this).show();
-                    }
-                });
-                ajaxLoadingConversations.loading("stop");
-            }, 500);
-        });
+        window.onbeforeunload = function() {
+            stopNewMessageSchedule();
+        };
     });
 </script>
 

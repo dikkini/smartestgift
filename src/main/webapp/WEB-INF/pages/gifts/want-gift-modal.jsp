@@ -81,7 +81,7 @@ $(document).ready(function() {
             cache: false,
             data: "giftShopUuid=" + giftShopUuid + "&endDate=" + endDate,
             success: function (response) {
-                alert("OK");
+                alert(response.success);
             },
             error: function (response) {
                 window.location = "500";

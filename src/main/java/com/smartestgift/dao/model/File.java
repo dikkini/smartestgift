@@ -1,6 +1,8 @@
 package com.smartestgift.dao.model;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -11,6 +13,7 @@ import java.util.Set;
  * Email: dikkini@gmail.com
  */
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table (name = "file")
 public class File implements Serializable {
     @Id
@@ -21,9 +24,6 @@ public class File implements Serializable {
     @Column(name = "name")
     protected String name;
 
-    @Column(name = "size")
-    protected String size;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="type_id")
     private FileType type;
@@ -33,9 +33,8 @@ public class File implements Serializable {
 
     public File() {}
 
-    public File(String name, String size, FileType type) {
+    public File(String name, FileType type) {
         this.name = name;
-        this.size = size;
         this.type = type;
     }
 
@@ -53,14 +52,6 @@ public class File implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getSize() {
-        return size;
-    }
-
-    public void setSize(String size) {
-        this.size = size;
     }
 
     public FileType getType() {
@@ -88,7 +79,6 @@ public class File implements Serializable {
 
         if (!id.equals(file.id)) return false;
         if (!name.equals(file.name)) return false;
-        if (!size.equals(file.size)) return false;
 
         return true;
     }

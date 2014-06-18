@@ -63,11 +63,14 @@ public class SmartUser implements Serializable, Annotation {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "smartUser", cascade = CascadeType.ALL)
     private SmartUserDetails smartUserDetails;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "pk.user", cascade=CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.user", cascade = CascadeType.ALL)
     private Set<SmartUserGift> smartUserGifts;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name="file_id")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.user", cascade = CascadeType.ALL)
+    private Set<SmartUserFriend> smartUserFriends;
+
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "file_id")
     protected File file;
 
     public SmartUser() {}
@@ -184,6 +187,14 @@ public class SmartUser implements Serializable, Annotation {
         this.smartUserGifts = smartUserGifts;
     }
 
+    public Set<SmartUserFriend> getSmartUserFriends() {
+        return smartUserFriends;
+    }
+
+    public void setSmartUserFriends(Set<SmartUserFriend> smartUserFriends) {
+        this.smartUserFriends = smartUserFriends;
+    }
+
     public File getFile() {
         return file;
     }
@@ -213,6 +224,23 @@ public class SmartUser implements Serializable, Annotation {
         if (!uuid.equals(smartUser.uuid)) return false;
 
         return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = uuid.hashCode();
+        result = 31 * result + username.hashCode();
+        result = 31 * result + (birthDate != null ? birthDate.hashCode() : 0);
+        result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
+        result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
+        result = 31 * result + (middleName != null ? middleName.hashCode() : 0);
+        result = 31 * result + (gender != null ? gender.hashCode() : 0);
+        result = 31 * result + (address != null ? address.hashCode() : 0);
+        result = 31 * result + (addressVisible ? 1 : 0);
+        result = 31 * result + (profileVisible ? 1 : 0);
+        result = 31 * result + (cellPhone != null ? cellPhone.hashCode() : 0);
+        result = 31 * result + (cellPhoneVisible ? 1 : 0);
+        return result;
     }
 
     @Override

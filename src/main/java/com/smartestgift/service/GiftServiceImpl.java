@@ -6,7 +6,6 @@ import com.smartestgift.dao.model.*;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sun.net.www.content.image.gif;
 
 import javax.transaction.Transactional;
 import java.util.Date;
@@ -51,37 +50,32 @@ public class GiftServiceImpl implements GiftService {
     }
 
     @Override
-    public boolean smartUserHasGiftShop(Set<SmartUserGift> smartUserGifts, GiftShop giftShop) {
-        for (SmartUserGift smartuserGift : smartUserGifts) {
-            if (smartuserGift.getGiftShop().getUuid().equals(giftShop.getUuid())) {
-                return true;
-            }
-        }
-        return false;
+    public boolean hasSmartUserGiftShop(SmartUser user, String giftShopUuid) {
+        GiftShop giftShop = giftShopDAO.find(giftShopUuid);
+        SmartUserGift smartUserGift = smartUserDAO.findSmartUserGift(user, giftShop);
+        return smartUserGift != null;
     }
 
     @Override
-    public void addGiftShopToUserWishes(SmartUser user, GiftShop giftShop, Date endDate) {
+    public void addGiftShopToUserWishes(SmartUser user, String giftShopUuid, Date endDate) {
+        smartUserDAO.store(user);
+        GiftShop giftShop = giftShopDAO.find(giftShopUuid);
         SmartUserGift smartUserGift = new SmartUserGift();
         smartUserGift.setSmartUser(user);
         smartUserGift.setGiftShop(giftShop);
         smartUserGift.setMoneyCollect(0);
         smartUserGift.setEndDate(endDate);
         user.getSmartUserGifts().add(smartUserGift);
-        smartUserDAO.merge(user);
+        smartUserDAO.store(user);
     }
 
     @Override
-    public void deleteGiftFromUser(SmartUser user, GiftShop giftShop) {
-        Set<SmartUserGift> smartUserGifts = user.getSmartUserGifts();
-        for (Iterator<SmartUserGift> smartUserGiftIterator = smartUserGifts.iterator(); smartUserGiftIterator.hasNext(); ) {
-            SmartUserGift currentSmartUserGift = smartUserGiftIterator.next();
-            if (giftShop.getUuid().equals(currentSmartUserGift.getGiftShop().getUuid())) {
-                smartUserGiftIterator.remove();
-                break;
-            }
-        }
-        smartUserDAO.merge(user);
+    public void deleteGiftFromUser(SmartUser user, String giftShopUuid) {
+        GiftShop giftShop = giftShopDAO.find(giftShopUuid);
+        smartUserDAO.store(user);
+        SmartUserGift smartUserGift = smartUserDAO.findSmartUserGift(user, giftShop);
+        user.getSmartUserGifts().remove(smartUserGift);
+        smartUserDAO.store(user);
     }
 
     @Override

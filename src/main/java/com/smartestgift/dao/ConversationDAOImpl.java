@@ -66,6 +66,7 @@ public class ConversationDAOImpl implements ConversationDAO {
         SimpleExpression smartUserFrom = Restrictions.eq("user_from", smartUser);
         SimpleExpression smartUserTo = Restrictions.eq("user_to", smartUser);
         criteria.add(Restrictions.or(smartUserFrom, smartUserTo));
+        criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
         return (List<Conversation>) criteria.list();
     }
 }

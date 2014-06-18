@@ -69,6 +69,7 @@ public class MessageDAOImpl implements MessageDAO {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Message.class);
         criteria.add(Restrictions.eq("conversation.uuid", conversationUuid));
         criteria.addOrder(org.hibernate.criterion.Order.asc("date"));
+        criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
         return (List<Message>) criteria.list();
     }
 
@@ -78,6 +79,7 @@ public class MessageDAOImpl implements MessageDAO {
         criteria.add(Restrictions.eq("conversation.uuid", conversationUuid));
         criteria.add(Restrictions.eq("messageStatus.id", ApplicationConstants.MESSAGE_STATUS_NEW));
         criteria.addOrder(org.hibernate.criterion.Order.asc("date"));
+        criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
         return (List<Message>) criteria.list();
     }
 
@@ -89,6 +91,7 @@ public class MessageDAOImpl implements MessageDAO {
         criteria.add(Restrictions.eq("messageStatus", messageStatus));
         criteria.add(Restrictions.eq("conversation", conversation));
         criteria.add(Restrictions.ne("smartUser", smartUser));
+        criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
         return (List<Message>) criteria.list();
     }
 }

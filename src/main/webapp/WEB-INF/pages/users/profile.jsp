@@ -29,7 +29,7 @@
             <div class="panel-heading"><spring:message code="label.social"/></div>
             <div class="panel-body">
                 <ul class="nav nav-pills nav-stacked">
-                    <li><a href="#"><spring:message code="label.helpers"/></a></li>
+                    <li><a href="/users/myfriends"><spring:message code="label.friends"/></a></li>
                     <li><a href="#"><spring:message code="label.messages"/></a></li>
                 </ul>
             </div>

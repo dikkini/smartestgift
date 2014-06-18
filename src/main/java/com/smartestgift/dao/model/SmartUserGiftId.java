@@ -33,6 +33,14 @@ public class SmartUserGiftId implements Serializable {
         this.giftShop = giftShop;
     }
 
+    @Override
+    public int hashCode() {
+        int result = user != null ? user.hashCode() : 0;
+        result = 31 * result + (giftShop != null ? giftShop.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof SmartUserGiftId)) return false;

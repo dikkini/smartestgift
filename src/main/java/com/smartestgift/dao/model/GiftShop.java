@@ -5,6 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Set;
 
 /**
  * Created by dikkini on 28/05/14.
@@ -27,6 +28,9 @@ public class GiftShop implements Serializable {
     @OneToOne
     @JoinColumn (name = "gift_uuid")
     protected Gift gift;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.giftShop")
+    protected Set<SmartUserGift> smartUserGifts;
 
     // TODO сделать модель цены с валютой и прочей ерундой
     @Column(name = "price")
@@ -57,6 +61,14 @@ public class GiftShop implements Serializable {
 
     public void setGift(Gift gift) {
         this.gift = gift;
+    }
+
+    public Set<SmartUserGift> getSmartUserGifts() {
+        return smartUserGifts;
+    }
+
+    public void setSmartUserGifts(Set<SmartUserGift> smartUserGifts) {
+        this.smartUserGifts = smartUserGifts;
     }
 
     public BigDecimal getPrice() {

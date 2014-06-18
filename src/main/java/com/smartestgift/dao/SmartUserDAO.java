@@ -1,8 +1,7 @@
 package com.smartestgift.dao;
 
 import com.smartestgift.dao.Repository;
-import com.smartestgift.dao.model.SmartUser;
-import com.smartestgift.dao.model.SmartUserDetails;
+import com.smartestgift.dao.model.*;
 
 import java.util.List;
 
@@ -58,4 +57,39 @@ public interface SmartUserDAO extends Repository<SmartUser, String> {
      * @return
      */
     public List<SmartUser> findSmartUsersByOffset(int offset, String activeUserUuid);
+
+    /**
+     *
+     * @param smartUserFriend
+     */
+    public void removeSmartUserFriend(SmartUserFriend smartUserFriend);
+
+    /**
+     *
+     * @param smartUserGift
+     */
+    public void removeSmartUserGift(SmartUserGift smartUserGift);
+
+    /**
+     *
+     * @param activeUser
+     * @return
+     */
+    public List<SmartUserFriend> findAllSmartUserFriends(SmartUser activeUser);
+
+    /**
+     *
+     * @param smartUser
+     * @param friend
+     * @return
+     */
+    public SmartUserFriend findSmartUserFriend(SmartUser smartUser, SmartUser friend);
+
+    /**
+     *
+     * @param user
+     * @param giftShop
+     * @return
+     */
+    public SmartUserGift findSmartUserGift(SmartUser user, GiftShop giftShop);
 }

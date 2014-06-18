@@ -1,5 +1,8 @@
 package com.smartestgift.dao.model;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
@@ -9,6 +12,7 @@ import java.util.Set;
  * Email: dikkini@gmail.com
  */
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "file_type")
 public class FileType implements Serializable {
 
