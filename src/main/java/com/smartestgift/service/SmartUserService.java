@@ -6,6 +6,7 @@ import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserFriend;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -24,45 +25,24 @@ public interface SmartUserService {
 
     /**
      *
-     * @param smartUser
+     * @param username
+     * @param password
+     * @param email
+     * @param lastName
+     * @param firstName
+     * @param authProvider
+     * @param enabled
+     * @return
      */
-    public void saveUser(SmartUser smartUser);
-
-    /**
-     * Create new user
-     * @param username username
-     * @param email email
-     * @param passwordEncoded encoded password
-     * @param firstName first name
-     * @param lastName last name
-     * @param authProviderId auth provider id (from ApplicationConstants)
-     * @param roleId role id (from ApplicationConstants)
-     * @return SmartUserDetails model
-     */
-    public SmartUser createNewUser(String username, String email, String passwordEncoded, String firstName,
-                                          String lastName, Integer authProviderId, Integer roleId);
-
-    /**
-     * Creating new user from facebook with new user data. New user data coming from page continue registration,
-     * when username or email was occupied.
-     * @param facebookUser facebook user model (restfb model
-     * @param username username
-     * @param email email
-     * @param firstName first name
-     * @param lastName last name
-     * @param socialId social id
-     * @return SmartUserDetails model
-     */
-    public SmartUser createNewUserFromFacebook(User facebookUser, String username, String email, String firstName,
-                                                      String lastName, String socialId);
+    public SmartUser createSmartUser(String username, String password, String email, String lastName, String firstName,
+                                    Date registrationDate,  int authProvider, boolean enabled);
 
     /**
      *
-     * @param facebookUser
+     * @param smartUser
      * @return
      */
-    public SmartUser createNewUserFromFacebook(User facebookUser);
-
+    public SmartUser createSmartUser(SmartUser smartUser);
 
     /**
      *
@@ -78,6 +58,12 @@ public interface SmartUserService {
      * @return true - free
      */
     public boolean checkOccupiedEmail(String email);
+
+    /**
+     *
+     * @param username
+     */
+    public void createUserAuthorityForUser(String username);
 
     /**
      *

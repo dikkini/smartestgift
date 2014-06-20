@@ -64,7 +64,7 @@ public class ProfileController {
         } catch (ParseException e) {
             smartUser.setBirthDate(null);
         }
-        smartUserService.saveUser(smartUser);
+        smartUserService.createSmartUser(smartUser);
         return "redirect:/profile";
     }
 }

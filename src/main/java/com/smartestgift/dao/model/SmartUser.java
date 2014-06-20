@@ -1,10 +1,12 @@
 package com.smartestgift.dao.model;
 
+import com.restfb.types.User;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -33,9 +35,8 @@ public class SmartUser implements Serializable {
     @Column(name = "enabled")
     protected boolean enabled = true;
 
-    @ManyToOne
-    @JoinColumn(name = "auth_provider_id")
-    private AuthProvider authProvider;
+    @Column(name = "auth_provider_id")
+    private int authProvider;
 
     @Column(name = "registration_date")
     protected Date registrationDate;
@@ -78,16 +79,42 @@ public class SmartUser implements Serializable {
     protected boolean cellPhoneVisible = false;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<SmartUserGift> smartUserGifts;
+    private Set<SmartUserGift> smartUserGifts = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<SmartUserFriend> smartUserFriends;
+    private Set<SmartUserFriend> smartUserFriends = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "smartUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserRole> userRoles = new HashSet<>();
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "file_id")
     protected File file;
 
     public SmartUser() {}
+
+    public SmartUser(String username, String password, String email, String lastName, String firstName, Date registrationDate,
+                     int authProvider, boolean enabled) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.lastName = lastName;
+        this.firstName = firstName;
+        this.registrationDate = registrationDate;
+        this.authProvider = authProvider;
+        this.enabled = enabled;
+    }
+
+    public SmartUser(User facebookUser) {
+        this.username = facebookUser.getUsername();
+        this.firstName = facebookUser.getFirstName();
+        this.lastName = facebookUser.getLastName();
+        this.middleName = facebookUser.getMiddleName();
+        this.address = facebookUser.getLocation().getName();
+        this.birthDate = facebookUser.getBirthdayAsDate();
+        this.email = facebookUser.getEmail();
+        this.socialId = facebookUser.getId();
+    }
 
     public String getUuid() {
         return uuid;
@@ -125,11 +152,11 @@ public class SmartUser implements Serializable {
         this.enabled = enabled;
     }
 
-    public AuthProvider getAuthProvider() {
+    public int getAuthProvider() {
         return authProvider;
     }
 
-    public void setAuthProvider(AuthProvider authProvider) {
+    public void setAuthProvider(int authProvider) {
         this.authProvider = authProvider;
     }
 
@@ -245,6 +272,18 @@ public class SmartUser implements Serializable {
         this.smartUserFriends = smartUserFriends;
     }
 
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public Set<UserRole> getUserRoles() {
+        return userRoles;
+    }
+
+    public void setUserRoles(Set<UserRole> userRoles) {
+        this.userRoles = userRoles;
+    }
+
     public File getFile() {
         return file;
     }
@@ -265,8 +304,6 @@ public class SmartUser implements Serializable {
         if (enabled != smartUser.enabled) return false;
         if (profileVisible != smartUser.profileVisible) return false;
         if (address != null ? !address.equals(smartUser.address) : smartUser.address != null) return false;
-        if (authProvider != null ? !authProvider.equals(smartUser.authProvider) : smartUser.authProvider != null)
-            return false;
         if (birthDate != null ? !birthDate.equals(smartUser.birthDate) : smartUser.birthDate != null) return false;
         if (cellPhone != null ? !cellPhone.equals(smartUser.cellPhone) : smartUser.cellPhone != null) return false;
         if (email != null ? !email.equals(smartUser.email) : smartUser.email != null) return false;
@@ -296,7 +333,6 @@ public class SmartUser implements Serializable {
         result = 31 * result + (password != null ? password.hashCode() : 0);
         result = 31 * result + (email != null ? email.hashCode() : 0);
         result = 31 * result + (enabled ? 1 : 0);
-        result = 31 * result + (authProvider != null ? authProvider.hashCode() : 0);
         result = 31 * result + (registrationDate != null ? registrationDate.hashCode() : 0);
         result = 31 * result + (socialId != null ? socialId.hashCode() : 0);
         result = 31 * result + (birthDate != null ? birthDate.hashCode() : 0);

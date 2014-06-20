@@ -22,7 +22,7 @@ public interface SmartUserDAO extends Repository<SmartUser, String> {
      * @param socialId
      * @return
      */
-    public SmartUser findUserBySocialIdAndAuthProvider(String socialId, AuthProvider facebookAuthProvider);
+    public SmartUser findUserBySocialIdAndAuthProvider(String socialId, Integer facebookAuthProvider);
 
     /**
      * Поиск пользователя по email

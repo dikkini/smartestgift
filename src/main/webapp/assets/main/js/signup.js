@@ -137,7 +137,7 @@ $(document).ready(function () {
             cityOkIcon.hide();
             cityNotOkIcon.show();
         } else {
-            cityForm.addClass("has-success")
+            cityForm.addClass("has-success");
             cityOkIcon.show();
             cityNotOkIcon.hide();
         }
@@ -238,6 +238,66 @@ $(document).ready(function () {
         $.ajax({
             type: "post",
             url: "/signup/register",
+            cache: false,
+            data: data,
+            success: function (response) {
+                if (response.success) {
+                    window.location = "/profile?successes=signup_success";
+                } else {
+                    $.showNotifications(response);
+                }
+                loadingSignUp.loading('stop');
+            },
+            error: function (response) {
+                alert(response.error);
+            }
+        });
+
+        e.preventDefault();
+    });
+    $("#sign-up-facebook-user-btn").click(function (e) {
+        var loadingSignUp = $("#loading-sign-up");
+        loadingSignUp.loading('start');
+
+        var validForm = true;
+
+        if (!emailRegexp.test(emailObj.val())) {
+            showEmailInputError();
+            validForm = false;
+        }
+
+        if (!usernameRegexp.test(usernameObj.val())) {
+            showUsernameInputError();
+            validForm = false;
+        }
+
+        if (firstnameObj.val().trim() == "") {
+            firstnameForm.addClass("has-error");
+            validForm = false;
+        }
+
+//        //TODO добавить проверку ID полученного из КЛАДР
+//        if (cityObj.val().trim() == "") {
+//            cityForm.addClass("has-error");
+//            validForm = false;
+//        }
+
+        if (!validForm) {
+            loadingSignUp.loading('stop');
+            e.preventDefault();
+            return;
+        }
+
+        var data = {};
+        $('input').each(function () {
+            data[$(this).attr('name')] = $(this).val();
+        });
+
+        data.id = $("#username").data("social");
+
+        $.ajax({
+            type: "post",
+            url: "/signup/facebook/register",
             cache: false,
             data: data,
             success: function (response) {

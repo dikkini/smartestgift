@@ -1,6 +1,5 @@
 package com.smartestgift.controller;
 
-import com.restfb.types.User;
 import com.smartestgift.controller.model.AjaxResponse;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.service.SmartUserService;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 
 /**
  * Created by dikkini on 06.02.14.
@@ -63,10 +63,11 @@ public class SignupController {
         StandardPasswordEncoder encoder = new StandardPasswordEncoder();
         String passwordEncoded = encoder.encode(password);
 
-        SmartUser newUser = smartUserService.createNewUser(username, email, passwordEncoded, firstName, lastName,
-                ApplicationConstants.APPLICATION_AUTH_PROVIDER_ID, ApplicationConstants.USER_ROLE_ID);
+        SmartUser registerUser = smartUserService.createSmartUser(username, passwordEncoded, email, lastName, firstName,
+                new Date(), ApplicationConstants.APPLICATION_AUTH_PROVIDER_ID, true);
 
-        smartUserService.authenticateUser(newUser.getUsername(), newUser.getPassword(), request);
+        smartUserService.createUserAuthorityForUser(registerUser.getUsername());
+        smartUserService.authenticateUser(registerUser.getUsername(), registerUser.getPassword(), request);
 
         result.setSuccess(true);
         return result;
@@ -78,7 +79,7 @@ public class SignupController {
                                          @RequestParam(required = true, value = "errors") String[] errors) {
         SmartUser SmartUser = (SmartUser) request.getSession().getAttribute(socialId);
         ModelAndView mav = new ModelAndView("signupSocial");
-        mav.addObject("SmartUser", SmartUser);
+        mav.addObject("facebookSmartUser", SmartUser);
         mav.addObject("errors", errors);
         return mav;
     }
@@ -93,10 +94,14 @@ public class SignupController {
         // TODO проверка всех входных данных
         AjaxResponse response = new AjaxResponse();
 
-        User facebookUser = (User) request.getSession().getAttribute(socialId);
-        SmartUser newUserFromFacebook = smartUserService.createNewUserFromFacebook(facebookUser, username,
-                email, firstName, lastName, socialId);
-        smartUserService.authenticateUser(newUserFromFacebook.getUsername(), newUserFromFacebook.getPassword(), request);
+        SmartUser facebookUser = (SmartUser) request.getSession().getAttribute(socialId);
+        facebookUser.setUsername(username);
+        facebookUser.setEmail(email);
+        facebookUser.setFirstName(firstName);
+        facebookUser.setLastName(lastName);
+
+        smartUserService.createSmartUser(facebookUser);
+        smartUserService.authenticateUser(facebookUser.getUsername(), facebookUser.getPassword(), request);
 
         response.setSuccess(true);
         return response;

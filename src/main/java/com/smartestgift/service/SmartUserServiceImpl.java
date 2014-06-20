@@ -1,6 +1,5 @@
 package com.smartestgift.service;
 
-import com.restfb.types.User;
 import com.smartestgift.dao.*;
 import com.smartestgift.dao.model.*;
 import com.smartestgift.utils.ApplicationConstants;
@@ -16,17 +15,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.*;
 
-import static com.smartestgift.utils.ApplicationConstants.*;
-
 /**
  * Created by dikkini on 18.02.14.
  * Email: dikkini@gmail.com
  */
 @Service
 public class SmartUserServiceImpl implements SmartUserService {
-
-    @Autowired
-    private AuthProviderDAO authProviderDAO;
 
     @Autowired
     private SmartUserDAO smartUserDAO;
@@ -36,6 +30,9 @@ public class SmartUserServiceImpl implements SmartUserService {
 
     @Autowired
     private RoleDAO roleDAO;
+
+    @Autowired
+    private UserRoleDAO userRoleDAO;
 
     @Autowired
     private FileDAO fileDAO;
@@ -49,54 +46,22 @@ public class SmartUserServiceImpl implements SmartUserService {
     }
 
     @Override
-    public void saveUser(SmartUser smartUser) {
+    public SmartUser createSmartUser(String username, String password, String email, String lastName, String firstName,
+                                     Date registrationDate, int authProvider, boolean enabled) {
+        SmartUser smartUser = new SmartUser(username, password, email, lastName, firstName, registrationDate, authProvider, enabled);
+        smartUser.setFile(fileDAO.find(ApplicationConstants.FILE_USER_NO_PHOTO_ID));
+        return this.createSmartUser(smartUser);
+    }
+
+    @Override
+    public SmartUser createSmartUser(SmartUser smartUser) {
         smartUserDAO.store(smartUser);
-    }
-
-    @Override
-    public SmartUser createNewUser(String username, String email, String passwordEncoded, String firstName, String lastName, Integer authProviderId, Integer roleId) {
-
-        Role role = roleDAO.find(roleId);
-        AuthProvider authProvider = authProviderDAO.find(authProviderId);
-
-        SmartUser smartUser = new SmartUser();
-        smartUser.setUsername(username);
-        smartUser.setFirstName(firstName);
-        smartUser.setLastName(lastName);
-        smartUser.setFile(fileDAO.find(FILE_USER_NO_PHOTO_ID));
-        smartUser.setUsername(username);
-        smartUser.setEmail(email);
-        smartUser.setPassword(passwordEncoded);
-        smartUser.setRegistrationDate(new Date());
-        smartUser.setAuthProvider(authProvider);
-        //smartUser.setRole(role);
-
-        smartUserDAO.store(smartUser);
-
         return smartUser;
-    }
-
-    @Override
-    public SmartUser createNewUserFromFacebook(User facebookUser, String username, String email, String firstName, String lastName, String socialId) {
-        SmartUser smartUser = getSmartUserDetailsFromFacebookUser(facebookUser);
-        smartUser.setUsername(username);
-        smartUser.setLastName(lastName);
-        smartUser.setFirstName(firstName);
-        smartUser.setFile(fileDAO.find(FILE_USER_NO_PHOTO_ID));
-        smartUser.setSocialId(socialId);
-        
-        return smartUser;
-    }
-
-    @Override
-    public SmartUser createNewUserFromFacebook(User facebookUser) {
-        return getSmartUserDetailsFromFacebookUser(facebookUser);
     }
 
     @Override
     public SmartUser findExistSocialUser(String socialId, Integer providerId) {
-        AuthProvider authProvider = authProviderDAO.find(providerId);
-        return smartUserDAO.findUserBySocialIdAndAuthProvider(socialId, authProvider);
+        return smartUserDAO.findUserBySocialIdAndAuthProvider(socialId, providerId);
     }
 
     @Override
@@ -109,6 +74,15 @@ public class SmartUserServiceImpl implements SmartUserService {
     public boolean checkOccupiedEmail(String email) {
         SmartUser smartUserDetailsByEmail = smartUserDAO.findSmartUserByEmail(email);
         return smartUserDetailsByEmail == null;
+    }
+
+    @Override
+    public void createUserAuthorityForUser(String username) {
+        Role role = roleDAO.find(ApplicationConstants.USER_ROLE_ID);
+        SmartUser smartUser = smartUserDAO.findSmartUserByUsername(username);
+        UserRole userRole = new UserRole(role, smartUser);
+        smartUser.getUserRoles().add(userRole);
+        smartUserDAO.store(smartUser);
     }
 
     @Override
@@ -128,26 +102,6 @@ public class SmartUserServiceImpl implements SmartUserService {
     @Override
     public void checkUserAddress(SmartUser SmartUser) {
         // TODO do it
-    }
-
-    private SmartUser getSmartUserDetailsFromFacebookUser(User facebookUser) {
-        SmartUser smartUser = new SmartUser();
-        smartUser.setUsername(facebookUser.getUsername());
-        smartUser.setLastName(facebookUser.getLastName());
-        smartUser.setFirstName(facebookUser.getFirstName());
-        smartUser.setMiddleName(facebookUser.getMiddleName());
-        smartUser.setBirthDate(facebookUser.getBirthdayAsDate());
-        smartUser.setAddress(facebookUser.getHometownName());
-        //SmartUser.setRole(roleDAO.find(USER_ROLE_ID));
-        smartUser.setAuthProvider(authProviderDAO.find(FACEBOOK_AUTH_PROVIDER_ID));
-        smartUser.setEmail(facebookUser.getEmail());
-        smartUser.setSocialId(facebookUser.getId());
-        smartUser.setRegistrationDate(new Date());
-        // TODO photo take from facebook
-        smartUser.setFile(fileDAO.find(FILE_USER_NO_PHOTO_ID));
-        // TODO determine gender and fill it
-        //smartUser.setGender(facebookUser.getGender());
-        return smartUser;
     }
 
     @Override

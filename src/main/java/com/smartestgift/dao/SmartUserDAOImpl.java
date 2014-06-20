@@ -66,7 +66,7 @@ public class SmartUserDAOImpl implements SmartUserDAO {
     }
 
     @Override
-    public SmartUser findUserBySocialIdAndAuthProvider(String socialId, AuthProvider facebookAuthProvider) {
+    public SmartUser findUserBySocialIdAndAuthProvider(String socialId, Integer facebookAuthProvider) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
         criteria.add(Restrictions.eq("socialId", socialId));
         criteria.add(Restrictions.eq("authProvider", facebookAuthProvider));

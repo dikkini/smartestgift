@@ -8,7 +8,7 @@ SET default_tablespace = '';
 SET default_with_oids = FALSE;
 
 DROP TABLE public.users CASCADE;
-DROP TABLE public.auth_provider CASCADE;
+DROP TABLE public.role CASCADE;
 DROP TABLE public.user_roles CASCADE;
 DROP TABLE public.user_friends CASCADE;
 DROP TABLE public.persistent_login CASCADE;
@@ -24,6 +24,12 @@ DROP TABLE public.message CASCADE;
 DROP TABLE public.conversation CASCADE;
 DROP TABLE public.message_status CASCADE;
 
+CREATE TABLE public.role
+(
+  id SERIAL PRIMARY KEY,
+  role VARCHAR(36) NOT NULL
+);
+
 CREATE TABLE public.message_status
 (
   id     SERIAL PRIMARY KEY,
@@ -35,12 +41,6 @@ CREATE TABLE public.file_type
   id   SERIAL PRIMARY KEY,
   name VARCHAR NOT NULL,
   path VARCHAR NOT NULL
-);
-
-CREATE TABLE public.auth_provider
-(
-  id   SERIAL PRIMARY KEY,
-  name VARCHAR NOT NULL
 );
 
 CREATE TABLE public.file
@@ -67,7 +67,7 @@ CREATE TABLE public.users
   file_id           INT REFERENCES public.file (id) DEFAULT 10  NOT NULL,
   registration_date TIMESTAMP DEFAULT now()                     NOT NULL,
   social_id         VARCHAR,
-  auth_provider_id  INT REFERENCES public.auth_provider (id)    NOT NULL,
+  auth_provider_id  INT                                         NOT NULL,
   email             VARCHAR UNIQUE                              NOT NULL,
   password          TEXT,
   enabled           BOOLEAN DEFAULT TRUE                        NOT NULL
@@ -75,9 +75,9 @@ CREATE TABLE public.users
 
 CREATE TABLE public.user_roles
 (
-  user_role_id SERIAL PRIMARY KEY,
-  username     VARCHAR(45) REFERENCES public.users (username) NOT NULL,
-  role         VARCHAR(45)                                    NOT NULL
+  uuid     VARCHAR(36) PRIMARY KEY,
+  username VARCHAR(45) REFERENCES public.users (username) NOT NULL,
+  role     VARCHAR(45)                                    NOT NULL
 );
 
 CREATE TABLE public.user_friends

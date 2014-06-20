@@ -2,6 +2,7 @@ package com.smartestgift.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.smartestgift.handler.UserInterceptor;
 import javassist.Modifier;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,8 +144,10 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
         OpenSessionInViewInterceptor sessionInViewInterceptor = new OpenSessionInViewInterceptor();
         sessionInViewInterceptor.setSessionFactory(sessionFactory());
 
-        registry.addWebRequestInterceptor(sessionInViewInterceptor  );
+        registry.addWebRequestInterceptor(sessionInViewInterceptor);
         registry.addInterceptor(localeChangeInterceptor());
+        registry.addInterceptor(userInterceptor()).addPathPatterns("/**")
+                .excludePathPatterns("/", "/login/**", "/signup/**");
     }
 
     @Bean
@@ -212,6 +215,11 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
                 new MediaType(MediaType.MULTIPART_FORM_DATA.getType(), MediaType.MULTIPART_FORM_DATA.getSubtype(), UTF8)
         ));
         return converter;
+    }
+
+    @Bean
+    public UserInterceptor userInterceptor() {
+        return new UserInterceptor();
     }
 
     @Bean

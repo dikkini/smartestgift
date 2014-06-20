@@ -137,13 +137,16 @@ public class LoginController {
                         boolean emailIsFree = smartUserService.checkOccupiedEmail(facebookUser.getEmail());
                         boolean usernameIsFree = smartUserService.checkOccupiedUsername(facebookUser.getUsername());
 
+
+                        SmartUser fbUser = new SmartUser(facebookUser);
                         if (emailIsFree && usernameIsFree) {
-                            SmartUser newUserFromFacebook = smartUserService.createNewUserFromFacebook(facebookUser);
-                            smartUserService.authenticateUser(newUserFromFacebook.getUsername(),
-                                    newUserFromFacebook.getPassword(), request);
+
+                            SmartUser smartUser = smartUserService.createSmartUser(fbUser);
+                            smartUserService.authenticateUser(smartUser.getUsername(),
+                                    smartUser.getPassword(), request);
                             return "redirect:/profile";
                         } else {
-                            request.getSession().setAttribute(facebookUser.getId(), facebookUser);
+                            request.getSession().setAttribute(facebookUser.getId(), fbUser);
                             return "redirect:/signup/facebook?id=" + facebookUser.getId() + "&errors="
                                     + (!emailIsFree ? "username_error," : "")
                                     + (!usernameIsFree ? "email_error" : "");
