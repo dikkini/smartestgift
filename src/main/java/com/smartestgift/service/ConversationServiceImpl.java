@@ -47,10 +47,10 @@ public class ConversationServiceImpl implements ConversationService {
     }
 
     @Override
-    public Conversation createConversation(SmartUser smartUserFrom, String usernameTo, String message) {
+    public Conversation createConversation(SmartUser smartUserFrom, SmartUser smartUserTo, String message) {
         Conversation conversation = new Conversation();
         conversation.setUser_from(smartUserFrom);
-        conversation.setUser_to(smartUserDAO.findSmartUserByUsername(usernameTo));
+        conversation.setUser_to(smartUserTo);
         conversationDAO.store(conversation);
         messageService.sendMessageToUser(smartUserFrom, message, conversation.getUuid());
         return conversation;

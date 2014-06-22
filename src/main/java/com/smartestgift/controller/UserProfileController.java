@@ -1,19 +1,22 @@
 package com.smartestgift.controller;
 
 import com.google.gson.Gson;
-import com.smartestgift.controller.model.AjaxResponse;
+import com.smartestgift.controller.model.Response;
 import com.smartestgift.dao.SmartUserDAO;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserFriend;
 import com.smartestgift.service.SmartUserService;
 import com.smartestgift.utils.ApplicationConstants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+
+import static org.springframework.http.HttpStatus.*;
 
 /**
  * Created by dikkini on 13.02.14.
@@ -39,7 +42,8 @@ public class UserProfileController {
 
     @RequestMapping(value = "/myfriends", method = RequestMethod.GET)
     public ModelAndView myFriends(Authentication authentication) {
-        List<SmartUserFriend> allSmartUserFriends = smartUserService.findAllSmartUserFriends(smartUserService.findUserByUsername(authentication.getName()));
+        SmartUser userByUsername = smartUserService.findUserByUsername(authentication.getName());
+        List<SmartUserFriend> allSmartUserFriends = smartUserService.findAllSmartUserFriends(userByUsername);
         return new ModelAndView("users/myfriends").addObject("smartUserFriends", allSmartUserFriends);
     }
 
@@ -58,66 +62,48 @@ public class UserProfileController {
     }
 
     @RequestMapping(value = "/findPeople.do", headers = "Accept=application/json", method = RequestMethod.POST)
-    public
-    @ResponseBody
-    String findPeople(Authentication authentication,
-                      @RequestParam(value = "offset", required = true) int offset) {
-        List<SmartUser> usersWithOffset = smartUserService.findUsersWithOffset(offset, smartUserService.findUserByUsername(authentication.getName()));
-        return gson.toJson(usersWithOffset);
+    public @ResponseBody Response findPeople(Authentication authentication,
+                                                    @RequestParam(value = "offset", required = true) int offset) {
+        SmartUser userByUsername = smartUserService.findUserByUsername(authentication.getName());
+        List<SmartUser> usersWithOffset = smartUserService.findUsersWithOffset(offset, userByUsername);
+        return Response.createResponse(usersWithOffset);
     }
 
     @RequestMapping(value = "/addFriendRequest.do", headers = "Accept=application/json", method = RequestMethod.POST)
-    public
-    @ResponseBody
-    AjaxResponse addFriendRequest(Authentication authentication,
-                                  @RequestParam(value = "friendUsername", required = true) String friendUsername) {
-        AjaxResponse response = new AjaxResponse();
-        smartUserService.addRequestSmartUserFriend(smartUserService.findUserByUsername(authentication.getName()), friendUsername);
-        response.setSuccess(true);
-        return response;
+    public void addFriendRequest(Authentication authentication,
+                                                   @RequestParam(value = "friendUsername", required = true)
+                                                   String friendUsername) {
+        SmartUser userByUsername = smartUserService.findUserByUsername(authentication.getName());
+        smartUserService.addRequestSmartUserFriend(userByUsername, friendUsername);
     }
 
     @RequestMapping(value = "/removeFriend.do", headers = "Accept=application/json", method = RequestMethod.POST)
-    public
-    @ResponseBody
-    AjaxResponse removeFriend(Authentication authentication,
-                              @RequestParam(value = "friendUsername", required = true) String friendUsername) {
-        AjaxResponse response = new AjaxResponse();
-        smartUserService.removeSmartUserFriend(smartUserService.findUserByUsername(authentication.getName()), friendUsername);
-        response.setSuccess(true);
-        return response;
+    public void removeFriend(Authentication authentication,
+                          @RequestParam(value = "friendUsername", required = true) String friendUsername) {
+        SmartUser userByUsername = smartUserService.findUserByUsername(authentication.getName());
+        smartUserService.removeSmartUserFriend(userByUsername, friendUsername);
     }
 
     @RequestMapping(value = "/acceptFriendRequest.do", headers = "Accept=application/json", method = RequestMethod.POST)
-    public
-    @ResponseBody
-    AjaxResponse acceptFriendRequest(Authentication authentication,
+    public void acceptFriendRequest(Authentication authentication,
                                      @RequestParam(value = "friendUsername", required = true) String friendUsername) {
-        AjaxResponse response = new AjaxResponse();
-        smartUserService.changeSmartUserFriendType(smartUserService.findUserByUsername(authentication.getName()), friendUsername, ApplicationConstants.USER_FRIEND_FRIEND_TYPE);
-        response.setSuccess(true);
-        return response;
+        SmartUser userByUsername = smartUserService.findUserByUsername(authentication.getName());
+        smartUserService.changeSmartUserFriendType(userByUsername, friendUsername,
+                ApplicationConstants.USER_FRIEND_FRIEND_TYPE);
     }
 
     @RequestMapping(value = "/declineFriendRequest.do", headers = "Accept=application/json", method = RequestMethod.POST)
-    public
-    @ResponseBody
-    AjaxResponse declineFriendRequest(Authentication authentication,
-                                      @RequestParam(value = "friendUsername", required = true) String friendUsername) {
-        AjaxResponse response = new AjaxResponse();
-        smartUserService.removeSmartUserFriend(smartUserService.findUserByUsername(authentication.getName()), friendUsername);
-        response.setSuccess(true);
-        return response;
+    public void declineFriendRequest(Authentication authentication,
+                                     @RequestParam(value = "friendUsername", required = true) String friendUsername) {
+        SmartUser userByUsername = smartUserService.findUserByUsername(authentication.getName());
+        smartUserService.removeSmartUserFriend(userByUsername, friendUsername);
     }
 
     @RequestMapping(value = "/blockFriend.do", headers = "Accept=application/json", method = RequestMethod.POST)
-    public
-    @ResponseBody
-    AjaxResponse blockFriend(Authentication authentication,
-                             @RequestParam(value = "friendUuid", required = true) String friendUuid) {
-        AjaxResponse response = new AjaxResponse();
-        smartUserService.changeSmartUserFriendType(smartUserService.findUserByUsername(authentication.getName()), friendUuid, ApplicationConstants.USER_FRIEND_BLOCK_TYPE);
-        response.setSuccess(true);
-        return response;
+    public void blockFriend(Authentication authentication,
+                            @RequestParam(value = "friendUuid", required = true) String friendUuid) {
+        SmartUser userByUsername = smartUserService.findUserByUsername(authentication.getName());
+        smartUserService.changeSmartUserFriendType(userByUsername, friendUuid,
+                ApplicationConstants.USER_FRIEND_BLOCK_TYPE);
     }
 }

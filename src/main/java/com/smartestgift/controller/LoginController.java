@@ -155,7 +155,7 @@ public class LoginController {
                 } else {
                     return "redirect:/login?errors=internal_error";
                 }
-
+            // TODO
             } catch (HttpException e) {
                 System.err.println("Fatal protocol violation: " + e.getMessage());
                 e.printStackTrace();

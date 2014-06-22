@@ -28,10 +28,10 @@ public interface ConversationService {
     /**
      *
      * @param smartUserFrom
-     * @param usernameTo
+     * @param smartUserTo
      * @param message
      */
-    public Conversation createConversation(SmartUser smartUserFrom, String usernameTo, String message);
+    public Conversation createConversation(SmartUser smartUserFrom, SmartUser smartUserTo, String message);
 
     /**
      *

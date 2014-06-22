@@ -6,6 +6,7 @@ package com.smartestgift.controller;
  */
 
 import com.google.gson.Gson;
+import com.smartestgift.controller.model.Response;
 import com.smartestgift.dao.model.File;
 import com.smartestgift.service.FileService;
 import com.smartestgift.service.SmartUserService;
@@ -38,7 +39,7 @@ public class FileController {
     private Gson gson;
 
     @RequestMapping(value = "/uploadUserPhoto", headers = "content-type=multipart/*", method = RequestMethod.POST)
-    public @ResponseBody String uploadFile(Authentication authentication,
+    public @ResponseBody Response uploadFile(Authentication authentication,
                                            @RequestParam (required = true, value = "fileTypeId") Integer fileTypeId,
                                            MultipartHttpServletRequest request, HttpServletResponse response) {
 
@@ -57,13 +58,16 @@ public class FileController {
 
                 // TODO абсолютные пути это плохо
                 FileCopyUtils.copy(mpf.getBytes(), new FileOutputStream("C:\\temp\\" + mpf.getOriginalFilename()));
-                FileCopyUtils.copy(mpf.getBytes(), new FileOutputStream("/Volumes/Storage/temp/" + mpf.getOriginalFilename()));
-
             } catch (IOException e) {
                 e.printStackTrace();
+                try {
+                    FileCopyUtils.copy(mpf.getBytes(), new FileOutputStream("/Volumes/Storage/temp/" + mpf.getOriginalFilename()));
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             }
         }
-        return gson.toJson(file);
+        return Response.createResponse(file);
     }
 
     @RequestMapping(value = "/get/{fileId}", method = RequestMethod.GET)

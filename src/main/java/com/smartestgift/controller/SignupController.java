@@ -1,21 +1,25 @@
 package com.smartestgift.controller;
 
-import com.smartestgift.controller.model.AjaxResponse;
+import com.smartestgift.controller.model.Response;
 import com.smartestgift.dao.model.SmartUser;
+import com.smartestgift.exception.EmailBusyException;
+import com.smartestgift.exception.UsernameBusyException;
 import com.smartestgift.service.SmartUserService;
 import com.smartestgift.utils.ApplicationConstants;
 import com.smartestgift.utils.ResponseMessages;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
+
+import static org.springframework.http.HttpStatus.*;
 
 /**
  * Created by dikkini on 06.02.14.
@@ -35,29 +39,20 @@ public class SignupController {
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public @ResponseBody AjaxResponse signUpUser(HttpServletRequest request,
-            @RequestParam (required = true, value = "username") String username,
-            @RequestParam (required = true, value = "email") String email,
-            @RequestParam (required = true, value = "password") String password,
-            @RequestParam (required = true, value = "firstName") String firstName,
-            @RequestParam (required = false, value = "lastName") String lastName) {
-
-        AjaxResponse result = new AjaxResponse();
+    public String signUpUser(HttpServletRequest request,
+                                             @RequestParam (required = true, value = "username") String username,
+                                             @RequestParam (required = true, value = "email") String email,
+                                             @RequestParam (required = true, value = "password") String password,
+                                             @RequestParam (required = true, value = "firstName") String firstName,
+                                             @RequestParam (required = false, value = "lastName") String lastName) {
 
         boolean emailOccupied = smartUserService.checkOccupiedEmail(email);
         boolean usernameOccupied = smartUserService.checkOccupiedUsername(username);
 
-        if (!emailOccupied) {
-            result.addError(ResponseMessages.EMAIL_EXISTING_ERROR);
-        }
-
-        if (!usernameOccupied) {
-            result.addError(ResponseMessages.USERNAME_EXISTING_ERROR);
-        }
-
-        if (result.getErrors().size() > 0) {
-            result.setSuccess(false);
-            return result;
+        if (usernameOccupied) {
+            throw new UsernameBusyException("Username is busy", HttpStatus.IM_USED.value());
+        } else if (emailOccupied) {
+            throw new EmailBusyException("Email is busy", HttpStatus.IM_USED.value());
         }
 
         StandardPasswordEncoder encoder = new StandardPasswordEncoder();
@@ -69,8 +64,7 @@ public class SignupController {
         smartUserService.createUserAuthorityForUser(registerUser.getUsername());
         smartUserService.authenticateUser(registerUser.getUsername(), registerUser.getPassword(), request);
 
-        result.setSuccess(true);
-        return result;
+        return "redirect:/profile";
     }
 
     @RequestMapping(value = "/facebook", method = RequestMethod.GET)
@@ -85,15 +79,13 @@ public class SignupController {
     }
 
     @RequestMapping(value = "/facebook/register", method = RequestMethod.POST)
-    public @ResponseBody AjaxResponse socialRegister(HttpServletRequest request,
+    public ModelAndView socialRegister(HttpServletRequest request, HttpServletResponse response,
                                       @RequestParam (required = true, value = "id") String socialId,
                                       @RequestParam (required = true, value = "username") String username,
                                       @RequestParam (required = true, value = "email") String email,
                                       @RequestParam (required = true, value = "firstName") String firstName,
                                       @RequestParam (required = false, value = "lastName") String lastName) {
         // TODO проверка всех входных данных
-        AjaxResponse response = new AjaxResponse();
-
         SmartUser facebookUser = (SmartUser) request.getSession().getAttribute(socialId);
         facebookUser.setUsername(username);
         facebookUser.setEmail(email);
@@ -103,23 +95,32 @@ public class SignupController {
         smartUserService.createSmartUser(facebookUser);
         smartUserService.authenticateUser(facebookUser.getUsername(), facebookUser.getPassword(), request);
 
-        response.setSuccess(true);
-        return response;
+        return new ModelAndView("users/profile");
     }
 
-    @RequestMapping(value = "/checkLogin", method = RequestMethod.POST)
-    public @ResponseBody AjaxResponse checkLogin(@RequestParam(value = "login", required = true) String login) {
+    @RequestMapping(value = "/checkLogin", method = RequestMethod.GET)
+    public void checkLogin(@RequestParam(value = "login", required = true) String login) {
         boolean loginFree = smartUserService.checkOccupiedUsername(login);
-        AjaxResponse result = new AjaxResponse();
-        result.setSuccess(loginFree);
-        return result;
+        if (!loginFree) {
+            throw new UsernameBusyException("Username is busy", HttpStatus.IM_USED.value());
+        }
     }
 
-    @RequestMapping(value = "/checkEmail", method = RequestMethod.POST)
-    public @ResponseBody AjaxResponse checkEmail(@RequestParam(value = "email", required = true) String email) {
+    @RequestMapping(value = "/checkEmail", method = RequestMethod.GET)
+    public void checkEmail(@RequestParam(value = "email", required = true) String email) {
         boolean emailFree = smartUserService.checkOccupiedEmail(email);
-        AjaxResponse result = new AjaxResponse();
-        result.setSuccess(emailFree);
-        return result;
+        if (!emailFree) {
+            throw new EmailBusyException("Email is busy", HttpStatus.IM_USED.value());
+        }
+    }
+
+    @ExceptionHandler(UsernameBusyException.class)
+    public @ResponseBody ResponseEntity handleUsernameBusyException(HttpServletResponse response) {
+        return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(EmailBusyException.class)
+    public @ResponseBody ResponseEntity handleEmailBusyException(HttpServletResponse response) {
+        return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
     }
 }

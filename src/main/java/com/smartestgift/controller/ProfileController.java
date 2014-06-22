@@ -38,15 +38,15 @@ public class ProfileController {
 
     @RequestMapping(value = "/profile/settings/save.do", method = RequestMethod.POST)
     public String saveSettings(Authentication authentication,
-            @RequestParam(required = true, value = "firstName") String firstName,
-            @RequestParam(required = true, value = "lastName") String lastName,
-            @RequestParam(required = true, value = "middleName") String middleName,
-            @RequestParam(required = true, value = "birthdate") String birthDate,
-            @RequestParam(required = true, value = "address") String address,
-            @RequestParam(required = false, value = "addressVisible") boolean addressVisible,
-            @RequestParam(required = false, value = "profileVisible") boolean profileVisible,
-            @RequestParam(required = true, value = "cellphone") String cellPhone,
-            @RequestParam(required = false, value = "cellphoneVisible") boolean cellphoneVisible) {
+                               @RequestParam(required = true, value = "firstName") String firstName,
+                               @RequestParam(required = true, value = "lastName") String lastName,
+                               @RequestParam(required = true, value = "middleName") String middleName,
+                               @RequestParam(required = true, value = "birthdate") String birthDate,
+                               @RequestParam(required = true, value = "address") String address,
+                               @RequestParam(required = false, value = "addressVisible") boolean addressVisible,
+                               @RequestParam(required = false, value = "profileVisible") boolean profileVisible,
+                               @RequestParam(required = true, value = "cellphone") String cellPhone,
+                               @RequestParam(required = false, value = "cellphoneVisible") boolean cellphoneVisible) {
         SmartUser smartUser = smartUserService.findUserByUsername(authentication.getName());
         smartUser.setFirstName(firstName);
         smartUser.setLastName(lastName);

@@ -1,22 +1,29 @@
 package com.smartestgift.controller;
 
 import com.google.gson.Gson;
-import com.smartestgift.controller.model.AjaxResponse;
+import com.smartestgift.controller.model.Response;
 import com.smartestgift.controller.model.GiftPage;
 import com.smartestgift.dao.model.Gift;
 import com.smartestgift.dao.model.GiftCategory;
 import com.smartestgift.dao.model.GiftShop;
 import com.smartestgift.dao.model.SmartUserGift;
+import com.smartestgift.exception.EmailBusyException;
+import com.smartestgift.exception.UserHasGiftException;
+import com.smartestgift.exception.UsernameBusyException;
+import com.smartestgift.exception.WrongGiftDateException;
 import com.smartestgift.service.GiftService;
 import com.smartestgift.service.SmartUserService;
 import com.smartestgift.utils.ApplicationConstants;
 import com.smartestgift.utils.ResponseMessages;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -24,6 +31,9 @@ import java.util.List;
 import java.util.Set;
 
 import static com.smartestgift.utils.ResponseMessages.*;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.OK;
 
 /**
  * Created by dikkini on 14.02.14.
@@ -51,12 +61,11 @@ public class GiftController {
     }
 
     @RequestMapping(value = "/changePage", headers="Accept=application/json", method = RequestMethod.POST)
-    public @ResponseBody String changePage(@RequestParam(required = true, value = "countAll") Long countAll,
+    public @ResponseBody GiftPage changePage(@RequestParam(required = true, value = "countAll") Long countAll,
                                            @RequestParam(required = true, value = "pageNum") int pageNum,
                                            @RequestParam(required = true, value = "pageSize") int pageSize,
                                            @RequestParam(required = true, value = "categoryCode") String categoryCode) {
-        GiftPage giftPage = giftService.getPageOfGifts(countAll, pageNum, pageSize, categoryCode);
-        return gson.toJson(giftPage);
+        return giftService.getPageOfGifts(countAll, pageNum, pageSize, categoryCode);
     }
 
 
@@ -78,11 +87,9 @@ public class GiftController {
     // TODO sending email to a friends of users if option checked true to send
     // TODO check valid end date of gift collaboration
     @RequestMapping(value = "/wantGift", headers="Accept=application/json", method = RequestMethod.POST)
-    public @ResponseBody AjaxResponse wantGift(Authentication authentication,
+    public @ResponseBody Response wantGift(Authentication authentication,
                                                @RequestParam(required = true, value = "giftShopUuid") String giftShopUuid,
                                                @RequestParam(required = true, value = "endDate") String endDateStr) {
-        AjaxResponse result = new AjaxResponse();
-
         // TODO проверить uuidы или проверить проверку на правильность uuidов
 /*        if (!isUUID(giftUuid) || !isUUID(shopUuid)) {
             result.setSuccess(false);
@@ -95,29 +102,23 @@ public class GiftController {
         try {
             endDate = new SimpleDateFormat(ApplicationConstants.INPUT_DATE_FORMAT_PATTERN).parse(endDateStr);
         } catch (ParseException e) {
-            result.setSuccess(false);
-            result.addError(ResponseMessages.INTERNAL_ERROR);
-            return result;
+            throw new WrongGiftDateException("Wrong date of gift", BAD_REQUEST.value());
         }
 
         if (!giftService.hasSmartUserGiftShop(smartUserService.findUserByUsername(authentication.getName()), giftShopUuid)) {
             giftService.addGiftShopToUserWishes(smartUserService.findUserByUsername(authentication.getName()), giftShopUuid, endDate);
-            result.setSuccess(true);
-            result.addSuccessMessage(USER_ADD_GIFT_SUCCESS);
         } else {
-            result.setSuccess(false);
-            result.addSuccessMessage(USER_HAD_GIFT_INFO);
+            throw new UserHasGiftException("User has this gift", BAD_REQUEST.value());
         }
 
-        return result;
+        return Response.createResponse(OK);
     }
 
     @RequestMapping(value = "/unWantGift", method = RequestMethod.POST)
-    public @ResponseBody AjaxResponse unWantGift(Authentication authentication,
+    public @ResponseBody
+    Response unWantGift(Authentication authentication,
                                                  @RequestParam(required = true, value = "giftshopuuid")
                                                  String giftShopUuid) {
-        AjaxResponse result = new AjaxResponse();
-
         // TODO проверить uuidы или проверить проверку на правильность uuidов
 //        if (!isUUID(giftShopUuid)) {
 //            result.setSuccess(false);
@@ -126,15 +127,11 @@ public class GiftController {
 //        }
         if (giftService.hasSmartUserGiftShop(smartUserService.findUserByUsername(authentication.getName()), giftShopUuid)) {
             giftService.deleteGiftFromUser(smartUserService.findUserByUsername(authentication.getName()), giftShopUuid);
-            result.setSuccess(true);
-            result.addSuccessMessage(DELETE_GIFT_FROM_USER_SUCCESS);
         } else {
-            result.setSuccess(false);
-            result.addError(DELETE_GIFT_FROM_USER_ERROR);
-            result.addInformation(USER_NOT_HAD_GIFT_INFO);
+            throw new UserHasGiftException("User has not this gift", BAD_REQUEST.value());
         }
 
-        return result;
+        return Response.createResponse(OK);
     }
 
     @RequestMapping(value = "/randomGift", method = RequestMethod.POST)
@@ -144,22 +141,30 @@ public class GiftController {
     }
 
     @RequestMapping(value = "/getFindGiftPage", headers="Accept=application/json", method = RequestMethod.POST)
-    public @ResponseBody String getFindGiftPage(Authentication authentication,
+    public @ResponseBody GiftPage getFindGiftPage(Authentication authentication,
                                                 @RequestParam(required = true, value = "countAll") Long countAll,
                                                 @RequestParam(required = true, value = "searchString") String searchString,
                                                 @RequestParam(required = true, value = "pageNum") int pageNum,
                                                 @RequestParam(required = true, value = "pageSize") int pageSize) {
         // TODO security checks
-        GiftPage pageOfGiftsBySearchString = giftService.getPageOfGiftsBySearchString(countAll, pageNum, pageSize,
+        return giftService.getPageOfGiftsBySearchString(countAll, pageNum, pageSize,
                 searchString);
-        return gson.toJson(pageOfGiftsBySearchString);
     }
 
     @RequestMapping(value = "/findGiftShops", headers="Accept=application/json", method = RequestMethod.POST)
-    public @ResponseBody String findGiftShops(Authentication authentication,
+    public @ResponseBody List<GiftShop> findGiftShops(Authentication authentication,
                                              @RequestParam(required = true, value = "giftUuid") String giftUuid) {
         // TODO security checks
-        List<GiftShop> giftShops = giftService.findGiftShops(giftUuid);
-        return gson.toJson(giftShops);
+        return giftService.findGiftShops(giftUuid);
+    }
+
+    @ExceptionHandler(value=UserHasGiftException.class )
+    public @ResponseBody ResponseEntity handleUserHasGiftException(HttpServletResponse response) {
+        return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(value=WrongGiftDateException.class)
+    public @ResponseBody ResponseEntity handleWrongGiftDateException(HttpServletResponse response) {
+        return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
     }
 }

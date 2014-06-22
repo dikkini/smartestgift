@@ -1,10 +1,11 @@
 package com.smartestgift.controller;
 
 import com.google.gson.Gson;
-import com.smartestgift.controller.model.AjaxResponse;
+import com.smartestgift.controller.model.Response;
 import com.smartestgift.controller.model.SocketMessage;
 import com.smartestgift.dao.model.Conversation;
 import com.smartestgift.dao.model.Message;
+import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.service.ConversationService;
 import com.smartestgift.service.MessageService;
 import com.smartestgift.service.SmartUserService;
@@ -25,6 +26,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
+
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.OK;
 
 /**
  * Created by dikkini on 10.03.14.
@@ -54,21 +58,20 @@ public class MessageController {
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView messages(Authentication authentication) {
-        List<Conversation> userConversations = conversationService.findConversationsByUser(smartUserService.findUserByUsername(authentication.getName()));
+        SmartUser userByUsername = smartUserService.findUserByUsername(authentication.getName());
+        List<Conversation> userConversations = conversationService.findConversationsByUser(userByUsername);
         ModelAndView mav = new ModelAndView("users/messages");
         mav.addObject("userConversations", userConversations);
         return mav;
     }
 
     @RequestMapping(value = "/getConversationMessages", headers="Accept=application/json", method = RequestMethod.POST)
-    public @ResponseBody String getConversationMessages(Authentication authentication,
+    public @ResponseBody List<Message> getConversationMessages(Authentication authentication,
                                                               @RequestParam(value = "conversationUuid", required = true)
                                                                                               String conversationUuid) {
         Conversation conversationByUuid = conversationService.findConversationByUuid(conversationUuid);
-        // TODO add additional security checks using username and active user
-        List<Message> messagesInConversation = messageService.findMessagesInConversation(smartUserService.findUserByUsername(authentication.getName()),
-                conversationByUuid);
-        return gson.toJson(messagesInConversation);
+        SmartUser userByUsername = smartUserService.findUserByUsername(authentication.getName());
+        return messageService.findMessagesInConversation(userByUsername, conversationByUuid);
     }
 
     @MessageMapping("/setConversation")
@@ -97,28 +100,25 @@ public class MessageController {
     }
 
     @RequestMapping(value = "/sendMessageToUser", method = RequestMethod.POST)
-    public @ResponseBody AjaxResponse sendMessageToUser(Authentication authentication,
-                                                        @RequestParam(value = "message", required = true)
-                                                        String message,
-                                                        @RequestParam(value = "conversation-uuid", required = true)
-                                                        String conversationUuid) {
+    public void sendMessageToUser(Authentication authentication,
+                                                    @RequestParam(value = "message", required = true) String message,
+                                                    @RequestParam(value = "conversation-uuid", required = true)
+                                                    String conversationUuid) {
         // TODO add additional security checks using username and active user
-        AjaxResponse result = new AjaxResponse();
-        messageService.sendMessageToUser(smartUserService.findUserByUsername(authentication.getName()), message, conversationUuid);
-        result.setSuccess(true);
-        result.addSuccessMessage("message_sent_success");
-        return result;
+        SmartUser userByUsername = smartUserService.findUserByUsername(authentication.getName());
+        messageService.sendMessageToUser(userByUsername, message, conversationUuid);
     }
 
     @RequestMapping(value = "/createNewConversation", method = RequestMethod.POST)
-    public @ResponseBody String createNewConversation(Authentication authentication,
-                                                                 @RequestParam(value = "message", required = true)
-                                                                 String message,
-                                                                 @RequestParam(value = "username", required = true)
-                                                                 String username) {
+    public @ResponseBody Conversation createNewConversation(Authentication authentication,
+                                                            @RequestParam(value = "message", required = true)
+                                                            String message,
+                                                            @RequestParam(value = "username", required = true)
+                                                            String username) {
         // TODO add additional security checks using username and active user
-        Conversation conversation = conversationService.createConversation(smartUserService.findUserByUsername(authentication.getName()), username, message);
-        return gson.toJson(conversation);
+        SmartUser userFrom = smartUserService.findUserByUsername(authentication.getName());
+        SmartUser userTo = smartUserService.findUserByUsername(username);
+        return conversationService.createConversation(userFrom, userTo, message);
     }
 
     @MessageMapping("/setUnreadCount")
@@ -141,19 +141,12 @@ public class MessageController {
 
 
     @RequestMapping(value = "/stopNewMessagesSchedulers", method = RequestMethod.POST)
-    public
-    @ResponseBody
-    AjaxResponse stopNewMessagesSchedulers(Authentication authentication) {
-        AjaxResponse result = new AjaxResponse();
+    public void stopNewMessagesSchedulers(Authentication authentication) {
         try {
             ScheduledFuture<?> scheduledFutures = conversationSchedulers.get(authentication.getName());
             scheduledFutures.cancel(true);
-            result.setSuccess(true);
         } catch (Exception e) {
             e.printStackTrace();
-            result.setSuccess(false);
         }
-
-        return result;
     }
 }

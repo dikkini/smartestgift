@@ -60,7 +60,7 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            type: "post",
+            type: "get",
             url: "/signup/checkLogin",
             cache: false,
             data: "login=" + $('#username').val(),
@@ -101,7 +101,7 @@ $(document).ready(function () {
             emailInputErrorObj.hide();
         }
         $.ajax({
-            type: "post",
+            type: "get",
             url: "/signup/checkEmail",
             cache: false,
             data: "email=" + $('#email').val(),
