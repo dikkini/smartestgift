@@ -79,6 +79,10 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
         dataSource.setUsername("gift");
         dataSource.setPassword("gift");
 
+        dataSource.setUrl("jdbc:postgresql://109.120.165.66:5432/smartestgiftdb?useEncoding=true&amp;characterEncoding=UTF-8");
+        dataSource.setUsername("smartestgiftdbadmin");
+        dataSource.setPassword("smartestgiftdbadmin");
+
         return dataSource;
     }
 
