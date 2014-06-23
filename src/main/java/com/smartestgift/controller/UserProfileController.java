@@ -5,6 +5,7 @@ import com.smartestgift.controller.model.Response;
 import com.smartestgift.dao.SmartUserDAO;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserFriend;
+import com.smartestgift.exception.BadUserException;
 import com.smartestgift.service.SmartUserService;
 import com.smartestgift.utils.ApplicationConstants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +43,8 @@ public class UserProfileController {
 
     @RequestMapping(value = "/myfriends", method = RequestMethod.GET)
     public ModelAndView myFriends(Authentication authentication) {
-        SmartUser userByUsername = smartUserService.findUserByUsername(authentication.getName());
-        List<SmartUserFriend> allSmartUserFriends = smartUserService.findAllSmartUserFriends(userByUsername);
+        SmartUser smartUser = smartUserService.findUserByUsername(authentication.getName());
+        List<SmartUserFriend> allSmartUserFriends = smartUserService.findAllSmartUserFriends(smartUser);
         return new ModelAndView("users/myfriends").addObject("smartUserFriends", allSmartUserFriends);
     }
 
@@ -52,7 +53,7 @@ public class UserProfileController {
         ModelAndView mav;
         SmartUser smartUser = smartUserDAO.findSmartUserByUsername(username);
         if (smartUser == null) {
-            return new ModelAndView("errors/404");
+            throw new BadUserException("Bad user.", ApplicationConstants.INTERNAL_EXCEPTION_MESSAGE);
         }
 
         mav = new ModelAndView("users/user");
@@ -64,46 +65,45 @@ public class UserProfileController {
     @RequestMapping(value = "/findPeople.do", headers = "Accept=application/json", method = RequestMethod.POST)
     public @ResponseBody Response findPeople(Authentication authentication,
                                                     @RequestParam(value = "offset", required = true) int offset) {
-        SmartUser userByUsername = smartUserService.findUserByUsername(authentication.getName());
-        List<SmartUser> usersWithOffset = smartUserService.findUsersWithOffset(offset, userByUsername);
+        SmartUser smartUser = smartUserService.findUserByUsername(authentication.getName());
+        List<SmartUser> usersWithOffset = smartUserService.findUsersWithOffset(offset, smartUser);
         return Response.createResponse(usersWithOffset);
     }
 
     @RequestMapping(value = "/addFriendRequest.do", headers = "Accept=application/json", method = RequestMethod.POST)
     public void addFriendRequest(Authentication authentication,
-                                                   @RequestParam(value = "friendUsername", required = true)
-                                                   String friendUsername) {
-        SmartUser userByUsername = smartUserService.findUserByUsername(authentication.getName());
-        smartUserService.addRequestSmartUserFriend(userByUsername, friendUsername);
+                                 @RequestParam(value = "friendUsername", required = true) String friendUsername) {
+        SmartUser smartUser = smartUserService.findUserByUsername(authentication.getName());
+        smartUserService.addRequestSmartUserFriend(smartUser, friendUsername);
     }
 
     @RequestMapping(value = "/removeFriend.do", headers = "Accept=application/json", method = RequestMethod.POST)
     public void removeFriend(Authentication authentication,
-                          @RequestParam(value = "friendUsername", required = true) String friendUsername) {
-        SmartUser userByUsername = smartUserService.findUserByUsername(authentication.getName());
-        smartUserService.removeSmartUserFriend(userByUsername, friendUsername);
+                             @RequestParam(value = "friendUsername", required = true) String friendUsername) {
+        SmartUser smartUser = smartUserService.findUserByUsername(authentication.getName());
+        smartUserService.removeSmartUserFriend(smartUser, friendUsername);
     }
 
     @RequestMapping(value = "/acceptFriendRequest.do", headers = "Accept=application/json", method = RequestMethod.POST)
     public void acceptFriendRequest(Authentication authentication,
-                                     @RequestParam(value = "friendUsername", required = true) String friendUsername) {
-        SmartUser userByUsername = smartUserService.findUserByUsername(authentication.getName());
-        smartUserService.changeSmartUserFriendType(userByUsername, friendUsername,
+                                    @RequestParam(value = "friendUsername", required = true) String friendUsername) {
+        SmartUser smartUser = smartUserService.findUserByUsername(authentication.getName());
+        smartUserService.changeSmartUserFriendType(smartUser, friendUsername,
                 ApplicationConstants.USER_FRIEND_FRIEND_TYPE);
     }
 
     @RequestMapping(value = "/declineFriendRequest.do", headers = "Accept=application/json", method = RequestMethod.POST)
     public void declineFriendRequest(Authentication authentication,
                                      @RequestParam(value = "friendUsername", required = true) String friendUsername) {
-        SmartUser userByUsername = smartUserService.findUserByUsername(authentication.getName());
-        smartUserService.removeSmartUserFriend(userByUsername, friendUsername);
+        SmartUser smartUser = smartUserService.findUserByUsername(authentication.getName());
+        smartUserService.removeSmartUserFriend(smartUser, friendUsername);
     }
 
     @RequestMapping(value = "/blockFriend.do", headers = "Accept=application/json", method = RequestMethod.POST)
     public void blockFriend(Authentication authentication,
                             @RequestParam(value = "friendUuid", required = true) String friendUuid) {
-        SmartUser userByUsername = smartUserService.findUserByUsername(authentication.getName());
-        smartUserService.changeSmartUserFriendType(userByUsername, friendUuid,
+        SmartUser smartUser = smartUserService.findUserByUsername(authentication.getName());
+        smartUserService.changeSmartUserFriendType(smartUser, friendUuid,
                 ApplicationConstants.USER_FRIEND_BLOCK_TYPE);
     }
 }

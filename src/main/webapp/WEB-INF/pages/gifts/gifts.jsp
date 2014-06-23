@@ -217,12 +217,12 @@ $(document).ready(function () {
     giftsContainer.on("click", ".want-gift-btn", function () {
         var giftUuid = $(this).data("gift-uuid");
         $.ajax({
-            type: "post",
+            type: "get",
             url: "/gifts/findGiftShops",
             cache: false,
             data: "giftUuid=" + giftUuid,
             success: function (response) {
-                var json = JSON.parse(response);
+                var json = JSON.parse(response.message);
                 // set shops and price
                 json.forEach(function(shopGift) {
                     var option = $('<option>').val(shopGift.uuid)
@@ -246,12 +246,12 @@ $(document).ready(function () {
         ajaxLoadingGifts.loading("start");
         blockingDiv.addClass("blocker");
         $.ajax({
-            type: "post",
+            type: "get",
             url: "/gifts/getFindGiftPage",
             cache: false,
             data: "countAll=" + countAll + "&pageNum=" + pageNum + "&pageSize=" + pageSize + "&searchString=" + searchString,
             success: function (response) {
-                var json = JSON.parse(response);
+                var json = JSON.parse(response.message);
                 var results = json.results;
                 if (results.length == 0) {
                     var noGiftsError = '<h3><spring:message code="label.no_gifts_to_show"/></h3>';
@@ -276,12 +276,12 @@ $(document).ready(function () {
         ajaxLoadingGifts.loading("start");
         blockingDiv.addClass("blocker");
         $.ajax({
-            type: "post",
+            type: "get",
             url: "/gifts/changePage",
             cache: false,
             data: "countAll=" + countAll + "&pageNum=" + pageNum + "&pageSize=" + pageSize + "&categoryCode=" + categoryCode,
             success: function (response) {
-                var json = JSON.parse(response);
+                var json = JSON.parse(response.message);
                 var results = json.results;
                 if (results.length == 0) {
                     var noGiftsError = '<h3><spring:message code="label.no_gifts_to_show"/></h3>';

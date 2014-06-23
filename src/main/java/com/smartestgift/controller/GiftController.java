@@ -1,20 +1,17 @@
 package com.smartestgift.controller;
 
 import com.google.gson.Gson;
-import com.smartestgift.controller.model.Response;
 import com.smartestgift.controller.model.GiftPage;
+import com.smartestgift.controller.model.Response;
 import com.smartestgift.dao.model.Gift;
 import com.smartestgift.dao.model.GiftCategory;
 import com.smartestgift.dao.model.GiftShop;
 import com.smartestgift.dao.model.SmartUserGift;
-import com.smartestgift.exception.EmailBusyException;
 import com.smartestgift.exception.UserHasGiftException;
-import com.smartestgift.exception.UsernameBusyException;
 import com.smartestgift.exception.WrongGiftDateException;
 import com.smartestgift.service.GiftService;
 import com.smartestgift.service.SmartUserService;
 import com.smartestgift.utils.ApplicationConstants;
-import com.smartestgift.utils.ResponseMessages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,9 +27,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import static com.smartestgift.utils.ResponseMessages.*;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 
 /**
@@ -49,9 +44,6 @@ public class GiftController {
     @Autowired
     private SmartUserService smartUserService;
 
-    @Autowired
-    private Gson gson;
-
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView giftCategories() {
         List<GiftCategory> allGiftCategories = giftService.findAllGiftCategories();
@@ -60,12 +52,13 @@ public class GiftController {
         return mav;
     }
 
-    @RequestMapping(value = "/changePage", headers="Accept=application/json", method = RequestMethod.POST)
-    public @ResponseBody GiftPage changePage(@RequestParam(required = true, value = "countAll") Long countAll,
-                                           @RequestParam(required = true, value = "pageNum") int pageNum,
-                                           @RequestParam(required = true, value = "pageSize") int pageSize,
-                                           @RequestParam(required = true, value = "categoryCode") String categoryCode) {
-        return giftService.getPageOfGifts(countAll, pageNum, pageSize, categoryCode);
+    @RequestMapping(value = "/changePage", headers="Accept=application/json", method = RequestMethod.GET)
+    public @ResponseBody Response changePage(@RequestParam(required = true, value = "countAll") Long countAll,
+                                             @RequestParam(required = true, value = "pageNum") int pageNum,
+                                             @RequestParam(required = true, value = "pageSize") int pageSize,
+                                             @RequestParam(required = true, value = "categoryCode") String categoryCode) {
+        GiftPage pageOfGifts = giftService.getPageOfGifts(countAll, pageNum, pageSize, categoryCode);
+        return Response.createResponse(pageOfGifts);
     }
 
 
@@ -87,7 +80,7 @@ public class GiftController {
     // TODO sending email to a friends of users if option checked true to send
     // TODO check valid end date of gift collaboration
     @RequestMapping(value = "/wantGift", headers="Accept=application/json", method = RequestMethod.POST)
-    public @ResponseBody Response wantGift(Authentication authentication,
+    public void wantGift(Authentication authentication,
                                                @RequestParam(required = true, value = "giftShopUuid") String giftShopUuid,
                                                @RequestParam(required = true, value = "endDate") String endDateStr) {
         // TODO проверить uuidы или проверить проверку на правильность uuidов
@@ -110,13 +103,10 @@ public class GiftController {
         } else {
             throw new UserHasGiftException("User has this gift", BAD_REQUEST.value());
         }
-
-        return Response.createResponse(OK);
     }
 
-    @RequestMapping(value = "/unWantGift", method = RequestMethod.POST)
-    public @ResponseBody
-    Response unWantGift(Authentication authentication,
+    @RequestMapping(value = "/unWantGift", method = RequestMethod.DELETE)
+    public void unWantGift(Authentication authentication,
                                                  @RequestParam(required = true, value = "giftshopuuid")
                                                  String giftShopUuid) {
         // TODO проверить uuidы или проверить проверку на правильность uuidов
@@ -130,8 +120,6 @@ public class GiftController {
         } else {
             throw new UserHasGiftException("User has not this gift", BAD_REQUEST.value());
         }
-
-        return Response.createResponse(OK);
     }
 
     @RequestMapping(value = "/randomGift", method = RequestMethod.POST)
@@ -140,22 +128,21 @@ public class GiftController {
         return "redirect:/gifts/235334";
     }
 
-    @RequestMapping(value = "/getFindGiftPage", headers="Accept=application/json", method = RequestMethod.POST)
-    public @ResponseBody GiftPage getFindGiftPage(Authentication authentication,
+    @RequestMapping(value = "/getFindGiftPage", headers="Accept=application/json", method = RequestMethod.GET)
+    public @ResponseBody Response getFindGiftPage(Authentication authentication,
                                                 @RequestParam(required = true, value = "countAll") Long countAll,
                                                 @RequestParam(required = true, value = "searchString") String searchString,
                                                 @RequestParam(required = true, value = "pageNum") int pageNum,
                                                 @RequestParam(required = true, value = "pageSize") int pageSize) {
         // TODO security checks
-        return giftService.getPageOfGiftsBySearchString(countAll, pageNum, pageSize,
-                searchString);
+        return Response.createResponse(giftService.getPageOfGiftsBySearchString(countAll, pageNum, pageSize, searchString));
     }
 
-    @RequestMapping(value = "/findGiftShops", headers="Accept=application/json", method = RequestMethod.POST)
-    public @ResponseBody List<GiftShop> findGiftShops(Authentication authentication,
-                                             @RequestParam(required = true, value = "giftUuid") String giftUuid) {
+    @RequestMapping(value = "/findGiftShops", headers="Accept=application/json", method = RequestMethod.GET)
+    public @ResponseBody Response findGiftShops(Authentication authentication,
+                                                @RequestParam(required = true, value = "giftUuid") String giftUuid) {
         // TODO security checks
-        return giftService.findGiftShops(giftUuid);
+        return Response.createResponse(giftService.findGiftShops(giftUuid));
     }
 
     @ExceptionHandler(value=UserHasGiftException.class )

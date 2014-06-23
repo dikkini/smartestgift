@@ -77,12 +77,12 @@
             var giftObj = $("#gift");
             var giftUuid = giftObj.data("gift-uuid");
             $.ajax({
-                type: "post",
+                type: "get",
                 url: "/gifts/findGiftShops",
                 cache: false,
                 data: "giftUuid=" + giftUuid,
                 success: function (response) {
-                    var json = JSON.parse(response);
+                    var json = JSON.parse(response.message);
                     // set shops and price
                     json.forEach(function(shopGift) {
                         var option = $('<option>').val(shopGift.uuid)

@@ -5,6 +5,7 @@ import com.restfb.FacebookClient;
 import com.restfb.types.User;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUser;
+import com.smartestgift.exception.InternalErrorException;
 import com.smartestgift.service.SmartUserService;
 import com.smartestgift.utils.ApplicationConstants;
 import com.smartestgift.utils.Utils;
@@ -17,6 +18,7 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,6 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.IOException;
 
 /**
@@ -36,7 +39,7 @@ import java.io.IOException;
 public class LoginController {
 
     @Autowired
-    SmartUserService smartUserService;
+    private SmartUserService smartUserService;
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView login(@RequestParam(required = false, value = "error") boolean error) {
@@ -60,8 +63,9 @@ public class LoginController {
         try {
             response.sendRedirect(url);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
+            throw new InternalErrorException("Facebook Login Error",
+                    ApplicationConstants.FACEBOOK_LOGIN_EXCEPTION_MESSAGE);
         }
     }
 
@@ -71,7 +75,8 @@ public class LoginController {
         // internal test
         String hashFacebookAuth = (String) request.getSession().getAttribute(ApplicationConstants.FACEBOOK_KEY_WORD);
         if (!hashFacebookAuth.equals(authCode)) {
-            return "redirect:/login?errors=social_network_error";
+            throw new InternalErrorException("Facebook login error",
+                    ApplicationConstants.FACEBOOK_LOGIN_EXCEPTION_MESSAGE);
         }
         //Get the parameter "code" from the request
         String code = request.getParameter("code");
@@ -99,7 +104,8 @@ public class LoginController {
                 int statusCode = client.executeMethod(method);
                 if (statusCode != HttpStatus.SC_OK) {
                     System.err.println("Method failed: " + method.getStatusLine());
-                    return "redirect:/login?errors=external_error";
+                    throw new InternalErrorException("Facebook login error",
+                            ApplicationConstants.FACEBOOK_LOGIN_EXCEPTION_MESSAGE);
                 }
                 // Read the response body.
                 byte[] responseBody = method.getResponseBody();
@@ -142,39 +148,31 @@ public class LoginController {
                         if (emailIsFree && usernameIsFree) {
 
                             SmartUser smartUser = smartUserService.createSmartUser(fbUser);
+                            smartUserService.createUserAuthorityForUser(smartUser.getUsername());
                             smartUserService.authenticateUser(smartUser.getUsername(),
                                     smartUser.getPassword(), request);
                             return "redirect:/profile";
                         } else {
                             request.getSession().setAttribute(facebookUser.getId(), fbUser);
-                            return "redirect:/signup/facebook?id=" + facebookUser.getId() + "&errors="
-                                    + (!emailIsFree ? "username_error," : "")
-                                    + (!usernameIsFree ? "email_error" : "");
+                            return "redirect:/signup/facebook?id=" + facebookUser.getId() +
+                                    "&username_error=" + usernameIsFree +
+                                    "&email_error=" + emailIsFree;
                         }
                     }
                 } else {
-                    return "redirect:/login?errors=internal_error";
+                    throw new InternalErrorException("Facebook login error",
+                            ApplicationConstants.FACEBOOK_LOGIN_EXCEPTION_MESSAGE);
                 }
             // TODO
-            } catch (HttpException e) {
-                System.err.println("Fatal protocol violation: " + e.getMessage());
-                e.printStackTrace();
-                return "redirect:/login?errors=internal_error";
-            } catch (IOException e) {
-                System.err.println("Fatal transport error: " + e.getMessage());
-                e.printStackTrace();
-                return "redirect:/login?errors=internal_error";
             } catch (Exception e) {
                 e.printStackTrace();
                 System.err.println("Common Exception: " + e.getMessage());
-                return "redirect:/login?errors=internal_error";
             }
             // Release the connection.
             method.releaseConnection();
-
-            return "redirect:/login?errors=internal_error";
-        } else {
-            return "redirect:/login?errors=internal_error";
         }
+
+        throw new InternalErrorException("Facebook login error",
+                ApplicationConstants.FACEBOOK_LOGIN_EXCEPTION_MESSAGE);
     }
 }

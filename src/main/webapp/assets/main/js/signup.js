@@ -277,6 +277,7 @@ $(document).ready(function () {
         }
 
 //        //TODO добавить проверку ID полученного из КЛАДР
+          // TODO добавить выбор города по КЛАДР и обработку на сервере
 //        if (cityObj.val().trim() == "") {
 //            cityForm.addClass("has-error");
 //            validForm = false;

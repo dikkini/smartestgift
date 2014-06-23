@@ -1,12 +1,10 @@
 package com.smartestgift.controller;
 
-import com.smartestgift.controller.model.Response;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.exception.EmailBusyException;
 import com.smartestgift.exception.UsernameBusyException;
 import com.smartestgift.service.SmartUserService;
 import com.smartestgift.utils.ApplicationConstants;
-import com.smartestgift.utils.ResponseMessages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 
-import static org.springframework.http.HttpStatus.*;
-
 /**
  * Created by dikkini on 06.02.14.
  * Email: dikkini@gmail.com
@@ -31,7 +27,6 @@ public class SignupController {
 
     @Autowired
     private SmartUserService smartUserService;
-
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView signUpPage() {
@@ -70,11 +65,13 @@ public class SignupController {
     @RequestMapping(value = "/facebook", method = RequestMethod.GET)
     public ModelAndView socialSignUpPage(HttpServletRequest request,
                                          @RequestParam (required = true, value = "id") String socialId,
-                                         @RequestParam(required = true, value = "errors") String[] errors) {
-        SmartUser SmartUser = (SmartUser) request.getSession().getAttribute(socialId);
+                                         @RequestParam(required = true, value = "email_error") String[] email_error,
+                                         @RequestParam(required = true, value = "username_error") String[] username_error) {
+        SmartUser smartUser = (SmartUser) request.getSession().getAttribute(socialId);
         ModelAndView mav = new ModelAndView("signupSocial");
-        mav.addObject("facebookSmartUser", SmartUser);
-        mav.addObject("errors", errors);
+        mav.addObject("facebookSmartUser", smartUser);
+        mav.addObject("email_error", email_error);
+        mav.addObject("username_error", username_error);
         return mav;
     }
 
@@ -86,6 +83,7 @@ public class SignupController {
                                       @RequestParam (required = true, value = "firstName") String firstName,
                                       @RequestParam (required = false, value = "lastName") String lastName) {
         // TODO проверка всех входных данных
+        // TODO обработка города из КЛАДРа
         SmartUser facebookUser = (SmartUser) request.getSession().getAttribute(socialId);
         facebookUser.setUsername(username);
         facebookUser.setEmail(email);

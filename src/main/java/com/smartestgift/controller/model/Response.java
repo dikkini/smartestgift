@@ -14,10 +14,6 @@ public class Response<T> implements Serializable {
 
     private final T message;
 
-    private boolean success;
-
-    private int httpStatusCode;
-
     private Response(T message){
         this.message = message;
     }
@@ -28,21 +24,5 @@ public class Response<T> implements Serializable {
 
     public T getMessage() {
         return message;
-    }
-
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
-
-    public int getHttpStatusCode() {
-        return httpStatusCode;
-    }
-
-    public void setHttpStatusCode(int httpStatusCode) {
-        this.httpStatusCode = httpStatusCode;
     }
 }
