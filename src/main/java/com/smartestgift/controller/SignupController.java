@@ -65,8 +65,8 @@ public class SignupController {
     @RequestMapping(value = "/facebook", method = RequestMethod.GET)
     public ModelAndView socialSignUpPage(HttpServletRequest request,
                                          @RequestParam (required = true, value = "id") String socialId,
-                                         @RequestParam(required = true, value = "email_error") String[] email_error,
-                                         @RequestParam(required = true, value = "username_error") String[] username_error) {
+                                         @RequestParam(required = true, value = "email_error") boolean email_error,
+                                         @RequestParam(required = true, value = "username_error") boolean username_error) {
         SmartUser smartUser = (SmartUser) request.getSession().getAttribute(socialId);
         ModelAndView mav = new ModelAndView("signupSocial");
         mav.addObject("facebookSmartUser", smartUser);
@@ -97,7 +97,7 @@ public class SignupController {
     }
 
     @RequestMapping(value = "/checkLogin", method = RequestMethod.GET)
-    public void checkLogin(@RequestParam(value = "login", required = true) String login) {
+    public @ResponseBody void checkLogin(@RequestParam(value = "login", required = true) String login) {
         boolean loginFree = smartUserService.checkOccupiedUsername(login);
         if (!loginFree) {
             throw new UsernameBusyException("Username is busy", HttpStatus.IM_USED.value());
