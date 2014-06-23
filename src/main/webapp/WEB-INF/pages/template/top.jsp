@@ -45,9 +45,7 @@
 </head>
 
 <body>
-<form name="refreshForm">
-    <input type="hidden" name="visited" value=""/>
-</form>
+
 <div class="header">
     <header>
         <div class="row">
