@@ -65,24 +65,23 @@ $(document).ready(function () {
             cache: false,
             data: "login=" + $('#username').val(),
             success: function (response) {
-                if (response.success) {
-                    usernameForm.removeClass("has-error");
-                    usernameForm.addClass("has-success");
-                    usernameOkIcon.show();
-                    usernameInputErrorObj.hide();
-                    usernameBusyErrorObj.hide();
-                    usernameNotOkIcon.hide();
-                } else {
-                    usernameForm.removeClass("has-success");
-                    usernameForm.addClass("has-error");
-                    usernameNotOkIcon.show();
-                    usernameBusyErrorObj.show();
-                    usernameOkIcon.hide();
-                }
+                usernameForm.removeClass("has-error");
+                usernameForm.addClass("has-success");
+                usernameOkIcon.show();
+                usernameInputErrorObj.hide();
+                usernameBusyErrorObj.hide();
+                usernameNotOkIcon.hide();
+
                 ajaxLoadingUsername.loading('stop');
             },
             error: function (response) {
-                alert(response.error);
+                usernameForm.removeClass("has-success");
+                usernameForm.addClass("has-error");
+                usernameNotOkIcon.show();
+                usernameBusyErrorObj.show();
+                usernameOkIcon.hide();
+
+                ajaxLoadingUsername.loading('stop');
             }
         });
     });
@@ -106,26 +105,25 @@ $(document).ready(function () {
             cache: false,
             data: "email=" + $('#email').val(),
             success: function (response) {
-                if (response.success) {
-                    emailForm.removeClass("has-error");
-                    emailForm.addClass("has-success");
-                    emailOkIcon.show();
+                emailForm.removeClass("has-error");
+                emailForm.addClass("has-success");
+                emailOkIcon.show();
 
-                    emailNotOkIcon.hide();
-                    emailInputErrorObj.hide();
-                    emailBusyErrorObj.hide();
-                } else {
-                    emailForm.removeClass("has-success");
-                    emailForm.addClass("has-error");
+                emailNotOkIcon.hide();
+                emailInputErrorObj.hide();
+                emailBusyErrorObj.hide();
 
-                    emailBusyErrorObj.show();
-                    emailNotOkIcon.show();
-                    emailOkIcon.hide();
-                }
                 emailLoading.loading('stop');
             },
             error: function (response) {
-                alert(response.error);
+                emailForm.removeClass("has-success");
+                emailForm.addClass("has-error");
+
+                emailBusyErrorObj.show();
+                emailNotOkIcon.show();
+                emailOkIcon.hide();
+
+                emailLoading.loading('stop');
             }
         });
     });
