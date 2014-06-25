@@ -37,7 +37,7 @@ public class ProfileController {
         return new ModelAndView("users/settings");
     }
 
-    @RequestMapping(value = "/profile/settings/save.do", method = RequestMethod.PUT)
+    @RequestMapping(value = "/profile/settings/save.do", headers="Accept=application/json", method = RequestMethod.POST)
     public @ResponseBody Response saveSettings(Authentication authentication,
                                                @RequestParam(required = true, value = "firstName") String firstName,
                                                @RequestParam(required = true, value = "lastName") String lastName,

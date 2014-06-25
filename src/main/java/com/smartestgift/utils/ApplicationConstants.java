@@ -12,6 +12,7 @@ public class ApplicationConstants {
     public static final String FACEBOOK_KEY_WORD = "facebook-auth-key";
 
     public static final String INPUT_DATE_FORMAT_PATTERN = "dd.MM.yyyy";
+    public static final String JSP_INPUT_DATE_FORMAT_PATTERN = "dd.mm.yy";
 
     // Auth providers ids
     public static final Integer APPLICATION_AUTH_PROVIDER_ID = 1;
@@ -57,8 +58,12 @@ public class ApplicationConstants {
         return PEOPLE_SEARCH_RESULTS_COUNT;
     }
 
-    public String getINPUT_DATE_FORMAT_PATTER() {
+    public String getINPUT_DATE_FORMAT_PATTERN() {
         return INPUT_DATE_FORMAT_PATTERN;
+    }
+
+    public String getJSP_INPUT_DATE_FORMAT_PATTERN() {
+        return JSP_INPUT_DATE_FORMAT_PATTERN;
     }
 
     public String getGIFTS_SEARCH_RESULTS() {
