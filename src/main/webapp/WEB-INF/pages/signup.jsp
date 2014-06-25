@@ -11,10 +11,12 @@
     <div>
         <form class="form-horizontal">
             <div class="form-group has-feedback">
-                <label for="username" class="col-sm-2 control-label"><spring:message code="label.username"/><span class="required">*</span>
+                <label for="username" class="col-sm-2 control-label">
+                    <spring:message code="label.username"/><span class="required">*</span>
                 </label>
                 <div class="col-xs-4">
-                    <input type="text" name="username" class="form-control" id="username" placeholder="<spring:message code="label.username"/>">
+                    <input type="text" name="username" class="form-control" id="username"
+                           placeholder="<spring:message code="label.username"/>">
                     <input id="username-valid" type="hidden" value="false">
                     <span id="username-ok-icon" class="glyphicon glyphicon-ok form-control-feedback" style="display: none;"></span>
                     <span id="username-not-ok-icon" class="glyphicon glyphicon-remove form-control-feedback" style="display: none;"></span>
@@ -24,24 +26,33 @@
                 <span id="loading-username" class="loading"></span>
             </div>
             <div class="form-group">
-                <label for="firstname" class="col-sm-2 control-label"><spring:message code="label.firstname"/><span class="required">*</span>
+                <label for="firstname" class="col-sm-2 control-label"><spring:message code="label.firstname"/>
+                    <span class="required">*</span>
                 </label>
                 <div class="col-xs-4">
-                    <input type="text" name="firstName" class="form-control" id="firstname" placeholder="<spring:message code="label.firstname"/>">
+                    <input type="text" name="firstName" class="form-control" id="firstname"
+                           placeholder="<spring:message code="label.firstname"/>">
                     <span id="firstName-ok-icon" class="glyphicon glyphicon-ok form-control-feedback" style="display: none;"></span>
                     <span id="firstName-not-ok-icon" class="glyphicon glyphicon-remove form-control-feedback" style="display: none;"></span>
                 </div>
             </div>
             <div class="form-group">
-                <label for="lastname" class="col-sm-2 control-label"><spring:message code="label.lastname"/></label>
+                <label for="lastname" class="col-sm-2 control-label">
+                    <spring:message code="label.lastname"/>
+                </label>
                 <div class="col-xs-4">
-                    <input type="text" name="lastName" class="form-control" id="lastname" placeholder="<spring:message code="label.lastname"/>">
+                    <input type="text" name="lastName" class="form-control" id="lastname"
+                           placeholder="<spring:message code="label.lastname"/>">
                 </div>
             </div>
             <div class="form-group has-feedback">
-                <label for="city" class="col-sm-2 control-label"><spring:message code="label.city"/></label>
+                <label for="city" class="col-sm-2 control-label">
+                    <span class="required">*</span>
+                    <spring:message code="label.city"/>
+                </label>
                 <div class="col-xs-4">
-                    <input type="text" name="city" class="form-control" id="city" placeholder="<spring:message code="label.city"/>">
+                    <input type="text" name="city" class="form-control" id="city"
+                           placeholder="<spring:message code="label.city"/>">
                     <div id="kladr_autocomplete"></div>
                     <span id="city-ok-icon" class="glyphicon glyphicon-ok form-control-feedback" style="display: none;"></span>
                     <span id="city-not-ok-icon" class="glyphicon glyphicon-remove form-control-feedback" style="display: none;"></span>
@@ -56,8 +67,12 @@
                     <span id="email-ok-icon" class="glyphicon glyphicon-ok form-control-feedback" style="display: none;"></span>
                     <span id="email-not-ok-icon" class="glyphicon glyphicon-remove form-control-feedback" style="display: none;"></span>
                 </div>
-                <span id="email-input-error" class="required" style="display: none;"><spring:message code="label.email_input_error"/></span>
-                <span id="email-busy-error" class="required" style="display: none;"><spring:message code="label.email_busy_error"/></span>
+                <span id="email-input-error" class="required" style="display: none;">
+                    <spring:message code="label.email_input_error"/>
+                </span>
+                <span id="email-busy-error" class="required" style="display: none;">
+                    <spring:message code="label.email_busy_error"/>
+                </span>
                 <span id="loading-email" class="loading"></span>
             </div>
             <div class="form-group has-feedback">
@@ -65,7 +80,8 @@
                     <span class="required">*</span>
                 </label>
                 <div class="col-xs-4">
-                    <input type="password" name="password" class="form-control" id="password" placeholder="<spring:message code="label.password"/>">
+                    <input type="password" name="password" class="form-control" id="password"
+                           placeholder="<spring:message code="label.password"/>">
                     <span id="password-ok-icon" class="glyphicon glyphicon-ok form-control-feedback" style="display: none;"></span>
                     <span id="password-not-ok-icon" class="glyphicon glyphicon-remove form-control-feedback" style="display: none;"></span>
                 </div>
