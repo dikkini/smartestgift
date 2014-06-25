@@ -80,11 +80,11 @@ public class SmartUser implements Serializable {
     protected boolean cellPhoneVisible = false;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "smartUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<SmartUserGift> smartUserGifts = new HashSet<>();
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "smartUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<SmartUserFriend> smartUserFriends = new HashSet<>();
 
     @JsonIgnore
@@ -332,11 +332,12 @@ public class SmartUser implements Serializable {
 
     @Override
     public int hashCode() {
-        int result = uuid.hashCode();
-        result = 31 * result + username.hashCode();
+        int result = uuid != null ? uuid.hashCode() : 0;
+        result = 31 * result + (username != null ? username.hashCode() : 0);
         result = 31 * result + (password != null ? password.hashCode() : 0);
         result = 31 * result + (email != null ? email.hashCode() : 0);
         result = 31 * result + (enabled ? 1 : 0);
+        result = 31 * result + authProvider;
         result = 31 * result + (registrationDate != null ? registrationDate.hashCode() : 0);
         result = 31 * result + (socialId != null ? socialId.hashCode() : 0);
         result = 31 * result + (birthDate != null ? birthDate.hashCode() : 0);
@@ -349,8 +350,6 @@ public class SmartUser implements Serializable {
         result = 31 * result + (profileVisible ? 1 : 0);
         result = 31 * result + (cellPhone != null ? cellPhone.hashCode() : 0);
         result = 31 * result + (cellPhoneVisible ? 1 : 0);
-        result = 31 * result + (smartUserGifts != null ? smartUserGifts.hashCode() : 0);
-        result = 31 * result + (smartUserFriends != null ? smartUserFriends.hashCode() : 0);
         result = 31 * result + (file != null ? file.hashCode() : 0);
         return result;
     }

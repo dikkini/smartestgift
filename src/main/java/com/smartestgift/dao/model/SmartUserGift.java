@@ -1,5 +1,7 @@
 package com.smartestgift.dao.model;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -11,14 +13,25 @@ import java.util.Date;
 @Entity
 @Table(name = "user_gifts")
 @AssociationOverrides({
-        @AssociationOverride(name = "pk.user",
+        @AssociationOverride(name = "smartUser",
                 joinColumns = @JoinColumn(name = "user_uuid")),
-        @AssociationOverride(name = "pk.giftShop",
+        @AssociationOverride(name = "giftShop",
                 joinColumns = @JoinColumn(name = "gift_shop_uuid")) })
 public class SmartUserGift implements Serializable {
 
-    @EmbeddedId
-    protected SmartUserGiftId pk = new SmartUserGiftId();
+    @Id
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid2")
+    @Column(name = "uuid", unique = true)
+    protected String uuid;
+
+    @ManyToOne
+    @JoinColumn(name="user_uuid")
+    private SmartUser smartUser;
+
+    @ManyToOne
+    @JoinColumn(name="gift_shop_uuid")
+    private GiftShop giftShop;
 
     @Column(name = "moneyCollect")
     protected Integer moneyCollect;
@@ -26,30 +39,24 @@ public class SmartUserGift implements Serializable {
     @Column(name = "endDate")
     protected Date endDate;
 
-    public SmartUserGiftId getPk() {
-        return pk;
+    public String getUuid() {
+        return uuid;
     }
 
-    public void setPk(SmartUserGiftId pk) {
-        this.pk = pk;
-    }
-
-    @Transient
     public SmartUser getSmartUser() {
-        return getPk().getUser();
+        return smartUser;
     }
 
     public void setSmartUser(SmartUser smartUser) {
-        getPk().setUser(smartUser);
+        this.smartUser = smartUser;
     }
 
-    @Transient
     public GiftShop getGiftShop() {
-        return getPk().getGiftShop();
+        return giftShop;
     }
 
     public void setGiftShop(GiftShop giftShop) {
-        getPk().setGiftShop(giftShop);
+        this.giftShop = giftShop;
     }
 
     public Integer getMoneyCollect() {
@@ -76,15 +83,19 @@ public class SmartUserGift implements Serializable {
         SmartUserGift that = (SmartUserGift) o;
 
         if (endDate != null ? !endDate.equals(that.endDate) : that.endDate != null) return false;
+        if (giftShop != null ? !giftShop.equals(that.giftShop) : that.giftShop != null) return false;
         if (moneyCollect != null ? !moneyCollect.equals(that.moneyCollect) : that.moneyCollect != null) return false;
-        if (pk != null ? !pk.equals(that.pk) : that.pk != null) return false;
+        if (smartUser != null ? !smartUser.equals(that.smartUser) : that.smartUser != null) return false;
+        if (uuid != null ? !uuid.equals(that.uuid) : that.uuid != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = 31 + (moneyCollect != null ? moneyCollect.hashCode() : 0);
+        int result = uuid != null ? uuid.hashCode() : 0;
+        result = 31 * result + (smartUser != null ? smartUser.hashCode() : 0);
+        result = 31 * result + (moneyCollect != null ? moneyCollect.hashCode() : 0);
         result = 31 * result + (endDate != null ? endDate.hashCode() : 0);
         return result;
     }

@@ -100,9 +100,9 @@ public class GiftController {
         }
     }
 
-    @RequestMapping(value = "/unWantGift", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/unWantGift", headers="Accept=application/json", method = RequestMethod.POST)
     public @ResponseBody Response unWantGift(Authentication authentication,
-                                             @RequestParam(required = true, value = "giftshopuuid") String giftShopUuid) {
+                                             @RequestParam(required = true, value = "giftShopUuid") String giftShopUuid) {
         // TODO проверить uuidы или проверить проверку на правильность uuidов
         if (giftService.hasSmartUserGiftShop(smartUserService.findUserByUsername(authentication.getName()), giftShopUuid)) {
             giftService.deleteGiftFromUser(smartUserService.findUserByUsername(authentication.getName()), giftShopUuid);

@@ -26,7 +26,7 @@ DROP TABLE public.message_status CASCADE;
 
 CREATE TABLE public.role
 (
-  id SERIAL PRIMARY KEY,
+  id   SERIAL PRIMARY KEY,
   role VARCHAR(36) NOT NULL
 );
 
@@ -82,11 +82,11 @@ CREATE TABLE public.user_roles
 
 CREATE TABLE public.user_friends
 (
+  uuid          VARCHAR(36) PRIMARY KEY,
   user_uuid     VARCHAR(36) REFERENCES public.users (uuid) NOT NULL,
   friend_uuid   VARCHAR(36) REFERENCES public.users (uuid) NOT NULL,
   friendAddDate TIMESTAMP                                  NOT NULL,
-  friendTypeId  INT                                        NOT NULL,
-  PRIMARY KEY (user_uuid, friend_uuid)
+  friendTypeId  INT                                        NOT NULL
 );
 
 CREATE TABLE public.persistent_login
@@ -131,11 +131,11 @@ CREATE TABLE public.gift_files
 
 CREATE TABLE public.user_gifts
 (
+  uuid           VARCHAR(36) PRIMARY KEY,
   user_uuid      VARCHAR(36) REFERENCES public.users (uuid)        NOT NULL,
   gift_shop_uuid VARCHAR(36) REFERENCES public.gift_shop (uuid)    NOT NULL,
   moneyCollect   INT                                               NOT NULL,
-  endDate        TIMESTAMP                                         NOT NULL,
-  PRIMARY KEY (user_uuid, gift_shop_uuid)
+  endDate        TIMESTAMP                                         NOT NULL
 );
 
 CREATE TABLE public.gift_category

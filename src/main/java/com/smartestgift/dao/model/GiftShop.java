@@ -29,7 +29,7 @@ public class GiftShop implements Serializable {
     @JoinColumn (name = "gift_uuid")
     protected Gift gift;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.giftShop")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "giftShop")
     protected Set<SmartUserGift> smartUserGifts;
 
     // TODO сделать модель цены с валютой и прочей ерундой
@@ -85,5 +85,33 @@ public class GiftShop implements Serializable {
 
     public void setDiscount(Integer discount) {
         this.discount = discount;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GiftShop giftShop = (GiftShop) o;
+
+        if (discount != null ? !discount.equals(giftShop.discount) : giftShop.discount != null) return false;
+        if (gift != null ? !gift.equals(giftShop.gift) : giftShop.gift != null) return false;
+        if (price != null ? !price.equals(giftShop.price) : giftShop.price != null) return false;
+        if (shop != null ? !shop.equals(giftShop.shop) : giftShop.shop != null) return false;
+        if (smartUserGifts != null ? !smartUserGifts.equals(giftShop.smartUserGifts) : giftShop.smartUserGifts != null)
+            return false;
+        if (uuid != null ? !uuid.equals(giftShop.uuid) : giftShop.uuid != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = uuid != null ? uuid.hashCode() : 0;
+        result = 31 * result + (shop != null ? shop.hashCode() : 0);
+        result = 31 * result + (gift != null ? gift.hashCode() : 0);
+        result = 31 * result + (price != null ? price.hashCode() : 0);
+        result = 31 * result + (discount != null ? discount.hashCode() : 0);
+        return result;
     }
 }

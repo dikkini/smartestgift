@@ -74,10 +74,10 @@
     $(document).ready(function(){
         $(".un-want-gift-btn").click(function(e) {
             $.ajax({
-                type: "delete",
+                type: "post",
                 url: "/gifts/unWantGift",
                 cache: false,
-                data: "giftshopuuid=" + $(this).data("giftshop-uuid"),
+                data: "giftShopUuid=" + $(this).data("giftshop-uuid"),
                 success: function (response) {
                     alert("ok");
                 },

@@ -155,11 +155,9 @@ public class SmartUserDAOImpl implements SmartUserDAO {
     @Override
     public SmartUserFriend findSmartUserFriend(SmartUser activeUser, SmartUser friend) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUserFriend.class);
-        SmartUserFriendId smartUserFriendId = new SmartUserFriendId();
-        smartUserFriendId.setUser(activeUser);
-        smartUserFriendId.setFriend(friend);
 
-        criteria.add(Restrictions.eq("pk", smartUserFriendId));
+        criteria.add(Restrictions.eq("smartUser", activeUser));
+        criteria.add(Restrictions.eq("friendUser", friend));
         criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
         return (SmartUserFriend) criteria.uniqueResult();
     }
@@ -168,8 +166,8 @@ public class SmartUserDAOImpl implements SmartUserDAO {
     public SmartUserGift findSmartUserGift(SmartUser user, GiftShop giftShop) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUserGift.class);
 
-        criteria.add(Restrictions.eq("pk.user", user));
-        criteria.add(Restrictions.eq("pk.giftShop", giftShop));
+        criteria.add(Restrictions.eq("smartUser", user));
+        criteria.add(Restrictions.eq("giftShop", giftShop));
         criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
         return (SmartUserGift) criteria.uniqueResult();
     }

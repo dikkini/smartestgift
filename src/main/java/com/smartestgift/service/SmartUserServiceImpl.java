@@ -147,7 +147,7 @@ public class SmartUserServiceImpl implements SmartUserService {
     @Override
     public void addRequestSmartUserFriend(SmartUser activeUser, String friendUsername) {
         SmartUserFriend userNewFriend = new SmartUserFriend();
-        userNewFriend.setFriend(smartUserDAO.findSmartUserByUsername(friendUsername));
+        userNewFriend.setFriendUser(smartUserDAO.findSmartUserByUsername(friendUsername));
         userNewFriend.setFriendAddDate(new Date());
         userNewFriend.setFriendTypeId(ApplicationConstants.USER_FRIEND_REQUEST_TYPE);
         userNewFriend.setSmartUser(activeUser);
@@ -176,7 +176,7 @@ public class SmartUserServiceImpl implements SmartUserService {
         Set<SmartUserFriend> smartUserFriends = activeUser.getSmartUserFriends();
 
         for (SmartUserFriend currentSmartUserFriend : smartUserFriends) {
-            if (friend.getUuid().equals(currentSmartUserFriend.getFriend().getUuid())) {
+            if (friend.getUuid().equals(currentSmartUserFriend.getFriendUser().getUuid())) {
                 currentSmartUserFriend.setFriendTypeId(typeId);
                 break;
             }
