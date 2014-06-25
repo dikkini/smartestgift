@@ -74,15 +74,15 @@
     $(document).ready(function(){
         $(".un-want-gift-btn").click(function(e) {
             $.ajax({
-                type: "post",
+                type: "delete",
                 url: "/gifts/unWantGift",
                 cache: false,
                 data: "giftshopuuid=" + $(this).data("giftshop-uuid"),
                 success: function (response) {
-                    window.location = $.updateNotifyBlockRequest(window.location.href, response.successes, response.errors, response.information);
+                    alert("ok");
                 },
                 error: function (response) {
-                    window.location = "500";
+                    alert("error");
                 }
             });
             e.preventDefault();

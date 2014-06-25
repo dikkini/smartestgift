@@ -1,5 +1,6 @@
 package com.smartestgift.dao.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.restfb.types.User;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -78,12 +79,15 @@ public class SmartUser implements Serializable {
     @Column(name = "cellPhone_visible")
     protected boolean cellPhoneVisible = false;
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<SmartUserGift> smartUserGifts = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<SmartUserFriend> smartUserFriends = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "smartUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserRole> userRoles = new HashSet<>();
 

@@ -52,10 +52,10 @@
                 cache: false,
                 data: "friendUsername=" + friendUsername,
                 success: function (response) {
-                    alert(response.success);
+                    alert(response.message);
                 },
                 error: function (response) {
-                    alert(response);
+                    alert("error");
                 }
             });
         });
@@ -64,13 +64,13 @@
             $("#loading-people").loading("start");
             $.ajax({
                 async: true,
-                type: "post",
+                type: "get",
                 url: "/users/findPeople.do",
                 cache: false,
                 data: "offset=" + offset,
                 success: function (response) {
 
-                    JSON.parse(response).forEach(function(entry) {
+                    response.message.forEach(function(entry) {
                         var html =
                                 '<li class="contact" tabindex="1" data-fio="' + (entry.lastName ? entry.lastName + " " : "") + entry.firstName + (entry.middleName ? " " + entry.middleName : "") + '">' +
                                     '<div class="list-group">' +
@@ -96,12 +96,13 @@
 
                         peopleContainer.append(html);
                     });
-                    offset += ${constants.peopleSearchResultsCount};
+                    offset += ${constants.PEOPLE_SEARCH_RESULTS_COUNT};
                     $("#loading-people").loading("stop");
                     processing = false;
                 },
                 error: function (response) {
                     //TODO обработка ошибок
+                    console.log(response.responseText)
                     $("#loading-people").loading("stop");
                     alert("error");
                 }

@@ -53,6 +53,10 @@ public class ApplicationConstants {
 
 
     // getters for using constants in JSP
+    public Integer getPEOPLE_SEARCH_RESULTS_COUNT() {
+        return PEOPLE_SEARCH_RESULTS_COUNT;
+    }
+
     public String getINPUT_DATE_FORMAT_PATTER() {
         return INPUT_DATE_FORMAT_PATTERN;
     }

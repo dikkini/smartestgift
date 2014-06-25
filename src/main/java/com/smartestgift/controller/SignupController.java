@@ -1,5 +1,6 @@
 package com.smartestgift.controller;
 
+import com.smartestgift.controller.model.Response;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.exception.EmailBusyException;
 import com.smartestgift.exception.UsernameBusyException;
@@ -34,7 +35,7 @@ public class SignupController {
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public String signUpUser(HttpServletRequest request,
+    public @ResponseBody Response signUpUser(HttpServletRequest request,
                                              @RequestParam (required = true, value = "username") String username,
                                              @RequestParam (required = true, value = "email") String email,
                                              @RequestParam (required = true, value = "password") String password,
@@ -59,7 +60,7 @@ public class SignupController {
         smartUserService.createUserAuthorityForUser(registerUser.getUsername());
         smartUserService.authenticateUser(registerUser.getUsername(), registerUser.getPassword(), request);
 
-        return "redirect:/profile";
+        return Response.createResponse(true);
     }
 
     @RequestMapping(value = "/facebook", method = RequestMethod.GET)
@@ -76,7 +77,7 @@ public class SignupController {
     }
 
     @RequestMapping(value = "/facebook/register", method = RequestMethod.POST)
-    public ModelAndView socialRegister(HttpServletRequest request, HttpServletResponse response,
+    public @ResponseBody Response socialRegister(HttpServletRequest request, HttpServletResponse response,
                                       @RequestParam (required = true, value = "id") String socialId,
                                       @RequestParam (required = true, value = "username") String username,
                                       @RequestParam (required = true, value = "email") String email,
@@ -93,32 +94,28 @@ public class SignupController {
         smartUserService.createSmartUser(facebookUser);
         smartUserService.authenticateUser(facebookUser.getUsername(), facebookUser.getPassword(), request);
 
-        return new ModelAndView("users/profile");
+        return Response.createResponse(true);
     }
 
     @RequestMapping(value = "/checkLogin", method = RequestMethod.GET)
-    public @ResponseBody void checkLogin(@RequestParam(value = "login", required = true) String login) {
+    public @ResponseBody Response checkLogin(@RequestParam(value = "login", required = true) String login) {
         boolean loginFree = smartUserService.checkOccupiedUsername(login);
-        if (!loginFree) {
-            throw new UsernameBusyException("Username is busy", HttpStatus.IM_USED.value());
-        }
+        return Response.createResponse(loginFree);
     }
 
     @RequestMapping(value = "/checkEmail", method = RequestMethod.GET)
-    public void checkEmail(@RequestParam(value = "email", required = true) String email) {
+    public @ResponseBody Response checkEmail(@RequestParam(value = "email", required = true) String email) {
         boolean emailFree = smartUserService.checkOccupiedEmail(email);
-        if (!emailFree) {
-            throw new EmailBusyException("Email is busy", HttpStatus.IM_USED.value());
-        }
+        return Response.createResponse(emailFree);
     }
 
     @ExceptionHandler(UsernameBusyException.class)
     public @ResponseBody ResponseEntity handleUsernameBusyException(HttpServletResponse response) {
-        return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<String>(HttpStatus.IM_USED);
     }
 
     @ExceptionHandler(EmailBusyException.class)
     public @ResponseBody ResponseEntity handleEmailBusyException(HttpServletResponse response) {
-        return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<String>(HttpStatus.IM_USED);
     }
 }

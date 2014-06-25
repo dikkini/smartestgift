@@ -126,7 +126,7 @@ $(document).ready(function () {
     });
 
     $("#random-gift-btn").click(function() {
-        window.location = "/randomGift";
+        alert("todo!");
     });
 
     $("#find-gift-btn").click(function () {
@@ -222,9 +222,8 @@ $(document).ready(function () {
             cache: false,
             data: "giftUuid=" + giftUuid,
             success: function (response) {
-                var json = JSON.parse(response.message);
                 // set shops and price
-                json.forEach(function(shopGift) {
+                response.message.forEach(function(shopGift) {
                     var option = $('<option>').val(shopGift.uuid)
                             .text(shopGift.shop.name + " - " + shopGift.price);
                     option.data("price", shopGift.price);
@@ -237,7 +236,8 @@ $(document).ready(function () {
                 $("#want-gift-modal").modal("show");
             },
             error: function (response) {
-                window.location = "500";
+                console.log(response.responseText);
+                alert("error");
             }
         });
     });
@@ -251,7 +251,7 @@ $(document).ready(function () {
             cache: false,
             data: "countAll=" + countAll + "&pageNum=" + pageNum + "&pageSize=" + pageSize + "&searchString=" + searchString,
             success: function (response) {
-                var json = JSON.parse(response.message);
+                var json = response.message;
                 var results = json.results;
                 if (results.length == 0) {
                     var noGiftsError = '<h3><spring:message code="label.no_gifts_to_show"/></h3>';
@@ -267,7 +267,8 @@ $(document).ready(function () {
                 renderPagerButtons(json.countAll, json.pageNum, json.isNextPage, json.isPreviousPage);
             },
             error: function (response) {
-                window.location = "500";
+                console.log(response.responseText);
+                alert("error");
             }
         });
     }
@@ -281,7 +282,7 @@ $(document).ready(function () {
             cache: false,
             data: "countAll=" + countAll + "&pageNum=" + pageNum + "&pageSize=" + pageSize + "&categoryCode=" + categoryCode,
             success: function (response) {
-                var json = JSON.parse(response.message);
+                var json = response.message;
                 var results = json.results;
                 if (results.length == 0) {
                     var noGiftsError = '<h3><spring:message code="label.no_gifts_to_show"/></h3>';
@@ -297,7 +298,8 @@ $(document).ready(function () {
                 renderPagerButtons(json.countAll, json.pageNum, json.isNextPage, json.isPreviousPage);
             },
             error: function (response) {
-                window.location = "500";
+                console.log(response.responseText);
+                alert("error");
             }
         });
     }

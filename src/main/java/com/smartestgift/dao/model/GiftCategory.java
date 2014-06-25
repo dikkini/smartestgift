@@ -1,5 +1,7 @@
 package com.smartestgift.dao.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
@@ -29,6 +31,7 @@ public class GiftCategory implements Serializable {
     @JoinColumn(name="file_id")
     protected File file;
 
+    @JsonIgnore
     @OrderBy(value = "addDate")
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
     private Set<Gift> gifts;

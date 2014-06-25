@@ -52,6 +52,19 @@ public class GiftController {
         return mav;
     }
 
+    @RequestMapping(value = "/my", method = RequestMethod.GET)
+    public ModelAndView myGifts(Authentication authentication) {
+        Set<SmartUserGift> gifts = smartUserService.findUserByUsername(authentication.getName()).getSmartUserGifts();
+        return new ModelAndView("gifts/my", "gifts", gifts);
+    }
+
+    @RequestMapping(value = "/{giftUuid}", method = RequestMethod.GET)
+    public ModelAndView giftPage(@PathVariable String giftUuid) {
+        Gift gift = giftService.findGiftByUuid(giftUuid);
+        List<GiftShop> giftShops = giftService.findGiftShops(giftUuid);
+        return new ModelAndView("gifts/gift").addObject("gift", gift).addObject("giftShops", giftShops);
+    }
+
     @RequestMapping(value = "/changePage", headers="Accept=application/json", method = RequestMethod.GET)
     public @ResponseBody Response changePage(@RequestParam(required = true, value = "countAll") Long countAll,
                                              @RequestParam(required = true, value = "pageNum") int pageNum,
@@ -62,35 +75,15 @@ public class GiftController {
     }
 
 
-    @RequestMapping(value = "/my", method = RequestMethod.GET)
-    public ModelAndView myGifts(Authentication authentication) {
-        Set<SmartUserGift> gifts = smartUserService.findUserByUsername(authentication.getName()).getSmartUserGifts();
-        return new ModelAndView("gifts/my", "gifts", gifts);
-    }
-
-    @RequestMapping(value = "/{giftUuid}", method = RequestMethod.GET)
-    public ModelAndView giftPage(@PathVariable String giftUuid) {
-        // TODO check what to do with giftcategorycode
-        Gift gift = giftService.findGiftByUuid(giftUuid);
-        List<GiftShop> giftShops = giftService.findGiftShops(giftUuid);
-        return new ModelAndView("gifts/gift").addObject("gift", gift).addObject("giftShops", giftShops);
-    }
-
     // TODO add event to news feed
     // TODO sending email to a friends of users if option checked true to send
     // TODO check valid end date of gift collaboration
     @RequestMapping(value = "/wantGift", headers="Accept=application/json", method = RequestMethod.POST)
-    public void wantGift(Authentication authentication,
+    public @ResponseBody Response wantGift(Authentication authentication,
                                                @RequestParam(required = true, value = "giftShopUuid") String giftShopUuid,
                                                @RequestParam(required = true, value = "endDate") String endDateStr) {
         // TODO проверить uuidы или проверить проверку на правильность uuidов
-/*        if (!isUUID(giftUuid) || !isUUID(shopUuid)) {
-            result.setSuccess(false);
-            result.addError(ResponseMessages.INTERNAL_ERROR);
-            return result;
-        }*/
-
-        // TODO при локализации севрсиа, добавить в форматирование даты текущую локаль языка
+        // TODO при локализации сервиса, добавить в форматирование даты текущую локаль языка
         Date endDate;
         try {
             endDate = new SimpleDateFormat(ApplicationConstants.INPUT_DATE_FORMAT_PATTERN).parse(endDateStr);
@@ -99,24 +92,21 @@ public class GiftController {
         }
 
         if (!giftService.hasSmartUserGiftShop(smartUserService.findUserByUsername(authentication.getName()), giftShopUuid)) {
-            giftService.addGiftShopToUserWishes(smartUserService.findUserByUsername(authentication.getName()), giftShopUuid, endDate);
+            giftService.addGiftShopToUserWishes(smartUserService.findUserByUsername(authentication.getName()),
+                    giftShopUuid, endDate);
+            return Response.createResponse(true);
         } else {
             throw new UserHasGiftException("User has this gift", BAD_REQUEST.value());
         }
     }
 
     @RequestMapping(value = "/unWantGift", method = RequestMethod.DELETE)
-    public void unWantGift(Authentication authentication,
-                                                 @RequestParam(required = true, value = "giftshopuuid")
-                                                 String giftShopUuid) {
+    public @ResponseBody Response unWantGift(Authentication authentication,
+                                             @RequestParam(required = true, value = "giftshopuuid") String giftShopUuid) {
         // TODO проверить uuidы или проверить проверку на правильность uuidов
-//        if (!isUUID(giftShopUuid)) {
-//            result.setSuccess(false);
-//            result.addError(ResponseMessages.INTERNAL_ERROR);
-//            return result;
-//        }
         if (giftService.hasSmartUserGiftShop(smartUserService.findUserByUsername(authentication.getName()), giftShopUuid)) {
             giftService.deleteGiftFromUser(smartUserService.findUserByUsername(authentication.getName()), giftShopUuid);
+            return Response.createResponse(true);
         } else {
             throw new UserHasGiftException("User has not this gift", BAD_REQUEST.value());
         }
@@ -130,18 +120,16 @@ public class GiftController {
 
     @RequestMapping(value = "/getFindGiftPage", headers="Accept=application/json", method = RequestMethod.GET)
     public @ResponseBody Response getFindGiftPage(Authentication authentication,
-                                                @RequestParam(required = true, value = "countAll") Long countAll,
-                                                @RequestParam(required = true, value = "searchString") String searchString,
-                                                @RequestParam(required = true, value = "pageNum") int pageNum,
-                                                @RequestParam(required = true, value = "pageSize") int pageSize) {
-        // TODO security checks
+                                                  @RequestParam(required = true, value = "countAll") Long countAll,
+                                                  @RequestParam(required = true, value = "searchString") String searchString,
+                                                  @RequestParam(required = true, value = "pageNum") int pageNum,
+                                                  @RequestParam(required = true, value = "pageSize") int pageSize) {
         return Response.createResponse(giftService.getPageOfGiftsBySearchString(countAll, pageNum, pageSize, searchString));
     }
 
     @RequestMapping(value = "/findGiftShops", headers="Accept=application/json", method = RequestMethod.GET)
     public @ResponseBody Response findGiftShops(Authentication authentication,
                                                 @RequestParam(required = true, value = "giftUuid") String giftUuid) {
-        // TODO security checks
         return Response.createResponse(giftService.findGiftShops(giftUuid));
     }
 

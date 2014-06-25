@@ -1,5 +1,6 @@
 package com.smartestgift.dao.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -23,10 +24,12 @@ public class File implements Serializable {
     @Column(name = "name")
     protected String name;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="type_id")
     private FileType type;
 
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "files", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Gift> gifts;
 

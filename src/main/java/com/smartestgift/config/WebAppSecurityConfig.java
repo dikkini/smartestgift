@@ -57,11 +57,11 @@ public class WebAppSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.userDetailsService(userDetailsService());
-        http.sessionManagement()
-                .invalidSessionUrl("/session/invalid")
-                .maximumSessions(1)
-                .expiredUrl("/session/expired")
-                .maxSessionsPreventsLogin(true);
+//        http.sessionManagement()
+//                .invalidSessionUrl("/session/invalid")
+//                .maximumSessions(1)
+//                .expiredUrl("/session/expired")
+//                .maxSessionsPreventsLogin(true);
         http.formLogin()
                 .loginPage("/login")
                 .defaultSuccessUrl("/profile?successes=login_success")

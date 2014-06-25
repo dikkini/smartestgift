@@ -25,7 +25,7 @@
         </fieldset>
     </div>
     <div class="col-xs-9">
-        <form class="form-horizontal login-form" action="/profile/settings/save.do" method="post">
+        <form class="form-horizontal login-form" action="/profile/settings/save.do" method="put">
             <fieldset class="personal-information">
                 <legend><spring:message code="label.personalinfo"/></legend>
                 <div class="form-group">
@@ -108,7 +108,7 @@
         $("#input-birthdate").datepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: 'dd.mm.yy' // TODO вывести константу
+            dateFormat: "${constants.INPUT_DATE_FORMAT_PATTER}"
         });
 
         $(".loading").loading({width: '25', text: 'Waiting...'});

@@ -81,10 +81,10 @@ $(document).ready(function() {
             cache: false,
             data: "giftShopUuid=" + giftShopUuid + "&endDate=" + endDate,
             success: function (response) {
-                alert(response.success);
+                alert(response.message);
             },
             error: function (response) {
-                window.location = "500";
+                alert("error");
             }
         });
     });
