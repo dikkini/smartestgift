@@ -152,8 +152,8 @@
         var customRenderMenu = function(ul, items){
                 var that = this,
                         currentCategory = "";
-                var giftItems = items[0].gift;
-                var userItems = items[0].user;
+                var giftItems = items[0].message.gift;
+                var userItems = items[0].message.user;
 
                 if (giftItems.length > 0) {
                     ul.append("<li class='ui-autocomplete-category'>" + "GIFTS" + "</li>");
@@ -216,7 +216,7 @@
 
                 var term = request.term;
                 if (term in cache) {
-                    var data = JSON.parse(cache[term]);
+                    var data = cache[term];
                     response({items:data});
                     globalSearchInputObj.removeClass("loading-input");
                     return;
@@ -228,8 +228,7 @@
                     data: {searchString: term},
                     dataType: "json",
                     success: function (data) {
-                        cache[ term ] = data;
-                        data = JSON.parse(data);
+                        cache[ term ] = data.message;
                         response({items:data});
                     },
                     error: function (data) {
