@@ -58,7 +58,6 @@ public class ProfileController {
         smartUser.setCellPhoneVisible(cellphoneVisible);
         smartUser.setProfileVisible(profileVisible);
         try {
-
             SimpleDateFormat simpledateformat = new SimpleDateFormat(ApplicationConstants.INPUT_DATE_FORMAT_PATTERN);
             Date tempDate = simpledateformat.parse(birthDate);
             smartUser.setBirthDate(tempDate);
