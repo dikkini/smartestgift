@@ -278,6 +278,7 @@ $(document).ready(function () {
 
         e.preventDefault();
     });
+
     $("#sign-up-facebook-user-btn").click(function (e) {
         var loadingSignUp = $("#loading-sign-up");
         loadingSignUp.loading('start');

@@ -1,6 +1,7 @@
 package com.smartestgift.controller;
 
 import com.smartestgift.controller.model.Response;
+import com.smartestgift.dao.model.File;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.exception.EmailBusyException;
 import com.smartestgift.exception.UsernameBusyException;
@@ -34,7 +35,7 @@ public class SignupController {
         return new ModelAndView("signup");
     }
 
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    @RequestMapping(value = "/register", headers = "Accept=application/json", method = RequestMethod.POST)
     public @ResponseBody Response signUpUser(HttpServletRequest request,
                                              @RequestParam (required = true, value = "username") String username,
                                              @RequestParam (required = true, value = "email") String email,
@@ -78,11 +79,11 @@ public class SignupController {
 
     @RequestMapping(value = "/facebook/register", method = RequestMethod.POST)
     public @ResponseBody Response socialRegister(HttpServletRequest request, HttpServletResponse response,
-                                      @RequestParam (required = true, value = "id") String socialId,
-                                      @RequestParam (required = true, value = "username") String username,
-                                      @RequestParam (required = true, value = "email") String email,
-                                      @RequestParam (required = true, value = "firstName") String firstName,
-                                      @RequestParam (required = false, value = "lastName") String lastName) {
+                                                 @RequestParam (required = true, value = "id") String socialId,
+                                                 @RequestParam (required = true, value = "username") String username,
+                                                 @RequestParam (required = true, value = "email") String email,
+                                                 @RequestParam (required = true, value = "firstName") String firstName,
+                                                 @RequestParam (required = false, value = "lastName") String lastName) {
         // TODO проверка всех входных данных
         // TODO обработка города из КЛАДРа
         SmartUser facebookUser = (SmartUser) request.getSession().getAttribute(socialId);

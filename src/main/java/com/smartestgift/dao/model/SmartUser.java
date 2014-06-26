@@ -118,6 +118,7 @@ public class SmartUser implements Serializable {
         this.birthDate = facebookUser.getBirthdayAsDate();
         this.email = facebookUser.getEmail();
         this.socialId = facebookUser.getId();
+        this.registrationDate = new Date();
     }
 
     public String getUuid() {

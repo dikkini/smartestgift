@@ -2,11 +2,14 @@ package com.smartestgift.service;
 
 import com.smartestgift.dao.*;
 import com.smartestgift.dao.model.*;
+import com.smartestgift.exception.InternalErrorException;
 import com.smartestgift.utils.ApplicationConstants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -14,6 +17,8 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.*;
+
+import static com.smartestgift.utils.ApplicationConstants.*;
 
 /**
  * Created by dikkini on 18.02.14.
@@ -32,9 +37,6 @@ public class SmartUserServiceImpl implements SmartUserService {
     private RoleDAO roleDAO;
 
     @Autowired
-    private UserRoleDAO userRoleDAO;
-
-    @Autowired
     private FileDAO fileDAO;
 
     @Autowired
@@ -48,8 +50,9 @@ public class SmartUserServiceImpl implements SmartUserService {
     @Override
     public SmartUser createSmartUser(String username, String password, String email, String lastName, String firstName,
                                      Date registrationDate, int authProvider, boolean enabled) {
-        SmartUser smartUser = new SmartUser(username, password, email, lastName, firstName, registrationDate, authProvider, enabled);
-        smartUser.setFile(fileDAO.find(ApplicationConstants.FILE_USER_NO_PHOTO_ID));
+        SmartUser smartUser = new SmartUser(username, password, email, lastName, firstName, registrationDate,
+                authProvider, enabled);
+        smartUser.setFile(fileDAO.find(FILE_USER_NO_PHOTO_ID));
         return this.createSmartUser(smartUser);
     }
 
@@ -78,7 +81,7 @@ public class SmartUserServiceImpl implements SmartUserService {
 
     @Override
     public void createUserAuthorityForUser(String username) {
-        Role role = roleDAO.find(ApplicationConstants.USER_ROLE_ID);
+        Role role = roleDAO.find(USER_ROLE_ID);
         SmartUser smartUser = smartUserDAO.findSmartUserByUsername(username);
         UserRole userRole = new UserRole(role, smartUser);
         smartUser.getUserRoles().add(userRole);
@@ -87,7 +90,19 @@ public class SmartUserServiceImpl implements SmartUserService {
 
     @Override
     public void authenticateUser(String userName, String password, HttpServletRequest request) {
-        UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(userName, password);
+        UsernamePasswordAuthenticationToken authRequest;
+        if (password == null) {
+            SmartUser smartUserByUsername = smartUserDAO.findSmartUserByUsername(userName);
+            if (smartUserByUsername != null && smartUserByUsername.getSocialId() != null) {
+                authRequest = new UsernamePasswordAuthenticationToken(userName, null,
+                        AuthorityUtils.createAuthorityList("ROLE_USER"));
+            } else {
+                throw new InternalErrorException("Password null and (no user exist or no socialId)",
+                        INTERNAL_EXCEPTION_MESSAGE);
+            }
+        } else {
+            authRequest = new UsernamePasswordAuthenticationToken(userName, password);
+        }
 
         // Authenticate the user
         Authentication authentication = authenticationManager.authenticate(authRequest);
@@ -127,8 +142,8 @@ public class SmartUserServiceImpl implements SmartUserService {
         List<SmartUser> usersByUserInput = this.findUsersByUserInput(searchString, activeUser);
         List<Gift> giftsBySearchString = giftDAO.findGiftsBySearchString(searchString);
         Map<String, List> result = new HashMap<>();
-        result.put(ApplicationConstants.GIFTS_SEARCH_RESULTS, giftsBySearchString);
-        result.put(ApplicationConstants.USERS_SEARCH_RESULTS, usersByUserInput);
+        result.put(GIFTS_SEARCH_RESULTS, giftsBySearchString);
+        result.put(USERS_SEARCH_RESULTS, usersByUserInput);
 
         return result;
     }
@@ -149,7 +164,7 @@ public class SmartUserServiceImpl implements SmartUserService {
         SmartUserFriend userNewFriend = new SmartUserFriend();
         userNewFriend.setFriendUser(smartUserDAO.findSmartUserByUsername(friendUsername));
         userNewFriend.setFriendAddDate(new Date());
-        userNewFriend.setFriendTypeId(ApplicationConstants.USER_FRIEND_REQUEST_TYPE);
+        userNewFriend.setFriendTypeId(USER_FRIEND_REQUEST_TYPE);
         userNewFriend.setSmartUser(activeUser);
 
         activeUser.getSmartUserFriends().add(userNewFriend);
