@@ -75,13 +75,24 @@ public class File implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof File)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
         File file = (File) o;
 
-        if (!id.equals(file.id)) return false;
-        if (!name.equals(file.name)) return false;
+        if (gifts != null ? !gifts.equals(file.gifts) : file.gifts != null) return false;
+        if (id != null ? !id.equals(file.id) : file.id != null) return false;
+        if (name != null ? !name.equals(file.name) : file.name != null) return false;
+        if (type != null ? !type.equals(file.type) : file.type != null) return false;
 
         return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (gifts != null ? gifts.hashCode() : 0);
+        return result;
     }
 }
