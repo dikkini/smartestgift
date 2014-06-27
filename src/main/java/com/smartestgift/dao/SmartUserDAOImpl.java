@@ -147,7 +147,7 @@ public class SmartUserDAOImpl implements SmartUserDAO {
     @Override
     public List<SmartUserFriend> findAllSmartUserFriends(SmartUser activeUser) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUserFriend.class);
-        criteria.add(Restrictions.eq("pk.user", activeUser));
+        criteria.add(Restrictions.eq("smartUser", activeUser));
         criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
         return criteria.list();
     }
