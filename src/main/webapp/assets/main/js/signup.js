@@ -243,15 +243,10 @@ $(document).ready(function () {
             validForm = false;
         }
 
-        if (passwordObj.val().trim() == "") {
-            passwordForm.addClass("has-error");
-            validForm = false;
-        }
-
         if (!validForm) {
             loadingSignUp.loading('stop');
             e.preventDefault();
-            return;
+            return false;
         }
 
         var data = {};
@@ -259,64 +254,39 @@ $(document).ready(function () {
             data[$(this).attr('name')] = $(this).val();
         });
 
-        $.ajax({
-            type: "post",
-            url: "/signup/register",
-            cache: false,
-            data: data,
-            success: function (response) {
-                if (response.message) {
-                    window.location = "/profile?successes=signup_success";
-                }
 
-                loadingSignUp.loading('stop');
-            },
-            error: function (response) {
-                alert("error");
+        if (!social) {
+            if (passwordObj.val().trim() == "") {
+                passwordForm.addClass("has-error");
+                validForm = false;
             }
-        });
 
-        e.preventDefault();
-    });
+            if (!validForm) {
+                loadingSignUp.loading('stop');
+                e.preventDefault();
+                return false;
+            }
 
-    $("#sign-up-facebook-user-btn").click(function (e) {
-        var loadingSignUp = $("#loading-sign-up");
-        loadingSignUp.loading('start');
+            $.ajax({
+                type: "post",
+                url: "/signup/register",
+                cache: false,
+                data: data,
+                success: function (response) {
+                    if (response.message) {
+                        window.location = "/profile?successes=signup_success";
+                    }
 
-        var validForm = true;
+                    loadingSignUp.loading('stop');
+                },
+                error: function (response) {
+                    alert("error");
+                }
+            });
 
-        if (!emailRegexp.test(emailObj.val())) {
-            showEmailInputError();
-            validForm = false;
-        }
-
-        if (!usernameRegexp.test(usernameObj.val())) {
-            showUsernameInputError();
-            validForm = false;
-        }
-
-        if (firstnameObj.val().trim() == "") {
-            firstnameForm.addClass("has-error");
-            validForm = false;
-        }
-
-//        //TODO добавить проверку ID полученного из КЛАДР
-          // TODO добавить выбор города по КЛАДР и обработку на сервере
-//        if (cityObj.val().trim() == "") {
-//            cityForm.addClass("has-error");
-//            validForm = false;
-//        }
-
-        if (!validForm) {
-            loadingSignUp.loading('stop');
             e.preventDefault();
-            return;
+            return true;
         }
-
-        var data = {};
-        $('input').each(function () {
-            data[$(this).attr('name')] = $(this).val();
-        });
 
         data.id = $("#username").data("social");
 
@@ -338,6 +308,7 @@ $(document).ready(function () {
         });
 
         e.preventDefault();
+        return false;
     });
 
     (function($){

@@ -82,9 +82,22 @@
                 <span id="email-busy-error" class="required" style="display: none;"><spring:message code="label.email_busy_error"/></span>
                 <span id="loading-email" class="loading"></span>
             </div>
+            <c:if test="${!requestScope.social}">
+                <div class="form-group has-feedback">
+                    <label for="password" class="col-sm-2 control-label"><spring:message code="label.password"/>
+                        <span class="required">*</span>
+                    </label>
+                    <div class="col-xs-4">
+                        <input type="password" name="password" class="form-control" id="password"
+                               placeholder="<spring:message code="label.password"/>">
+                        <span id="password-ok-icon" class="glyphicon glyphicon-ok form-control-feedback" style="display: none;"></span>
+                        <span id="password-not-ok-icon" class="glyphicon glyphicon-remove form-control-feedback" style="display: none;"></span>
+                    </div>
+                </div>
+            </c:if>
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
-                    <button id="sign-up-facebook-user-btn" class="btn btn-default">
+                    <button id="sign-up-btn" class="btn btn-default">
                         <spring:message code="label.signup"/>
                     </button>
                     <span id="loading-sign-up" class="loading"></span>
@@ -94,4 +107,7 @@
     </div>
 </div>
 
+<script>
+    social = "${requestScope.social}";
+</script>
 <script type="text/javascript" src="/assets/main/js/signup.js"></script>

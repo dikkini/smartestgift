@@ -31,7 +31,8 @@ public class SignupController {
     private SmartUserService smartUserService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView signUpPage() {
+    public ModelAndView signUpPage(HttpServletRequest request) {
+        request.setAttribute("social", false);
         return new ModelAndView("signup");
     }
 
@@ -70,6 +71,8 @@ public class SignupController {
                                          @RequestParam(required = true, value = "email_error") boolean email_error,
                                          @RequestParam(required = true, value = "username_error") boolean username_error) {
         SmartUser smartUser = (SmartUser) request.getSession().getAttribute(socialId);
+
+        request.setAttribute("social", true);
         ModelAndView mav = new ModelAndView("signupSocial");
         mav.addObject("facebookSmartUser", smartUser);
         mav.addObject("email_error", email_error);
@@ -77,7 +80,7 @@ public class SignupController {
         return mav;
     }
 
-    @RequestMapping(value = "/facebook/register", method = RequestMethod.POST)
+    @RequestMapping(value = "/facebook/register", headers = "Accept=application/json", method = RequestMethod.POST)
     public @ResponseBody Response socialRegister(HttpServletRequest request, HttpServletResponse response,
                                                  @RequestParam (required = true, value = "id") String socialId,
                                                  @RequestParam (required = true, value = "username") String username,
