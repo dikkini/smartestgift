@@ -23,20 +23,20 @@
                             <c:forEach items="${smartUserFriends}" var="smartUserFriend">
                                 <li  class="contact" tabindex="1">
                                     <div class="list-group">
-                                        <a class="user list-group-item" data-username="${smartUserFriend.friend.username}" style="cursor: pointer">
+                                        <a class="user list-group-item" data-username="${smartUserFriend.friendUser.username}" style="cursor: pointer">
                                             <div class="row">
                                                 <div class="col-xs-2">
-                                                    <img height="50" src="/file/get/${smartUserFriend.friend.file.id}">
+                                                    <img height="50" src="/file/get/${smartUserFriend.friendUser.file.id}">
                                                 </div>
                                                 <div class="col-xs-8">
-                                                    <p class="list-group-item-heading">${smartUserFriend.friend.lastName} ${smartUserFriend.friend.firstName} ${smartUserFriend.friend.middleName}</p>
-                                                    <p class="list-group-item-text">${smartUserFriend.friend.username}</p>
+                                                    <p class="list-group-item-heading">${smartUserFriend.friendUser.lastName} ${smartUserFriend.friendUser.firstName} ${smartUserFriend.friendUser.middleName}</p>
+                                                    <p class="list-group-item-text">${smartUserFriend.friendUser.username}</p>
                                                 </div>
                                             </div>
                                         </a>
-                                        <button style="float: right;" class="btn btn-default accept-friend-request-btn" data-username="${smartUserFriend.friend.username}">Accept Request</button>
-                                        <button style="float: right;" class="btn btn-default decline-friend-request-btn" data-username="${smartUserFriend.friend.username}">Decline Request</button>
-                                        <button style="float: right;" class="btn btn-default remove-friend-btn" data-username="${smartUserFriend.friend.username}">Remove Friend</button>
+                                        <button style="float: right;" class="btn btn-default accept-friend-request-btn" data-username="${smartUserFriend.friendUser.username}">Accept Request</button>
+                                        <button style="float: right;" class="btn btn-default decline-friend-request-btn" data-username="${smartUserFriend.friendUser.username}">Decline Request</button>
+                                        <button style="float: right;" class="btn btn-default remove-friend-btn" data-username="${smartUserFriend.friendUser.username}">Remove Friend</button>
                                         <div class="clearfix"/>
                                     </div>
                                 </li>
