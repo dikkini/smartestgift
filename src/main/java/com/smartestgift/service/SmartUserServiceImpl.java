@@ -50,6 +50,7 @@ public class SmartUserServiceImpl implements SmartUserService {
     @Override
     public SmartUser createSmartUser(String username, String password, String email, String lastName, String firstName,
                                      Date registrationDate, int authProvider, boolean enabled) {
+        // TODO решить вопрос с файлом
         SmartUser smartUser = new SmartUser(username, password, email, lastName, firstName, registrationDate,
                 authProvider, enabled);
         smartUser.setFile(fileDAO.find(FILE_USER_NO_PHOTO_ID));
