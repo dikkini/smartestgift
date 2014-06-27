@@ -65,13 +65,14 @@ public class MessageController {
         return mav;
     }
 
-    @RequestMapping(value = "/getConversationMessages", headers="Accept=application/json", method = RequestMethod.POST)
-    public @ResponseBody List<Message> getConversationMessages(Authentication authentication,
+    @RequestMapping(value = "/getConversationMessages", headers="Accept=application/json", method = RequestMethod.GET)
+    public @ResponseBody Response getConversationMessages(Authentication authentication,
                                                               @RequestParam(value = "conversationUuid", required = true)
                                                                                               String conversationUuid) {
         Conversation conversationByUuid = conversationService.findConversationByUuid(conversationUuid);
         SmartUser userByUsername = smartUserService.findUserByUsername(authentication.getName());
-        return messageService.findMessagesInConversation(userByUsername, conversationByUuid);
+        List<Message> messagesInConversation = messageService.findMessagesInConversation(userByUsername, conversationByUuid);
+        return Response.createResponse(messagesInConversation);
     }
 
     @MessageMapping("/setConversation")
@@ -100,17 +101,16 @@ public class MessageController {
     }
 
     @RequestMapping(value = "/sendMessageToUser", method = RequestMethod.POST)
-    public void sendMessageToUser(Authentication authentication,
-                                                    @RequestParam(value = "message", required = true) String message,
-                                                    @RequestParam(value = "conversation-uuid", required = true)
-                                                    String conversationUuid) {
+    public @ResponseBody void sendMessageToUser(Authentication authentication,
+                                                @RequestParam(value = "message", required = true) String message,
+                                                @RequestParam(value = "conversation-uuid", required = true) String conversationUuid) {
         // TODO add additional security checks using username and active user
         SmartUser userByUsername = smartUserService.findUserByUsername(authentication.getName());
         messageService.sendMessageToUser(userByUsername, message, conversationUuid);
     }
 
     @RequestMapping(value = "/createNewConversation", method = RequestMethod.POST)
-    public @ResponseBody Conversation createNewConversation(Authentication authentication,
+    public @ResponseBody Response createNewConversation(Authentication authentication,
                                                             @RequestParam(value = "message", required = true)
                                                             String message,
                                                             @RequestParam(value = "username", required = true)
@@ -118,7 +118,8 @@ public class MessageController {
         // TODO add additional security checks using username and active user
         SmartUser userFrom = smartUserService.findUserByUsername(authentication.getName());
         SmartUser userTo = smartUserService.findUserByUsername(username);
-        return conversationService.createConversation(userFrom, userTo, message);
+        Conversation conversation = conversationService.createConversation(userFrom, userTo, message);
+        return Response.createResponse(conversation);
     }
 
     @MessageMapping("/setUnreadCount")
