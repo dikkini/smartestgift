@@ -3,9 +3,11 @@ package com.smartestgift.controller;
 import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
 import com.restfb.types.User;
+import com.smartestgift.dao.model.File;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.exception.InternalErrorException;
+import com.smartestgift.service.FileService;
 import com.smartestgift.service.SmartUserService;
 import com.smartestgift.utils.ApplicationConstants;
 import com.smartestgift.utils.Utils;
@@ -40,6 +42,9 @@ public class LoginController {
 
     @Autowired
     private SmartUserService smartUserService;
+
+    @Autowired
+    private FileService fileService;
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView login(@RequestParam(required = false, value = "error") boolean error) {
@@ -145,8 +150,10 @@ public class LoginController {
 
 
                         SmartUser fbUser = new SmartUser(facebookUser);
+                        // TODO фото юзера
+                        File file = fileService.getFile(ApplicationConstants.FILE_USER_NO_PHOTO_ID);
+                        fbUser.setFile(file);
                         if (emailIsFree && usernameIsFree) {
-
                             SmartUser smartUser = smartUserService.createSmartUser(fbUser);
                             smartUserService.createUserAuthorityForUser(smartUser.getUsername());
                             smartUserService.authenticateUser(smartUser.getUsername(),
