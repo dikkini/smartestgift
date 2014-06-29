@@ -27,11 +27,11 @@ public class SmartUserGift implements Serializable {
 
     @ManyToOne
     @JoinColumn(name="user_uuid")
-    private SmartUser smartUser;
+    protected SmartUser smartUser;
 
     @ManyToOne
     @JoinColumn(name="gift_shop_uuid")
-    private GiftShop giftShop;
+    protected GiftShop giftShop;
 
     @Column(name = "moneyCollect")
     protected Integer moneyCollect;

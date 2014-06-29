@@ -30,7 +30,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Don't want</button>
+                <button id="decline-want-gift-btn" type="button" class="btn btn-default" data-dismiss="modal">Don't want</button>
                 <button id="accept-want-gift-btn" type="button" class="btn btn-primary">Want it!</button>
             </div>
         </div>
@@ -87,6 +87,10 @@ $(document).ready(function() {
                 alert("error");
             }
         });
+    });
+
+    $("#decline-want-gift-btn").click(function() {
+        $('#internet-shop-select').find('option:not(:first)').remove();
     });
 });
 </script>

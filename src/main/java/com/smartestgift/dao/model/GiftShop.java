@@ -1,5 +1,6 @@
 package com.smartestgift.dao.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -29,6 +30,7 @@ public class GiftShop implements Serializable {
     @JoinColumn (name = "gift_uuid")
     protected Gift gift;
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "giftShop")
     protected Set<SmartUserGift> smartUserGifts;
 
