@@ -86,7 +86,8 @@ CREATE TABLE public.user_friends
   user_uuid     VARCHAR(36) REFERENCES public.users (uuid) NOT NULL,
   friend_uuid   VARCHAR(36) REFERENCES public.users (uuid) NOT NULL,
   friendAddDate TIMESTAMP                                  NOT NULL,
-  friendTypeId  INT                                        NOT NULL
+  friendTypeId  INT                                        NOT NULL,
+  constraint friend_unique unique (user_uuid, friend_uuid)
 );
 
 CREATE TABLE public.persistent_login
