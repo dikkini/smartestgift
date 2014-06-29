@@ -141,8 +141,8 @@ public class LoginController {
                     if (existSocialUser != null) {
                         smartUserService.authenticateUser(existSocialUser.getUsername(), existSocialUser.getPassword(), request);
                     } else {
-                        boolean emailIsFree = smartUserService.isEmailBusy(facebookUser.getEmail());
-                        boolean usernameIsFree = smartUserService.isUsernameBusy(facebookUser.getUsername());
+                        boolean emailBusy = smartUserService.isEmailBusy(facebookUser.getEmail());
+                        boolean usernameBusy = smartUserService.isUsernameBusy(facebookUser.getUsername());
 
 
                         SmartUser fbUser = new SmartUser(facebookUser);
@@ -151,7 +151,7 @@ public class LoginController {
                         // TODO фото юзера
                         File file = fileService.getFile(ApplicationConstants.FILE_USER_NO_PHOTO_ID);
                         fbUser.setFile(file);
-                        if (emailIsFree && usernameIsFree) {
+                        if (!emailBusy && !usernameBusy) {
                             SmartUser smartUser = smartUserService.createSmartUser(fbUser);
                             smartUserService.createUserAuthorityForUser(smartUser.getUsername());
                             smartUserService.authenticateUser(smartUser.getUsername(),
@@ -160,8 +160,8 @@ public class LoginController {
                         } else {
                             request.getSession().setAttribute(facebookUser.getId(), fbUser);
                             return "redirect:/signup/facebook?id=" + facebookUser.getId() +
-                                    "&username_error=" + usernameIsFree +
-                                    "&email_error=" + emailIsFree;
+                                    "&username_error=" + usernameBusy +
+                                    "&email_error=" + emailBusy;
                         }
                     }
                 } else {
