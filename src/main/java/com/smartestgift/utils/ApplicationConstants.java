@@ -52,6 +52,10 @@ public class ApplicationConstants {
     public static final Integer INTERNAL_EXCEPTION_MESSAGE = 0;
     public static final Integer FACEBOOK_LOGIN_EXCEPTION_MESSAGE = 3;
 
+    // URL Shortener vars
+    public static final String ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    public static final int BASE = 62;
+
 
     // getters for using constants in JSP
     public Integer getPEOPLE_SEARCH_RESULTS_COUNT() {

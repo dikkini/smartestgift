@@ -12,6 +12,8 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.smartestgift.utils.ApplicationConstants.*;
+
 /**
  * Created by dikkini on 14.02.14.
  * Email: dikkini@gmail.com
@@ -45,5 +47,26 @@ public class Utils {
         StandardPasswordEncoder encoder = new StandardPasswordEncoder();
         String password = new BigInteger(130, random).toString(32);
         return encoder.encode(password);
+    }
+
+    public static String encodeUrlShotener(int num) {
+        StringBuilder sb = new StringBuilder();
+
+        while (num > 0) {
+            sb.append(ALPHABET.charAt(num % BASE));
+            num /= BASE;
+        }
+
+        return sb.reverse().toString();
+    }
+
+    public static int decodeUrlShotener(String str) {
+        int num = 0;
+
+        for (int i = 0, len = str.length(); i < len; i++) {
+            num = num * BASE + ALPHABET.indexOf(str.charAt(i));
+        }
+
+        return num;
     }
 }
