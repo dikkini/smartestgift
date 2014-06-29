@@ -22,7 +22,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping(value = "/users")
-public class UserProfileController {
+public class FriendsController {
 
     @Autowired
     SmartUserDAO smartUserDAO;
