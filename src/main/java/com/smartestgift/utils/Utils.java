@@ -5,6 +5,8 @@ import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -36,5 +38,12 @@ public class Utils {
         } catch (IllegalArgumentException e) {
             return false;
         }
+    }
+
+    public static String generateSecurePassword() {
+        SecureRandom random = new SecureRandom();
+        StandardPasswordEncoder encoder = new StandardPasswordEncoder();
+        String password = new BigInteger(130, random).toString(32);
+        return encoder.encode(password);
     }
 }
