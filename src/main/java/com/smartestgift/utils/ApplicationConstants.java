@@ -35,9 +35,9 @@ public class ApplicationConstants {
     public static final Integer MESSAGE_STATUS_READ = 2;
 
     // User Friend Type
-    public static final int USER_FRIEND_REQUEST_TYPE = 1;
-    public static final int USER_FRIEND_FRIEND_TYPE = 2;
-    public static final int USER_FRIEND_BLOCK_TYPE = 3;
+    public static final int USER_FRIEND_NEW_REQUEST_TYPE = 1;
+    public static final int USER_FRIEND_FRIENDSHIP_TYPE = 2;
+    public static final int USER_FRIEND_BLOCKED_TYPE = 3;
 
     // Global Search hashmap keys for results
     public static final String GIFTS_SEARCH_RESULTS = "gift";
@@ -72,5 +72,17 @@ public class ApplicationConstants {
 
     public String getUSERS_SEARCH_RESULTS() {
         return USERS_SEARCH_RESULTS;
+    }
+
+    public Integer getUSER_FRIEND_NEW_REQUEST_TYPE() {
+        return USER_FRIEND_NEW_REQUEST_TYPE;
+    }
+
+    public Integer getUSER_FRIEND_FRIENDSHIP_TYPE() {
+        return USER_FRIEND_FRIENDSHIP_TYPE;
+    }
+
+    public Integer getUSER_FRIEND_BLOCKED_TYPE() {
+        return USER_FRIEND_BLOCKED_TYPE;
     }
 }
