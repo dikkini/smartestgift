@@ -69,15 +69,15 @@ public class SmartUserServiceImpl implements SmartUserService {
     }
 
     @Override
-    public boolean checkOccupiedUsername(String username) {
+    public boolean isUsernameBusy(String username) {
         SmartUser userDetailsByUsername = smartUserDAO.findSmartUserByUsername(username);
-        return userDetailsByUsername == null;
+        return userDetailsByUsername != null;
     }
 
     @Override
-    public boolean checkOccupiedEmail(String email) {
+    public boolean isEmailBusy(String email) {
         SmartUser smartUserDetailsByEmail = smartUserDAO.findSmartUserByEmail(email);
-        return smartUserDetailsByEmail == null;
+        return smartUserDetailsByEmail != null;
     }
 
     @Override
@@ -91,19 +91,7 @@ public class SmartUserServiceImpl implements SmartUserService {
 
     @Override
     public void authenticateUser(String userName, String password, HttpServletRequest request) {
-        UsernamePasswordAuthenticationToken authRequest;
-        if (password == null) {
-            SmartUser smartUserByUsername = smartUserDAO.findSmartUserByUsername(userName);
-            if (smartUserByUsername != null && smartUserByUsername.getSocialId() != null) {
-                authRequest = new UsernamePasswordAuthenticationToken(userName, null,
-                        AuthorityUtils.createAuthorityList("ROLE_USER"));
-            } else {
-                throw new InternalErrorException("Password null and (no user exist or no socialId)",
-                        INTERNAL_EXCEPTION_MESSAGE);
-            }
-        } else {
-            authRequest = new UsernamePasswordAuthenticationToken(userName, password);
-        }
+        UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(userName, password);
 
         // Authenticate the user
         Authentication authentication = authenticationManager.authenticate(authRequest);

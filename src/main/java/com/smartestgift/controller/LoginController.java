@@ -5,7 +5,6 @@ import com.restfb.FacebookClient;
 import com.restfb.types.User;
 import com.smartestgift.dao.model.File;
 import com.smartestgift.dao.model.SmartUser;
-import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.exception.InternalErrorException;
 import com.smartestgift.service.FileService;
 import com.smartestgift.service.SmartUserService;
@@ -13,14 +12,12 @@ import com.smartestgift.utils.ApplicationConstants;
 import com.smartestgift.utils.Utils;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,7 +26,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import java.io.IOException;
 
 /**
@@ -145,11 +141,13 @@ public class LoginController {
                     if (existSocialUser != null) {
                         smartUserService.authenticateUser(existSocialUser.getUsername(), existSocialUser.getPassword(), request);
                     } else {
-                        boolean emailIsFree = smartUserService.checkOccupiedEmail(facebookUser.getEmail());
-                        boolean usernameIsFree = smartUserService.checkOccupiedUsername(facebookUser.getUsername());
+                        boolean emailIsFree = smartUserService.isEmailBusy(facebookUser.getEmail());
+                        boolean usernameIsFree = smartUserService.isUsernameBusy(facebookUser.getUsername());
 
 
                         SmartUser fbUser = new SmartUser(facebookUser);
+                        String password = Utils.generateSecurePassword();
+                        fbUser.setPassword(password);
                         // TODO фото юзера
                         File file = fileService.getFile(ApplicationConstants.FILE_USER_NO_PHOTO_ID);
                         fbUser.setFile(file);

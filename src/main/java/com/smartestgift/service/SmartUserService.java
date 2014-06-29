@@ -57,7 +57,7 @@ public interface SmartUserService {
      * @param email
      * @return true - free
      */
-    public boolean checkOccupiedEmail(String email);
+    public boolean isEmailBusy(String email);
 
     /**
      *
@@ -70,7 +70,7 @@ public interface SmartUserService {
      * @param username
      * @return true - free
      */
-    public boolean checkOccupiedUsername(String username);
+    public boolean isUsernameBusy(String username);
 
     /**
      *

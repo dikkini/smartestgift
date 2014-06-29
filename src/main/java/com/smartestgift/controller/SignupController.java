@@ -1,7 +1,6 @@
 package com.smartestgift.controller;
 
 import com.smartestgift.controller.model.Response;
-import com.smartestgift.dao.model.File;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.exception.EmailBusyException;
 import com.smartestgift.exception.UsernameBusyException;
@@ -32,7 +31,6 @@ public class SignupController {
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView signUpPage(HttpServletRequest request) {
-        request.setAttribute("social", false);
         return new ModelAndView("signup");
     }
 
@@ -44,8 +42,8 @@ public class SignupController {
                                              @RequestParam (required = true, value = "firstName") String firstName,
                                              @RequestParam (required = false, value = "lastName") String lastName) {
 
-        boolean emailOccupied = smartUserService.checkOccupiedEmail(email);
-        boolean usernameOccupied = smartUserService.checkOccupiedUsername(username);
+        boolean emailOccupied = smartUserService.isEmailBusy(email);
+        boolean usernameOccupied = smartUserService.isUsernameBusy(username);
 
         if (usernameOccupied) {
             throw new UsernameBusyException("Username is busy", HttpStatus.IM_USED.value());
@@ -96,6 +94,7 @@ public class SignupController {
         facebookUser.setLastName(lastName);
 
         smartUserService.createSmartUser(facebookUser);
+        smartUserService.createUserAuthorityForUser(facebookUser.getUsername());
         smartUserService.authenticateUser(facebookUser.getUsername(), facebookUser.getPassword(), request);
 
         return Response.createResponse(true);
@@ -103,14 +102,14 @@ public class SignupController {
 
     @RequestMapping(value = "/checkLogin", method = RequestMethod.GET)
     public @ResponseBody Response checkLogin(@RequestParam(value = "login", required = true) String login) {
-        boolean loginFree = smartUserService.checkOccupiedUsername(login);
-        return Response.createResponse(loginFree);
+        boolean usernameBusy = smartUserService.isUsernameBusy(login);
+        return Response.createResponse(!usernameBusy);
     }
 
     @RequestMapping(value = "/checkEmail", method = RequestMethod.GET)
     public @ResponseBody Response checkEmail(@RequestParam(value = "email", required = true) String email) {
-        boolean emailFree = smartUserService.checkOccupiedEmail(email);
-        return Response.createResponse(emailFree);
+        boolean emailBusy = smartUserService.isEmailBusy(email);
+        return Response.createResponse(!emailBusy);
     }
 
     @ExceptionHandler(UsernameBusyException.class)
