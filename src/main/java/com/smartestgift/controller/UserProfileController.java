@@ -9,15 +9,12 @@ import com.smartestgift.exception.BadUserException;
 import com.smartestgift.service.SmartUserService;
 import com.smartestgift.utils.ApplicationConstants;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
-
-import static org.springframework.http.HttpStatus.*;
 
 /**
  * Created by dikkini on 13.02.14.
@@ -78,7 +75,7 @@ public class UserProfileController {
         return Response.createResponse(true);
     }
 
-    @RequestMapping(value = "/removeFriend.do", headers = "Accept=application/json", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/removeFriend.do", headers = "Accept=application/json", method = RequestMethod.POST)
     public @ResponseBody Response removeFriend(Authentication authentication,
                              @RequestParam(value = "friendUsername", required = true) String friendUsername) {
         SmartUser smartUser = smartUserService.findUserByUsername(authentication.getName());
@@ -86,29 +83,21 @@ public class UserProfileController {
         return Response.createResponse(true);
     }
 
-    @RequestMapping(value = "/acceptFriendRequest.do", headers = "Accept=application/json", method = RequestMethod.PUT)
+    @RequestMapping(value = "/acceptFriendRequest.do", headers = "Accept=application/json", method = RequestMethod.POST)
     public @ResponseBody Response acceptFriendRequest(Authentication authentication,
                                     @RequestParam(value = "friendUsername", required = true) String friendUsername) {
         SmartUser smartUser = smartUserService.findUserByUsername(authentication.getName());
         smartUserService.changeSmartUserFriendType(smartUser, friendUsername,
-                ApplicationConstants.USER_FRIEND_FRIEND_TYPE);
+                ApplicationConstants.USER_FRIEND_FRIENDSHIP_TYPE);
         return Response.createResponse(true);
     }
 
-    @RequestMapping(value = "/declineFriendRequest.do", headers = "Accept=application/json", method = RequestMethod.PUT)
-    public @ResponseBody Response declineFriendRequest(Authentication authentication,
-                                     @RequestParam(value = "friendUsername", required = true) String friendUsername) {
-        SmartUser smartUser = smartUserService.findUserByUsername(authentication.getName());
-        smartUserService.removeSmartUserFriend(smartUser, friendUsername);
-        return Response.createResponse(true);
-    }
-
-    @RequestMapping(value = "/blockFriend.do", headers = "Accept=application/json", method = RequestMethod.PUT)
+    @RequestMapping(value = "/blockFriend.do", headers = "Accept=application/json", method = RequestMethod.POST)
     public @ResponseBody Response blockFriend(Authentication authentication,
-                            @RequestParam(value = "friendUuid", required = true) String friendUuid) {
+                            @RequestParam(value = "friendUsername", required = true) String friendUuid) {
         SmartUser smartUser = smartUserService.findUserByUsername(authentication.getName());
         smartUserService.changeSmartUserFriendType(smartUser, friendUuid,
-                ApplicationConstants.USER_FRIEND_BLOCK_TYPE);
+                ApplicationConstants.USER_FRIEND_BLOCKED_TYPE);
         return Response.createResponse(true);
     }
 }

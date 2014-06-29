@@ -2,14 +2,10 @@ package com.smartestgift.service;
 
 import com.smartestgift.dao.*;
 import com.smartestgift.dao.model.*;
-import com.smartestgift.exception.InternalErrorException;
-import com.smartestgift.utils.ApplicationConstants;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -153,7 +149,7 @@ public class SmartUserServiceImpl implements SmartUserService {
         SmartUserFriend userNewFriend = new SmartUserFriend();
         userNewFriend.setFriendUser(smartUserDAO.findSmartUserByUsername(friendUsername));
         userNewFriend.setFriendAddDate(new Date());
-        userNewFriend.setFriendTypeId(USER_FRIEND_REQUEST_TYPE);
+        userNewFriend.setFriendTypeId(USER_FRIEND_NEW_REQUEST_TYPE);
         userNewFriend.setSmartUser(activeUser);
 
         activeUser.getSmartUserFriends().add(userNewFriend);
