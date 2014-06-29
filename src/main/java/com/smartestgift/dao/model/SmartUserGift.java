@@ -39,6 +39,9 @@ public class SmartUserGift implements Serializable {
     @Column(name = "endDate")
     protected Date endDate;
 
+    @Column(name = "url")
+    protected String url;
+
     public String getUuid() {
         return uuid;
     }
@@ -73,6 +76,18 @@ public class SmartUserGift implements Serializable {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     @Override
