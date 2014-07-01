@@ -105,4 +105,11 @@ public interface SmartUserDAO extends Repository<SmartUser, String> {
      * @return
      */
     public SmartUserGift findSmartUserGift(SmartUser user, GiftShop giftShop);
+
+    /**
+     *
+     * @param smartUserGiftURL
+     * @return
+     */
+    public SmartUserGift findSmartUserGift(SmartUserGiftURL smartUserGiftURL);
 }

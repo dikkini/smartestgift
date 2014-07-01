@@ -15,10 +15,11 @@ DROP TABLE public.persistent_login CASCADE;
 DROP TABLE public.shop CASCADE;
 DROP TABLE public.gift CASCADE;
 DROP TABLE public.gift_shop CASCADE;
+DROP TABLE public.user_gift_url CASCADE;
 DROP TABLE public.user_gifts CASCADE;
 DROP TABLE public.gift_category CASCADE;
-DROP TABLE public.file_type CASCADE;
 DROP TABLE public.file CASCADE;
+DROP TABLE public.file_type CASCADE;
 DROP TABLE public.gift_files CASCADE;
 DROP TABLE public.message CASCADE;
 DROP TABLE public.conversation CASCADE;
@@ -130,14 +131,23 @@ CREATE TABLE public.gift_files
   gift_uuid VARCHAR REFERENCES public.gift (uuid) NOT NULL
 );
 
+CREATE TABLE public.user_gift_url
+(
+  uuid      VARCHAR(36) PRIMARY KEY,
+  id        INT8         NOT NULL,
+  short_url VARCHAR(255) NOT NULL,
+  url       VARCHAR(255) NOT NULL,
+  CONSTRAINT user_gift_url_unique UNIQUE (id, short_url)
+);
+
 CREATE TABLE public.user_gifts
 (
   uuid           VARCHAR(36) PRIMARY KEY,
-  user_uuid      VARCHAR(36) REFERENCES public.users (uuid)     NOT NULL,
-  gift_shop_uuid VARCHAR(36) REFERENCES public.gift_shop (uuid) NOT NULL,
-  moneyCollect   INT                                            NOT NULL,
-  endDate        TIMESTAMP                                      NOT NULL,
-  url            VARCHAR(10) UNIQUE                             NOT NULL
+  user_uuid      VARCHAR(36) REFERENCES public.users (uuid)                NOT NULL,
+  gift_shop_uuid VARCHAR(36) REFERENCES public.gift_shop (uuid)            NOT NULL,
+  moneyCollect   INT                                                       NOT NULL,
+  endDate        TIMESTAMP                                                 NOT NULL,
+  url_uuid       VARCHAR(36) UNIQUE REFERENCES public.user_gift_url (uuid) NOT NULL
 );
 
 CREATE TABLE public.gift_category

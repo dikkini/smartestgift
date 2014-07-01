@@ -8,6 +8,9 @@
 
 <jsp:useBean id="smartUser" class="com.smartestgift.dao.model.SmartUser" scope="request"/>
 
+<c:set var="req" value="${pageContext.request}" />
+<c:set var="baseURL" value="${fn:replace(req.requestURL, fn:substring(req.requestURI, 1, fn:length(req.requestURI)), req.contextPath)}" />
+
 <jsp:include page="../template/top.jsp"/>
 
 <div class="row">
@@ -58,7 +61,15 @@
                         <p class="ellipses"><c:out value="${smartUserGift.giftShop.gift.description}"/></p>
                         <small><spring:message code="label.collected_money_for_gift"/>: <c:out value="${smartUserGift.moneyCollect}"/> </small>
                     </blockquote>
-                    <button data-giftshop-uuid="<c:out value="${smartUserGift.giftShop.uuid}"/>" class="btn bgiftShoplt un-want-gift-btn"><spring:message code="label.un_want_gift_button"/></button>
+                    <div class="row">
+                        <button id="${smartUserGift.uuid}" class="btn btn-default copy-button" data-clipboard-text="<c:out value="${baseURL}${smartUserGift.smartUserGiftURL.shortUrl}"/>" title="Click to copy me.">Copy to Clipboard</button>
+                        <button data-giftshop-uuid="<c:out value="${smartUserGift.giftShop.uuid}"/>" class="btn bgiftShoplt un-want-gift-btn"><spring:message code="label.un_want_gift_button"/></button>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <input class="col-xs-12" type="text" value="<c:out value="${baseURL}${smartUserGift.smartUserGiftURL.shortUrl}"/>" disabled>
+                        </div>
+                    </div>
                 </li>
             </c:forEach>
             <c:if test="${fn:length(smartUser.smartUserGifts) > 3}">
@@ -72,6 +83,33 @@
 
 <script type="text/javascript">
     $(document).ready(function(){
+        var clip = new ZeroClipboard();
+
+        clip.on("ready", function() {
+            console.log("Flash movie loaded and ready.");
+
+            this.on("aftercopy", function(event) {
+                // TODO локализация
+                alert("Copied text to clipboard: " + event.data["text/plain"]);
+            });
+        });
+
+        clip.on('noflash', function (client, args) {
+            $("#copy-button").click(function() {
+                // TODO локализация
+                prompt ("Copy link, then click OK.", $($(this).attr('data-clipboard-target')).val());
+            });
+        });
+
+        clip.on("error", function(event) {
+            console.log('error[name="' + event.name + '"]: ' + event.message);
+            ZeroClipboard.destroy();
+        });
+
+        $(".copy-button").click(function() {
+            clip.clip(document.getElementById($(this).attr('id')));
+        });
+
         $(".un-want-gift-btn").click(function(e) {
             $.ajax({
                 type: "post",

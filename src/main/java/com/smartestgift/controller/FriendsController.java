@@ -6,6 +6,7 @@ import com.smartestgift.dao.SmartUserDAO;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserFriend;
 import com.smartestgift.exception.BadUserException;
+import com.smartestgift.service.SmartUserFriendService;
 import com.smartestgift.service.SmartUserService;
 import com.smartestgift.utils.ApplicationConstants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +26,10 @@ import java.util.List;
 public class FriendsController {
 
     @Autowired
-    SmartUserDAO smartUserDAO;
+    private SmartUserService smartUserService;
 
     @Autowired
-    SmartUserService smartUserService;
-
+    private SmartUserFriendService smartUserFriendService;
     @Autowired
     Gson gson;
 
@@ -41,14 +41,14 @@ public class FriendsController {
     @RequestMapping(value = "/myfriends", method = RequestMethod.GET)
     public ModelAndView myFriends(Authentication authentication) {
         SmartUser smartUser = smartUserService.findUserByUsername(authentication.getName());
-        List<SmartUserFriend> allSmartUserFriends = smartUserService.findAllSmartUserFriends(smartUser);
+        List<SmartUserFriend> allSmartUserFriends = smartUserFriendService.findAllSmartUserFriends(smartUser);
         return new ModelAndView("users/myfriends").addObject("smartUserFriends", allSmartUserFriends);
     }
 
     @RequestMapping(value = "/{username}", method = RequestMethod.GET)
     public ModelAndView user(@PathVariable String username) {
         ModelAndView mav;
-        SmartUser smartUser = smartUserDAO.findSmartUserByUsername(username);
+        SmartUser smartUser = smartUserService.findUserByUsername(username);
         if (smartUser == null) {
             throw new BadUserException("Bad user.", ApplicationConstants.INTERNAL_EXCEPTION_MESSAGE);
         }
@@ -71,7 +71,7 @@ public class FriendsController {
     public @ResponseBody Response addFriendRequest(Authentication authentication,
                                  @RequestParam(value = "friendUsername", required = true) String friendUsername) {
         SmartUser smartUser = smartUserService.findUserByUsername(authentication.getName());
-        smartUserService.addRequestSmartUserFriend(smartUser, friendUsername);
+        smartUserFriendService.addRequestSmartUserFriend(smartUser, friendUsername);
         return Response.createResponse(true);
     }
 
@@ -79,7 +79,7 @@ public class FriendsController {
     public @ResponseBody Response removeFriend(Authentication authentication,
                              @RequestParam(value = "friendUsername", required = true) String friendUsername) {
         SmartUser smartUser = smartUserService.findUserByUsername(authentication.getName());
-        smartUserService.removeSmartUserFriend(smartUser, friendUsername);
+        smartUserFriendService.removeSmartUserFriend(smartUser, friendUsername);
         return Response.createResponse(true);
     }
 
@@ -87,7 +87,7 @@ public class FriendsController {
     public @ResponseBody Response acceptFriendRequest(Authentication authentication,
                                     @RequestParam(value = "friendUsername", required = true) String friendUsername) {
         SmartUser smartUser = smartUserService.findUserByUsername(authentication.getName());
-        smartUserService.changeSmartUserFriendType(smartUser, friendUsername,
+        smartUserFriendService.changeSmartUserFriendType(smartUser, friendUsername,
                 ApplicationConstants.USER_FRIEND_FRIENDSHIP_TYPE);
         return Response.createResponse(true);
     }
@@ -96,7 +96,7 @@ public class FriendsController {
     public @ResponseBody Response blockFriend(Authentication authentication,
                             @RequestParam(value = "friendUsername", required = true) String friendUuid) {
         SmartUser smartUser = smartUserService.findUserByUsername(authentication.getName());
-        smartUserService.changeSmartUserFriendType(smartUser, friendUuid,
+        smartUserFriendService.changeSmartUserFriendType(smartUser, friendUuid,
                 ApplicationConstants.USER_FRIEND_BLOCKED_TYPE);
         return Response.createResponse(true);
     }

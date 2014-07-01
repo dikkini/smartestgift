@@ -22,6 +22,7 @@ import java.util.List;
 @Service
 @Transactional
 public class SmartUserDAOImpl implements SmartUserDAO {
+
     @Autowired
     SessionFactory sessionFactory;
 
@@ -168,6 +169,16 @@ public class SmartUserDAOImpl implements SmartUserDAO {
 
         criteria.add(Restrictions.eq("smartUser", user));
         criteria.add(Restrictions.eq("giftShop", giftShop));
+        criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
+        return (SmartUserGift) criteria.uniqueResult();
+    }
+
+    // TODO крепко подумать над такой логикой с коротким URL
+    @Override
+    public SmartUserGift findSmartUserGift(SmartUserGiftURL smartUserGiftURL) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUserGift.class);
+
+        criteria.add(Restrictions.eq("smartUserGiftURL", smartUserGiftURL));
         criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
         return (SmartUserGift) criteria.uniqueResult();
     }

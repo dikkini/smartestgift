@@ -1,12 +1,8 @@
 package com.smartestgift.controller;
 
-import com.google.gson.Gson;
 import com.smartestgift.controller.model.GiftPage;
 import com.smartestgift.controller.model.Response;
-import com.smartestgift.dao.model.Gift;
-import com.smartestgift.dao.model.GiftCategory;
-import com.smartestgift.dao.model.GiftShop;
-import com.smartestgift.dao.model.SmartUserGift;
+import com.smartestgift.dao.model.*;
 import com.smartestgift.exception.UserHasGiftException;
 import com.smartestgift.exception.WrongGiftDateException;
 import com.smartestgift.service.GiftService;
@@ -28,7 +24,6 @@ import java.util.List;
 import java.util.Set;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.OK;
 
 /**
  * Created by dikkini on 14.02.14.

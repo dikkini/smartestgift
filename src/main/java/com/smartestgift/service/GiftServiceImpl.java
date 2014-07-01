@@ -3,7 +3,7 @@ package com.smartestgift.service;
 import com.smartestgift.controller.model.GiftPage;
 import com.smartestgift.dao.*;
 import com.smartestgift.dao.model.*;
-import org.hibernate.SessionFactory;
+import com.smartestgift.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,22 +20,19 @@ import java.util.List;
 public class GiftServiceImpl implements GiftService {
 
     @Autowired
-    GiftCategoryDAO giftCategoryDAO;
+    private GiftCategoryDAO giftCategoryDAO;
 
     @Autowired
-    GiftDAO giftDAO;
+    private GiftDAO giftDAO;
 
     @Autowired
-    ShopDAO shopDAO;
+    private ShopDAO shopDAO;
 
     @Autowired
-    SessionFactory sessionFactory;
+    private SmartUserDAO smartUserDAO;
 
     @Autowired
-    SmartUserDAO smartUserDAO;
-
-    @Autowired
-    GiftShopDAO giftShopDAO;
+    private GiftShopDAO giftShopDAO;
 
     @Override
     public Gift findGiftByUuid(String uuid) {
@@ -57,11 +54,25 @@ public class GiftServiceImpl implements GiftService {
     @Override
     public void addGiftShopToUserWishes(SmartUser user, String giftShopUuid, Date endDate) {
         GiftShop giftShop = giftShopDAO.find(giftShopUuid);
+
+        String url = "/" + user.getUsername() +
+                "/" + giftShop.getGift().getName();
+        int id = Utils.decodeUrlShotener(url);
+
+        String shortUrl = Utils.encodeUrlShotener(id);
+
+        SmartUserGiftURL smartUserGiftURL = new SmartUserGiftURL();
+        smartUserGiftURL.setShortUrl(shortUrl);
+        smartUserGiftURL.setUrl(url);
+        smartUserGiftURL.setId(id);
+
         SmartUserGift smartUserGift = new SmartUserGift();
         smartUserGift.setSmartUser(user);
         smartUserGift.setGiftShop(giftShop);
         smartUserGift.setMoneyCollect(0);
         smartUserGift.setEndDate(endDate);
+        smartUserGift.setSmartUserGiftURL(smartUserGiftURL);
+
         user.getSmartUserGifts().add(smartUserGift);
         smartUserDAO.store(user);
     }
@@ -133,6 +144,4 @@ public class GiftServiceImpl implements GiftService {
 
         return giftShopDAO.findGiftShopByGiftAndShop(gift, shop);
     }
-
-
 }

@@ -39,8 +39,9 @@ public class SmartUserGift implements Serializable {
     @Column(name = "endDate")
     protected Date endDate;
 
-    @Column(name = "url")
-    protected String url;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "url_uuid")
+    protected SmartUserGiftURL smartUserGiftURL;
 
     public String getUuid() {
         return uuid;
@@ -82,12 +83,12 @@ public class SmartUserGift implements Serializable {
         this.uuid = uuid;
     }
 
-    public String getUrl() {
-        return url;
+    public SmartUserGiftURL getSmartUserGiftURL() {
+        return smartUserGiftURL;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setSmartUserGiftURL(SmartUserGiftURL smartUserGiftURL) {
+        this.smartUserGiftURL = smartUserGiftURL;
     }
 
     @Override

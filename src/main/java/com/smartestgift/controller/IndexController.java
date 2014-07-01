@@ -3,6 +3,10 @@ package com.smartestgift.controller;
 import com.google.gson.Gson;
 import com.smartestgift.controller.model.Response;
 import com.smartestgift.dao.model.SmartUser;
+import com.smartestgift.dao.model.SmartUserGift;
+import com.smartestgift.dao.model.SmartUserGiftURL;
+import com.smartestgift.service.GiftService;
+import com.smartestgift.service.SmartUserGiftService;
 import com.smartestgift.service.SmartUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,10 +29,23 @@ import static org.springframework.http.HttpStatus.*;
 public class IndexController {
 
     @Autowired
-    SmartUserService smartUserService;
+    private SmartUserService smartUserService;
 
     @Autowired
-    Gson gson;
+    private SmartUserGiftService smartUserGiftService;
+
+    @RequestMapping(value = "/{shorturl}", method = RequestMethod.GET)
+    public String userGiftShortUrl(@PathVariable String shorturl) {
+        SmartUserGiftURL smartUserGiftURLByShortURL = smartUserGiftService.findSmartUserGiftURLByShortURL(shorturl);
+        return "redirect:" + smartUserGiftURLByShortURL.getUrl();
+    }
+
+    @RequestMapping(value = "/{username}/{giftName}", method = RequestMethod.GET)
+    public ModelAndView userGiftShopDonate(@PathVariable String username, @PathVariable String giftName) {
+        System.out.println(username);
+        System.out.println(giftName);
+        return null;
+    }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView signin() {

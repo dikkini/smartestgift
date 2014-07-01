@@ -38,6 +38,8 @@
     <script type="text/javascript" src="/assets/main/js/utils.js"></script>
     <script type="text/javascript" src="/assets/main/js/notifications.js"></script>
     <script type="text/javascript" src="/assets/ext/jquery/notification/pnotify.custom.min.js"></script>
+    <script type="text/javascript" src="/assets/ext/zeroclipboard/ZeroClipboard.js"></script>
+    <%--<script type="text/javascript" src="/assets/ext/zeroclipboard/ZeroClipboard.Core.min.js"></script>--%>
 
     <script type="text/javascript" src="/assets/ext/jquery/fileupload/jquery.ui.widget.js"></script>
     <script type="text/javascript" src="/assets/ext/jquery/fileupload/jquery.iframe-transport.js"></script>

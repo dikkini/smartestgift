@@ -1,9 +1,9 @@
 package com.smartestgift.service;
 
-import com.restfb.types.User;
 import com.smartestgift.dao.model.File;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserFriend;
+import com.smartestgift.dao.model.SmartUserGiftURL;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
@@ -116,33 +116,4 @@ public interface SmartUserService {
      * @param file
      */
     public void updateUserFile(SmartUser smartUser, File file);
-
-    /**
-     *
-     * @param activeUser
-     * @param friendUsername
-     */
-    public void addRequestSmartUserFriend(SmartUser activeUser, String friendUsername);
-
-    /**
-     *
-     * @param activeUser
-     * @param friendUsername
-     */
-    public void removeSmartUserFriend(SmartUser activeUser, String friendUsername);
-
-    /**
-     *
-     * @param activeUser
-     * @return
-     */
-    public List<SmartUserFriend> findAllSmartUserFriends(SmartUser activeUser);
-
-    /**
-     *
-     * @param activeUser
-     * @param friendUuid
-     * @param typeId
-     */
-    public void changeSmartUserFriendType(SmartUser activeUser, String friendUuid, int typeId);
 }
