@@ -2,7 +2,6 @@ package com.smartestgift.controller;
 
 import com.google.gson.Gson;
 import com.smartestgift.controller.model.Response;
-import com.smartestgift.dao.SmartUserDAO;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserFriend;
 import com.smartestgift.exception.BadUserException;
@@ -30,8 +29,6 @@ public class FriendsController {
 
     @Autowired
     private SmartUserFriendService smartUserFriendService;
-    @Autowired
-    Gson gson;
 
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public ModelAndView allUsers() {
@@ -50,7 +47,7 @@ public class FriendsController {
         ModelAndView mav;
         SmartUser smartUser = smartUserService.findUserByUsername(username);
         if (smartUser == null) {
-            throw new BadUserException("Bad user.", ApplicationConstants.INTERNAL_EXCEPTION_MESSAGE);
+            throw new BadUserException("Bad user.", ApplicationConstants.INTERNAL_EXCEPTION_CODE);
         }
 
         mav = new ModelAndView("users/user");

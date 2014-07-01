@@ -49,7 +49,7 @@ public class ApplicationConstants {
     public static final Integer PEOPLE_SEARCH_RESULTS_COUNT = 10;
 
     // Exceptions Errors codes
-    public static final Integer INTERNAL_EXCEPTION_MESSAGE = 0;
+    public static final Integer INTERNAL_EXCEPTION_CODE = 0;
     public static final Integer FACEBOOK_LOGIN_EXCEPTION_MESSAGE = 3;
 
     // URL Shortener vars

@@ -14,12 +14,7 @@ import java.io.Serializable;
 public class SmartUserGiftURL implements Serializable {
 
     @Id
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid2")
-    @Column(name = "uuid", unique = true)
-    protected String uuid;
-
-    @Column(name = "id")
+    @Column(name = "id", unique = true)
     protected Integer id;
 
     @Column(name = "short_url")
@@ -34,14 +29,6 @@ public class SmartUserGiftURL implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
     }
 
     public String getShortUrl() {
@@ -68,16 +55,16 @@ public class SmartUserGiftURL implements Serializable {
         SmartUserGiftURL that = (SmartUserGiftURL) o;
 
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (shortUrl != null ? !shortUrl.equals(that.shortUrl) : that.shortUrl != null) return false;
         if (url != null ? !url.equals(that.url) : that.url != null) return false;
-        if (uuid != null ? !uuid.equals(that.uuid) : that.uuid != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = uuid != null ? uuid.hashCode() : 0;
-        result = 31 * result + (id != null ? id.hashCode() : 0);
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (shortUrl != null ? shortUrl.hashCode() : 0);
         result = 31 * result + (url != null ? url.hashCode() : 0);
         return result;
     }

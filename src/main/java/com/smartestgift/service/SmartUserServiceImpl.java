@@ -124,7 +124,7 @@ public class SmartUserServiceImpl implements SmartUserService {
     // TODO вынести метод в api (?)
     @Override
     public Map<String, List> findUsersAndGiftsByUserInput(String searchString, SmartUser activeUser) {
-        List<SmartUser> usersByUserInput = this.findUsersByUserInput(searchString, activeUser);
+        List<SmartUser> usersByUserInput = findUsersByUserInput(searchString, activeUser);
         List<Gift> giftsBySearchString = giftDAO.findGiftsBySearchString(searchString);
         Map<String, List> result = new HashMap<>();
         result.put(GIFTS_SEARCH_RESULTS, giftsBySearchString);

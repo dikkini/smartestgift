@@ -1,16 +1,13 @@
 package com.smartestgift.controller;
 
-import com.google.gson.Gson;
 import com.smartestgift.controller.model.Response;
 import com.smartestgift.dao.model.SmartUser;
-import com.smartestgift.dao.model.SmartUserGift;
 import com.smartestgift.dao.model.SmartUserGiftURL;
-import com.smartestgift.service.GiftService;
+import com.smartestgift.exception.InternalErrorException;
 import com.smartestgift.service.SmartUserGiftService;
 import com.smartestgift.service.SmartUserService;
+import com.smartestgift.utils.ApplicationConstants;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +15,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 import java.util.Map;
-
-import static org.springframework.http.HttpStatus.*;
 
 /**
  * Created by dikkini on 29.01.14.
@@ -34,9 +29,13 @@ public class IndexController {
     @Autowired
     private SmartUserGiftService smartUserGiftService;
 
-    @RequestMapping(value = "/{shorturl}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{shorturl}")
     public String userGiftShortUrl(@PathVariable String shorturl) {
         SmartUserGiftURL smartUserGiftURLByShortURL = smartUserGiftService.findSmartUserGiftURLByShortURL(shorturl);
+        if (smartUserGiftURLByShortURL == null) {
+            throw new InternalErrorException("TODO wrong shorturl. need some redirect",
+                    ApplicationConstants.INTERNAL_EXCEPTION_CODE);
+        }
         return "redirect:" + smartUserGiftURLByShortURL.getUrl();
     }
 
@@ -48,7 +47,7 @@ public class IndexController {
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public ModelAndView signin() {
+    public ModelAndView index() {
         ModelAndView mav = new ModelAndView("index");
         return mav;
     }

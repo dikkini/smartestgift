@@ -133,8 +133,7 @@ CREATE TABLE public.gift_files
 
 CREATE TABLE public.user_gift_url
 (
-  uuid      VARCHAR(36) PRIMARY KEY,
-  id        INT8         NOT NULL,
+  id        INT8 PRIMARY KEY,
   short_url VARCHAR(255) NOT NULL,
   url       VARCHAR(255) NOT NULL,
   CONSTRAINT user_gift_url_unique UNIQUE (id, short_url)
@@ -147,7 +146,7 @@ CREATE TABLE public.user_gifts
   gift_shop_uuid VARCHAR(36) REFERENCES public.gift_shop (uuid)            NOT NULL,
   moneyCollect   INT                                                       NOT NULL,
   endDate        TIMESTAMP                                                 NOT NULL,
-  url_uuid       VARCHAR(36) UNIQUE REFERENCES public.user_gift_url (uuid) NOT NULL
+  url_id         INT8 UNIQUE REFERENCES public.user_gift_url (id)          NOT NULL
 );
 
 CREATE TABLE public.gift_category

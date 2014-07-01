@@ -40,7 +40,7 @@ public class SmartUserGift implements Serializable {
     protected Date endDate;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "url_uuid")
+    @JoinColumn(name = "url_id")
     protected SmartUserGiftURL smartUserGiftURL;
 
     public String getUuid() {

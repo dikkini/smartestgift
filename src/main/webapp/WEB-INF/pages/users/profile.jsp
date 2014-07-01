@@ -83,7 +83,11 @@
 
 <script type="text/javascript">
     $(document).ready(function(){
-        var clip = new ZeroClipboard();
+        var copyButtonsObj = $(".copy-button");
+        var clip;
+        copyButtonsObj.each(function() {
+            clip = new ZeroClipboard(document.getElementById($(this).attr('id')));
+        });
 
         clip.on("ready", function() {
             console.log("Flash movie loaded and ready.");
@@ -106,7 +110,7 @@
             ZeroClipboard.destroy();
         });
 
-        $(".copy-button").click(function() {
+        copyButtonsObj.click(function() {
             clip.clip(document.getElementById($(this).attr('id')));
         });
 
