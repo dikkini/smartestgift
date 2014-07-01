@@ -4,6 +4,9 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+
+<%@ taglib prefix="fns" uri="/WEB-INF/custom-functions.tld"%>
+
 <fmt:requestEncoding value="utf-8" />
 
 <jsp:useBean id="smartUser" class="com.smartestgift.dao.model.SmartUser" scope="request"/>

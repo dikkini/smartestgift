@@ -5,8 +5,10 @@ import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.Object;
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -68,5 +70,9 @@ public class Utils {
         }
 
         return num;
+    }
+
+    public static boolean contains(List list, Object o) {
+        return list.contains(o);
     }
 }
