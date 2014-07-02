@@ -1,5 +1,6 @@
 package com.smartestgift.dao.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -25,10 +26,12 @@ public class SmartUserGift implements Serializable {
     @Column(name = "uuid", unique = true)
     protected String uuid;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name="user_uuid")
     protected SmartUser smartUser;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name="gift_shop_uuid")
     protected GiftShop giftShop;

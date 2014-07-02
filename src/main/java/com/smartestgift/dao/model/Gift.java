@@ -1,5 +1,6 @@
 package com.smartestgift.dao.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -30,6 +31,7 @@ public class Gift implements Serializable {
     @Column(name = "add_date")
     protected Date addDate;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name="category_id")
     protected GiftCategory category;

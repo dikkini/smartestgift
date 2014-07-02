@@ -1,6 +1,7 @@
 package com.smartestgift.dao.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -31,7 +32,7 @@ public class GiftCategory implements Serializable {
     @JoinColumn(name="file_id")
     protected File file;
 
-    @JsonIgnore
+    @JsonManagedReference
     @OrderBy(value = "addDate")
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
     private Set<Gift> gifts;

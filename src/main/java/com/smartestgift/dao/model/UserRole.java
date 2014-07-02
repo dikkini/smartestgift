@@ -1,5 +1,6 @@
 package com.smartestgift.dao.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -24,6 +25,7 @@ public class UserRole implements Serializable {
     @JoinColumn(name = "role", referencedColumnName = "role")
     private Role role;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "username", referencedColumnName = "username")
     protected SmartUser smartUser;
