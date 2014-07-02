@@ -91,9 +91,19 @@
                                                 '</p>' +
                                             '</div>'  +
                                         '</div>' +
-                                        '</a>' +
-                                        '<button style="float: right;" class="btn btn-default add-friend-btn" data-username="'+entry.username+'">Add Friend</button>' +
-                                        '<div class="clearfix">' +
+                                        '</a>';
+                        var friendship = false;
+                        entry.smartUserFriends.forEach(function(friend) {
+                            if (friend.friendUser.username == "${smartUser.username}") {
+                                friendship = true;
+                            }
+                        });
+                        if (friendship) {
+                            html+= "You are friends";
+                        } else {
+                            html += '<button style="float: right;" class="btn btn-default add-friend-btn" data-username="'+entry.username+'">Add Friend</button>';
+                        }
+                        html += '<div class="clearfix">' +
                                     '</div>' +
                                 '</li>';
 

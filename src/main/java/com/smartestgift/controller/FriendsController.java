@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by dikkini on 13.02.14.
@@ -49,11 +50,7 @@ public class FriendsController {
         if (smartUser == null) {
             throw new BadUserException("Bad user.", ApplicationConstants.INTERNAL_EXCEPTION_CODE);
         }
-
-        mav = new ModelAndView("users/user");
-        mav.addObject("alienSmartUser", smartUser);
-
-        return mav;
+        return new ModelAndView("users/user").addObject("alienSmartUser", smartUser);
     }
 
     @RequestMapping(value = "/findPeople.do", headers = "Accept=application/json", method = RequestMethod.GET)
@@ -66,7 +63,7 @@ public class FriendsController {
 
     @RequestMapping(value = "/addFriendRequest.do", headers = "Accept=application/json", method = RequestMethod.POST)
     public @ResponseBody Response addFriendRequest(Authentication authentication,
-                                 @RequestParam(value = "friendUsername", required = true) String friendUsername) {
+                                                   @RequestParam(value = "friendUsername", required = true) String friendUsername) {
         SmartUser smartUser = smartUserService.findUserByUsername(authentication.getName());
         smartUserFriendService.addRequestSmartUserFriend(smartUser, friendUsername);
         return Response.createResponse(true);

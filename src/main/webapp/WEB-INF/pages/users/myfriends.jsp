@@ -7,7 +7,6 @@
 <fmt:requestEncoding value="utf-8" />
 
 <jsp:useBean id="smartUser" class="com.smartestgift.dao.model.SmartUser" scope="request"/>
-<jsp:useBean id="smartUserFriends" type="java.util.List<com.smartestgift.dao.model.SmartUserFriend>" scope="request"/>
 
 <jsp:include page="../template/top.jsp"/>
 
@@ -20,7 +19,9 @@
                     <div id="people-container" class="col-xs-12">
                         <ul id="friends" class="nav nav-pills nav-stacked">
                             <span id="loading-people" class="loading" style=""></span>
-                            <c:forEach items="${smartUserFriends}" var="smartUserFriend">
+                            "${smartUser.smartUserFriends}"
+                            <c:forEach items="${smartUser.smartUserFriends}" var="smartUserFriend">
+                                "${smartUserFriend.uuid}"
                                 <li  class="contact" tabindex="1">
                                     <div class="list-group">
                                         <a class="user list-group-item" data-username="${smartUserFriend.friendUser.username}" style="cursor: pointer">
