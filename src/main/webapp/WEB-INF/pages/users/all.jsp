@@ -98,6 +98,12 @@
                                 friendship = true;
                             }
                         });
+
+                        entry.smartUserFriendsOf.forEach(function(friend) {
+                            if (friend.smartUser.username == "${smartUser.username}") {
+                                friendship = true;
+                            }
+                        });
                         if (friendship) {
                             html+= "You are friends";
                         } else {

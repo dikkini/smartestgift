@@ -19,9 +19,7 @@
                     <div id="people-container" class="col-xs-12">
                         <ul id="friends" class="nav nav-pills nav-stacked">
                             <span id="loading-people" class="loading" style=""></span>
-                            "${smartUser.smartUserFriends}"
                             <c:forEach items="${smartUser.smartUserFriends}" var="smartUserFriend">
-                                "${smartUserFriend.uuid}"
                                 <li  class="contact" tabindex="1">
                                     <div class="list-group">
                                         <a class="user list-group-item" data-username="${smartUserFriend.friendUser.username}" style="cursor: pointer">
@@ -43,6 +41,36 @@
                                         <c:if test="${smartUserFriend.friendTypeId eq constants.USER_FRIEND_FRIENDSHIP_TYPE}">
                                             <button style="float: right;" class="btn btn-default remove-friend-btn" data-username="${smartUserFriend.friendUser.username}">Remove Friend</button>
                                             <button style="float: right;" class="btn btn-default block-friend-btn" data-username="${smartUserFriend.friendUser.username}">Block Friend</button>
+                                        </c:if>
+
+
+
+                                        <div class="clearfix"/>
+                                    </div>
+                                </li>
+                            </c:forEach>
+                            <c:forEach items="${smartUser.smartUserFriendsOf}" var="smartUserFriend">
+                                <li  class="contact" tabindex="1">
+                                    <div class="list-group">
+                                        <a class="user list-group-item" data-username="${smartUserFriend.smartUser.username}" style="cursor: pointer">
+                                            <div class="row">
+                                                <div class="col-xs-2">
+                                                    <img height="50" src="/file/get/${smartUserFriend.smartUser.file.id}">
+                                                </div>
+                                                <div class="col-xs-8">
+                                                    <p class="list-group-item-heading">${smartUserFriend.smartUser.lastName} ${smartUserFriend.smartUser.firstName} ${smartUserFriend.smartUser.middleName}</p>
+                                                    <p class="list-group-item-text">${smartUserFriend.smartUser.username}</p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <c:if test="${smartUserFriend.friendTypeId eq constants.USER_FRIEND_NEW_REQUEST_TYPE}">
+                                            <button style="float: right;" class="btn btn-default accept-friend-request-btn" data-username="${smartUserFriend.smartUser.username}">Accept Request</button>
+                                            <button style="float: right;" class="btn btn-default decline-friend-request-btn" data-username="${smartUserFriend.smartUser.username}">Decline Request</button>
+                                        </c:if>
+
+                                        <c:if test="${smartUserFriend.friendTypeId eq constants.USER_FRIEND_FRIENDSHIP_TYPE}">
+                                            <button style="float: right;" class="btn btn-default remove-friend-btn" data-username="${smartUserFriend.smartUser.username}">Remove Friend</button>
+                                            <button style="float: right;" class="btn btn-default block-friend-btn" data-username="${smartUserFriend.smartUser.username}">Block Friend</button>
                                         </c:if>
 
 

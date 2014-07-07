@@ -1,15 +1,17 @@
 package com.smartestgift.dao.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.restfb.types.User;
+import com.smartestgift.handler.JsonUserSerializer;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by dikkini on 10.06.13.
@@ -17,6 +19,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "users")
+@JsonSerialize(using = JsonUserSerializer.class)
 public class SmartUser implements Serializable {
 
     @Id
@@ -80,15 +83,15 @@ public class SmartUser implements Serializable {
     @Column(name = "cellPhone_visible")
     protected boolean cellPhoneVisible = false;
 
-    @JsonManagedReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "smartUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<SmartUserGift> smartUserGifts = new HashSet<>();
 
-    @JsonManagedReference
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "smartUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<SmartUserFriend> smartUserFriends = new HashSet<>();
 
-    @JsonManagedReference
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "friendUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<SmartUserFriend> smartUserFriendsOf = new HashSet<>();
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "smartUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserRole> userRoles = new HashSet<>();
 
@@ -278,8 +281,12 @@ public class SmartUser implements Serializable {
         this.smartUserFriends = smartUserFriends;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    public Set<SmartUserFriend> getSmartUserFriendsOf() {
+        return smartUserFriendsOf;
+    }
+
+    public void setSmartUserFriendsOf(Set<SmartUserFriend> smartUserFriendsOf) {
+        this.smartUserFriendsOf = smartUserFriendsOf;
     }
 
     public Set<UserRole> getUserRoles() {

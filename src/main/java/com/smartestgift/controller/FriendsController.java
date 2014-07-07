@@ -45,7 +45,6 @@ public class FriendsController {
 
     @RequestMapping(value = "/{username}", method = RequestMethod.GET)
     public ModelAndView user(@PathVariable String username) {
-        ModelAndView mav;
         SmartUser smartUser = smartUserService.findUserByUsername(username);
         if (smartUser == null) {
             throw new BadUserException("Bad user.", ApplicationConstants.INTERNAL_EXCEPTION_CODE);
