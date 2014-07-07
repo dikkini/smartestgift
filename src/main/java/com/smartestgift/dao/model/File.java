@@ -27,11 +27,11 @@ public class File implements Serializable {
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="type_id")
-    private FileType type;
+    protected FileType type;
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "files", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private Set<Gift> gifts;
+    protected Set<Gift> gifts;
 
     public File() {}
 
