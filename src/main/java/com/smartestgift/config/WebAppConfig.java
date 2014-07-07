@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.core.env.Environment;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -52,10 +51,8 @@ import java.util.Properties;
 @EnableCaching()
 @EnableTransactionManagement
 public class WebAppConfig extends WebMvcConfigurerAdapter {
-    private static final Charset UTF8 = Charset.forName("UTF-8");
 
-    @Autowired
-    Environment env;
+    private static final Charset UTF8 = Charset.forName("UTF-8");
 
     @Bean
     public CacheManager cacheManager() {
@@ -94,7 +91,7 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
         hibernateProperties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQL82Dialect");
         hibernateProperties.put("hibernate.show_sql", "true");
         hibernateProperties.put("hibernate.format_sql", "true");
-        //hibernateProperties.put("hibernate.generate_statistics", env.getProperty("hibernate.generate_statistics"));
+        hibernateProperties.put("hibernate.generate_statistics", "true");
         hibernateProperties.put("hibernate.enable_lazy_load_no_trans", "true");
 
         // second level cache
