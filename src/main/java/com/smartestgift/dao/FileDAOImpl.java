@@ -23,7 +23,7 @@ public class FileDAOImpl implements FileDAO {
     SessionFactory sessionFactory;
 
     @Override
-    public File find(Integer id) {
+    public File findOne(Integer id) {
         return (File) sessionFactory.getCurrentSession().get(File.class, id);
     }
 
@@ -35,10 +35,11 @@ public class FileDAOImpl implements FileDAO {
     }
 
     @Override
-    public void store(File dmodel) {
+    public File create(File dmodel) {
         Session session = sessionFactory.getCurrentSession();
         session.saveOrUpdate(dmodel);
         session.flush();
+        return dmodel;
     }
 
     @Override
@@ -48,10 +49,11 @@ public class FileDAOImpl implements FileDAO {
     }
 
     @Override
-    public void merge(File dmodel) {
+    public File update(File dmodel) {
         Session session = sessionFactory.getCurrentSession();
         session.merge(dmodel);
         session.flush();
+        return dmodel;
     }
 
     @Override

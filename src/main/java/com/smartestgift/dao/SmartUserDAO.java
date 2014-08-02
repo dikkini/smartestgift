@@ -15,21 +15,21 @@ public interface SmartUserDAO extends Repository<SmartUser, String> {
      * @param username username
      * @return модель пользователя с деталями
      */
-    public SmartUser findSmartUserByUsername(String username);
+    public SmartUser findByUsername(String username);
 
     /**
      *
      * @param socialId
      * @return
      */
-    public SmartUser findUserBySocialIdAndAuthProvider(String socialId, Integer facebookAuthProvider);
+    public SmartUser findBySocialIdAndAuthProvider(String socialId, Integer facebookAuthProvider);
 
     /**
      * Поиск пользователя по email
      * @param email email
      * @return
      */
-    public SmartUser findSmartUserByEmail(String email);
+    public SmartUser findByEmail(String email);
 
     /**
      *
@@ -37,7 +37,7 @@ public interface SmartUserDAO extends Repository<SmartUser, String> {
      * @param activeUsername
      * @return
      */
-    public List<SmartUser> findSmartUsersLikeUserName(String username, String activeUsername);
+    public List<SmartUser> findLikeUsername(String username, String activeUsername);
 
     /**
      *
@@ -45,7 +45,7 @@ public interface SmartUserDAO extends Repository<SmartUser, String> {
      * @param activeUsername
      * @return
      */
-    public List<SmartUser> findSmartUsersLikeFirstName(String firstname, String activeUsername);
+    public List<SmartUser> findLikeFirstName(String firstname, String activeUsername);
 
     /**
      *
@@ -53,7 +53,7 @@ public interface SmartUserDAO extends Repository<SmartUser, String> {
      * @param activeUsername
      * @return
      */
-    public List<SmartUser> findSmartUsersLikeLastName(String lastName, String activeUsername);
+    public List<SmartUser> findLikeLastName(String lastName, String activeUsername);
 
     /**
      *
@@ -61,7 +61,7 @@ public interface SmartUserDAO extends Repository<SmartUser, String> {
      * @param activeUsername
      * @return
      */
-    public List<SmartUser> findSmartUsersLikeMiddleName(String middleName, String activeUsername);
+    public List<SmartUser> findLikeMiddleName(String middleName, String activeUsername);
 
     /**
      *
@@ -69,7 +69,7 @@ public interface SmartUserDAO extends Repository<SmartUser, String> {
      * @param activeUserUuid
      * @return
      */
-    public List<SmartUser> findSmartUsersByOffset(int offset, String activeUserUuid);
+    public List<SmartUser> findByOffset(int offset, String activeUserUuid);
 
     /**
      *

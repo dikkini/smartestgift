@@ -24,7 +24,7 @@ public class GiftCategoryDAOImpl implements GiftCategoryDAO {
     SessionFactory sessionFactory;
 
     @Override
-    public GiftCategory find(Integer id) {
+    public GiftCategory findOne(Integer id) {
         return (GiftCategory) sessionFactory.getCurrentSession().get(GiftCategory.class, id);
     }
 
@@ -43,11 +43,12 @@ public class GiftCategoryDAOImpl implements GiftCategoryDAO {
     }
 
     @Override
-    public void store(GiftCategory dmodel) {
+    public GiftCategory create(GiftCategory dmodel) {
         Session session = sessionFactory.getCurrentSession();
         session.saveOrUpdate(dmodel);
         session.flush();
         session.refresh(dmodel);
+        return dmodel;
     }
 
     @Override
@@ -58,9 +59,10 @@ public class GiftCategoryDAOImpl implements GiftCategoryDAO {
     }
 
     @Override
-    public void merge(GiftCategory dmodel) {
+    public GiftCategory update(GiftCategory dmodel) {
         Session session = sessionFactory.getCurrentSession();
         session.merge(dmodel);
         session.flush();
+        return dmodel;
     }
 }

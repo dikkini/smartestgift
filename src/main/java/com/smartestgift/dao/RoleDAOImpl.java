@@ -22,7 +22,7 @@ public class RoleDAOImpl implements RoleDAO {
     SessionFactory sessionFactory;
 
     @Override
-    public Role find(Integer id) {
+    public Role findOne(Integer id) {
         return (Role) sessionFactory.getCurrentSession().get(Role.class, id);
     }
 
@@ -34,8 +34,8 @@ public class RoleDAOImpl implements RoleDAO {
     }
 
     @Override
-    public void store(Role dmodel) {
-
+    public Role create(Role dmodel) {
+        return dmodel;
     }
 
     @Override
@@ -44,7 +44,7 @@ public class RoleDAOImpl implements RoleDAO {
     }
 
     @Override
-    public void merge(Role dmodel) {
-
+    public Role update(Role dmodel) {
+        return dmodel;
     }
 }

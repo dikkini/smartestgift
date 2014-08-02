@@ -1,12 +1,9 @@
 package com.smartestgift.service;
 
-import com.smartestgift.dao.model.File;
+import com.smartestgift.controller.model.RegisterSmartUserDTO;
 import com.smartestgift.dao.model.SmartUser;
-import com.smartestgift.dao.model.SmartUserFriend;
-import com.smartestgift.dao.model.SmartUserGiftURL;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -21,28 +18,21 @@ public interface SmartUserService {
      * @param username
      * @return
      */
-    public SmartUser findUserByUsername(String username);
+    public SmartUser findByUsername(String username);
 
     /**
      *
-     * @param username
-     * @param password
-     * @param email
-     * @param lastName
-     * @param firstName
-     * @param authProvider
-     * @param enabled
+     * @param createdDTO
      * @return
      */
-    public SmartUser createSmartUser(String username, String password, String email, String lastName, String firstName,
-                                    Date registrationDate,  int authProvider, boolean enabled);
+    public SmartUser create(RegisterSmartUserDTO createdDTO);
 
     /**
      *
      * @param smartUser
      * @return
      */
-    public SmartUser createSmartUser(SmartUser smartUser);
+    public SmartUser create(SmartUser smartUser);
 
     /**
      *
@@ -63,7 +53,7 @@ public interface SmartUserService {
      *
      * @param username
      */
-    public void createUserAuthorityForUser(String username);
+    public void createUserAuthority(String username);
 
     /**
      *
@@ -82,18 +72,13 @@ public interface SmartUserService {
 
     /**
      *
-     * @param smartUser
-     */
-    public void checkUserAddress(SmartUser smartUser);
-
-    /**
-     *
      * @param name
      * @param activeUser
      * @return
      */
-    public List<SmartUser> findUsersByUserInput(String name, SmartUser activeUser);
+    public List<SmartUser> findByUserInput(String name, SmartUser activeUser);
 
+    // TODO вынести в другое API
     /**
      *
      * @param searchString
@@ -105,15 +90,20 @@ public interface SmartUserService {
     /**
      *
      * @param offset
-     * @param smartUser
+     * @param activeUser
      * @return
      */
-    public List<SmartUser> findUsersWithOffset(int offset, SmartUser smartUser);
+    public List<SmartUser> findWithOffset(int offset, SmartUser activeUser);
 
     /**
      *
      * @param smartUser
-     * @param file
      */
-    public void updateUserFile(SmartUser smartUser, File file);
+    public void update(SmartUser smartUser);
+
+    /**
+     *
+     * @param updatedDTO
+     */
+    public void update(RegisterSmartUserDTO updatedDTO);
 }

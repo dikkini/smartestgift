@@ -49,7 +49,7 @@ public class GiftController {
 
     @RequestMapping(value = "/my", method = RequestMethod.GET)
     public ModelAndView myGifts(Authentication authentication) {
-        Set<SmartUserGift> gifts = smartUserService.findUserByUsername(authentication.getName()).getSmartUserGifts();
+        Set<SmartUserGift> gifts = smartUserService.findByUsername(authentication.getName()).getSmartUserGifts();
         return new ModelAndView("gifts/my", "gifts", gifts);
     }
 
@@ -86,8 +86,8 @@ public class GiftController {
             throw new WrongGiftDateException("Wrong date of gift", BAD_REQUEST.value());
         }
 
-        if (!giftService.hasSmartUserGiftShop(smartUserService.findUserByUsername(authentication.getName()), giftShopUuid)) {
-            giftService.addGiftShopToUserWishes(smartUserService.findUserByUsername(authentication.getName()),
+        if (!giftService.hasSmartUserGiftShop(smartUserService.findByUsername(authentication.getName()), giftShopUuid)) {
+            giftService.addGiftShopToUserWishes(smartUserService.findByUsername(authentication.getName()),
                     giftShopUuid, endDate);
             return Response.createResponse(true);
         } else {
@@ -99,8 +99,8 @@ public class GiftController {
     public @ResponseBody Response unWantGift(Authentication authentication,
                                              @RequestParam(required = true, value = "giftShopUuid") String giftShopUuid) {
         // TODO проверить uuidы или проверить проверку на правильность uuidов
-        if (giftService.hasSmartUserGiftShop(smartUserService.findUserByUsername(authentication.getName()), giftShopUuid)) {
-            giftService.deleteGiftFromUser(smartUserService.findUserByUsername(authentication.getName()), giftShopUuid);
+        if (giftService.hasSmartUserGiftShop(smartUserService.findByUsername(authentication.getName()), giftShopUuid)) {
+            giftService.deleteGiftFromUser(smartUserService.findByUsername(authentication.getName()), giftShopUuid);
             return Response.createResponse(true);
         } else {
             throw new UserHasGiftException("User has not this gift", BAD_REQUEST.value());

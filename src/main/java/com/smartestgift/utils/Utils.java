@@ -75,4 +75,18 @@ public class Utils {
     public static boolean contains(List list, Object o) {
         return list.contains(o);
     }
+
+    public static String createStringWithLength(int length) {
+        StringBuilder builder = new StringBuilder();
+
+        for (int index = 0; index < length; index++) {
+            builder.append("a");
+        }
+
+        return builder.toString();
+    }
+
+    public static String createRedirectViewPath(String requestMapping) {
+        return "redirect:" + requestMapping;
+    }
 }

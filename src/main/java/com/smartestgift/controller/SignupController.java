@@ -1,22 +1,26 @@
 package com.smartestgift.controller;
 
+import com.smartestgift.controller.model.RegisterSmartUserDTO;
 import com.smartestgift.controller.model.Response;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.exception.EmailBusyException;
 import com.smartestgift.exception.UsernameBusyException;
 import com.smartestgift.service.SmartUserService;
-import com.smartestgift.utils.ApplicationConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  * Created by dikkini on 06.02.14.
@@ -31,19 +35,18 @@ public class SignupController {
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView signUpPage(HttpServletRequest request) {
-        return new ModelAndView("signup");
+        return new ModelAndView("register/signup").addObject("registerUserDTO", new RegisterSmartUserDTO());
     }
 
-    @RequestMapping(value = "/register", headers = "Accept=application/json", method = RequestMethod.POST)
-    public @ResponseBody Response signUpUser(HttpServletRequest request,
-                                             @RequestParam (required = true, value = "username") String username,
-                                             @RequestParam (required = true, value = "email") String email,
-                                             @RequestParam (required = true, value = "password") String password,
-                                             @RequestParam (required = true, value = "firstName") String firstName,
-                                             @RequestParam (required = false, value = "lastName") String lastName) {
+    @RequestMapping(value = "/register.do", method = RequestMethod.POST)
+    public @ResponseBody Response signUpUser(@Valid @ModelAttribute("registerUserDTO") RegisterSmartUserDTO registerUserDTO, BindingResult result,
+                                             RedirectAttributes attributes, HttpServletRequest request) {
 
-        boolean emailOccupied = smartUserService.isEmailBusy(email);
-        boolean usernameOccupied = smartUserService.isUsernameBusy(username);
+        boolean emailOccupied = smartUserService.isEmailBusy(registerUserDTO.getEmail());
+        boolean usernameOccupied = smartUserService.isUsernameBusy(registerUserDTO.getUsername());
+
+        List<FieldError> fieldErrors = result.getFieldErrors();
+        String code = fieldErrors.get(0).getCode();
 
         if (usernameOccupied) {
             throw new UsernameBusyException("Username is busy", HttpStatus.IM_USED.value());
@@ -52,12 +55,11 @@ public class SignupController {
         }
 
         StandardPasswordEncoder encoder = new StandardPasswordEncoder();
-        String passwordEncoded = encoder.encode(password);
+        String passwordEncoded = encoder.encode(registerUserDTO.getPassword());
+        registerUserDTO.setPassword(passwordEncoded);
+        SmartUser registerUser = smartUserService.create(registerUserDTO);
 
-        SmartUser registerUser = smartUserService.createSmartUser(username, passwordEncoded, email, lastName, firstName,
-                new Date(), ApplicationConstants.APPLICATION_AUTH_PROVIDER_ID, true);
-
-        smartUserService.createUserAuthorityForUser(registerUser.getUsername());
+        smartUserService.createUserAuthority(registerUser.getUsername());
         smartUserService.authenticateUser(registerUser.getUsername(), registerUser.getPassword(), request);
 
         return Response.createResponse(true);
@@ -93,8 +95,8 @@ public class SignupController {
         facebookUser.setFirstName(firstName);
         facebookUser.setLastName(lastName);
 
-        smartUserService.createSmartUser(facebookUser);
-        smartUserService.createUserAuthorityForUser(facebookUser.getUsername());
+        smartUserService.create(facebookUser);
+        smartUserService.createUserAuthority(facebookUser.getUsername());
         smartUserService.authenticateUser(facebookUser.getUsername(), facebookUser.getPassword(), request);
 
         return Response.createResponse(true);

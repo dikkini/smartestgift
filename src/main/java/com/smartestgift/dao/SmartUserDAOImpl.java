@@ -27,7 +27,7 @@ public class SmartUserDAOImpl implements SmartUserDAO {
     SessionFactory sessionFactory;
 
     @Override
-    public SmartUser find(String uuid) {
+    public SmartUser findOne(String uuid) {
         return (SmartUser) sessionFactory.getCurrentSession().get(SmartUser.class, uuid);
     }
 
@@ -39,35 +39,37 @@ public class SmartUserDAOImpl implements SmartUserDAO {
     }
 
     @Override
-    public void store(SmartUser dmodel) {
+    public SmartUser create(SmartUser created) {
         Session session = sessionFactory.getCurrentSession();
-        session.saveOrUpdate(dmodel);
+        session.saveOrUpdate(created);
+        session.flush();
+        return created;
+    }
+
+    @Override
+    public void delete(SmartUser deleted) {
+        Session session = sessionFactory.getCurrentSession();
+        session.delete(deleted);
         session.flush();
     }
 
     @Override
-    public void delete(SmartUser dmodel) {
+    public SmartUser update(SmartUser updated) {
         Session session = sessionFactory.getCurrentSession();
-        session.delete(dmodel);
+        session.update(updated);
         session.flush();
+        return updated;
     }
 
     @Override
-    public void merge(SmartUser dmodel) {
-        Session session = sessionFactory.getCurrentSession();
-        session.merge(dmodel);
-        session.flush();
-    }
-
-    @Override
-    public SmartUser findSmartUserByUsername(String username) {
+    public SmartUser findByUsername(String username) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
         criteria.add(Restrictions.eq("username", username));
         return (SmartUser) criteria.uniqueResult();
     }
 
     @Override
-    public SmartUser findUserBySocialIdAndAuthProvider(String socialId, Integer facebookAuthProvider) {
+    public SmartUser findBySocialIdAndAuthProvider(String socialId, Integer facebookAuthProvider) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
         criteria.add(Restrictions.eq("socialId", socialId));
         criteria.add(Restrictions.eq("authProvider", facebookAuthProvider));
@@ -75,14 +77,14 @@ public class SmartUserDAOImpl implements SmartUserDAO {
     }
 
     @Override
-    public SmartUser findSmartUserByEmail(String email) {
+    public SmartUser findByEmail(String email) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
         criteria.add(Restrictions.eq("email", email));
         return (SmartUser) criteria.uniqueResult();
     }
 
     @Override
-    public List<SmartUser> findSmartUsersLikeUserName(String username, String activeUsername) {
+    public List<SmartUser> findLikeUsername(String username, String activeUsername) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
         criteria.setMaxResults(ApplicationConstants.GLOBAL_SEARCH_RESULTS_COUNT);
         Criterion userLikeCriteria = Restrictions.ilike("username", username, MatchMode.ANYWHERE);
@@ -92,7 +94,7 @@ public class SmartUserDAOImpl implements SmartUserDAO {
     }
 
     @Override
-    public List<SmartUser> findSmartUsersLikeFirstName(String firstName, String activeFistName) {
+    public List<SmartUser> findLikeFirstName(String firstName, String activeFistName) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
         criteria.setMaxResults(ApplicationConstants.GLOBAL_SEARCH_RESULTS_COUNT);
         Criterion firstNameLikeCriteria = Restrictions.ilike("firstName", firstName, MatchMode.ANYWHERE);
@@ -102,7 +104,7 @@ public class SmartUserDAOImpl implements SmartUserDAO {
     }
 
     @Override
-    public List<SmartUser> findSmartUsersLikeLastName(String lastName, String activeLastName) {
+    public List<SmartUser> findLikeLastName(String lastName, String activeLastName) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
         criteria.setMaxResults(ApplicationConstants.GLOBAL_SEARCH_RESULTS_COUNT);
         Criterion lastNameLikeCriteria = Restrictions.ilike("lastName", lastName, MatchMode.ANYWHERE);
@@ -112,7 +114,7 @@ public class SmartUserDAOImpl implements SmartUserDAO {
     }
 
     @Override
-    public List<SmartUser> findSmartUsersLikeMiddleName(String middleName, String activeMiddleName) {
+    public List<SmartUser> findLikeMiddleName(String middleName, String activeMiddleName) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
         criteria.setMaxResults(ApplicationConstants.GLOBAL_SEARCH_RESULTS_COUNT);
         Criterion middleNameLikeCriteria = Restrictions.ilike("middleName", middleName, MatchMode.ANYWHERE);
@@ -122,7 +124,7 @@ public class SmartUserDAOImpl implements SmartUserDAO {
     }
 
     @Override
-    public List<SmartUser> findSmartUsersByOffset(int offset, String activeUserUuid) {
+    public List<SmartUser> findByOffset(int offset, String activeUserUuid) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
         criteria.setMaxResults(ApplicationConstants.PEOPLE_SEARCH_RESULTS_COUNT);
         criteria.setFirstResult(offset);

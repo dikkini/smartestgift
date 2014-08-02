@@ -1,7 +1,6 @@
 package com.smartestgift.dao;
 
 import com.smartestgift.dao.model.SmartUserGiftURL;
-import com.smartestgift.dao.model.UserRole;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -24,7 +23,7 @@ public class SmartUserGiftURLDAOImpl implements SmartUserGiftURLDAO {
     private SessionFactory sessionFactory;
 
     @Override
-    public SmartUserGiftURL find(String id) {
+    public SmartUserGiftURL findOne(String id) {
         return (SmartUserGiftURL) sessionFactory.getCurrentSession().get(SmartUserGiftURL.class, id);
     }
 
@@ -36,10 +35,11 @@ public class SmartUserGiftURLDAOImpl implements SmartUserGiftURLDAO {
     }
 
     @Override
-    public void store(SmartUserGiftURL dmodel) {
+    public SmartUserGiftURL create(SmartUserGiftURL dmodel) {
         Session session = sessionFactory.getCurrentSession();
         session.saveOrUpdate(dmodel);
         session.flush();
+        return dmodel;
     }
 
     @Override
@@ -48,8 +48,8 @@ public class SmartUserGiftURLDAOImpl implements SmartUserGiftURLDAO {
     }
 
     @Override
-    public void merge(SmartUserGiftURL dmodel) {
-
+    public SmartUserGiftURL update(SmartUserGiftURL dmodel) {
+        return dmodel;
     }
 
     @Override

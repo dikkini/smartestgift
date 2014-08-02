@@ -53,9 +53,8 @@
 
 <div class="header">
     <header>
-        <div class="row">
+<%--        <div class="row">
             <div class="col-md-11">
-                <img src="/assets/main/images/logo.png">
             </div>
             <div class="col-md-1">
                 <span style="float: right">
@@ -64,7 +63,7 @@
                     <a href="?lang=ru">ru</a>
                 </span>
             </div>
-        </div>
+        </div>--%>
         <div class="navbar navbar-inverse">
             <div class="container">
                 <div class="navbar-header">

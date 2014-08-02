@@ -1,5 +1,6 @@
 package com.smartestgift.service;
 
+import com.smartestgift.controller.model.RegisterSmartUserDTO;
 import com.smartestgift.dao.*;
 import com.smartestgift.dao.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,50 +40,52 @@ public class SmartUserServiceImpl implements SmartUserService {
     private AuthenticationManager authenticationManager;
 
     @Override
-    public SmartUser findUserByUsername(String username) {
-        return smartUserDAO.findSmartUserByUsername(username);
+    public SmartUser findByUsername(String username) {
+        return smartUserDAO.findByUsername(username);
     }
 
     @Override
-    public SmartUser createSmartUser(String username, String password, String email, String lastName, String firstName,
-                                     Date registrationDate, int authProvider, boolean enabled) {
+    public SmartUser create(RegisterSmartUserDTO created) {
         // TODO решить вопрос с файлом
-        SmartUser smartUser = new SmartUser(username, password, email, lastName, firstName, registrationDate,
-                authProvider, enabled);
-        smartUser.setFile(fileDAO.find(FILE_USER_NO_PHOTO_ID));
-        return this.createSmartUser(smartUser);
+        SmartUser smartUser = SmartUser.getBuilder(created.getUsername(), created.getEmail(), created.getPassword(),
+                created.getFirstName(), created.getLastName(), created.getAuthProviderId(),
+                created.getRegistrationDate()).build();
+        smartUser.setFile(fileDAO.findOne(FILE_USER_NO_PHOTO_ID));
+        return smartUserDAO.create(smartUser);
     }
 
     @Override
-    public SmartUser createSmartUser(SmartUser smartUser) {
-        smartUserDAO.store(smartUser);
-        return smartUser;
+    public SmartUser create(SmartUser smartUser) {
+        // TODO решить вопрос с файлом
+        smartUser.setFile(fileDAO.findOne(FILE_USER_NO_PHOTO_ID));
+        return smartUserDAO.create(smartUser);
     }
+
 
     @Override
     public SmartUser findExistSocialUser(String socialId, Integer providerId) {
-        return smartUserDAO.findUserBySocialIdAndAuthProvider(socialId, providerId);
+        return smartUserDAO.findBySocialIdAndAuthProvider(socialId, providerId);
     }
 
     @Override
     public boolean isUsernameBusy(String username) {
-        SmartUser userDetailsByUsername = smartUserDAO.findSmartUserByUsername(username);
+        SmartUser userDetailsByUsername = smartUserDAO.findByUsername(username);
         return userDetailsByUsername != null;
     }
 
     @Override
     public boolean isEmailBusy(String email) {
-        SmartUser smartUserDetailsByEmail = smartUserDAO.findSmartUserByEmail(email);
+        SmartUser smartUserDetailsByEmail = smartUserDAO.findByEmail(email);
         return smartUserDetailsByEmail != null;
     }
 
     @Override
-    public void createUserAuthorityForUser(String username) {
-        Role role = roleDAO.find(USER_ROLE_ID);
-        SmartUser smartUser = smartUserDAO.findSmartUserByUsername(username);
+    public void createUserAuthority(String username) {
+        Role role = roleDAO.findOne(USER_ROLE_ID);
+        SmartUser smartUser = smartUserDAO.findByUsername(username);
         UserRole userRole = new UserRole(role, smartUser);
         smartUser.getUserRoles().add(userRole);
-        smartUserDAO.store(smartUser);
+        smartUserDAO.create(smartUser);
     }
 
     @Override
@@ -100,22 +103,17 @@ public class SmartUserServiceImpl implements SmartUserService {
     }
 
     @Override
-    public void checkUserAddress(SmartUser SmartUser) {
-        // TODO do it
-    }
-
-    @Override
-    public List<SmartUser> findUsersByUserInput(String name, SmartUser activeUser) {
+    public List<SmartUser> findByUserInput(String name, SmartUser activeUser) {
         List<SmartUser> resultList = new ArrayList<>();
         String[] split = name.split(" ");
         for (String str : split) {
             if (str.equals("")) {
                 continue;
             }
-            resultList.addAll(smartUserDAO.findSmartUsersLikeUserName(str, activeUser.getUsername()));
-            resultList.addAll(smartUserDAO.findSmartUsersLikeLastName(str, activeUser.getLastName()));
-            resultList.addAll(smartUserDAO.findSmartUsersLikeFirstName(str, activeUser.getFirstName()));
-            resultList.addAll(smartUserDAO.findSmartUsersLikeMiddleName(str, activeUser.getMiddleName()));
+            resultList.addAll(smartUserDAO.findLikeUsername(str, activeUser.getUsername()));
+            resultList.addAll(smartUserDAO.findLikeLastName(str, activeUser.getLastName()));
+            resultList.addAll(smartUserDAO.findLikeFirstName(str, activeUser.getFirstName()));
+            resultList.addAll(smartUserDAO.findLikeMiddleName(str, activeUser.getMiddleName()));
         }
 
         return removeDuplicates(resultList);
@@ -124,7 +122,7 @@ public class SmartUserServiceImpl implements SmartUserService {
     // TODO вынести метод в api (?)
     @Override
     public Map<String, List> findUsersAndGiftsByUserInput(String searchString, SmartUser activeUser) {
-        List<SmartUser> usersByUserInput = findUsersByUserInput(searchString, activeUser);
+        List<SmartUser> usersByUserInput = findByUserInput(searchString, activeUser);
         List<Gift> giftsBySearchString = giftDAO.findGiftsBySearchString(searchString);
         Map<String, List> result = new HashMap<>();
         result.put(GIFTS_SEARCH_RESULTS, giftsBySearchString);
@@ -134,14 +132,18 @@ public class SmartUserServiceImpl implements SmartUserService {
     }
 
     @Override
-    public List<SmartUser> findUsersWithOffset(int offset, SmartUser smartUser) {
-        return smartUserDAO.findSmartUsersByOffset(offset, smartUser.getUuid());
+    public List<SmartUser> findWithOffset(int offset, SmartUser smartUser) {
+        return smartUserDAO.findByOffset(offset, smartUser.getUuid());
     }
 
     @Override
-    public void updateUserFile(SmartUser smartUser, File file) {
-        smartUser.setFile(file);
-        smartUserDAO.merge(smartUser);
+    public void update(SmartUser smartUser) {
+        smartUserDAO.create(smartUser);
+    }
+
+    @Override
+    public void update(RegisterSmartUserDTO updatedDTO) {
+        // TODO
     }
 
     private List<SmartUser> removeDuplicates(List<SmartUser> l) {

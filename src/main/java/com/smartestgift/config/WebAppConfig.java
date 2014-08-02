@@ -5,6 +5,8 @@ import com.google.gson.GsonBuilder;
 import com.smartestgift.handler.UserInterceptor;
 import javassist.Modifier;
 import org.hibernate.SessionFactory;
+import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
+import org.hibernate.validator.resourceloading.PlatformResourceBundleLocator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -29,11 +31,14 @@ import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.*;
+import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
+import javax.validation.Validation;
+import javax.validation.Validator;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
@@ -116,6 +121,19 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
     }
 
     @Bean
+    public Validator validator() {
+        return Validation.byDefaultProvider()
+                .configure()
+                .messageInterpolator(
+                        new ResourceBundleMessageInterpolator(
+                                new PlatformResourceBundleLocator("ValidationMessages")
+                        )
+                )
+                .buildValidatorFactory()
+                .getValidator();
+    }
+
+    @Bean
     public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
         return new PersistenceExceptionTranslationPostProcessor();
     }
@@ -159,7 +177,7 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
     @Bean
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource ret = new ReloadableResourceBundleMessageSource();
-        ret.setBasename("/assets/messages");
+        ret.setBasenames("/assets/ValidationMessages", "/assets/labels", "/assets/exceptions");
         ret.setDefaultEncoding("UTF-8");
         return ret;
     }
@@ -212,6 +230,29 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
                 new MediaType(MediaType.MULTIPART_FORM_DATA.getType(), MediaType.MULTIPART_FORM_DATA.getSubtype(), UTF8)
         ));
         return converter;
+    }
+
+    @Bean
+    public SimpleMappingExceptionResolver exceptionResolver() {
+        SimpleMappingExceptionResolver exceptionResolver = new SimpleMappingExceptionResolver();
+
+        Properties exceptionMappings = new Properties();
+
+        // TODO продумать маппинги эксепшенов
+//        exceptionMappings.put("net.petrikainulainen.spring.testmvc.TodoNotFoundException", "error/404");
+        exceptionMappings.put("java.lang.Exception", "error/error");
+        exceptionMappings.put("java.lang.RuntimeException", "error/error");
+
+        exceptionResolver.setExceptionMappings(exceptionMappings);
+
+        Properties statusCodes = new Properties();
+
+        statusCodes.put("error/404", "404");
+        statusCodes.put("error/error", "500");
+
+        exceptionResolver.setStatusCodes(statusCodes);
+
+        return exceptionResolver;
     }
 
     @Bean

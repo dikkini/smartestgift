@@ -48,7 +48,7 @@ public class ProfileController {
                                                @RequestParam(required = false, value = "profileVisible") boolean profileVisible,
                                                @RequestParam(required = true, value = "cellphone") String cellPhone,
                                                @RequestParam(required = false, value = "cellphoneVisible") boolean cellphoneVisible) {
-        SmartUser smartUser = smartUserService.findUserByUsername(authentication.getName());
+        SmartUser smartUser = smartUserService.findByUsername(authentication.getName());
         smartUser.setFirstName(firstName);
         smartUser.setLastName(lastName);
         smartUser.setMiddleName(middleName);
@@ -64,7 +64,7 @@ public class ProfileController {
         } catch (ParseException e) {
             smartUser.setBirthDate(null);
         }
-        smartUserService.createSmartUser(smartUser);
+        //smartUserService.create(smartUser);
         return Response.createResponse(true);
     }
 }

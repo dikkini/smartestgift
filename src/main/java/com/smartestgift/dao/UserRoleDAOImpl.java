@@ -1,7 +1,5 @@
 package com.smartestgift.dao;
 
-import com.restfb.types.User;
-import com.smartestgift.dao.model.Role;
 import com.smartestgift.dao.model.UserRole;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -24,7 +22,7 @@ public class UserRoleDAOImpl implements UserRoleDAO {
     private SessionFactory sessionFactory;
 
     @Override
-    public UserRole find(Integer id) {
+    public UserRole findOne(Integer id) {
         return (UserRole) sessionFactory.getCurrentSession().get(UserRole.class, id);
     }
 
@@ -36,10 +34,11 @@ public class UserRoleDAOImpl implements UserRoleDAO {
     }
 
     @Override
-    public void store(UserRole dmodel) {
+    public UserRole create(UserRole dmodel) {
         Session session = sessionFactory.getCurrentSession();
         session.saveOrUpdate(dmodel);
         session.flush();
+        return dmodel;
     }
 
     @Override
@@ -48,7 +47,7 @@ public class UserRoleDAOImpl implements UserRoleDAO {
     }
 
     @Override
-    public void merge(UserRole dmodel) {
-
+    public UserRole update(UserRole dmodel) {
+        return dmodel;
     }
 }

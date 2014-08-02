@@ -58,8 +58,8 @@ public class IndexController {
                                                @RequestParam(required = true, value = "searchPeopleStr")
                                                String searchPeopleStr) {
 
-        SmartUser userByUsername = smartUserService.findUserByUsername(authentication.getName());
-        List<SmartUser> usersByUserInput = smartUserService.findUsersByUserInput(searchPeopleStr, userByUsername);
+        SmartUser userByUsername = smartUserService.findByUsername(authentication.getName());
+        List<SmartUser> usersByUserInput = smartUserService.findByUserInput(searchPeopleStr, userByUsername);
         return Response.createResponse(usersByUserInput);
     }
 
@@ -68,7 +68,7 @@ public class IndexController {
     public @ResponseBody Response globlSearch(Authentication authentication,
                                               @RequestParam(required = true, value = "searchString")
                                               String searchString) {
-        SmartUser userByUsername = smartUserService.findUserByUsername(authentication.getName());
+        SmartUser userByUsername = smartUserService.findByUsername(authentication.getName());
         Map<String, List> usersAndGiftsByUserInput = smartUserService.findUsersAndGiftsByUserInput(searchString,
                 userByUsername);
         return Response.createResponse(usersAndGiftsByUserInput);

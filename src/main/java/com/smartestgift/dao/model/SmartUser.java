@@ -305,6 +305,58 @@ public class SmartUser implements Serializable {
         this.file = file;
     }
 
+    /**
+     * Gets a builder which is used to create Person objects.
+     * @param username
+     * @param email
+     * @param password
+     * @param authProviderId
+     * @return
+     */
+    public static Builder getBuilder(String username, String email, String password, String firstName, String lastName,
+                                     Integer authProviderId, Date registrationDate) {
+        return new Builder(username, email, password, firstName, lastName, authProviderId, registrationDate);
+    }
+
+    /**
+     * A Builder class used to create new Person objects.
+     */
+    public static class Builder {
+        private SmartUser built;
+
+        // TODO билдеры для обновления информации о пользователе
+
+        /**
+         * Creates a new Builder instance for register user
+         * @param username
+         * @param email
+         * @param password
+         * @param firstName
+         * @param lastName
+         * @param authProviderId
+         * @param registrationDate
+         */
+        Builder(String username, String email, String password, String firstName, String lastName, int authProviderId,
+                Date registrationDate) {
+            built = new SmartUser();
+            built.username = username;
+            built.email = email;
+            built.password = password;
+            built.firstName = firstName;
+            built.lastName = lastName;
+            built.authProvider = authProviderId;
+            built.registrationDate = registrationDate;
+        }
+
+        /**
+         * Builds the new Person object.
+         * @return  The created Person object.
+         */
+        public SmartUser build() {
+            return built;
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -30,7 +30,7 @@ public class UserInterceptor implements HandlerInterceptor {
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object o, ModelAndView mav)
             throws Exception {
         if (mav != null) {
-            SmartUser smartUser = smartUserService.findUserByUsername(SecurityContextHolder.getContext()
+            SmartUser smartUser = smartUserService.findByUsername(SecurityContextHolder.getContext()
                     .getAuthentication().getName());
             mav.addObject("smartUser", smartUser);
         }

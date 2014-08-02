@@ -5,6 +5,8 @@ package com.smartestgift.utils;
  * Email: dikkini@gmail.com
  */
 public class ApplicationConstants {
+    public static final String UTF8 = "UTF8";
+
     public static final String FACEBOOK_APP_ID = "563611490386461";
     public static final String FACEBOOK_REDIRECT_URL = "http://localhost:8080/login/facebookAuthentication?authCode=";
     public static final String FACEBOOK_SECRET_KEY = "334901bd51d0aab8fc45a4785413a576";
@@ -55,6 +57,10 @@ public class ApplicationConstants {
     // URL Shortener vars
     public static final String ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     public static final int BASE = 62;
+
+    // Crypting settings
+    public static final String myEncryptionKey = "ThisIsSpartaThisIsSparta";
+    public static final String myEncryptionScheme = "DESede";
 
 
     // getters for using constants in JSP

@@ -24,7 +24,7 @@ public class MessageStatusDAOImpl implements MessageStatusDAO {
     SessionFactory sessionFactory;
 
     @Override
-    public MessageStatus find(Integer id) {
+    public MessageStatus findOne(Integer id) {
         return (MessageStatus) sessionFactory.getCurrentSession().get(MessageStatus.class, id);
     }
 
@@ -36,10 +36,11 @@ public class MessageStatusDAOImpl implements MessageStatusDAO {
     }
 
     @Override
-    public void store(MessageStatus dmodel) {
+    public MessageStatus create(MessageStatus dmodel) {
         Session session = sessionFactory.getCurrentSession();
         session.saveOrUpdate(dmodel);
         session.flush();
+        return dmodel;
     }
 
     @Override
@@ -50,9 +51,10 @@ public class MessageStatusDAOImpl implements MessageStatusDAO {
     }
 
     @Override
-    public void merge(MessageStatus dmodel) {
+    public MessageStatus update(MessageStatus dmodel) {
         Session session = sessionFactory.getCurrentSession();
         session.merge(dmodel);
         session.flush();
+        return dmodel;
     }
 }

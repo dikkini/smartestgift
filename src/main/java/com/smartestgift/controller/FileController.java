@@ -8,6 +8,7 @@ package com.smartestgift.controller;
 import com.google.gson.Gson;
 import com.smartestgift.controller.model.Response;
 import com.smartestgift.dao.model.File;
+import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.service.FileService;
 import com.smartestgift.service.SmartUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +55,9 @@ public class FileController {
             try {
                 //Long fileSize = mpf.getSize() / 1024;
                 file = fileService.uploadFile(mpf.getOriginalFilename(), fileTypeId);
-                smartUserService.updateUserFile(smartUserService.findUserByUsername(authentication.getName()), file);
+                SmartUser byUsername = smartUserService.findByUsername(authentication.getName());
+                byUsername.setFile(file);
+                smartUserService.update(byUsername);
 
                 // TODO абсолютные пути это плохо
                 FileCopyUtils.copy(mpf.getBytes(), new FileOutputStream("C:\\temp\\" + mpf.getOriginalFilename()));

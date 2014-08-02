@@ -38,7 +38,7 @@ public class ConversationServiceImpl implements ConversationService {
 
     @Override
     public Conversation findConversationByUuid(String uuid) {
-        return conversationDAO.find(uuid);
+        return conversationDAO.findOne(uuid);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class ConversationServiceImpl implements ConversationService {
         Conversation conversation = new Conversation();
         conversation.setUser_from(smartUserFrom);
         conversation.setUser_to(smartUserTo);
-        conversationDAO.store(conversation);
+        conversationDAO.create(conversation);
         messageService.sendMessageToUser(smartUserFrom, message, conversation.getUuid());
         return conversation;
     }

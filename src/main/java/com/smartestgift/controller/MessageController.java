@@ -27,9 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.OK;
-
 /**
  * Created by dikkini on 10.03.14.
  * Email: dikkini@gmail.com
@@ -58,7 +55,7 @@ public class MessageController {
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView messages(Authentication authentication) {
-        SmartUser userByUsername = smartUserService.findUserByUsername(authentication.getName());
+        SmartUser userByUsername = smartUserService.findByUsername(authentication.getName());
         List<Conversation> userConversations = conversationService.findConversationsByUser(userByUsername);
         ModelAndView mav = new ModelAndView("users/messages");
         mav.addObject("userConversations", userConversations);
@@ -70,7 +67,7 @@ public class MessageController {
                                                               @RequestParam(value = "conversationUuid", required = true)
                                                                                               String conversationUuid) {
         Conversation conversationByUuid = conversationService.findConversationByUuid(conversationUuid);
-        SmartUser userByUsername = smartUserService.findUserByUsername(authentication.getName());
+        SmartUser userByUsername = smartUserService.findByUsername(authentication.getName());
         List<Message> messagesInConversation = messageService.findMessagesInConversation(userByUsername, conversationByUuid);
         return Response.createResponse(messagesInConversation);
     }
@@ -105,7 +102,7 @@ public class MessageController {
                                                 @RequestParam(value = "message", required = true) String message,
                                                 @RequestParam(value = "conversation-uuid", required = true) String conversationUuid) {
         // TODO add additional security checks using username and active user
-        SmartUser userByUsername = smartUserService.findUserByUsername(authentication.getName());
+        SmartUser userByUsername = smartUserService.findByUsername(authentication.getName());
         messageService.sendMessageToUser(userByUsername, message, conversationUuid);
     }
 
@@ -116,8 +113,8 @@ public class MessageController {
                                                             @RequestParam(value = "username", required = true)
                                                             String username) {
         // TODO add additional security checks using username and active user
-        SmartUser userFrom = smartUserService.findUserByUsername(authentication.getName());
-        SmartUser userTo = smartUserService.findUserByUsername(username);
+        SmartUser userFrom = smartUserService.findByUsername(authentication.getName());
+        SmartUser userTo = smartUserService.findByUsername(username);
         Conversation conversation = conversationService.createConversation(userFrom, userTo, message);
         return Response.createResponse(conversation);
     }

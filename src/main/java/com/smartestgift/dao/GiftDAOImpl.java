@@ -25,7 +25,7 @@ public class GiftDAOImpl implements GiftDAO {
     SessionFactory sessionFactory;
 
     @Override
-    public Gift find(String id) {
+    public Gift findOne(String id) {
         return (Gift) sessionFactory.getCurrentSession().get(Gift.class, id);
     }
 
@@ -37,11 +37,12 @@ public class GiftDAOImpl implements GiftDAO {
     }
 
     @Override
-    public void store(Gift dmodel) {
+    public Gift create(Gift dmodel) {
         Session session = sessionFactory.getCurrentSession();
         session.saveOrUpdate(dmodel);
         session.flush();
         session.refresh(dmodel);
+        return dmodel;
     }
 
     @Override
@@ -52,10 +53,11 @@ public class GiftDAOImpl implements GiftDAO {
     }
 
     @Override
-    public void merge(Gift dmodel) {
+    public Gift update(Gift dmodel) {
         Session session = sessionFactory.getCurrentSession();
         session.merge(dmodel);
         session.flush();
+        return dmodel;
     }
 
     @Override

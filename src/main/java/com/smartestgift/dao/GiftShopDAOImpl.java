@@ -27,7 +27,7 @@ public class GiftShopDAOImpl implements GiftShopDAO {
 
 
     @Override
-    public GiftShop find(String id) {
+    public GiftShop findOne(String id) {
         return (GiftShop) sessionFactory.getCurrentSession().get(GiftShop.class, id);
     }
 
@@ -39,11 +39,12 @@ public class GiftShopDAOImpl implements GiftShopDAO {
     }
 
     @Override
-    public void store(GiftShop dmodel) {
+    public GiftShop create(GiftShop dmodel) {
         Session session = sessionFactory.getCurrentSession();
         session.saveOrUpdate(dmodel);
         session.flush();
         session.refresh(dmodel);
+        return dmodel;
     }
 
     @Override
@@ -54,10 +55,11 @@ public class GiftShopDAOImpl implements GiftShopDAO {
     }
 
     @Override
-    public void merge(GiftShop dmodel) {
+    public GiftShop update(GiftShop dmodel) {
         Session session = sessionFactory.getCurrentSession();
         session.merge(dmodel);
         session.flush();
+        return dmodel;
     }
 
     @Override

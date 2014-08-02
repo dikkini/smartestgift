@@ -36,24 +36,24 @@ public class GiftServiceImpl implements GiftService {
 
     @Override
     public Gift findGiftByUuid(String uuid) {
-        return giftDAO.find(uuid);
+        return giftDAO.findOne(uuid);
     }
 
     @Override
     public GiftShop findGiftShopByUuid(String uuid) {
-        return giftShopDAO.find(uuid);
+        return giftShopDAO.findOne(uuid);
     }
 
     @Override
     public boolean hasSmartUserGiftShop(SmartUser user, String giftShopUuid) {
-        GiftShop giftShop = giftShopDAO.find(giftShopUuid);
+        GiftShop giftShop = giftShopDAO.findOne(giftShopUuid);
         SmartUserGift smartUserGift = smartUserDAO.findSmartUserGift(user, giftShop);
         return smartUserGift != null;
     }
 
     @Override
     public void addGiftShopToUserWishes(SmartUser user, String giftShopUuid, Date endDate) {
-        GiftShop giftShop = giftShopDAO.find(giftShopUuid);
+        GiftShop giftShop = giftShopDAO.findOne(giftShopUuid);
 
         String url = "/" + user.getUsername() +
                 "/" + giftShop.getGift().getName();
@@ -74,15 +74,15 @@ public class GiftServiceImpl implements GiftService {
         smartUserGift.setSmartUserGiftURL(smartUserGiftURL);
 
         user.getSmartUserGifts().add(smartUserGift);
-        smartUserDAO.store(user);
+        smartUserDAO.create(user);
     }
 
     @Override
     public void deleteGiftFromUser(SmartUser user, String giftShopUuid) {
-        GiftShop giftShop = giftShopDAO.find(giftShopUuid);
+        GiftShop giftShop = giftShopDAO.findOne(giftShopUuid);
         SmartUserGift smartUserGift = smartUserDAO.findSmartUserGift(user, giftShop);
         user.getSmartUserGifts().remove(smartUserGift);
-        smartUserDAO.store(user);
+        smartUserDAO.create(user);
     }
 
     @Override
@@ -133,14 +133,14 @@ public class GiftServiceImpl implements GiftService {
 
     @Override
     public List<GiftShop> findGiftShops(String giftUuid) {
-        Gift gift = giftDAO.find(giftUuid);
+        Gift gift = giftDAO.findOne(giftUuid);
         return giftShopDAO.findGiftShopsByGiftUuid(gift);
     }
 
     @Override
     public GiftShop findGiftShopByGiftAndShop(String giftUuid, String shopUuid) {
-        Gift gift = giftDAO.find(giftUuid);
-        Shop shop = shopDAO.find(shopUuid);
+        Gift gift = giftDAO.findOne(giftUuid);
+        Shop shop = shopDAO.findOne(shopUuid);
 
         return giftShopDAO.findGiftShopByGiftAndShop(gift, shop);
     }

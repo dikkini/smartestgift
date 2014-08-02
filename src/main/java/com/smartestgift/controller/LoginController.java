@@ -152,8 +152,8 @@ public class LoginController {
                         File file = fileService.getFile(ApplicationConstants.FILE_USER_NO_PHOTO_ID);
                         fbUser.setFile(file);
                         if (!emailBusy && !usernameBusy) {
-                            SmartUser smartUser = smartUserService.createSmartUser(fbUser);
-                            smartUserService.createUserAuthorityForUser(smartUser.getUsername());
+                            SmartUser smartUser = smartUserService.create(fbUser);
+                            smartUserService.createUserAuthority(smartUser.getUsername());
                             smartUserService.authenticateUser(smartUser.getUsername(),
                                     smartUser.getPassword(), request);
                             return "redirect:/profile";

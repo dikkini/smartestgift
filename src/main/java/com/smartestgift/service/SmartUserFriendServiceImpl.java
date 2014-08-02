@@ -4,7 +4,6 @@ import com.smartestgift.dao.*;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.dao.model.SmartUserFriend;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -25,22 +24,22 @@ public class SmartUserFriendServiceImpl implements SmartUserFriendService {
     @Override
     public void addRequestSmartUserFriend(SmartUser activeUser, String friendUsername) {
         SmartUserFriend userNewFriend = new SmartUserFriend();
-        userNewFriend.setFriendUser(smartUserDAO.findSmartUserByUsername(friendUsername));
+        userNewFriend.setFriendUser(smartUserDAO.findByUsername(friendUsername));
         userNewFriend.setFriendAddDate(new Date());
         userNewFriend.setFriendTypeId(USER_FRIEND_NEW_REQUEST_TYPE);
         userNewFriend.setSmartUser(activeUser);
 
         activeUser.getSmartUserFriends().add(userNewFriend);
 
-        smartUserDAO.store(activeUser);
+        smartUserDAO.create(activeUser);
     }
 
     @Override
     public void removeSmartUserFriend(SmartUser activeUser, String friendUsername) {
-        SmartUser friend = smartUserDAO.findSmartUserByUsername(friendUsername);
+        SmartUser friend = smartUserDAO.findByUsername(friendUsername);
         SmartUserFriend smartUserFriend = smartUserDAO.findSmartUserFriend(activeUser, friend);
         activeUser.getSmartUserFriends().remove(smartUserFriend);
-        smartUserDAO.store(activeUser);
+        smartUserDAO.create(activeUser);
     }
 
     @Override
@@ -50,7 +49,7 @@ public class SmartUserFriendServiceImpl implements SmartUserFriendService {
 
     @Override
     public void changeSmartUserFriendType(SmartUser activeUser, String friendUsername, int typeId) {
-        SmartUser friend = smartUserDAO.findSmartUserByUsername(friendUsername);
+        SmartUser friend = smartUserDAO.findByUsername(friendUsername);
         Set<SmartUserFriend> smartUserFriends = activeUser.getSmartUserFriends();
 
         for (SmartUserFriend currentSmartUserFriend : smartUserFriends) {
@@ -60,6 +59,6 @@ public class SmartUserFriendServiceImpl implements SmartUserFriendService {
             }
         }
 
-        smartUserDAO.merge(activeUser);
+        smartUserDAO.update(activeUser);
     }
 }
