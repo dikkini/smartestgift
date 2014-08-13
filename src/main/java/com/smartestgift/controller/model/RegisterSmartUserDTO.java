@@ -1,6 +1,8 @@
 package com.smartestgift.controller.model;
 
 import com.smartestgift.utils.ApplicationConstants;
+import com.smartestgift.validator.EmailBusy;
+import com.smartestgift.validator.UsernameBusy;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.validator.constraints.*;
 
@@ -11,24 +13,26 @@ import java.util.Date;
  */
 public class RegisterSmartUserDTO {
 
-    @NotEmpty
-    @Range(min = 3, max = 100)
+    @UsernameBusy
+    @NotEmpty(message = "{NotEmpty.registerSmartUserDTO.username}")
+    @Length(min = 3, max = 100, message = "{Length.message}")
     protected String username;
 
-    @NotEmpty
-    @Email
+    @EmailBusy
+    @NotEmpty(message = "{NotEmpty.registerSmartUserDTO.email}")
+    @Email(message = "{Email.message}")
     protected String email;
 
-    @NotEmpty
+    @NotEmpty(message = "{NotEmpty.registerSmartUserDTO.password}")
     protected String password;
 
-    @NotEmpty
+    @NotEmpty(message = "{NotEmpty.registerSmartUserDTO.firstName}")
     protected String firstName;
 
-    @Range(min = 3, max = 100)
+    @Length(min = 3, max = 100, message = "{Length.message}")
     protected String lastName;
 
-    @NotEmpty
+    @NotEmpty(message = "{NotEmpty.registerSmartUserDTO.city}")
     protected String city;
 
     protected Integer authProviderId = ApplicationConstants.APPLICATION_AUTH_PROVIDER_ID;

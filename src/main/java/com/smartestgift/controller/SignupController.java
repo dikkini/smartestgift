@@ -6,6 +6,7 @@ import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.exception.EmailBusyException;
 import com.smartestgift.exception.UsernameBusyException;
 import com.smartestgift.service.SmartUserService;
+import com.smartestgift.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,34 +36,26 @@ public class SignupController {
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView signUpPage(HttpServletRequest request) {
-        return new ModelAndView("register/signup").addObject("registerUserDTO", new RegisterSmartUserDTO());
+        return new ModelAndView("register/signup").addObject("registerSmartUserDTO", new RegisterSmartUserDTO());
     }
 
     @RequestMapping(value = "/register.do", method = RequestMethod.POST)
-    public @ResponseBody Response signUpUser(@Valid @ModelAttribute("registerUserDTO") RegisterSmartUserDTO registerUserDTO, BindingResult result,
-                                             RedirectAttributes attributes, HttpServletRequest request) {
+    public String signUpUser(@Valid RegisterSmartUserDTO registerSmartUserDTO, BindingResult result,
+                             HttpServletRequest request) {
 
-        boolean emailOccupied = smartUserService.isEmailBusy(registerUserDTO.getEmail());
-        boolean usernameOccupied = smartUserService.isUsernameBusy(registerUserDTO.getUsername());
-
-        List<FieldError> fieldErrors = result.getFieldErrors();
-        String code = fieldErrors.get(0).getCode();
-
-        if (usernameOccupied) {
-            throw new UsernameBusyException("Username is busy", HttpStatus.IM_USED.value());
-        } else if (emailOccupied) {
-            throw new EmailBusyException("Email is busy", HttpStatus.IM_USED.value());
+        if (result.hasErrors()) {
+            return "register/signup";
         }
 
         StandardPasswordEncoder encoder = new StandardPasswordEncoder();
-        String passwordEncoded = encoder.encode(registerUserDTO.getPassword());
-        registerUserDTO.setPassword(passwordEncoded);
-        SmartUser registerUser = smartUserService.create(registerUserDTO);
+        String passwordEncoded = encoder.encode(registerSmartUserDTO.getPassword());
+        registerSmartUserDTO.setPassword(passwordEncoded);
+        SmartUser registerUser = smartUserService.create(registerSmartUserDTO);
 
         smartUserService.createUserAuthority(registerUser.getUsername());
         smartUserService.authenticateUser(registerUser.getUsername(), registerUser.getPassword(), request);
 
-        return Response.createResponse(true);
+        return Utils.createRedirectViewPath("/profile");
     }
 
     @RequestMapping(value = "/facebook", method = RequestMethod.GET)
