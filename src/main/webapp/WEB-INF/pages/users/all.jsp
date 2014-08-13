@@ -4,6 +4,9 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+
+<%@ taglib prefix="fns" uri="/WEB-INF/custom-functions.tld"%>
+
 <fmt:requestEncoding value="utf-8"/>
 
 <jsp:useBean id="smartUser" class="com.smartestgift.dao.model.SmartUser" scope="request"/>
@@ -52,10 +55,10 @@
                 cache: false,
                 data: "friendUsername=" + friendUsername,
                 success: function (response) {
-                    alert(response.success);
+                    alert(response.message);
                 },
                 error: function (response) {
-                    alert(response);
+                    alert("error");
                 }
             });
         });
@@ -64,13 +67,13 @@
             $("#loading-people").loading("start");
             $.ajax({
                 async: true,
-                type: "post",
+                type: "get",
                 url: "/users/findPeople.do",
                 cache: false,
                 data: "offset=" + offset,
                 success: function (response) {
 
-                    JSON.parse(response).forEach(function(entry) {
+                    response.message.forEach(function(entry) {
                         var html =
                                 '<li class="contact" tabindex="1" data-fio="' + (entry.lastName ? entry.lastName + " " : "") + entry.firstName + (entry.middleName ? " " + entry.middleName : "") + '">' +
                                     '<div class="list-group">' +
@@ -88,20 +91,37 @@
                                                 '</p>' +
                                             '</div>'  +
                                         '</div>' +
-                                        '</a>' +
-                                        '<button style="float: right;" class="btn btn-default add-friend-btn" data-username="'+entry.username+'">Add Friend</button>' +
-                                        '<div class="clearfix">' +
+                                        '</a>';
+                        var friendship = false;
+                        entry.smartUserFriends.forEach(function(friend) {
+                            if (friend.friendUser.username == "${smartUser.username}") {
+                                friendship = true;
+                            }
+                        });
+
+                        entry.smartUserFriendsOf.forEach(function(friend) {
+                            if (friend.smartUser.username == "${smartUser.username}") {
+                                friendship = true;
+                            }
+                        });
+                        if (friendship) {
+                            html+= "You are friends";
+                        } else {
+                            html += '<button style="float: right;" class="btn btn-default add-friend-btn" data-username="'+entry.username+'">Add Friend</button>';
+                        }
+                        html += '<div class="clearfix">' +
                                     '</div>' +
                                 '</li>';
 
                         peopleContainer.append(html);
                     });
-                    offset += ${constants.peopleSearchResultsCount};
+                    offset += ${constants.PEOPLE_SEARCH_RESULTS_COUNT};
                     $("#loading-people").loading("stop");
                     processing = false;
                 },
                 error: function (response) {
                     //TODO обработка ошибок
+                    console.log(response.responseText)
                     $("#loading-people").loading("stop");
                     alert("error");
                 }

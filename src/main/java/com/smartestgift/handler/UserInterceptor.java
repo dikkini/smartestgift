@@ -1,7 +1,8 @@
 package com.smartestgift.handler;
 
 import com.smartestgift.dao.model.SmartUser;
-import com.smartestgift.dao.model.SmartUserDetails;
+import com.smartestgift.service.SmartUserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -16,6 +17,10 @@ import javax.servlet.http.HttpServletResponse;
  */
 @Component
 public class UserInterceptor implements HandlerInterceptor {
+
+    @Autowired
+    private SmartUserService smartUserService;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object o) throws Exception {
         return true;
@@ -25,8 +30,8 @@ public class UserInterceptor implements HandlerInterceptor {
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object o, ModelAndView mav)
             throws Exception {
         if (mav != null) {
-            SmartUserDetails user = (SmartUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            SmartUser smartUser = user.getSmartUser();
+            SmartUser smartUser = smartUserService.findByUsername(SecurityContextHolder.getContext()
+                    .getAuthentication().getName());
             mav.addObject("smartUser", smartUser);
         }
     }

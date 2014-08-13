@@ -1,10 +1,7 @@
 package com.smartestgift.service;
 
-import com.restfb.types.User;
-import com.smartestgift.dao.model.File;
+import com.smartestgift.controller.model.RegisterSmartUserDTO;
 import com.smartestgift.dao.model.SmartUser;
-import com.smartestgift.dao.model.SmartUserDetails;
-import com.smartestgift.dao.model.SmartUserFriend;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -17,40 +14,25 @@ import java.util.Map;
 public interface SmartUserService {
 
     /**
-     * Create new user
-     * @param username username
-     * @param email email
-     * @param passwordEncoded encoded password
-     * @param firstName first name
-     * @param lastName last name
-     * @param authProviderId auth provider id (from ApplicationConstants)
-     * @param roleId role id (from ApplicationConstants)
-     * @return SmartUserDetails model
+     *
+     * @param username
+     * @return
      */
-    public SmartUserDetails createNewUser(String username, String email, String passwordEncoded, String firstName,
-                                          String lastName, Integer authProviderId, Integer roleId);
-
-    /**
-     * Creating new user from facebook with new user data. New user data coming from page continue registration,
-     * when username or email was occupied.
-     * @param facebookUser facebook user model (restfb model
-     * @param username username
-     * @param email email
-     * @param firstName first name
-     * @param lastName last name
-     * @param socialId social id
-     * @return SmartUserDetails model
-     */
-    public SmartUserDetails createNewUserFromFacebook(User facebookUser, String username, String email, String firstName,
-                                                      String lastName, String socialId);
+    public SmartUser findByUsername(String username);
 
     /**
      *
-     * @param facebookUser
+     * @param createdDTO
      * @return
      */
-    public SmartUserDetails createNewUserFromFacebook(User facebookUser);
+    public SmartUser create(RegisterSmartUserDTO createdDTO);
 
+    /**
+     *
+     * @param smartUser
+     * @return
+     */
+    public SmartUser create(SmartUser smartUser);
 
     /**
      *
@@ -58,34 +40,35 @@ public interface SmartUserService {
      * @param providerId
      * @return
      */
-    public SmartUserDetails findExistSocialUser(String socialId, Integer providerId);
+    public SmartUser findExistSocialUser(String socialId, Integer providerId);
 
     /**
      *
      * @param email
      * @return true - free
      */
-    public boolean checkOccupiedEmail(String email);
+    public boolean isEmailBusy(String email);
+
+    /**
+     *
+     * @param username
+     */
+    public void createUserAuthority(String username);
 
     /**
      *
      * @param username
      * @return true - free
      */
-    public boolean checkOccupiedUsername(String username);
+    public boolean isUsernameBusy(String username);
 
     /**
      *
-     * @param smartUserDetails
+     * @param userName
+     * @param password
      * @param request
      */
-    public void authenticateUser(SmartUserDetails smartUserDetails, HttpServletRequest request);
-
-    /**
-     *
-     * @param smartUserDetails
-     */
-    public void checkUserAddress(SmartUserDetails smartUserDetails);
+    public void authenticateUser(String userName, String password, HttpServletRequest request);
 
     /**
      *
@@ -93,8 +76,9 @@ public interface SmartUserService {
      * @param activeUser
      * @return
      */
-    public List<SmartUser> findUsersByUserInput(String name, SmartUser activeUser);
+    public List<SmartUser> findByUserInput(String name, SmartUser activeUser);
 
+    // TODO вынести в другое API
     /**
      *
      * @param searchString
@@ -106,44 +90,20 @@ public interface SmartUserService {
     /**
      *
      * @param offset
-     * @param smartUser
-     * @return
-     */
-    public List<SmartUser> findUsersWithOffset(int offset, SmartUser smartUser);
-
-    /**
-     *
-     * @param smartUser
-     * @param file
-     */
-    public void updateUserFile(SmartUser smartUser, File file);
-
-    /**
-     *
-     * @param activeUser
-     * @param friendUsername
-     */
-    public void addRequestSmartUserFriend(SmartUser activeUser, String friendUsername);
-
-    /**
-     *
-     * @param activeUser
-     * @param friendUsername
-     */
-    public void removeSmartUserFriend(SmartUser activeUser, String friendUsername);
-
-    /**
-     *
      * @param activeUser
      * @return
      */
-    public List<SmartUserFriend> findAllSmartUserFriends(SmartUser activeUser);
+    public List<SmartUser> findWithOffset(int offset, SmartUser activeUser);
 
     /**
      *
-     * @param activeUser
-     * @param friendUuid
-     * @param typeId
+     * @param smartUser
      */
-    public void changeSmartUserFriendType(SmartUser activeUser, String friendUuid, int typeId);
+    public void update(SmartUser smartUser);
+
+    /**
+     *
+     * @param updatedDTO
+     */
+    public void update(RegisterSmartUserDTO updatedDTO);
 }

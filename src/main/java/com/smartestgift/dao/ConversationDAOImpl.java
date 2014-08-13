@@ -1,7 +1,6 @@
 package com.smartestgift.dao;
 
 import com.smartestgift.dao.model.Conversation;
-import com.smartestgift.dao.model.Message;
 import com.smartestgift.dao.model.SmartUser;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -28,7 +27,7 @@ public class ConversationDAOImpl implements ConversationDAO {
     SessionFactory sessionFactory;
 
     @Override
-    public Conversation find(String id) {
+    public Conversation findOne(String id) {
         return (Conversation) sessionFactory.getCurrentSession().get(Conversation.class, id);
     }
 
@@ -40,10 +39,11 @@ public class ConversationDAOImpl implements ConversationDAO {
     }
 
     @Override
-    public void store(Conversation dmodel) {
+    public Conversation create(Conversation dmodel) {
         Session session = sessionFactory.getCurrentSession();
         session.saveOrUpdate(dmodel);
         session.flush();
+        return dmodel;
     }
 
     @Override
@@ -54,10 +54,11 @@ public class ConversationDAOImpl implements ConversationDAO {
     }
 
     @Override
-    public void merge(Conversation dmodel) {
+    public Conversation update(Conversation dmodel) {
         Session session = sessionFactory.getCurrentSession();
         session.merge(dmodel);
         session.flush();
+        return dmodel;
     }
 
     @Override

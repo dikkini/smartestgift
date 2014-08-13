@@ -278,6 +278,7 @@
                 data: "message=" + inputNewMessageObj.val()
                         + "&username=" + $("#input-new-conversation-contact").data("username"),
                 success: function (response) {
+                    response = response.message;
                     $("#new-message-input-form").hide();
                     var html =
                             '<li>' +
@@ -370,13 +371,13 @@
 
         function loadAndRenderAllConversationMessages(conversationUuid) {
             $.ajax({
-                type: "post",
+                type: "get",
                 url: "/messages/getConversationMessages",
                 cache: false,
                 data: "conversationUuid=" + conversationUuid,
                 dataType: "json",
                 success: function (response) {
-                    response = JSON.parse(response);
+                    response = response.message;
                     renderConversationMessages(response, true);
 
                     setTimeout(function() {
@@ -438,7 +439,7 @@
                     var messageDialogObj = $("#messages-and-people");
                     messageDialogObj.html("");
 
-                    JSON.parse(response).forEach(function(entry) {
+                    response.message.forEach(function(entry) {
                         var html =
                                 '<li data-username="' + entry.username + '"class="contact" tabindex="1" data-fio="' + (entry.lastName ? entry.lastName + " " : "") + entry.firstName + (entry.middleName ? " " + entry.middleName : "") + '">' +
                                         '<div class="list-group">' +

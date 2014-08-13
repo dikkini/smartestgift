@@ -1,24 +1,15 @@
 package com.smartestgift.handler;
 
-import java.io.IOException;
+import com.smartestgift.dao.TokenDAO;
+import com.smartestgift.service.MessageService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.stereotype.Service;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.smartestgift.dao.TokenDAO;
-import com.smartestgift.dao.model.SmartUser;
-import com.smartestgift.dao.model.SmartUserDetails;
-import com.smartestgift.service.MessageService;
-import com.smartestgift.service.SmartUserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.web.authentication.logout.LogoutHandler;
-import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
-import org.springframework.stereotype.Service;
+import java.io.IOException;
 
 /**
  * Created by dikkini on 27.01.14.

@@ -1,13 +1,10 @@
 package com.smartestgift.dao;
 
-import com.smartestgift.dao.model.Message;
 import com.smartestgift.dao.model.MessageStatus;
-import com.smartestgift.dao.model.SmartUser;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.CriteriaSpecification;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +24,7 @@ public class MessageStatusDAOImpl implements MessageStatusDAO {
     SessionFactory sessionFactory;
 
     @Override
-    public MessageStatus find(Integer id) {
+    public MessageStatus findOne(Integer id) {
         return (MessageStatus) sessionFactory.getCurrentSession().get(MessageStatus.class, id);
     }
 
@@ -39,10 +36,11 @@ public class MessageStatusDAOImpl implements MessageStatusDAO {
     }
 
     @Override
-    public void store(MessageStatus dmodel) {
+    public MessageStatus create(MessageStatus dmodel) {
         Session session = sessionFactory.getCurrentSession();
         session.saveOrUpdate(dmodel);
         session.flush();
+        return dmodel;
     }
 
     @Override
@@ -53,9 +51,10 @@ public class MessageStatusDAOImpl implements MessageStatusDAO {
     }
 
     @Override
-    public void merge(MessageStatus dmodel) {
+    public MessageStatus update(MessageStatus dmodel) {
         Session session = sessionFactory.getCurrentSession();
         session.merge(dmodel);
         session.flush();
+        return dmodel;
     }
 }

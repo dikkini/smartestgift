@@ -1,7 +1,6 @@
 package com.smartestgift.service;
 
 import com.smartestgift.dao.model.Conversation;
-import com.smartestgift.dao.model.Message;
 import com.smartestgift.dao.model.SmartUser;
 
 import java.util.List;
@@ -29,10 +28,10 @@ public interface ConversationService {
     /**
      *
      * @param smartUserFrom
-     * @param usernameTo
+     * @param smartUserTo
      * @param message
      */
-    public Conversation createConversation(SmartUser smartUserFrom, String usernameTo, String message);
+    public Conversation createConversation(SmartUser smartUserFrom, SmartUser smartUserTo, String message);
 
     /**
      *

@@ -3,14 +3,15 @@ package com.smartestgift.controller;
 import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
 import com.restfb.types.User;
-import com.smartestgift.dao.model.SmartUserDetails;
+import com.smartestgift.dao.model.File;
+import com.smartestgift.dao.model.SmartUser;
+import com.smartestgift.exception.InternalErrorException;
+import com.smartestgift.service.FileService;
 import com.smartestgift.service.SmartUserService;
 import com.smartestgift.utils.ApplicationConstants;
-import com.smartestgift.utils.ResponseMessages;
 import com.smartestgift.utils.Utils;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
@@ -26,7 +27,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 
 /**
  * Created by dikkini on 27.01.14.
@@ -37,7 +37,10 @@ import java.util.List;
 public class LoginController {
 
     @Autowired
-    SmartUserService smartUserService;
+    private SmartUserService smartUserService;
+
+    @Autowired
+    private FileService fileService;
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView login(@RequestParam(required = false, value = "error") boolean error) {
@@ -61,8 +64,9 @@ public class LoginController {
         try {
             response.sendRedirect(url);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
+            throw new InternalErrorException("Facebook Login Error",
+                    ApplicationConstants.FACEBOOK_LOGIN_EXCEPTION_MESSAGE);
         }
     }
 
@@ -72,7 +76,8 @@ public class LoginController {
         // internal test
         String hashFacebookAuth = (String) request.getSession().getAttribute(ApplicationConstants.FACEBOOK_KEY_WORD);
         if (!hashFacebookAuth.equals(authCode)) {
-            return "redirect:/login?errors=social_network_error";
+            throw new InternalErrorException("Facebook login error",
+                    ApplicationConstants.FACEBOOK_LOGIN_EXCEPTION_MESSAGE);
         }
         //Get the parameter "code" from the request
         String code = request.getParameter("code");
@@ -100,7 +105,8 @@ public class LoginController {
                 int statusCode = client.executeMethod(method);
                 if (statusCode != HttpStatus.SC_OK) {
                     System.err.println("Method failed: " + method.getStatusLine());
-                    return "redirect:/login?errors=external_error";
+                    throw new InternalErrorException("Facebook login error",
+                            ApplicationConstants.FACEBOOK_LOGIN_EXCEPTION_MESSAGE);
                 }
                 // Read the response body.
                 byte[] responseBody = method.getResponseBody();
@@ -129,49 +135,49 @@ public class LoginController {
                     // In this user object, you will have the details you want from Facebook,
                     // Since we have the access token with us, can play around and see what more can be done
 
-                    SmartUserDetails existSocialUser = smartUserService.findExistSocialUser(facebookUser.getId(),
+                    SmartUser existSocialUser = smartUserService.findExistSocialUser(facebookUser.getId(),
                             ApplicationConstants.FACEBOOK_AUTH_PROVIDER_ID);
 
                     if (existSocialUser != null) {
-                        smartUserService.authenticateUser(existSocialUser, request);
+                        smartUserService.authenticateUser(existSocialUser.getUsername(), existSocialUser.getPassword(), request);
                     } else {
-                        boolean emailIsFree = smartUserService.checkOccupiedEmail(facebookUser.getEmail());
-                        boolean usernameIsFree = smartUserService.checkOccupiedUsername(facebookUser.getUsername());
+                        boolean emailBusy = smartUserService.isEmailBusy(facebookUser.getEmail());
+                        boolean usernameBusy = smartUserService.isUsernameBusy(facebookUser.getUsername());
 
-                        if (emailIsFree && usernameIsFree) {
-                            SmartUserDetails newUserFromFacebook = smartUserService.createNewUserFromFacebook(facebookUser);
-                            smartUserService.authenticateUser(newUserFromFacebook, request);
+
+                        SmartUser fbUser = new SmartUser(facebookUser);
+                        String password = Utils.generateSecurePassword();
+                        fbUser.setPassword(password);
+                        // TODO фото юзера
+                        File file = fileService.getFile(ApplicationConstants.FILE_USER_NO_PHOTO_ID);
+                        fbUser.setFile(file);
+                        if (!emailBusy && !usernameBusy) {
+                            SmartUser smartUser = smartUserService.create(fbUser);
+                            smartUserService.createUserAuthority(smartUser.getUsername());
+                            smartUserService.authenticateUser(smartUser.getUsername(),
+                                    smartUser.getPassword(), request);
                             return "redirect:/profile";
                         } else {
-                            request.getSession().setAttribute(facebookUser.getId(), facebookUser);
-                            return "redirect:/signup/facebook?id=" + facebookUser.getId() + "&errors="
-                                    + (!emailIsFree ? "username_error," : "")
-                                    + (!usernameIsFree ? "email_error" : "");
+                            request.getSession().setAttribute(facebookUser.getId(), fbUser);
+                            return "redirect:/signup/facebook?id=" + facebookUser.getId() +
+                                    "&username_error=" + usernameBusy +
+                                    "&email_error=" + emailBusy;
                         }
                     }
                 } else {
-                    return "redirect:/login?errors=internal_error";
+                    throw new InternalErrorException("Facebook login error",
+                            ApplicationConstants.FACEBOOK_LOGIN_EXCEPTION_MESSAGE);
                 }
-
-            } catch (HttpException e) {
-                System.err.println("Fatal protocol violation: " + e.getMessage());
-                e.printStackTrace();
-                return "redirect:/login?errors=internal_error";
-            } catch (IOException e) {
-                System.err.println("Fatal transport error: " + e.getMessage());
-                e.printStackTrace();
-                return "redirect:/login?errors=internal_error";
+            // TODO
             } catch (Exception e) {
                 e.printStackTrace();
                 System.err.println("Common Exception: " + e.getMessage());
-                return "redirect:/login?errors=internal_error";
             }
             // Release the connection.
             method.releaseConnection();
-
-            return "redirect:/login?errors=internal_error";
-        } else {
-            return "redirect:/login?errors=internal_error";
         }
+
+        throw new InternalErrorException("Facebook login error",
+                ApplicationConstants.FACEBOOK_LOGIN_EXCEPTION_MESSAGE);
     }
 }

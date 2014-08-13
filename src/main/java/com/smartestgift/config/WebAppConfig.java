@@ -2,10 +2,11 @@ package com.smartestgift.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.smartestgift.handler.CurrentUserHandlerMethodArgumentResolver;
 import com.smartestgift.handler.UserInterceptor;
 import javassist.Modifier;
 import org.hibernate.SessionFactory;
+import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
+import org.hibernate.validator.resourceloading.PlatformResourceBundleLocator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -16,7 +17,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.core.env.Environment;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -26,20 +26,19 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.orm.hibernate4.support.OpenSessionInViewInterceptor;
-import org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
-import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.*;
+import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
-import org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
+import javax.validation.Validation;
+import javax.validation.Validator;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
@@ -57,10 +56,8 @@ import java.util.Properties;
 @EnableCaching()
 @EnableTransactionManagement
 public class WebAppConfig extends WebMvcConfigurerAdapter {
-    private static final Charset UTF8 = Charset.forName("UTF-8");
 
-    @Autowired
-    Environment env;
+    private static final Charset UTF8 = Charset.forName("UTF-8");
 
     @Bean
     public CacheManager cacheManager() {
@@ -80,9 +77,9 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.postgresql.Driver");
 
-        dataSource.setUrl("jdbc:postgresql://10.211.55.7:5432/smartestgiftdb?useEncoding=true&amp;characterEncoding=UTF-8");
-        dataSource.setUsername("gift");
-        dataSource.setPassword("gift");
+        dataSource.setUrl("jdbc:postgresql://localhost:5432/smartgift?useEncoding=true&amp;characterEncoding=UTF-8");
+        dataSource.setUsername("dikkini");
+        dataSource.setPassword("dikkini");
 
         return dataSource;
     }
@@ -99,7 +96,7 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
         hibernateProperties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQL82Dialect");
         hibernateProperties.put("hibernate.show_sql", "true");
         hibernateProperties.put("hibernate.format_sql", "true");
-        //hibernateProperties.put("hibernate.generate_statistics", env.getProperty("hibernate.generate_statistics"));
+        hibernateProperties.put("hibernate.generate_statistics", "true");
         hibernateProperties.put("hibernate.enable_lazy_load_no_trans", "true");
 
         // second level cache
@@ -121,6 +118,19 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
             return null;
         }
         return sessionFactoryBean.getObject();
+    }
+
+    @Bean
+    public Validator validator() {
+        return Validation.byDefaultProvider()
+                .configure()
+                .messageInterpolator(
+                        new ResourceBundleMessageInterpolator(
+                                new PlatformResourceBundleLocator("ValidationMessages")
+                        )
+                )
+                .buildValidatorFactory()
+                .getValidator();
     }
 
     @Bean
@@ -149,9 +159,9 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
         OpenSessionInViewInterceptor sessionInViewInterceptor = new OpenSessionInViewInterceptor();
         sessionInViewInterceptor.setSessionFactory(sessionFactory());
 
-        registry.addWebRequestInterceptor(sessionInViewInterceptor  );
+        registry.addWebRequestInterceptor(sessionInViewInterceptor);
         registry.addInterceptor(localeChangeInterceptor());
-        registry.addInterceptor(new UserInterceptor()).addPathPatterns("/**")
+        registry.addInterceptor(userInterceptor()).addPathPatterns("/**")
                 .excludePathPatterns("/", "/login/**", "/signup/**");
     }
 
@@ -167,7 +177,7 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
     @Bean
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource ret = new ReloadableResourceBundleMessageSource();
-        ret.setBasename("/assets/messages");
+        ret.setBasenames("/assets/ValidationMessages", "/assets/labels", "/assets/exceptions");
         ret.setDefaultEncoding("UTF-8");
         return ret;
     }
@@ -184,16 +194,6 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
         CookieLocaleResolver ret = new CookieLocaleResolver();
         ret.setDefaultLocale(Locale.ENGLISH);
         return ret;
-    }
-
-    @Override
-    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-        argumentResolvers.add(currentUserHandlerMethodArgumentResolver());
-    }
-
-    @Bean
-    public CurrentUserHandlerMethodArgumentResolver currentUserHandlerMethodArgumentResolver() {
-        return new CurrentUserHandlerMethodArgumentResolver();
     }
 
     @Override
@@ -230,6 +230,34 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
                 new MediaType(MediaType.MULTIPART_FORM_DATA.getType(), MediaType.MULTIPART_FORM_DATA.getSubtype(), UTF8)
         ));
         return converter;
+    }
+
+    @Bean
+    public SimpleMappingExceptionResolver exceptionResolver() {
+        SimpleMappingExceptionResolver exceptionResolver = new SimpleMappingExceptionResolver();
+
+        Properties exceptionMappings = new Properties();
+
+        // TODO продумать маппинги эксепшенов
+//        exceptionMappings.put("net.petrikainulainen.spring.testmvc.TodoNotFoundException", "error/404");
+        exceptionMappings.put("java.lang.Exception", "error/error");
+        exceptionMappings.put("java.lang.RuntimeException", "error/error");
+
+        exceptionResolver.setExceptionMappings(exceptionMappings);
+
+        Properties statusCodes = new Properties();
+
+        statusCodes.put("error/404", "404");
+        statusCodes.put("error/error", "500");
+
+        exceptionResolver.setStatusCodes(statusCodes);
+
+        return exceptionResolver;
+    }
+
+    @Bean
+    public UserInterceptor userInterceptor() {
+        return new UserInterceptor();
     }
 
     @Bean

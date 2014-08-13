@@ -1,6 +1,6 @@
 package com.smartestgift.dao.model;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -24,12 +24,14 @@ public class File implements Serializable {
     @Column(name = "name")
     protected String name;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="type_id")
-    private FileType type;
+    protected FileType type;
 
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "files", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private Set<Gift> gifts;
+    protected Set<Gift> gifts;
 
     public File() {}
 
@@ -73,13 +75,24 @@ public class File implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof File)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
         File file = (File) o;
 
-        if (!id.equals(file.id)) return false;
-        if (!name.equals(file.name)) return false;
+        if (gifts != null ? !gifts.equals(file.gifts) : file.gifts != null) return false;
+        if (id != null ? !id.equals(file.id) : file.id != null) return false;
+        if (name != null ? !name.equals(file.name) : file.name != null) return false;
+        if (type != null ? !type.equals(file.type) : file.type != null) return false;
 
         return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (gifts != null ? gifts.hashCode() : 0);
+        return result;
     }
 }

@@ -21,9 +21,6 @@ public class Role implements Serializable {
     @Column(name = "role")
     private String role;
 
-    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
-    private Set<SmartUserDetails> personRoles;
-
     public Role() {}
 
     public Role(Integer id, String role) {
@@ -45,14 +42,6 @@ public class Role implements Serializable {
 
     public void setRole(String role) {
         this.role = role;
-    }
-
-    public Set<SmartUserDetails> getPersonRoles() {
-        return personRoles;
-    }
-
-    public void setPersonRoles(Set<SmartUserDetails> personRoles) {
-        this.personRoles = personRoles;
     }
 
     @Override

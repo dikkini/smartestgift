@@ -7,10 +7,6 @@ import com.smartestgift.dao.SmartUserDAO;
 import com.smartestgift.dao.model.Conversation;
 import com.smartestgift.dao.model.Message;
 import com.smartestgift.dao.model.SmartUser;
-import org.hibernate.Criteria;
-import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.SimpleExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,7 +38,7 @@ public class ConversationServiceImpl implements ConversationService {
 
     @Override
     public Conversation findConversationByUuid(String uuid) {
-        return conversationDAO.find(uuid);
+        return conversationDAO.findOne(uuid);
     }
 
     @Override
@@ -51,11 +47,11 @@ public class ConversationServiceImpl implements ConversationService {
     }
 
     @Override
-    public Conversation createConversation(SmartUser smartUserFrom, String usernameTo, String message) {
+    public Conversation createConversation(SmartUser smartUserFrom, SmartUser smartUserTo, String message) {
         Conversation conversation = new Conversation();
         conversation.setUser_from(smartUserFrom);
-        conversation.setUser_to(smartUserDAO.findSmartUserByUsername(usernameTo));
-        conversationDAO.store(conversation);
+        conversation.setUser_to(smartUserTo);
+        conversationDAO.create(conversation);
         messageService.sendMessageToUser(smartUserFrom, message, conversation.getUuid());
         return conversation;
     }

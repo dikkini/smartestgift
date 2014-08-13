@@ -1,5 +1,6 @@
 package com.smartestgift.dao.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -30,12 +31,13 @@ public class Gift implements Serializable {
     @Column(name = "add_date")
     protected Date addDate;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name="category_id")
     protected GiftCategory category;
 
     @ManyToMany(fetch = FetchType.EAGER,  cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "gift_file",
+    @JoinTable(name = "gift_files",
             joinColumns = {
                     @JoinColumn(name = "gift_uuid", nullable = false, updatable = false)
             },

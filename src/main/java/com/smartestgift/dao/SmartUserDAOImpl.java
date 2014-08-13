@@ -1,12 +1,14 @@
 package com.smartestgift.dao;
 
-import com.smartestgift.dao.SmartUserDAO;
 import com.smartestgift.dao.model.*;
 import com.smartestgift.utils.ApplicationConstants;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.*;
+import org.hibernate.criterion.CriteriaSpecification;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,11 +22,12 @@ import java.util.List;
 @Service
 @Transactional
 public class SmartUserDAOImpl implements SmartUserDAO {
+
     @Autowired
     SessionFactory sessionFactory;
 
     @Override
-    public SmartUser find(String uuid) {
+    public SmartUser findOne(String uuid) {
         return (SmartUser) sessionFactory.getCurrentSession().get(SmartUser.class, uuid);
     }
 
@@ -36,35 +39,52 @@ public class SmartUserDAOImpl implements SmartUserDAO {
     }
 
     @Override
-    public void store(SmartUser dmodel) {
+    public SmartUser create(SmartUser created) {
         Session session = sessionFactory.getCurrentSession();
-        session.saveOrUpdate(dmodel);
+        session.saveOrUpdate(created);
+        session.flush();
+        return created;
+    }
+
+    @Override
+    public void delete(SmartUser deleted) {
+        Session session = sessionFactory.getCurrentSession();
+        session.delete(deleted);
         session.flush();
     }
 
     @Override
-    public void delete(SmartUser dmodel) {
+    public SmartUser update(SmartUser updated) {
         Session session = sessionFactory.getCurrentSession();
-        session.delete(dmodel);
+        session.update(updated);
         session.flush();
+        return updated;
     }
 
     @Override
-    public void merge(SmartUser dmodel) {
-        Session session = sessionFactory.getCurrentSession();
-        session.merge(dmodel);
-        session.flush();
-    }
-
-    @Override
-    public SmartUser findSmartUserByUsername(String username) {
+    public SmartUser findByUsername(String username) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
         criteria.add(Restrictions.eq("username", username));
         return (SmartUser) criteria.uniqueResult();
     }
 
     @Override
-    public List<SmartUser> findSmartUsersLikeUserName(String username, String activeUsername) {
+    public SmartUser findBySocialIdAndAuthProvider(String socialId, Integer facebookAuthProvider) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
+        criteria.add(Restrictions.eq("socialId", socialId));
+        criteria.add(Restrictions.eq("authProvider", facebookAuthProvider));
+        return (SmartUser) criteria.uniqueResult();
+    }
+
+    @Override
+    public SmartUser findByEmail(String email) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
+        criteria.add(Restrictions.eq("email", email));
+        return (SmartUser) criteria.uniqueResult();
+    }
+
+    @Override
+    public List<SmartUser> findLikeUsername(String username, String activeUsername) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
         criteria.setMaxResults(ApplicationConstants.GLOBAL_SEARCH_RESULTS_COUNT);
         Criterion userLikeCriteria = Restrictions.ilike("username", username, MatchMode.ANYWHERE);
@@ -74,7 +94,7 @@ public class SmartUserDAOImpl implements SmartUserDAO {
     }
 
     @Override
-    public List<SmartUser> findSmartUsersLikeFirstName(String firstName, String activeFistName) {
+    public List<SmartUser> findLikeFirstName(String firstName, String activeFistName) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
         criteria.setMaxResults(ApplicationConstants.GLOBAL_SEARCH_RESULTS_COUNT);
         Criterion firstNameLikeCriteria = Restrictions.ilike("firstName", firstName, MatchMode.ANYWHERE);
@@ -84,7 +104,7 @@ public class SmartUserDAOImpl implements SmartUserDAO {
     }
 
     @Override
-    public List<SmartUser> findSmartUsersLikeLastName(String lastName, String activeLastName) {
+    public List<SmartUser> findLikeLastName(String lastName, String activeLastName) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
         criteria.setMaxResults(ApplicationConstants.GLOBAL_SEARCH_RESULTS_COUNT);
         Criterion lastNameLikeCriteria = Restrictions.ilike("lastName", lastName, MatchMode.ANYWHERE);
@@ -94,7 +114,7 @@ public class SmartUserDAOImpl implements SmartUserDAO {
     }
 
     @Override
-    public List<SmartUser> findSmartUsersLikeMiddleName(String middleName, String activeMiddleName) {
+    public List<SmartUser> findLikeMiddleName(String middleName, String activeMiddleName) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
         criteria.setMaxResults(ApplicationConstants.GLOBAL_SEARCH_RESULTS_COUNT);
         Criterion middleNameLikeCriteria = Restrictions.ilike("middleName", middleName, MatchMode.ANYWHERE);
@@ -104,7 +124,7 @@ public class SmartUserDAOImpl implements SmartUserDAO {
     }
 
     @Override
-    public List<SmartUser> findSmartUsersByOffset(int offset, String activeUserUuid) {
+    public List<SmartUser> findByOffset(int offset, String activeUserUuid) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUser.class);
         criteria.setMaxResults(ApplicationConstants.PEOPLE_SEARCH_RESULTS_COUNT);
         criteria.setFirstResult(offset);
@@ -130,7 +150,7 @@ public class SmartUserDAOImpl implements SmartUserDAO {
     @Override
     public List<SmartUserFriend> findAllSmartUserFriends(SmartUser activeUser) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUserFriend.class);
-        criteria.add(Restrictions.eq("pk.user", activeUser));
+        criteria.add(Restrictions.or(Restrictions.eq("smartUser", activeUser), Restrictions.eq("friendUser", activeUser)));
         criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
         return criteria.list();
     }
@@ -138,11 +158,9 @@ public class SmartUserDAOImpl implements SmartUserDAO {
     @Override
     public SmartUserFriend findSmartUserFriend(SmartUser activeUser, SmartUser friend) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUserFriend.class);
-        SmartUserFriendId smartUserFriendId = new SmartUserFriendId();
-        smartUserFriendId.setUser(activeUser);
-        smartUserFriendId.setFriend(friend);
 
-        criteria.add(Restrictions.eq("pk", smartUserFriendId));
+        criteria.add(Restrictions.eq("smartUser", activeUser));
+        criteria.add(Restrictions.eq("friendUser", friend));
         criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
         return (SmartUserFriend) criteria.uniqueResult();
     }
@@ -151,8 +169,18 @@ public class SmartUserDAOImpl implements SmartUserDAO {
     public SmartUserGift findSmartUserGift(SmartUser user, GiftShop giftShop) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUserGift.class);
 
-        criteria.add(Restrictions.eq("pk.user", user));
-        criteria.add(Restrictions.eq("pk.giftShop", giftShop));
+        criteria.add(Restrictions.eq("smartUser", user));
+        criteria.add(Restrictions.eq("giftShop", giftShop));
+        criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
+        return (SmartUserGift) criteria.uniqueResult();
+    }
+
+    // TODO крепко подумать над такой логикой с коротким URL
+    @Override
+    public SmartUserGift findSmartUserGift(SmartUserGiftURL smartUserGiftURL) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(SmartUserGift.class);
+
+        criteria.add(Restrictions.eq("smartUserGiftURL", smartUserGiftURL));
         criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
         return (SmartUserGift) criteria.uniqueResult();
     }

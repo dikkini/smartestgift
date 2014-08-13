@@ -7,7 +7,7 @@
 
 <sec:authentication var="user" property="principal"/>
 
-<jsp:useBean id="user" class="com.smartestgift.dao.model.SmartUserDetails" scope="request"/>
+<jsp:useBean id="smartUser" class="com.smartestgift.dao.model.SmartUser" scope="request"/>
 <jsp:useBean id="constants" class="com.smartestgift.utils.ApplicationConstants" scope="request"/>
 
 <!DOCTYPE HTML>
@@ -15,8 +15,12 @@
 <html lang="en">
 <head>
     <title><spring:message code="label.title"/></title>
-    <meta name="viewport" content="width=device-width">
-    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" href=/assets/main/images/favicon.png>
+    <link rel="stylesheet" href="/assets/ext/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/assets/ext/bootstrap/css/bootstrap-theme.css">
     <link rel="stylesheet" href="/assets/main/css/style.css">
     <link rel="stylesheet" href="/assets/ext/kladr/jquery.kladr.css">
     <link rel="stylesheet" href="/assets/ext/jquery/notification/pnotify.custom.min.css">
@@ -25,7 +29,7 @@
 
     <script type="text/javascript" src="/assets/ext/jquery/jquery-2.0.3.js"></script>
     <script type="text/javascript" src="/assets/ext/jquery/ui-1.10.4/js/jquery-ui-1.10.4.custom.min.js"></script>
-    <script type="text/javascript" src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/assets/ext/bootstrap/js/bootstrap.js"></script>
     <script type="text/javascript" src="/assets/ext/kladr/jquery.kladr.min.js"></script>
     <script type="text/javascript" src="/assets/ext/bootbox/bootbox.min.js"></script>
     <script type="text/javascript" src="/assets/ext/common/modernizr.js"></script>
@@ -35,6 +39,7 @@
     <script type="text/javascript" src="/assets/main/js/utils.js"></script>
     <script type="text/javascript" src="/assets/main/js/notifications.js"></script>
     <script type="text/javascript" src="/assets/ext/jquery/notification/pnotify.custom.min.js"></script>
+    <script type="text/javascript" src="/assets/ext/zeroclipboard/ZeroClipboard.js"></script>
 
     <script type="text/javascript" src="/assets/ext/jquery/fileupload/jquery.ui.widget.js"></script>
     <script type="text/javascript" src="/assets/ext/jquery/fileupload/jquery.iframe-transport.js"></script>
@@ -45,14 +50,11 @@
 </head>
 
 <body>
-<form name="refreshForm">
-    <input type="hidden" name="visited" value=""/>
-</form>
+
 <div class="header">
     <header>
-        <div class="row">
+<%--        <div class="row">
             <div class="col-md-11">
-                <img src="/assets/main/images/logo.png">
             </div>
             <div class="col-md-1">
                 <span style="float: right">
@@ -61,7 +63,7 @@
                     <a href="?lang=ru">ru</a>
                 </span>
             </div>
-        </div>
+        </div>--%>
         <div class="navbar navbar-inverse">
             <div class="container">
                 <div class="navbar-header">
@@ -106,8 +108,8 @@
                             <li>
                                 <p class="navbar-text navbar-right"><spring:message code="label.signed"/>
                                     <a href="/profile" class="navbar-link">
-                                        <c:out value="${user.smartUser.firstName}"/>
-                                        <c:out value="${user.smartUser.lastName}"/>
+                                        <c:out value="${smartUser.firstName}"/>
+                                        <c:out value="${smartUser.lastName}"/>
                                     </a>
                                 </p>
                             </li>
@@ -153,8 +155,8 @@
         var customRenderMenu = function(ul, items){
                 var that = this,
                         currentCategory = "";
-                var giftItems = items[0].gift;
-                var userItems = items[0].user;
+                var giftItems = items[0].message.gift;
+                var userItems = items[0].message.user;
 
                 if (giftItems.length > 0) {
                     ul.append("<li class='ui-autocomplete-category'>" + "GIFTS" + "</li>");
@@ -217,7 +219,7 @@
 
                 var term = request.term;
                 if (term in cache) {
-                    var data = JSON.parse(cache[term]);
+                    var data = cache[term];
                     response({items:data});
                     globalSearchInputObj.removeClass("loading-input");
                     return;
@@ -229,8 +231,7 @@
                     data: {searchString: term},
                     dataType: "json",
                     success: function (data) {
-                        cache[ term ] = data;
-                        data = JSON.parse(data);
+                        cache[ term ] = data.message;
                         response({items:data});
                     },
                     error: function (data) {

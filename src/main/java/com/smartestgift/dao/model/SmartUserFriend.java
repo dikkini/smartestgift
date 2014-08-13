@@ -1,5 +1,8 @@
 package com.smartestgift.dao.model;
 
+import com.fasterxml.jackson.annotation.*;
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -9,16 +12,27 @@ import java.util.Date;
  * Email: dikkini@gmail.com
  */
 @Entity
-@Table(name = "user_friend")
+@Table(name = "user_friends")
 @AssociationOverrides({
-        @AssociationOverride(name = "pk.user",
+        @AssociationOverride(name = "smartUser",
                 joinColumns = @JoinColumn(name = "user_uuid")),
-        @AssociationOverride(name = "pk.friend",
+        @AssociationOverride(name = "friendUser",
                 joinColumns = @JoinColumn(name = "friend_uuid")) })
 public class SmartUserFriend implements Serializable {
 
-    @EmbeddedId
-    protected SmartUserFriendId pk = new SmartUserFriendId();
+    @Id
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid2")
+    @Column(name = "uuid", unique = true)
+    protected String uuid;
+
+    @ManyToOne
+    @JoinColumn(name="user_uuid")
+    private SmartUser smartUser;
+
+    @ManyToOne
+    @JoinColumn(name="friend_uuid")
+    private SmartUser friendUser;
 
     @Column(name = "friendadddate")
     protected Date friendAddDate;
@@ -26,30 +40,24 @@ public class SmartUserFriend implements Serializable {
     @Column(name = "friendtypeid")
     protected int friendTypeId;
 
-    public SmartUserFriendId getPk() {
-        return pk;
+    public String getUuid() {
+        return uuid;
     }
 
-    public void setPk(SmartUserFriendId pk) {
-        this.pk = pk;
-    }
-
-    @Transient
     public SmartUser getSmartUser() {
-        return getPk().getUser();
+        return smartUser;
     }
 
     public void setSmartUser(SmartUser smartUser) {
-        getPk().setUser(smartUser);
+        this.smartUser = smartUser;
     }
 
-    @Transient
-    public SmartUser getFriend() {
-        return getPk().getFriend();
+    public SmartUser getFriendUser() {
+        return friendUser;
     }
 
-    public void setFriend(SmartUser friend) {
-        getPk().setFriend(friend);
+    public void setFriendUser(SmartUser friendUser) {
+        this.friendUser = friendUser;
     }
 
     public Date getFriendAddDate() {
@@ -71,16 +79,27 @@ public class SmartUserFriend implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof SmartUserFriend)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
         SmartUserFriend that = (SmartUserFriend) o;
 
-        return !(getPk() != null ? !getPk().equals(that.getPk()) : that.getPk() != null);
+        if (friendTypeId != that.friendTypeId) return false;
+        if (friendAddDate != null ? !friendAddDate.equals(that.friendAddDate) : that.friendAddDate != null)
+            return false;
+        if (friendUser != null ? !friendUser.equals(that.friendUser) : that.friendUser != null) return false;
+        if (smartUser != null ? !smartUser.equals(that.smartUser) : that.smartUser != null) return false;
+        if (uuid != null ? !uuid.equals(that.uuid) : that.uuid != null) return false;
 
+        return true;
     }
 
     @Override
     public int hashCode() {
-        return (getPk() != null ? getPk().hashCode() : 0);
+        int result = uuid != null ? uuid.hashCode() : 0;
+        result = 31 * result + (smartUser != null ? smartUser.hashCode() : 0);
+        result = 31 * result + (friendUser != null ? friendUser.hashCode() : 0);
+        result = 31 * result + (friendAddDate != null ? friendAddDate.hashCode() : 0);
+        result = 31 * result + friendTypeId;
+        return result;
     }
 }

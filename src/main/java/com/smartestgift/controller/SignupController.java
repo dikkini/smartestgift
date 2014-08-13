@@ -1,22 +1,26 @@
 package com.smartestgift.controller;
 
-import com.restfb.types.User;
-import com.smartestgift.controller.model.AjaxResponse;
-import com.smartestgift.dao.model.SmartUserDetails;
-import com.smartestgift.security.UserAuthProvider;
+import com.smartestgift.controller.model.RegisterSmartUserDTO;
+import com.smartestgift.controller.model.Response;
+import com.smartestgift.dao.model.SmartUser;
+import com.smartestgift.exception.EmailBusyException;
+import com.smartestgift.exception.UsernameBusyException;
 import com.smartestgift.service.SmartUserService;
-import com.smartestgift.utils.ApplicationConstants;
-import com.smartestgift.utils.ResponseMessages;
+import com.smartestgift.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -28,98 +32,88 @@ import java.util.List;
 public class SignupController {
 
     @Autowired
-    UserAuthProvider authProvider;
-
-    @Autowired
-    SmartUserService smartUserService;
-
+    private SmartUserService smartUserService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView signUpPage() {
-        return new ModelAndView("signup");
+    public ModelAndView signUpPage(HttpServletRequest request) {
+        return new ModelAndView("register/signup").addObject("registerSmartUserDTO", new RegisterSmartUserDTO());
     }
 
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public @ResponseBody AjaxResponse signUpUser(HttpServletRequest request,
-            @RequestParam (required = true, value = "username") String username,
-            @RequestParam (required = true, value = "email") String email,
-            @RequestParam (required = true, value = "password") String password,
-            @RequestParam (required = true, value = "firstName") String firstName,
-            @RequestParam (required = false, value = "lastName") String lastName) {
+    @RequestMapping(value = "/register.do", method = RequestMethod.POST)
+    public String signUpUser(@Valid RegisterSmartUserDTO registerSmartUserDTO, BindingResult result,
+                             HttpServletRequest request) {
 
-        AjaxResponse result = new AjaxResponse();
-
-        boolean emailOccupied = smartUserService.checkOccupiedEmail(email);
-        boolean usernameOccupied = smartUserService.checkOccupiedUsername(username);
-
-        if (!emailOccupied) {
-            result.addError(ResponseMessages.EMAIL_EXISTING_ERROR);
-        }
-
-        if (!usernameOccupied) {
-            result.addError(ResponseMessages.USERNAME_EXISTING_ERROR);
-        }
-
-        if (result.getErrors().size() > 0) {
-            result.setSuccess(false);
-            return result;
+        if (result.hasErrors()) {
+            return "register/signup";
         }
 
         StandardPasswordEncoder encoder = new StandardPasswordEncoder();
-        String passwordEncoded = encoder.encode(password);
+        String passwordEncoded = encoder.encode(registerSmartUserDTO.getPassword());
+        registerSmartUserDTO.setPassword(passwordEncoded);
+        SmartUser registerUser = smartUserService.create(registerSmartUserDTO);
 
-        SmartUserDetails newUser = smartUserService.createNewUser(username, email, passwordEncoded, firstName, lastName,
-                ApplicationConstants.APPLICATION_AUTH_PROVIDER_ID, ApplicationConstants.USER_ROLE_ID);
+        smartUserService.createUserAuthority(registerUser.getUsername());
+        smartUserService.authenticateUser(registerUser.getUsername(), registerUser.getPassword(), request);
 
-        authProvider.authenticateUser(newUser, request);
-
-        result.setSuccess(true);
-        return result;
+        return Utils.createRedirectViewPath("/profile");
     }
 
     @RequestMapping(value = "/facebook", method = RequestMethod.GET)
     public ModelAndView socialSignUpPage(HttpServletRequest request,
                                          @RequestParam (required = true, value = "id") String socialId,
-                                         @RequestParam(required = true, value = "errors") String[] errors) {
-        SmartUserDetails smartUserDetails = (SmartUserDetails) request.getSession().getAttribute(socialId);
+                                         @RequestParam(required = true, value = "email_error") boolean email_error,
+                                         @RequestParam(required = true, value = "username_error") boolean username_error) {
+        SmartUser smartUser = (SmartUser) request.getSession().getAttribute(socialId);
+
+        request.setAttribute("social", true);
         ModelAndView mav = new ModelAndView("signupSocial");
-        mav.addObject("smartUserDetails", smartUserDetails);
-        mav.addObject("errors", errors);
+        mav.addObject("facebookSmartUser", smartUser);
+        mav.addObject("email_error", email_error);
+        mav.addObject("username_error", username_error);
         return mav;
     }
 
-    @RequestMapping(value = "/facebook/register", method = RequestMethod.POST)
-    public @ResponseBody AjaxResponse socialRegister(HttpServletRequest request,
-                                      @RequestParam (required = true, value = "id") String socialId,
-                                      @RequestParam (required = true, value = "username") String username,
-                                      @RequestParam (required = true, value = "email") String email,
-                                      @RequestParam (required = true, value = "firstName") String firstName,
-                                      @RequestParam (required = false, value = "lastName") String lastName) {
+    @RequestMapping(value = "/facebook/register", headers = "Accept=application/json", method = RequestMethod.POST)
+    public @ResponseBody Response socialRegister(HttpServletRequest request, HttpServletResponse response,
+                                                 @RequestParam (required = true, value = "id") String socialId,
+                                                 @RequestParam (required = true, value = "username") String username,
+                                                 @RequestParam (required = true, value = "email") String email,
+                                                 @RequestParam (required = true, value = "firstName") String firstName,
+                                                 @RequestParam (required = false, value = "lastName") String lastName) {
         // TODO проверка всех входных данных
-        AjaxResponse response = new AjaxResponse();
+        // TODO обработка города из КЛАДРа
+        SmartUser facebookUser = (SmartUser) request.getSession().getAttribute(socialId);
+        facebookUser.setUsername(username);
+        facebookUser.setEmail(email);
+        facebookUser.setFirstName(firstName);
+        facebookUser.setLastName(lastName);
 
-        User facebookUser = (User) request.getSession().getAttribute(socialId);
-        SmartUserDetails newUserFromFacebook = smartUserService.createNewUserFromFacebook(facebookUser, username,
-                email, firstName, lastName, socialId);
-        authProvider.authenticateUser(newUserFromFacebook, request);
+        smartUserService.create(facebookUser);
+        smartUserService.createUserAuthority(facebookUser.getUsername());
+        smartUserService.authenticateUser(facebookUser.getUsername(), facebookUser.getPassword(), request);
 
-        response.setSuccess(true);
-        return response;
+        return Response.createResponse(true);
     }
 
-    @RequestMapping(value = "/checkLogin", method = RequestMethod.POST)
-    public @ResponseBody AjaxResponse checkLogin(@RequestParam(value = "login", required = true) String login) {
-        boolean loginFree = smartUserService.checkOccupiedUsername(login);
-        AjaxResponse result = new AjaxResponse();
-        result.setSuccess(loginFree);
-        return result;
+    @RequestMapping(value = "/checkLogin", method = RequestMethod.GET)
+    public @ResponseBody Response checkLogin(@RequestParam(value = "login", required = true) String login) {
+        boolean usernameBusy = smartUserService.isUsernameBusy(login);
+        return Response.createResponse(!usernameBusy);
     }
 
-    @RequestMapping(value = "/checkEmail", method = RequestMethod.POST)
-    public @ResponseBody AjaxResponse checkEmail(@RequestParam(value = "email", required = true) String email) {
-        boolean emailFree = smartUserService.checkOccupiedEmail(email);
-        AjaxResponse result = new AjaxResponse();
-        result.setSuccess(emailFree);
-        return result;
+    @RequestMapping(value = "/checkEmail", method = RequestMethod.GET)
+    public @ResponseBody Response checkEmail(@RequestParam(value = "email", required = true) String email) {
+        boolean emailBusy = smartUserService.isEmailBusy(email);
+        return Response.createResponse(!emailBusy);
+    }
+
+    @ExceptionHandler(UsernameBusyException.class)
+    public @ResponseBody ResponseEntity handleUsernameBusyException(HttpServletResponse response) {
+        return new ResponseEntity<String>(HttpStatus.IM_USED);
+    }
+
+    @ExceptionHandler(EmailBusyException.class)
+    public @ResponseBody ResponseEntity handleEmailBusyException(HttpServletResponse response) {
+        return new ResponseEntity<String>(HttpStatus.IM_USED);
     }
 }

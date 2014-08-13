@@ -1,10 +1,14 @@
 $(document).ready(function () {
-    var usernameOkIcon = $("#username-ok-icon");
-    var usernameNotOkIcon = $("#username-not-ok-icon");
-    var emailOkIcon = $("#email-ok-icon");
-    var emailNotOkIcon = $("#email-not-ok-icon");
-    var cityOkIcon = $("#city-ok-icon");
-    var cityNotOkIcon = $("#city-not-ok-icon");
+    var usernameOkSpan = $("#username-ok-icon");
+    var usernameNotOkSpan = $("#username-not-ok-icon");
+    var firstNameOkSpan = $("#firstName-ok-icon");
+    var firstNameNotOkSpan = $("#firstName-not-ok-icon");
+    var emailOkSpan = $("#email-ok-icon");
+    var emailNotOkSpan = $("#email-not-ok-icon");
+    var passwordOkSpan = $("#password-ok-icon");
+    var passwordNotOkSpan = $("#password-not-ok-icon");
+    var cityOkSpan = $("#city-ok-icon");
+    var cityNotOkSpan = $("#city-not-ok-icon");
 
     var usernameObj = $("#username");
     var emailObj = $("#email");
@@ -32,16 +36,16 @@ $(document).ready(function () {
     function showUsernameInputError() {
         usernameForm.removeClass("has-success");
         usernameForm.addClass("has-error");
-        usernameNotOkIcon.show();
+        usernameNotOkSpan.show();
         usernameInputErrorObj.show();
-        usernameOkIcon.hide();
+        usernameOkSpan.hide();
     }
 
     function showEmailInputError() {
         emailForm.removeClass("has-success");
         emailForm.addClass("has-error");
-        emailOkIcon.hide();
-        emailNotOkIcon.show();
+        emailOkSpan.hide();
+        emailNotOkSpan.show();
         emailInputErrorObj.show();
         emailBusyErrorObj.hide();
     }
@@ -60,29 +64,32 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            type: "post",
+            type: "get",
             url: "/signup/checkLogin",
             cache: false,
             data: "login=" + $('#username').val(),
             success: function (response) {
-                if (response.success) {
+                if (response.message) {
                     usernameForm.removeClass("has-error");
                     usernameForm.addClass("has-success");
-                    usernameOkIcon.show();
+                    usernameOkSpan.show();
                     usernameInputErrorObj.hide();
                     usernameBusyErrorObj.hide();
-                    usernameNotOkIcon.hide();
+                    usernameNotOkSpan.hide();
+
+                    ajaxLoadingUsername.loading('stop');
                 } else {
                     usernameForm.removeClass("has-success");
                     usernameForm.addClass("has-error");
-                    usernameNotOkIcon.show();
+                    usernameNotOkSpan.show();
                     usernameBusyErrorObj.show();
-                    usernameOkIcon.hide();
+                    usernameOkSpan.hide();
+
+                    ajaxLoadingUsername.loading('stop');
                 }
-                ajaxLoadingUsername.loading('stop');
             },
             error: function (response) {
-                alert(response.error);
+                alert("error");
             }
         });
     });
@@ -101,31 +108,34 @@ $(document).ready(function () {
             emailInputErrorObj.hide();
         }
         $.ajax({
-            type: "post",
+            type: "get",
             url: "/signup/checkEmail",
             cache: false,
             data: "email=" + $('#email').val(),
             success: function (response) {
-                if (response.success) {
+                if (response.message) {
                     emailForm.removeClass("has-error");
                     emailForm.addClass("has-success");
-                    emailOkIcon.show();
+                    emailOkSpan.show();
 
-                    emailNotOkIcon.hide();
+                    emailNotOkSpan.hide();
                     emailInputErrorObj.hide();
                     emailBusyErrorObj.hide();
+
+                    emailLoading.loading('stop');
                 } else {
                     emailForm.removeClass("has-success");
                     emailForm.addClass("has-error");
 
                     emailBusyErrorObj.show();
-                    emailNotOkIcon.show();
-                    emailOkIcon.hide();
+                    emailNotOkSpan.show();
+                    emailOkSpan.hide();
+
+                    emailLoading.loading('stop');
                 }
-                emailLoading.loading('stop');
             },
             error: function (response) {
-                alert(response.error);
+                alert("error");
             }
         });
     });
@@ -134,62 +144,76 @@ $(document).ready(function () {
         //TODO проверить ID выдавший КЛАДР и вынести в отдельную функцию
         if (cityObj.val().trim() == "") {
             cityForm.addClass("has-error");
-            cityOkIcon.hide();
-            cityNotOkIcon.show();
+            cityOkSpan.hide();
+            cityNotOkSpan.show();
         } else {
-            cityForm.addClass("has-success")
-            cityOkIcon.show();
-            cityNotOkIcon.hide();
+            cityForm.addClass("has-success");
+            cityOkSpan.show();
+            cityNotOkSpan.hide();
         }
     });
 
     firstnameObj.on('focusout', function(e) {
         if (firstnameObj.val().trim() == "") {
             firstnameForm.addClass("has-error");
+            firstNameOkSpan.hide();
+            firstNameNotOkSpan.show();
         } else {
             firstnameForm.addClass("has-success")
+            firstNameOkSpan.show();
+            firstNameNotOkSpan.hide();
         }
     });
 
     passwordObj.on('focusout', function(e) {
         if (passwordObj.val().trim() == "") {
             passwordForm.addClass("has-error");
+            passwordOkSpan.hide();
+            passwordNotOkSpan.show();
         } else {
             passwordForm.addClass("has-success")
+            passwordOkSpan.show();
+            passwordNotOkSpan.hide();
         }
     });
 
     emailObj.focus(function() {
         emailBusyErrorObj.hide();
         emailInputErrorObj.hide();
-        emailNotOkIcon.hide();
-        emailOkIcon.hide();
         emailForm.removeClass("has-error");
         emailForm.removeClass("has-success");
+        emailNotOkSpan.hide();
+        emailOkSpan.hide();
     });
 
     usernameObj.focus(function() {
-        usernameNotOkIcon.hide();
-        usernameOkIcon.hide();
         usernameInputErrorObj.hide();
         usernameBusyErrorObj.hide();
         usernameForm.removeClass("has-error");
         usernameForm.removeClass("has-success");
+        usernameNotOkSpan.hide();
+        usernameOkSpan.hide();
     });
 
     firstnameObj.focus(function() {
         firstnameForm.removeClass("has-error");
-        firstnameForm.removeClass("has-success")
+        firstnameForm.removeClass("has-success");
+        firstNameOkSpan.hide();
+        firstNameNotOkSpan.hide();
     });
 
     cityObj.focus(function() {
         cityForm.removeClass("has-error");
-        cityForm.removeClass("has-success")
+        cityForm.removeClass("has-success");
+        cityOkSpan.hide();
+        cityNotOkSpan.hide();
     });
 
     passwordObj.focus(function() {
         passwordForm.removeClass("has-error");
-        passwordForm.removeClass("has-success")
+        passwordForm.removeClass("has-success");
+        passwordOkSpan.hide();
+        passwordNotOkSpan.hide();
     });
 
     $("#sign-up-btn").click(function (e) {
@@ -219,15 +243,10 @@ $(document).ready(function () {
             validForm = false;
         }
 
-        if (passwordObj.val().trim() == "") {
-            passwordForm.addClass("has-error");
-            validForm = false;
-        }
-
         if (!validForm) {
             loadingSignUp.loading('stop');
             e.preventDefault();
-            return;
+            return false;
         }
 
         var data = {};
@@ -235,25 +254,61 @@ $(document).ready(function () {
             data[$(this).attr('name')] = $(this).val();
         });
 
+
+        if (!social) {
+            if (passwordObj.val().trim() == "") {
+                passwordForm.addClass("has-error");
+                validForm = false;
+            }
+
+            if (!validForm) {
+                loadingSignUp.loading('stop');
+                e.preventDefault();
+                return false;
+            }
+
+            $.ajax({
+                type: "post",
+                url: "/signup/register",
+                cache: false,
+                data: data,
+                success: function (response) {
+                    if (response.message) {
+                        window.location = "/profile?successes=signup_success";
+                    }
+
+                    loadingSignUp.loading('stop');
+                },
+                error: function (response) {
+                    alert("error");
+                }
+            });
+
+            e.preventDefault();
+            return true;
+        }
+
+        data.id = $("#username").data("social");
+
         $.ajax({
             type: "post",
-            url: "/signup/register",
+            url: "/signup/facebook/register",
             cache: false,
             data: data,
             success: function (response) {
-                if (response.success) {
+                if (response.message) {
                     window.location = "/profile?successes=signup_success";
-                } else {
-                    $.showNotifications(response);
                 }
+
                 loadingSignUp.loading('stop');
             },
             error: function (response) {
-                alert(response.error);
+                alert("error");
             }
         });
 
         e.preventDefault();
+        return false;
     });
 
     (function($){

@@ -1,15 +1,18 @@
 package com.smartestgift.service;
 
-import com.google.gson.Gson;
-import com.restfb.types.User;
+import com.smartestgift.controller.model.RegisterSmartUserDTO;
 import com.smartestgift.dao.*;
 import com.smartestgift.dao.model.*;
-import com.smartestgift.security.UserAuthProvider;
-import com.smartestgift.utils.ApplicationConstants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.*;
 
 import static com.smartestgift.utils.ApplicationConstants.*;
@@ -22,19 +25,10 @@ import static com.smartestgift.utils.ApplicationConstants.*;
 public class SmartUserServiceImpl implements SmartUserService {
 
     @Autowired
-    private AuthProviderDAO authProviderDAO;
-
-    @Autowired
-    private SmartUserDetailsDAO smartUserDetailsDAO;
-
-    @Autowired
     private SmartUserDAO smartUserDAO;
 
     @Autowired
     private GiftDAO giftDAO;
-
-    @Autowired
-    private UserAuthProvider userAuthProvider;
 
     @Autowired
     private RoleDAO roleDAO;
@@ -42,115 +36,84 @@ public class SmartUserServiceImpl implements SmartUserService {
     @Autowired
     private FileDAO fileDAO;
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
     @Override
-    public SmartUserDetails createNewUser(String username, String email, String passwordEncoded, String firstName, String lastName, Integer authProviderId, Integer roleId) {
-
-        SmartUser smartUser = new SmartUser();
-        smartUser.setUsername(username);
-        smartUser.setFirstName(firstName);
-        smartUser.setLastName(lastName);
-        smartUser.setFile(fileDAO.find(FILE_USER_NO_PHOTO_ID));
-
-        Role role = roleDAO.find(roleId);
-        AuthProvider authProvider = authProviderDAO.find(authProviderId);
-
-        SmartUserDetails smartUserDetails = new SmartUserDetails();
-        smartUserDetails.setSmartUser(smartUser);
-        smartUserDetails.setUsername(username);
-        smartUserDetails.setEmail(email);
-        smartUserDetails.setPassword(passwordEncoded);
-        smartUserDetails.setRegistrationDate(new Date());
-        smartUserDetails.setAuthProvider(authProvider);
-        smartUserDetails.setRole(role);
-
-        smartUser.setSmartUserDetails(smartUserDetails);
-
-        smartUserDAO.store(smartUser);
-
-        return smartUserDetails;
+    public SmartUser findByUsername(String username) {
+        return smartUserDAO.findByUsername(username);
     }
 
     @Override
-    public SmartUserDetails createNewUserFromFacebook(User facebookUser, String username, String email, String firstName, String lastName, String socialId) {
-        SmartUserDetails smartUserDetails = getSmartUserDetailsFromFacebookUser(facebookUser);
-        SmartUser smartUser = smartUserDetails.getSmartUser();
-        smartUser.setUsername(username);
-        smartUser.setLastName(lastName);
-        smartUser.setFirstName(firstName);
-        smartUser.setFile(fileDAO.find(FILE_USER_NO_PHOTO_ID));
-
-        smartUserDetails.setSocialId(socialId);
-        return smartUserDetails;
+    public SmartUser create(RegisterSmartUserDTO created) {
+        // TODO решить вопрос с файлом
+        SmartUser smartUser = SmartUser.getBuilder(created.getUsername(), created.getEmail(), created.getPassword(),
+                created.getFirstName(), created.getLastName(), created.getAuthProviderId(),
+                created.getRegistrationDate()).build();
+        smartUser.setFile(fileDAO.findOne(FILE_USER_NO_PHOTO_ID));
+        return smartUserDAO.create(smartUser);
     }
 
     @Override
-    public SmartUserDetails createNewUserFromFacebook(User facebookUser) {
-        return getSmartUserDetailsFromFacebookUser(facebookUser);
+    public SmartUser create(SmartUser smartUser) {
+        // TODO решить вопрос с файлом
+        smartUser.setFile(fileDAO.findOne(FILE_USER_NO_PHOTO_ID));
+        return smartUserDAO.create(smartUser);
+    }
+
+
+    @Override
+    public SmartUser findExistSocialUser(String socialId, Integer providerId) {
+        return smartUserDAO.findBySocialIdAndAuthProvider(socialId, providerId);
     }
 
     @Override
-    public SmartUserDetails findExistSocialUser(String socialId, Integer providerId) {
-        AuthProvider authProvider = authProviderDAO.find(providerId);
-        return smartUserDetailsDAO.findUserBySocialIdAndAuthProvider(socialId, authProvider);
+    public boolean isUsernameBusy(String username) {
+        SmartUser userDetailsByUsername = smartUserDAO.findByUsername(username);
+        return userDetailsByUsername != null;
     }
 
     @Override
-    public boolean checkOccupiedUsername(String username) {
-        SmartUserDetails userDetailsByUsername = smartUserDetailsDAO.findSmartUserDetailsByUsername(username);
-        return userDetailsByUsername == null;
+    public boolean isEmailBusy(String email) {
+        SmartUser smartUserDetailsByEmail = smartUserDAO.findByEmail(email);
+        return smartUserDetailsByEmail != null;
     }
 
     @Override
-    public boolean checkOccupiedEmail(String email) {
-        SmartUserDetails smartUserDetailsByEmail = smartUserDetailsDAO.findSmartUserDetailsByEmail(email);
-        return smartUserDetailsByEmail == null;
+    public void createUserAuthority(String username) {
+        Role role = roleDAO.findOne(USER_ROLE_ID);
+        SmartUser smartUser = smartUserDAO.findByUsername(username);
+        UserRole userRole = new UserRole(role, smartUser);
+        smartUser.getUserRoles().add(userRole);
+        smartUserDAO.create(smartUser);
     }
 
     @Override
-    public void authenticateUser(SmartUserDetails smartUserDetails, HttpServletRequest request) {
-        userAuthProvider.authenticateUser(smartUserDetails, request);
+    public void authenticateUser(String userName, String password, HttpServletRequest request) {
+        UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(userName, password);
+
+        // Authenticate the user
+        Authentication authentication = authenticationManager.authenticate(authRequest);
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        securityContext.setAuthentication(authentication);
+
+        // Create a new session and add the security context.
+        HttpSession session = request.getSession(true);
+        session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
     }
 
     @Override
-    public void checkUserAddress(SmartUserDetails smartUserDetails) {
-        // TODO do it
-    }
-
-    private SmartUserDetails getSmartUserDetailsFromFacebookUser(User facebookUser) {
-        SmartUser smartUser = new SmartUser();
-        smartUser.setUsername(facebookUser.getUsername());
-        smartUser.setLastName(facebookUser.getLastName());
-        smartUser.setFirstName(facebookUser.getFirstName());
-        smartUser.setMiddleName(facebookUser.getMiddleName());
-        smartUser.setBirthDate(facebookUser.getBirthdayAsDate());
-        smartUser.setAddress(facebookUser.getHometownName());
-        // TODO photo take from facebook
-        smartUser.setFile(fileDAO.find(FILE_USER_NO_PHOTO_ID));
-        // TODO determine gender and fill it
-        //smartUser.setGender(facebookUser.getGender());
-
-        SmartUserDetails smartUserDetails = new SmartUserDetails();
-        smartUserDetails.setSmartUser(smartUser);
-        smartUserDetails.setRole(roleDAO.find(USER_ROLE_ID));
-        smartUserDetails.setAuthProvider(authProviderDAO.find(FACEBOOK_AUTH_PROVIDER_ID));
-        smartUserDetails.setEmail(facebookUser.getEmail());
-        smartUserDetails.setSocialId(facebookUser.getId());
-        smartUserDetails.setRegistrationDate(new Date());
-        return smartUserDetails;
-    }
-
-    @Override
-    public List<SmartUser> findUsersByUserInput(String name, SmartUser activeUser) {
+    public List<SmartUser> findByUserInput(String name, SmartUser activeUser) {
         List<SmartUser> resultList = new ArrayList<>();
         String[] split = name.split(" ");
         for (String str : split) {
             if (str.equals("")) {
                 continue;
             }
-            resultList.addAll(smartUserDAO.findSmartUsersLikeUserName(str, activeUser.getUsername()));
-            resultList.addAll(smartUserDAO.findSmartUsersLikeLastName(str, activeUser.getLastName()));
-            resultList.addAll(smartUserDAO.findSmartUsersLikeFirstName(str, activeUser.getFirstName()));
-            resultList.addAll(smartUserDAO.findSmartUsersLikeMiddleName(str, activeUser.getMiddleName()));
+            resultList.addAll(smartUserDAO.findLikeUsername(str, activeUser.getUsername()));
+            resultList.addAll(smartUserDAO.findLikeLastName(str, activeUser.getLastName()));
+            resultList.addAll(smartUserDAO.findLikeFirstName(str, activeUser.getFirstName()));
+            resultList.addAll(smartUserDAO.findLikeMiddleName(str, activeUser.getMiddleName()));
         }
 
         return removeDuplicates(resultList);
@@ -159,65 +122,28 @@ public class SmartUserServiceImpl implements SmartUserService {
     // TODO вынести метод в api (?)
     @Override
     public Map<String, List> findUsersAndGiftsByUserInput(String searchString, SmartUser activeUser) {
-        List<SmartUser> usersByUserInput = this.findUsersByUserInput(searchString, activeUser);
+        List<SmartUser> usersByUserInput = findByUserInput(searchString, activeUser);
         List<Gift> giftsBySearchString = giftDAO.findGiftsBySearchString(searchString);
         Map<String, List> result = new HashMap<>();
-        result.put(ApplicationConstants.GIFTS_SEARCH_RESULTS, giftsBySearchString);
-        result.put(ApplicationConstants.USERS_SEARCH_RESULTS, usersByUserInput);
+        result.put(GIFTS_SEARCH_RESULTS, giftsBySearchString);
+        result.put(USERS_SEARCH_RESULTS, usersByUserInput);
 
         return result;
     }
 
     @Override
-    public List<SmartUser> findUsersWithOffset(int offset, SmartUser smartUser) {
-        return smartUserDAO.findSmartUsersByOffset(offset, smartUser.getUuid());
+    public List<SmartUser> findWithOffset(int offset, SmartUser smartUser) {
+        return smartUserDAO.findByOffset(offset, smartUser.getUuid());
     }
 
     @Override
-    public void updateUserFile(SmartUser smartUser, File file) {
-        smartUser.setFile(file);
-        smartUserDAO.merge(smartUser);
+    public void update(SmartUser smartUser) {
+        smartUserDAO.create(smartUser);
     }
 
     @Override
-    public void addRequestSmartUserFriend(SmartUser activeUser, String friendUsername) {
-        SmartUserFriend userNewFriend = new SmartUserFriend();
-        userNewFriend.setFriend(smartUserDAO.findSmartUserByUsername(friendUsername));
-        userNewFriend.setFriendAddDate(new Date());
-        userNewFriend.setFriendTypeId(ApplicationConstants.USER_FRIEND_REQUEST_TYPE);
-        userNewFriend.setSmartUser(activeUser);
-
-        activeUser.getSmartUserFriends().add(userNewFriend);
-
-        smartUserDAO.store(activeUser);
-    }
-
-    @Override
-    public void removeSmartUserFriend(SmartUser activeUser, String friendUsername) {
-        SmartUser friend = smartUserDAO.findSmartUserByUsername(friendUsername);
-        SmartUserFriend smartUserFriend = smartUserDAO.findSmartUserFriend(activeUser, friend);
-        activeUser.getSmartUserFriends().remove(smartUserFriend);
-        smartUserDAO.store(activeUser);
-    }
-
-    @Override
-    public List<SmartUserFriend> findAllSmartUserFriends(SmartUser activeUser) {
-        return smartUserDAO.findAllSmartUserFriends(activeUser);
-    }
-
-    @Override
-    public void changeSmartUserFriendType(SmartUser activeUser, String friendUsername, int typeId) {
-        SmartUser friend = smartUserDAO.findSmartUserByUsername(friendUsername);
-        Set<SmartUserFriend> smartUserFriends = activeUser.getSmartUserFriends();
-
-        for (SmartUserFriend currentSmartUserFriend : smartUserFriends) {
-            if (friend.getUuid().equals(currentSmartUserFriend.getFriend().getUuid())) {
-                currentSmartUserFriend.setFriendTypeId(typeId);
-                break;
-            }
-        }
-
-        smartUserDAO.merge(activeUser);
+    public void update(RegisterSmartUserDTO updatedDTO) {
+        // TODO
     }
 
     private List<SmartUser> removeDuplicates(List<SmartUser> l) {

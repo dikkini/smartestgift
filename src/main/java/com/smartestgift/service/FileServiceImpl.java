@@ -3,9 +3,7 @@ package com.smartestgift.service;
 import com.smartestgift.dao.FileDAO;
 import com.smartestgift.dao.model.File;
 import com.smartestgift.dao.model.FileType;
-import com.smartestgift.utils.ApplicationConstants;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -22,18 +20,18 @@ public class FileServiceImpl implements FileService {
     public File uploadFile(String name, Integer typeId) {
         FileType fileType = fileDAO.findFileTypeById(typeId);
         File file = new File(name,  fileType);
-        fileDAO.store(file);
+        fileDAO.create(file);
         return file;
     }
 
     @Override
     public File getFile(Integer fileId) {
-        return fileDAO.find(fileId);
+        return fileDAO.findOne(fileId);
     }
 
     @Override
     public void deleteFile(Integer fileId) {
-        File file = fileDAO.find(fileId);
+        File file = fileDAO.findOne(fileId);
         fileDAO.delete(file);
     }
 }

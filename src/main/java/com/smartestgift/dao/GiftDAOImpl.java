@@ -2,9 +2,10 @@ package com.smartestgift.dao;
 
 import com.smartestgift.dao.model.Gift;
 import com.smartestgift.dao.model.GiftCategory;
-import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.utils.ApplicationConstants;
-import org.hibernate.*;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.criterion.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class GiftDAOImpl implements GiftDAO {
     SessionFactory sessionFactory;
 
     @Override
-    public Gift find(String id) {
+    public Gift findOne(String id) {
         return (Gift) sessionFactory.getCurrentSession().get(Gift.class, id);
     }
 
@@ -36,11 +37,12 @@ public class GiftDAOImpl implements GiftDAO {
     }
 
     @Override
-    public void store(Gift dmodel) {
+    public Gift create(Gift dmodel) {
         Session session = sessionFactory.getCurrentSession();
         session.saveOrUpdate(dmodel);
         session.flush();
         session.refresh(dmodel);
+        return dmodel;
     }
 
     @Override
@@ -51,10 +53,11 @@ public class GiftDAOImpl implements GiftDAO {
     }
 
     @Override
-    public void merge(Gift dmodel) {
+    public Gift update(Gift dmodel) {
         Session session = sessionFactory.getCurrentSession();
         session.merge(dmodel);
         session.flush();
+        return dmodel;
     }
 
     @Override

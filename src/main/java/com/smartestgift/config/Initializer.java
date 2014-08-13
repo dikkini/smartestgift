@@ -1,6 +1,5 @@
 package com.smartestgift.config;
 
-import org.springframework.security.web.FilterChainProxy;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
@@ -10,8 +9,6 @@ import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.DispatcherServlet;
 
 import javax.servlet.*;
-import java.util.EnumSet;
-import java.util.List;
 
 /**
  * Created by dikkini on 18.03.14.

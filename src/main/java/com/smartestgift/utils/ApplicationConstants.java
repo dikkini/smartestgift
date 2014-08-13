@@ -5,6 +5,8 @@ package com.smartestgift.utils;
  * Email: dikkini@gmail.com
  */
 public class ApplicationConstants {
+    public static final String UTF8 = "UTF8";
+
     public static final String FACEBOOK_APP_ID = "563611490386461";
     public static final String FACEBOOK_REDIRECT_URL = "http://localhost:8080/login/facebookAuthentication?authCode=";
     public static final String FACEBOOK_SECRET_KEY = "334901bd51d0aab8fc45a4785413a576";
@@ -12,6 +14,7 @@ public class ApplicationConstants {
     public static final String FACEBOOK_KEY_WORD = "facebook-auth-key";
 
     public static final String INPUT_DATE_FORMAT_PATTERN = "dd.MM.yyyy";
+    public static final String JSP_INPUT_DATE_FORMAT_PATTERN = "dd.mm.yy";
 
     // Auth providers ids
     public static final Integer APPLICATION_AUTH_PROVIDER_ID = 1;
@@ -34,81 +37,43 @@ public class ApplicationConstants {
     public static final Integer MESSAGE_STATUS_READ = 2;
 
     // User Friend Type
-    public static final int USER_FRIEND_REQUEST_TYPE = 1;
-    public static final int USER_FRIEND_FRIEND_TYPE = 2;
-    public static final int USER_FRIEND_BLOCK_TYPE = 3;
+    public static final int USER_FRIEND_NEW_REQUEST_TYPE = 1;
+    public static final int USER_FRIEND_FRIENDSHIP_TYPE = 2;
+    public static final int USER_FRIEND_BLOCKED_TYPE = 3;
 
     // Global Search hashmap keys for results
     public static final String GIFTS_SEARCH_RESULTS = "gift";
     public static final String USERS_SEARCH_RESULTS = "user";
+    // Global Search results size
     public static final Integer GLOBAL_SEARCH_RESULTS_COUNT = 15;
 
-    // People List
+    // People List Size
     public static final Integer PEOPLE_SEARCH_RESULTS_COUNT = 10;
 
+    // Exceptions Errors codes
+    public static final Integer INTERNAL_EXCEPTION_CODE = 0;
+    public static final Integer FACEBOOK_LOGIN_EXCEPTION_MESSAGE = 3;
 
-    public static String getFACEBOOK_APP_ID() {
-        return FACEBOOK_APP_ID;
+    // URL Shortener vars
+    public static final String ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    public static final int BASE = 62;
+
+    // Crypting settings
+    public static final String myEncryptionKey = "ThisIsSpartaThisIsSparta";
+    public static final String myEncryptionScheme = "DESede";
+
+
+    // getters for using constants in JSP
+    public Integer getPEOPLE_SEARCH_RESULTS_COUNT() {
+        return PEOPLE_SEARCH_RESULTS_COUNT;
     }
 
-    public static String getFacebookRedirectUrl() {
-        return FACEBOOK_REDIRECT_URL;
-    }
-
-    public static String getFacebookSecretKey() {
-        return FACEBOOK_SECRET_KEY;
-    }
-
-    public static String getFacebookExchangeKey() {
-        return FACEBOOK_EXCHANGE_KEY;
-    }
-
-    public static String getFacebookKeyWord() {
-        return FACEBOOK_KEY_WORD;
-    }
-
-    public static String getInputDateFormatPattern() {
+    public String getINPUT_DATE_FORMAT_PATTERN() {
         return INPUT_DATE_FORMAT_PATTERN;
     }
 
-    public static Integer getApplicationAuthProviderId() {
-        return APPLICATION_AUTH_PROVIDER_ID;
-    }
-
-    public static Integer getFacebookAuthProviderId() {
-        return FACEBOOK_AUTH_PROVIDER_ID;
-    }
-
-    public static Integer getFileUserNoPhotoId() {
-        return FILE_USER_NO_PHOTO_ID;
-    }
-
-    public static Integer getUserImageFileTypeId() {
-        return USER_IMAGE_FILE_TYPE_ID;
-    }
-
-    public static Integer getCategoryImageFileTypeId() {
-        return CATEGORY_IMAGE_FILE_TYPE_ID;
-    }
-
-    public static Integer getGiftImageFileTypeId() {
-        return GIFT_IMAGE_FILE_TYPE_ID;
-    }
-
-    public static Integer getUserRoleId() {
-        return USER_ROLE_ID;
-    }
-
-    public static Integer getAdminRoleId() {
-        return ADMIN_ROLE_ID;
-    }
-
-    public static Integer getMessageStatusNew() {
-        return MESSAGE_STATUS_NEW;
-    }
-
-    public static Integer getMessageStatusRead() {
-        return MESSAGE_STATUS_READ;
+    public String getJSP_INPUT_DATE_FORMAT_PATTERN() {
+        return JSP_INPUT_DATE_FORMAT_PATTERN;
     }
 
     public String getGIFTS_SEARCH_RESULTS() {
@@ -119,11 +84,15 @@ public class ApplicationConstants {
         return USERS_SEARCH_RESULTS;
     }
 
-    public Integer getGlobalSearchResultsCount() {
-        return GLOBAL_SEARCH_RESULTS_COUNT;
+    public Integer getUSER_FRIEND_NEW_REQUEST_TYPE() {
+        return USER_FRIEND_NEW_REQUEST_TYPE;
     }
 
-    public Integer getPeopleSearchResultsCount() {
-        return PEOPLE_SEARCH_RESULTS_COUNT;
+    public Integer getUSER_FRIEND_FRIENDSHIP_TYPE() {
+        return USER_FRIEND_FRIENDSHIP_TYPE;
+    }
+
+    public Integer getUSER_FRIEND_BLOCKED_TYPE() {
+        return USER_FRIEND_BLOCKED_TYPE;
     }
 }

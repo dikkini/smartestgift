@@ -10,7 +10,6 @@ import java.util.List;
  * Email: dikkini@gmail.com
  */
 public class GiftPage extends Page {
-    private GiftCategory giftCategory;
 
     public GiftPage(List<Gift> results, int pageNum, int pageSize, boolean isNextPage, boolean isPreviousPage,
                     GiftCategory giftCategory, Long countAll) {
@@ -19,15 +18,6 @@ public class GiftPage extends Page {
         this.pageSize = pageSize;
         this.isNextPage = isNextPage;
         this.isPreviousPage = isPreviousPage;
-        this.giftCategory = giftCategory;
         this.countAll = countAll;
-    }
-
-    public GiftCategory getGiftCategory() {
-        return giftCategory;
-    }
-
-    public void setGiftCategory(GiftCategory giftCategory) {
-        this.giftCategory = giftCategory;
     }
 }

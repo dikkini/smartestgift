@@ -1,14 +1,9 @@
 package com.smartestgift.config;
 
-import com.smartestgift.handler.SmartLogoutHandler;
 import com.smartestgift.security.SmartTokenRepository;
-import com.smartestgift.security.UserAuthProvider;
-import com.smartestgift.security.UserAuthProviderImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
-import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.RememberMeAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -17,16 +12,13 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;
-import org.springframework.security.web.FilterChainProxy;
 import org.springframework.security.web.authentication.RememberMeServices;
-import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
-import javax.inject.Inject;
+import javax.sql.DataSource;
 
 /**
  * Created by dikkini on 19.03.14.
@@ -36,21 +28,24 @@ import javax.inject.Inject;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
-/*@ImportResource("classpath*:security.xml")*/
 public class WebAppSecurityConfig extends WebSecurityConfigurerAdapter {
-
-    @Autowired
-    private UserAuthProvider userAuthProvider;
 
     @Autowired
     private SmartTokenRepository tokenRepository;
 
+//    @Autowired
+//    private SmartLogoutHandler smartLogoutHandler;
+
     @Autowired
-    private SmartLogoutHandler smartLogoutHandler;
+    private DataSource dataSource;
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userAuthProvider).passwordEncoder(new StandardPasswordEncoder());
+        auth.jdbcAuthentication().dataSource(dataSource)
+                .usersByUsernameQuery(
+                        "SELECT username, password, enabled FROM users WHERE username=?")
+                .authoritiesByUsernameQuery(
+                        "SELECT username, role FROM user_roles WHERE username=?").passwordEncoder(new StandardPasswordEncoder());
     }
 
     @Override
@@ -61,12 +56,12 @@ public class WebAppSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.userDetailsService(userAuthProvider);
-        http.sessionManagement()
-                .invalidSessionUrl("/session/invalid")
-                .maximumSessions(1)
-                .expiredUrl("/session/expired")
-                .maxSessionsPreventsLogin(true);
+        http.userDetailsService(userDetailsService());
+//        http.sessionManagement()
+//                .invalidSessionUrl("/session/invalid")
+//                .maximumSessions(1)
+//                .expiredUrl("/session/expired")
+//                .maxSessionsPreventsLogin(true);
         http.formLogin()
                 .loginPage("/login")
                 .defaultSuccessUrl("/profile?successes=login_success")
@@ -108,7 +103,7 @@ public class WebAppSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public RememberMeServices rememberMeServices(){
         PersistentTokenBasedRememberMeServices rememberMeServices = new PersistentTokenBasedRememberMeServices(
-                "127roseQ", userAuthProvider, tokenRepository);
+                "127roseQ", userDetailsService(), tokenRepository);
         rememberMeServices.setCookieName("REMEMBER_ME");
         rememberMeServices.setParameter("remember");
         rememberMeServices.setTokenValiditySeconds(172800);

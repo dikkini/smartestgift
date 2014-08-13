@@ -25,7 +25,7 @@
         </fieldset>
     </div>
     <div class="col-xs-9">
-        <form class="form-horizontal login-form" action="/profile/settings/save.do" method="post">
+        <form class="form-horizontal login-form">
             <fieldset class="personal-information">
                 <legend><spring:message code="label.personalinfo"/></legend>
                 <div class="form-group">
@@ -91,7 +91,7 @@
                 <div class="col-xs-6"></div>
                 <div class="col-xs-2">
                     <div class="col-xs-1">
-                        <input type="submit" value="Save" class="btn btn-default">
+                        <button id="save-settings-btn" class="btn btn-default">Save</button>
                     </div>
                 </div>
             </div>
@@ -105,10 +105,34 @@
 <script type="text/javascript">
     $(document).ready(function () {
 
+        $("#save-settings-btn").click(function(e) {
+            var data = {};
+            $('input').each(function () {
+                data[$(this).attr('name')] = $(this).val();
+            });
+
+            $.ajax({
+                type: "post",
+                url: "/profile/settings/save.do",
+                cache: false,
+                data: data,
+                success: function (response) {
+                    if (response.message) {
+                        window.location = "/profile?from=settings&action=save";
+                    }
+                },
+                error: function (response) {
+                    alert("error");
+                    alert(response.responseText);
+                }
+            });
+            e.preventDefault();
+        });
+
         $("#input-birthdate").datepicker({
             changeMonth: true,
             changeYear: true,
-            dateFormat: 'dd.mm.yy' // TODO вывести константу
+            dateFormat: "${constants.JSP_INPUT_DATE_FORMAT_PATTERN}"
         });
 
         $(".loading").loading({width: '25', text: 'Waiting...'});

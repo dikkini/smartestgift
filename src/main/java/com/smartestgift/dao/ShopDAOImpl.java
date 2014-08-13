@@ -1,6 +1,5 @@
 package com.smartestgift.dao;
 
-import com.smartestgift.dao.model.Gift;
 import com.smartestgift.dao.model.Shop;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -25,7 +24,7 @@ public class ShopDAOImpl implements ShopDAO {
 
 
     @Override
-    public Shop find(String id) {
+    public Shop findOne(String id) {
         return (Shop) sessionFactory.getCurrentSession().get(Shop.class, id);
     }
 
@@ -37,11 +36,12 @@ public class ShopDAOImpl implements ShopDAO {
     }
 
     @Override
-    public void store(Shop dmodel) {
+    public Shop create(Shop dmodel) {
         Session session = sessionFactory.getCurrentSession();
         session.saveOrUpdate(dmodel);
         session.flush();
         session.refresh(dmodel);
+        return dmodel;
     }
 
     @Override
@@ -52,9 +52,10 @@ public class ShopDAOImpl implements ShopDAO {
     }
 
     @Override
-    public void merge(Shop dmodel) {
+    public Shop update(Shop dmodel) {
         Session session = sessionFactory.getCurrentSession();
         session.merge(dmodel);
         session.flush();
+        return dmodel;
     }
 }

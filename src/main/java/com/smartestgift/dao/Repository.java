@@ -7,13 +7,13 @@ import java.util.List;
  * Email: dikkini@gmail.com
  */
 public interface Repository<T, P> {
-    T find(P id);
+    T findOne(P id);
 
     List<T> findAll();
 
-    void store(T dmodel);
+    T create(T created);
 
-    void delete(T dmodel);
+    void delete(T deleted);
 
-    void merge(T dmodel);
+    T update(T updated);
 }

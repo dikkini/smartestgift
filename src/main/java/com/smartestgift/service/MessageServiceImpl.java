@@ -4,7 +4,10 @@ import com.smartestgift.dao.ConversationDAO;
 import com.smartestgift.dao.MessageDAO;
 import com.smartestgift.dao.MessageStatusDAO;
 import com.smartestgift.dao.SmartUserDAO;
-import com.smartestgift.dao.model.*;
+import com.smartestgift.dao.model.Conversation;
+import com.smartestgift.dao.model.Message;
+import com.smartestgift.dao.model.MessageStatus;
+import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.utils.ApplicationConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,9 +45,9 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public List<Message> findNewMessagesInConversation(String userName, String conversationUuid) {
-        SmartUser smartUserByUsername = smartUserDAO.findSmartUserByUsername(userName);
-        Conversation conversation = conversationDAO.find(conversationUuid);
-        MessageStatus messageStatus = messageStatusDAO.find(ApplicationConstants.MESSAGE_STATUS_NEW);
+        SmartUser smartUserByUsername = smartUserDAO.findByUsername(userName);
+        Conversation conversation = conversationDAO.findOne(conversationUuid);
+        MessageStatus messageStatus = messageStatusDAO.findOne(ApplicationConstants.MESSAGE_STATUS_NEW);
         List<Message> messagesByConversationAndStatus = messageDAO.findMessagesUserNotAuthorCountByConversationAndStatus
                 (smartUserByUsername, conversation, messageStatus);
         this.markMessagesAsReadNotAuthor(messagesByConversationAndStatus, smartUserByUsername);
@@ -53,22 +56,22 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public void sendMessageToUser(SmartUser smartUser, String message, String conversationUuid) {
-        Conversation conversation = conversationDAO.find(conversationUuid);
+        Conversation conversation = conversationDAO.findOne(conversationUuid);
 
         Message msg = new Message();
         msg.setSmartUser(smartUser);
         msg.setDate(new Date());
         msg.setMessage(message);
         msg.setConversation(conversation);
-        msg.setMessageStatus(messageStatusDAO.find(ApplicationConstants.MESSAGE_STATUS_NEW));
+        msg.setMessageStatus(messageStatusDAO.findOne(ApplicationConstants.MESSAGE_STATUS_NEW));
 
-        messageDAO.store(msg);
+        messageDAO.create(msg);
     }
 
     @Override
     public Integer findCountUserUnreadMessages(String username) {
-        SmartUser smartUser = smartUserDAO.findSmartUserByUsername(username);
-        MessageStatus messageStatus = messageStatusDAO.find(ApplicationConstants.MESSAGE_STATUS_NEW);
+        SmartUser smartUser = smartUserDAO.findByUsername(username);
+        MessageStatus messageStatus = messageStatusDAO.findOne(ApplicationConstants.MESSAGE_STATUS_NEW);
         List<Conversation> userConversations = conversationDAO.findConversationsByUser(smartUser);
         Integer countUserUnreadMessages = 0;
         for (Conversation conversation : userConversations) {
@@ -81,8 +84,8 @@ public class MessageServiceImpl implements MessageService {
         for (Message message : messages) {
             MessageStatus messageStatus = message.getMessageStatus();
             if (!message.getSmartUser().equals(authorUser) && messageStatus.getId().equals(ApplicationConstants.MESSAGE_STATUS_NEW)) {
-                message.setMessageStatus(messageStatusDAO.find(ApplicationConstants.MESSAGE_STATUS_READ));
-                messageDAO.store(message);
+                message.setMessageStatus(messageStatusDAO.findOne(ApplicationConstants.MESSAGE_STATUS_READ));
+                messageDAO.create(message);
             }
         }
     }

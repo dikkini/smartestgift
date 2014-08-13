@@ -9,14 +9,11 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.CriteriaSpecification;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.SimpleExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.criteria.Order;
 import java.util.List;
 
 /**
@@ -32,7 +29,7 @@ public class MessageDAOImpl implements MessageDAO {
     SessionFactory sessionFactory;
 
     @Override
-    public Message find(String uuid) {
+    public Message findOne(String uuid) {
         return (Message) sessionFactory.getCurrentSession().get(Message.class, uuid);
     }
 
@@ -44,10 +41,11 @@ public class MessageDAOImpl implements MessageDAO {
     }
 
     @Override
-    public void store(Message dmodel) {
+    public Message create(Message dmodel) {
         Session session = sessionFactory.getCurrentSession();
         session.saveOrUpdate(dmodel);
         session.flush();
+        return dmodel;
     }
 
     @Override
@@ -58,10 +56,11 @@ public class MessageDAOImpl implements MessageDAO {
     }
 
     @Override
-    public void merge(Message dmodel) {
+    public Message update(Message dmodel) {
         Session session = sessionFactory.getCurrentSession();
         session.merge(dmodel);
         session.flush();
+        return dmodel;
     }
 
     @Override
