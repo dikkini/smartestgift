@@ -32,8 +32,8 @@ public class RegisterSmartUserDTO {
     @Length(min = 3, max = 100, message = "{Length.message}")
     protected String lastName;
 
-    @NotEmpty(message = "{NotEmpty.registerSmartUserDTO.city}")
-    protected String city;
+    @NotEmpty(message = "{NotEmpty.registerSmartUserDTO.address}")
+    protected String address;
 
     protected Integer authProviderId = ApplicationConstants.APPLICATION_AUTH_PROVIDER_ID;
 
@@ -79,12 +79,12 @@ public class RegisterSmartUserDTO {
         this.lastName = lastName;
     }
 
-    public String getCity() {
-        return city;
+    public String getAddress() {
+        return address;
     }
 
-    public void setCity(String city) {
-        this.city = city;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public Integer getAuthProviderId() {
