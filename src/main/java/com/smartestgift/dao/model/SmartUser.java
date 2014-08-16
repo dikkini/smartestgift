@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.restfb.types.User;
 import com.smartestgift.handler.JsonUserSerializer;
+import com.smartestgift.utils.ApplicationConstants;
+import javafx.application.Application;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -123,6 +125,7 @@ public class SmartUser implements Serializable {
         this.email = facebookUser.getEmail();
         this.socialId = facebookUser.getId();
         this.registrationDate = new Date();
+        this.authProvider = ApplicationConstants.FACEBOOK_AUTH_PROVIDER_ID;
     }
 
     public String getUuid() {

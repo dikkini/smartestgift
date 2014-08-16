@@ -14,25 +14,25 @@ import java.util.Date;
 public class RegisterSmartUserDTO {
 
     @UsernameBusy
-    @NotEmpty(message = "{NotEmpty.registerSmartUserDTO.username}")
+    @NotEmpty(message = "{NotEmpty.username}")
     @Length(min = 3, max = 100, message = "{Length.message}")
     protected String username;
 
     @EmailBusy
-    @NotEmpty(message = "{NotEmpty.registerSmartUserDTO.email}")
+    @NotEmpty(message = "{NotEmpty.email}")
     @Email(message = "{Email.message}")
     protected String email;
 
-    @NotEmpty(message = "{NotEmpty.registerSmartUserDTO.password}")
+    @NotEmpty(message = "{NotEmpty.password}")
     protected String password;
 
-    @NotEmpty(message = "{NotEmpty.registerSmartUserDTO.firstName}")
+    @NotEmpty(message = "{NotEmpty.firstName}")
     protected String firstName;
 
     @Length(min = 3, max = 100, message = "{Length.message}")
     protected String lastName;
 
-    @NotEmpty(message = "{NotEmpty.registerSmartUserDTO.address}")
+    @NotEmpty(message = "{NotEmpty.address}")
     protected String address;
 
     protected Integer authProviderId = ApplicationConstants.APPLICATION_AUTH_PROVIDER_ID;
