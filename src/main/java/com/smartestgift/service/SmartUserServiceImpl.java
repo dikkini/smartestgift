@@ -48,7 +48,7 @@ public class SmartUserServiceImpl implements SmartUserService {
     public SmartUser create(RegisterSmartUserDTO created) {
         // TODO решить вопрос с файлом
         SmartUser smartUser = SmartUser.getBuilder(created.getUsername(), created.getEmail(), created.getPassword(),
-                created.getFirstName(), created.getLastName(), created.getAuthProviderId(),
+                created.getFirstName(), created.getLastName(), created.getAddress(), created.getAuthProviderId(),
                 created.getRegistrationDate()).build();
         smartUser.setFile(fileDAO.findOne(FILE_USER_NO_PHOTO_ID));
         return smartUserDAO.create(smartUser);

@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.restfb.types.User;
 import com.smartestgift.handler.JsonUserSerializer;
+import com.smartestgift.utils.ApplicationConstants;
+import javafx.application.Application;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -123,6 +125,7 @@ public class SmartUser implements Serializable {
         this.email = facebookUser.getEmail();
         this.socialId = facebookUser.getId();
         this.registrationDate = new Date();
+        this.authProvider = ApplicationConstants.FACEBOOK_AUTH_PROVIDER_ID;
     }
 
     public String getUuid() {
@@ -314,8 +317,8 @@ public class SmartUser implements Serializable {
      * @return
      */
     public static Builder getBuilder(String username, String email, String password, String firstName, String lastName,
-                                     Integer authProviderId, Date registrationDate) {
-        return new Builder(username, email, password, firstName, lastName, authProviderId, registrationDate);
+                                     String address, Integer authProviderId, Date registrationDate) {
+        return new Builder(username, email, password, firstName, lastName, address, authProviderId, registrationDate);
     }
 
     /**
@@ -336,7 +339,8 @@ public class SmartUser implements Serializable {
          * @param authProviderId
          * @param registrationDate
          */
-        Builder(String username, String email, String password, String firstName, String lastName, int authProviderId,
+        Builder(String username, String email, String password, String firstName, String lastName, String address,
+                int authProviderId,
                 Date registrationDate) {
             built = new SmartUser();
             built.username = username;
@@ -344,6 +348,7 @@ public class SmartUser implements Serializable {
             built.password = password;
             built.firstName = firstName;
             built.lastName = lastName;
+            built.address = address;
             built.authProvider = authProviderId;
             built.registrationDate = registrationDate;
         }

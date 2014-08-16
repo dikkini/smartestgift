@@ -151,18 +151,20 @@ public class LoginController {
                         // TODO фото юзера
                         File file = fileService.getFile(ApplicationConstants.FILE_USER_NO_PHOTO_ID);
                         fbUser.setFile(file);
-                        if (!emailBusy && !usernameBusy) {
-                            SmartUser smartUser = smartUserService.create(fbUser);
-                            smartUserService.createUserAuthority(smartUser.getUsername());
-                            smartUserService.authenticateUser(smartUser.getUsername(),
-                                    smartUser.getPassword(), request);
-                            return "redirect:/profile";
-                        } else {
-                            request.getSession().setAttribute(facebookUser.getId(), fbUser);
-                            return "redirect:/signup/facebook?id=" + facebookUser.getId() +
-                                    "&username_error=" + usernameBusy +
-                                    "&email_error=" + emailBusy;
-                        }
+                        return "redirect:/profile";
+                        //TODO реализовать ситуацию когда юзер из соц сети регистриуется с занятым username или email
+//                        if (!emailBusy && !usernameBusy) {
+//                            SmartUser smartUser = smartUserService.create(fbUser);
+//                            smartUserService.createUserAuthority(smartUser.getUsername());
+//                            smartUserService.authenticateUser(smartUser.getUsername(),
+//                                    smartUser.getPassword(), request);
+//                            return "redirect:/profile";
+//                        } else {
+//                            request.getSession().setAttribute(facebookUser.getId(), fbUser);
+//                            return "redirect:/signup/facebook?id=" + facebookUser.getId() +
+//                                    "&username_error=" + usernameBusy +
+//                                    "&email_error=" + emailBusy;
+//                        }
                     }
                 } else {
                     throw new InternalErrorException("Facebook login error",

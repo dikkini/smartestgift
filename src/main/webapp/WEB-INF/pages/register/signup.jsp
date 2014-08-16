@@ -85,14 +85,14 @@
             </div>
         </div>
         <div class="form-group has-feedback">
-            <label for="city" class="col-sm-2 control-label">
-                <spring:message code="label.city"/>
+            <label for="address" class="col-sm-2 control-label">
+                <spring:message code="label.address"/>
                 <span class="required">*</span>
             </label>
 
             <div class="col-xs-4">
-                <form:input id="city" path="city" type="text" class="form-control"/>
-                <form:errors path="city" cssClass="error"/>
+                <form:input id="address" path="address" type="text" class="form-control"/>
+                <form:errors path="address" cssClass="error"/>
                 <div id="kladr_autocomplete"></div>
             </div>
         </div>

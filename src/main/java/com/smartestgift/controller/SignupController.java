@@ -13,15 +13,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.List;
 
 /**
  * Created by dikkini on 06.02.14.
@@ -56,43 +53,6 @@ public class SignupController {
         smartUserService.authenticateUser(registerUser.getUsername(), registerUser.getPassword(), request);
 
         return Utils.createRedirectViewPath("/profile");
-    }
-
-    @RequestMapping(value = "/facebook", method = RequestMethod.GET)
-    public ModelAndView socialSignUpPage(HttpServletRequest request,
-                                         @RequestParam (required = true, value = "id") String socialId,
-                                         @RequestParam(required = true, value = "email_error") boolean email_error,
-                                         @RequestParam(required = true, value = "username_error") boolean username_error) {
-        SmartUser smartUser = (SmartUser) request.getSession().getAttribute(socialId);
-
-        request.setAttribute("social", true);
-        ModelAndView mav = new ModelAndView("signupSocial");
-        mav.addObject("facebookSmartUser", smartUser);
-        mav.addObject("email_error", email_error);
-        mav.addObject("username_error", username_error);
-        return mav;
-    }
-
-    @RequestMapping(value = "/facebook/register", headers = "Accept=application/json", method = RequestMethod.POST)
-    public @ResponseBody Response socialRegister(HttpServletRequest request, HttpServletResponse response,
-                                                 @RequestParam (required = true, value = "id") String socialId,
-                                                 @RequestParam (required = true, value = "username") String username,
-                                                 @RequestParam (required = true, value = "email") String email,
-                                                 @RequestParam (required = true, value = "firstName") String firstName,
-                                                 @RequestParam (required = false, value = "lastName") String lastName) {
-        // TODO проверка всех входных данных
-        // TODO обработка города из КЛАДРа
-        SmartUser facebookUser = (SmartUser) request.getSession().getAttribute(socialId);
-        facebookUser.setUsername(username);
-        facebookUser.setEmail(email);
-        facebookUser.setFirstName(firstName);
-        facebookUser.setLastName(lastName);
-
-        smartUserService.create(facebookUser);
-        smartUserService.createUserAuthority(facebookUser.getUsername());
-        smartUserService.authenticateUser(facebookUser.getUsername(), facebookUser.getPassword(), request);
-
-        return Response.createResponse(true);
     }
 
     @RequestMapping(value = "/checkLogin", method = RequestMethod.GET)
