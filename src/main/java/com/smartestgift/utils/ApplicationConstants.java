@@ -95,4 +95,8 @@ public class ApplicationConstants {
     public Integer getUSER_FRIEND_BLOCKED_TYPE() {
         return USER_FRIEND_BLOCKED_TYPE;
     }
+
+    public Integer getUSER_IMAGE_FILE_TYPE_ID() {
+        return USER_IMAGE_FILE_TYPE_ID;
+    }
 }
