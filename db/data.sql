@@ -4,9 +4,9 @@ INSERT INTO public.role (id, role) VALUES (2, 'user');
 INSERT INTO public.message_status (id, status) VALUES (1, 'new');
 INSERT INTO public.message_status (id, status) VALUES (2, 'read');
 
-INSERT INTO public.file_type (id, name, path) VALUES (1, 'USER_IMAGE', '/Volumes/Storage/temp/sm/');
-INSERT INTO public.file_type (id, name, path) VALUES (2, 'CATEGORY_IMAGE', '/Volumes/Storage/temp/sm/');
-INSERT INTO public.file_type (id, name, path) VALUES (3, 'GIFT_IMAGE', '/Volumes/Storage/temp/sm/');
+INSERT INTO public.file_type (id, name, path) VALUES (1, 'USER_IMAGE', '/Users/dikkini/Unsorted/sm/images/user/');
+INSERT INTO public.file_type (id, name, path) VALUES (2, 'CATEGORY_IMAGE', '/Users/dikkini/Unsorted/sm/images/category/');
+INSERT INTO public.file_type (id, name, path) VALUES (3, 'GIFT_IMAGE', '/Users/dikkini/Unsorted/sm/images/gift/');
 
 INSERT INTO public.file (id, name, type_id) VALUES (1, 'category_technology', 2);
 INSERT INTO public.file (id, name, type_id) VALUES (2, 'category_women', 2);
