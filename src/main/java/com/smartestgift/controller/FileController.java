@@ -59,15 +59,9 @@ public class FileController {
                 byUsername.setFile(file);
                 smartUserService.update(byUsername);
 
-                // TODO абсолютные пути это плохо
-                FileCopyUtils.copy(mpf.getBytes(), new FileOutputStream("C:\\temp\\" + mpf.getOriginalFilename()));
+                FileCopyUtils.copy(mpf.getBytes(), new FileOutputStream(file.getType().getPath() + mpf.getOriginalFilename()));
             } catch (IOException e) {
                 e.printStackTrace();
-                try {
-                    FileCopyUtils.copy(mpf.getBytes(), new FileOutputStream("/Volumes/Storage/temp/" + mpf.getOriginalFilename()));
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
             }
         }
         return Response.createResponse(file);
