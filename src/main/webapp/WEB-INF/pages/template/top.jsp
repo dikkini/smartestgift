@@ -99,7 +99,7 @@
                         <sec:authorize access="isAuthenticated()">
                             <li>
                                 <form class="navbar-form navbar-right" role="search">
-                                    <div class="col-xs-12 form-group">
+                                    <div class="col-xs-6 form-group">
                                         <input id="global-search-input" type="text" class="form-control"
                                                placeholder="Search people and gifts">
                                     </div>

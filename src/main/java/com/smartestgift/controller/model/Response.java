@@ -1,8 +1,6 @@
 package com.smartestgift.controller.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by dikkini on 26.02.14.

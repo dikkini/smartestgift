@@ -2,7 +2,6 @@ package com.smartestgift.dao.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Set;
 
 /**
  * Created by dikkini on 27.01.14.

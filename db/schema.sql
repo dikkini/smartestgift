@@ -7,23 +7,23 @@ SET search_path = PUBLIC, pg_catalog;
 SET default_tablespace = '';
 SET default_with_oids = FALSE;
 
-DROP TABLE public.users CASCADE;
-DROP TABLE public.role CASCADE;
-DROP TABLE public.user_roles CASCADE;
-DROP TABLE public.user_friends CASCADE;
-DROP TABLE public.persistent_login CASCADE;
-DROP TABLE public.shop CASCADE;
-DROP TABLE public.gift CASCADE;
-DROP TABLE public.gift_shop CASCADE;
-DROP TABLE public.user_gift_url CASCADE;
-DROP TABLE public.user_gifts CASCADE;
-DROP TABLE public.gift_category CASCADE;
-DROP TABLE public.file CASCADE;
-DROP TABLE public.file_type CASCADE;
-DROP TABLE public.gift_files CASCADE;
-DROP TABLE public.message CASCADE;
-DROP TABLE public.conversation CASCADE;
-DROP TABLE public.message_status CASCADE;
+-- DROP TABLE public.users CASCADE;
+-- DROP TABLE public.role CASCADE;
+-- DROP TABLE public.user_roles CASCADE;
+-- DROP TABLE public.user_friends CASCADE;
+-- DROP TABLE public.persistent_login CASCADE;
+-- DROP TABLE public.shop CASCADE;
+-- DROP TABLE public.gift CASCADE;
+-- DROP TABLE public.gift_shop CASCADE;
+-- DROP TABLE public.user_gift_url CASCADE;
+-- DROP TABLE public.user_gifts CASCADE;
+-- DROP TABLE public.gift_category CASCADE;
+-- DROP TABLE public.file CASCADE;
+-- DROP TABLE public.file_type CASCADE;
+-- DROP TABLE public.gift_files CASCADE;
+-- DROP TABLE public.message CASCADE;
+-- DROP TABLE public.conversation CASCADE;
+-- DROP TABLE public.message_status CASCADE;
 
 CREATE TABLE public.role
 (

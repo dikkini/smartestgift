@@ -6,8 +6,6 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <fmt:requestEncoding value="utf-8" />
 
-<jsp:useBean id="userImageId" type="java.lang.Integer" scope="request"/>
-
 <jsp:include page="../template/top.jsp"/>
 
 <div class="row">
@@ -15,7 +13,7 @@
         <fieldset class="user-photo">
             <legend><spring:message code="label.photo"/></legend>
             <div class="form-group">
-                <img id="user-photo-img" width="200" height="200" src="/file/get/${userImageId}" style="align-self: center; margin-bottom: 20px;">
+                <img id="user-photo-img" width="200" height="200" src="/file/get/<%=request.getSession().getAttribute("userImageId")%>" style="align-self: center; margin-bottom: 20px;">
                 <span class="btn btn-success fileinput-button">
                     <i class="glyphicon glyphicon-plus"></i>
                     <span>Choose Photo</span>

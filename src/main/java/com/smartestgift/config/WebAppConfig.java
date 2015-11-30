@@ -77,7 +77,7 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.postgresql.Driver");
 
-        dataSource.setUrl("jdbc:postgresql://localhost:5432/smartgift?useEncoding=true&amp;characterEncoding=UTF-8");
+        dataSource.setUrl("jdbc:postgresql://localhost:5432/dikkini?useEncoding=true&amp;characterEncoding=UTF-8");
         dataSource.setUsername("dikkini");
         dataSource.setPassword("dikkini");
 
@@ -162,7 +162,7 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
         registry.addWebRequestInterceptor(sessionInViewInterceptor);
         registry.addInterceptor(localeChangeInterceptor());
         registry.addInterceptor(userInterceptor()).addPathPatterns("/**")
-                .excludePathPatterns("/", "/login/**", "/signup/**");
+                .excludePathPatterns("/login/**", "/signup/**");
     }
 
     @Bean

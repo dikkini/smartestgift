@@ -1,6 +1,5 @@
 package com.smartestgift.controller;
 
-import com.smartestgift.controller.model.Response;
 import com.smartestgift.controller.model.SettingsSmartUserDTO;
 import com.smartestgift.dao.model.SmartUser;
 import com.smartestgift.service.SmartUserService;
@@ -11,10 +10,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -36,7 +35,7 @@ public class ProfileController {
     }
 
     @RequestMapping(value = "/profile/settings", method = RequestMethod.GET)
-    public ModelAndView settings(Authentication authentication) {
+    public ModelAndView settings(Authentication authentication, HttpServletRequest request) {
         SmartUser byUsername = smartUserService.findByUsername(authentication.getName());
         // TODO сделать конструктор (?)
         SettingsSmartUserDTO settingsSmartUserDTO = new SettingsSmartUserDTO();
@@ -55,18 +54,23 @@ public class ProfileController {
         settingsSmartUserDTO.setMiddleName(byUsername.getMiddleName());
         settingsSmartUserDTO.setProfileVisible(byUsername.isProfileVisible());
 
-        return new ModelAndView("users/settings").addObject("settingsSmartUserDTO", settingsSmartUserDTO)
-                .addObject("userImageId", byUsername.getFile().getId());
+        request.getSession().setAttribute("userImageId", byUsername.getFile().getId());
+
+        return new ModelAndView("users/settings").addObject("settingsSmartUserDTO", settingsSmartUserDTO);
     }
 
     @RequestMapping(value = "/profile/settings/save.do", method = RequestMethod.POST)
     public String saveSettings(@Valid SettingsSmartUserDTO settingsSmartUserDTO, BindingResult result,
-                                               Authentication authentication) {
+                                               Authentication authentication, HttpServletRequest request,
+                                               HttpServletResponse response) {
+        SmartUser smartUser = smartUserService.findByUsername(authentication.getName());
+
         if (result.hasErrors()) {
+            request.getSession().setAttribute("userImageId", smartUser.getFile().getId());
             return "users/settings";
         }
 
-        SmartUser smartUser = smartUserService.findByUsername(authentication.getName());
+        //SmartUser smartUser = smartUserService.findByUsername(authentication.getName());
         smartUser.setFirstName(settingsSmartUserDTO.getFirstName());
         smartUser.setLastName(settingsSmartUserDTO.getLastName());
         smartUser.setMiddleName(settingsSmartUserDTO.getMiddleName());

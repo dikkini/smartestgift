@@ -1,0 +1,38 @@
+Manifest-Version: 1.0
+Class-Path: spring-context-4.0.2.RELEASE.jar spring-tx-4.0.2.RELEASE.j
+ ar json-20090211.jar spring-web-4.0.2.RELEASE.jar facebook-java-api-s
+ chema-3.0.4.jar hibernate-commons-annotations-4.0.4.Final.jar spring-
+ websocket-4.0.2.RELEASE.jar antlr-2.7.7.jar spring-webmvc-4.0.2.RELEA
+ SE.jar jaxb-api-2.1.jar snakeyaml-1.13.jar facebook-java-api-3.0.4.ja
+ r spring-security-oauth-2.0.0.BUILD-20140418.070218-34.jar jackson-ma
+ pper-asl-1.9.13.jar spring-security-web-3.2.2.RELEASE.jar spring-jdbc
+ -4.0.2.RELEASE.jar spring-boot-1.0.0.RELEASE.jar activation-1.1.jar s
+ pring-beans-4.0.2.RELEASE.jar spring-aop-4.0.2.RELEASE.jar commons-la
+ ng-2.2.jar hibernate-core-4.3.3.Final.jar spring-boot-starter-logging
+ -1.0.0.RELEASE.jar persistence-api-1.0.jar jboss-logging-annotations-
+ 1.2.0.Beta1.jar javassist-3.18.1-GA.jar jackson-core-2.2.1.jar ehcach
+ e-core-2.6.8.jar disruptor-3.2.0.jar gson-2.2.4.jar commons-fileuploa
+ d-1.3.1.jar jackson-databind-2.2.1.jar spring-security-taglibs-3.2.2.
+ RELEASE.jar commons-cli-1.2.jar hibernate-validator-5.0.3.Final.jar s
+ pring-security-config-3.2.2.RELEASE.jar runtime-0.4.1.5.jar xml-apis-
+ 1.0.b2.jar spring-expression-4.0.2.RELEASE.jar validation-api-1.1.0.F
+ inal.jar spring-core-4.0.2.RELEASE.jar spring-security-core-3.2.2.REL
+ EASE.jar commons-io-1.3.2.jar commons-codec-1.3.jar spring-messaging-
+ 4.0.2.RELEASE.jar javax.inject-1.jar commons-logging-1.1.1.jar spring
+ -boot-autoconfigure-1.0.0.RELEASE.jar spring-orm-4.0.2.RELEASE.jar ht
+ tpclient-4.3.3.jar stax-api-1.0-2.jar aopalliance-1.0.jar spring-secu
+ rity-oauth2-2.0.0.BUILD-20140418.070331-27.jar aspectjweaver-1.5.4.ja
+ r jcl-over-slf4j-1.7.6.jar jandex-1.1.0.Final.jar netty-all-4.0.11.Fi
+ nal.jar log4j-over-slf4j-1.7.6.jar jackson-core-asl-1.9.13.jar logbac
+ k-classic-1.1.1.jar classmate-1.0.0.jar dom4j-1.6.1.jar jstl-1.2.jar 
+ httpcore-4.3.2.jar commons-io-2.2.jar spring-boot-starter-1.0.0.RELEA
+ SE.jar jboss-logging-3.1.3.GA.jar reactor-core-1.0.0.RELEASE.jar post
+ gresql-9.1-901-1.jdbc4.jar hibernate-jpa-2.1-api-1.0.0.Final.jar hibe
+ rnate-ehcache-4.3.4.Final.jar jaxb-impl-2.1.9.jar logback-core-1.1.1.
+ jar commons-httpclient-3.1.jar javax.servlet-api-3.1.0.jar jboss-tran
+ saction-api_1.2_spec-1.0.0.Final.jar reactor-tcp-1.0.0.RELEASE.jar re
+ stfb-1.6.14.jar commons-lang3-3.3.jar jul-to-slf4j-1.7.6.jar spring-s
+ ecurity-acl-3.2.2.RELEASE.jar jackson-annotations-2.2.1.jar hibernate
+ -entitymanager-4.3.4.Final.jar slf4j-api-1.6.1.jar
+Main-Class: 
+

@@ -4,11 +4,12 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.smartestgift.dao.model.*;
+import com.smartestgift.dao.model.SmartUser;
+import com.smartestgift.dao.model.SmartUserFriend;
+import com.smartestgift.dao.model.SmartUserGift;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.Set;
 
 /**
  * Created by dikkini on 07/07/14.
@@ -30,11 +31,17 @@ public class JsonUserSerializer extends JsonSerializer<SmartUser> {
         jsonGen.writeStringField(smartUserFields[6].getName(), o.getRegistrationDate().toString());
         jsonGen.writeStringField(smartUserFields[7].getName(), o.getSocialId());
         // TODO формат даты
-        jsonGen.writeStringField(smartUserFields[8].getName(), o.getBirthDate().toString());
+        if (o.getBirthDate() != null) {
+            jsonGen.writeStringField(smartUserFields[8].getName(), o.getBirthDate().toString());
+        }
         jsonGen.writeStringField(smartUserFields[9].getName(), o.getFirstName());
         jsonGen.writeStringField(smartUserFields[10].getName(), o.getLastName());
         jsonGen.writeStringField(smartUserFields[11].getName(), o.getMiddleName());
-        jsonGen.writeBooleanField(smartUserFields[12].getName(), o.getGender());
+        if (o.getGender() == null) {
+            jsonGen.writeNullField(smartUserFields[12].getName());
+        } else {
+            jsonGen.writeBooleanField(smartUserFields[12].getName(), o.getGender());
+        }
         jsonGen.writeStringField(smartUserFields[13].getName(), o.getAddress());
         jsonGen.writeBooleanField(smartUserFields[14].getName(), o.isAddressVisible());
         jsonGen.writeBooleanField(smartUserFields[15].getName(), o.isProfileVisible());
@@ -95,11 +102,17 @@ public class JsonUserSerializer extends JsonSerializer<SmartUser> {
         jsonGen.writeStringField(smartUserFields[6].getName(), o.getRegistrationDate().toString());
         jsonGen.writeStringField(smartUserFields[7].getName(), o.getSocialId());
         // TODO формат даты
-        jsonGen.writeStringField(smartUserFields[8].getName(), o.getBirthDate().toString());
+        if (o.getBirthDate() != null) {
+            jsonGen.writeStringField(smartUserFields[8].getName(), o.getBirthDate().toString());
+        }
         jsonGen.writeStringField(smartUserFields[9].getName(), o.getFirstName());
         jsonGen.writeStringField(smartUserFields[10].getName(), o.getLastName());
         jsonGen.writeStringField(smartUserFields[11].getName(), o.getMiddleName());
-        jsonGen.writeBooleanField(smartUserFields[12].getName(), o.getGender());
+        if (o.getGender() == null) {
+            jsonGen.writeNullField(smartUserFields[12].getName());
+        } else {
+            jsonGen.writeBooleanField(smartUserFields[12].getName(), o.getGender());
+        }
         jsonGen.writeStringField(smartUserFields[13].getName(), o.getAddress());
         jsonGen.writeBooleanField(smartUserFields[14].getName(), o.isAddressVisible());
         jsonGen.writeBooleanField(smartUserFields[15].getName(), o.isProfileVisible());

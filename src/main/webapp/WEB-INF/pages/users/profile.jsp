@@ -82,7 +82,7 @@
     </div>
 </div>
 
-<jsp:include page="../template/bottom.jsp"/>
+<jsp:include page="../template/bottaddFriendRequest.doom.jsp"/>
 
 <script type="text/javascript">
     $(document).ready(function(){

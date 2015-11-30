@@ -1,6 +1,5 @@
 package com.smartestgift.dao.model;
 
-import com.fasterxml.jackson.annotation.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;

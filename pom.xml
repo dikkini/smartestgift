@@ -12,7 +12,7 @@
         <spring.version>4.0.2.RELEASE</spring.version>
         <spring-security.version>3.2.2.RELEASE</spring-security.version>
 
-        <db.name>smartgift</db.name>
+        <db.name>dikkini</db.name>
         <db.host>localhost</db.host>
         <db.port>5432</db.port>
         <db.username>dikkini</db.username>
