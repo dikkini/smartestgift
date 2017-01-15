@@ -7,171 +7,153 @@ SET search_path = PUBLIC, pg_catalog;
 SET default_tablespace = '';
 SET default_with_oids = FALSE;
 
--- DROP TABLE public.users CASCADE;
--- DROP TABLE public.role CASCADE;
--- DROP TABLE public.user_roles CASCADE;
--- DROP TABLE public.user_friends CASCADE;
--- DROP TABLE public.persistent_login CASCADE;
--- DROP TABLE public.shop CASCADE;
--- DROP TABLE public.gift CASCADE;
--- DROP TABLE public.gift_shop CASCADE;
--- DROP TABLE public.user_gift_url CASCADE;
--- DROP TABLE public.user_gifts CASCADE;
--- DROP TABLE public.gift_category CASCADE;
--- DROP TABLE public.file CASCADE;
--- DROP TABLE public.file_type CASCADE;
--- DROP TABLE public.gift_files CASCADE;
--- DROP TABLE public.message CASCADE;
--- DROP TABLE public.conversation CASCADE;
--- DROP TABLE public.message_status CASCADE;
+-- this extension allow to generate uuid as default field, gen_random_uuid - function from this extension
+-- CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+DROP TABLE IF EXISTS public.users CASCADE;
+DROP TABLE IF EXISTS public.user_social_social_networks CASCADE;
+DROP TABLE IF EXISTS public.user_goals CASCADE;
+DROP TABLE IF EXISTS public.user_goal CASCADE;
+DROP TABLE IF EXISTS public.user_favorite_goals CASCADE;
+DROP TABLE IF EXISTS public.user_favorite_goal CASCADE;
+DROP TABLE IF EXISTS public.social_networks CASCADE;
+DROP TABLE IF EXISTS public.role CASCADE;
+DROP TABLE IF EXISTS public.goal_targets CASCADE;
+DROP TABLE IF EXISTS public.goal_ref_urls CASCADE;
+DROP TABLE IF EXISTS public.goal_ref_personal_url CASCADE;
+DROP TABLE IF EXISTS public.goal_files CASCADE;
+DROP TABLE IF EXISTS public.goal CASCADE;
+DROP TABLE IF EXISTS public.file_type CASCADE;
+DROP TABLE IF EXISTS public.file CASCADE;
+DROP TABLE IF EXISTS public.currency CASCADE;
+DROP TABLE IF EXISTS public.auth_providers CASCADE;
 
 CREATE TABLE public.role
 (
-  id   SERIAL PRIMARY KEY,
-  role VARCHAR(36) NOT NULL
-);
-
-CREATE TABLE public.message_status
-(
-  id     SERIAL PRIMARY KEY,
-  status VARCHAR(20) NOT NULL
+    id   SERIAL PRIMARY KEY
+  , role UUID NOT NULL
 );
 
 CREATE TABLE public.file_type
 (
-  id   SERIAL PRIMARY KEY,
-  name VARCHAR NOT NULL,
-  path VARCHAR NOT NULL
+    id   SERIAL PRIMARY KEY
+  , name VARCHAR NOT NULL
+  , path VARCHAR NOT NULL
 );
 
 CREATE TABLE public.file
 (
-  id      SERIAL PRIMARY KEY,
-  name    VARCHAR                              NOT NULL,
-  type_id INT REFERENCES public.file_type (id) NOT NULL
+    id     SERIAL PRIMARY KEY
+  , name   VARCHAR NOT NULL
+  , typeId INT REFERENCES public.file_type (id) NOT NULL
 );
+
+CREATE TABLE public.auth_providers
+(
+    id SERIAL PRIMARY KEY
+  , name VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE public.currency
+(
+    id SERIAL PRIMARY KEY
+  , name VARCHAR(50)      NOT NULL
+);
+
 
 CREATE TABLE public.users
 (
-  uuid              VARCHAR(36) PRIMARY KEY                     NOT NULL,
-  username          VARCHAR(45) UNIQUE                          NOT NULL,
-  first_name        VARCHAR(255)                                NOT NULL,
-  last_name         VARCHAR(255),
-  middle_name       VARCHAR(255),
-  birth_date        TIMESTAMP,
-  gender            BOOLEAN,
-  address           TEXT,
-  address_visible   BOOLEAN DEFAULT FALSE                       NOT NULL,
-  profile_visible   BOOLEAN DEFAULT TRUE                        NOT NULL,
-  cellphone         VARCHAR(255),
-  cellphone_visible BOOLEAN DEFAULT FALSE                       NOT NULL,
-  file_id           INT REFERENCES public.file (id) DEFAULT 10  NOT NULL,
-  registration_date TIMESTAMP DEFAULT now()                     NOT NULL,
-  social_id         VARCHAR,
-  auth_provider_id  INT                                         NOT NULL,
-  email             VARCHAR UNIQUE                              NOT NULL,
-  password          TEXT,
-  enabled           BOOLEAN DEFAULT TRUE                        NOT NULL
+    uuid             UUID PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL
+  , username         VARCHAR(45) UNIQUE
+  , email            VARCHAR     UNIQUE
+  , firstName        VARCHAR(255)
+  , lastName         VARCHAR(255)
+  , middleName       VARCHAR(255)
+  , birthDate        TIMESTAMP
+  , gender           BOOLEAN
+  , roleId           INT REFERENCES public.role(id)
+  , address          TEXT
+  , addressVisible   BOOLEAN NOT NULL
+  , profileVisible   BOOLEAN NOT NULL
+  , cellphone        VARCHAR(255)
+  , cellphoneVisible BOOLEAN NOT NULL
+  , photoId          INT REFERENCES public.file(id) NOT NULL
+  , registrationDate TIMESTAMP NOT NULL
+  , password         TEXT
+  , enabled          BOOLEAN NOT NULL
 );
 
-CREATE TABLE public.user_roles
+CREATE TABLE public.social_networks
 (
-  uuid     VARCHAR(36) PRIMARY KEY,
-  username VARCHAR(45) REFERENCES public.users (username) NOT NULL,
-  role     VARCHAR(45)                                    NOT NULL
+    uuid           UUID PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL
+  , socialId       VARCHAR(255)
+  , authProviderId INT REFERENCES public.auth_providers(id) NOT NULL
+  -- больше, больше полей с информации из соц сети
 );
 
-CREATE TABLE public.user_friends
+CREATE TABLE public.user_social_social_networks
 (
-  uuid          VARCHAR(36) PRIMARY KEY,
-  user_uuid     VARCHAR(36) REFERENCES public.users (uuid) NOT NULL,
-  friend_uuid   VARCHAR(36) REFERENCES public.users (uuid) NOT NULL,
-  friendAddDate TIMESTAMP                                  NOT NULL,
-  friendTypeId  INT                                        NOT NULL,
-  CONSTRAINT friend_unique UNIQUE (user_uuid, friend_uuid)
+    socialNetworkUuid UUID REFERENCES public.social_networks(uuid) NOT NULL
+  , userUuid          UUID REFERENCES public.users(uuid) NOT NULL
 );
 
-CREATE TABLE public.persistent_login
+CREATE TABLE goal_targets -- таблица с товарами/услугами на которые создаются цели (бабло сюда не включено или включено?)
 (
-  username  VARCHAR(64) UNIQUE REFERENCES public.users (username)  NOT NULL,
-  series    VARCHAR(64) PRIMARY KEY                                NOT NULL,
-  token     VARCHAR(64) DEFAULT NULL,
-  last_used TIMESTAMP                                              NOT NULL
+    uuid UUID UNIQUE PRIMARY KEY NOT NULL
+  -- пока не понятно какие еще поля могут быть у конечного товара/услуги для цели
 );
 
-CREATE TABLE public.shop
+CREATE TABLE goal_ref_personal_url -- таблица с персонифицрованными ref ссылками на цель для друзей из соц сети
 (
-  uuid        VARCHAR(36) PRIMARY KEY,
-  name        VARCHAR(255) NOT NULL,
-  description VARCHAR(255)
+    uuid UUID UNIQUE PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL
+  , url VARCHAR(60) NOT NULL
+  , authProvider INT REFERENCES public.auth_providers(id) NOT NULL
+  -- еще информация о жертве
 );
 
-CREATE TABLE public.gift
+-- цель
+CREATE TABLE public.goal
 (
-  uuid        VARCHAR(36) UNIQUE PRIMARY KEY            NOT NULL,
-  name        VARCHAR(255)                              NOT NULL,
-  description TEXT,
-  category_id INT                                       NOT NULL,
-  add_date    TIMESTAMP                                 NOT NULL
+    uuid        UUID UNIQUE PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL
+  , billNumber  UUID UNIQUE NOT NULL
+  , endDate     TIMESTAMP
+  , endSum      DECIMAL
+  , name        VARCHAR(255)
+  , description VARCHAR(255)
+  , price       DECIMAL NOT NULL
+  , currencyId  INT  REFERENCES public.currency(id) NOT NULL
+  , target      UUID REFERENCES public.goal_targets(uuid)  -- ради чего цель, айфон, бабло - в случае бабла - таргет пустой (?)
 );
 
-CREATE TABLE public.gift_shop
+-- ref ссылки на цель
+CREATE TABLE goal_ref_urls (
+    uuid UUID UNIQUE PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL
+  , goalRefURL VARCHAR(60) -- общая ссылка на цель
+  , goalPersonalUrlUuid UUID REFERENCES public.goal_ref_personal_url(uuid) -- ссылка на таблицу с информацией о ref жертве, их может быть много
+  , goalUuid UUID REFERENCES public.goal(uuid) NOT NULL
+);
+
+-- фоточки цели
+CREATE TABLE public.goal_files
 (
-  uuid      VARCHAR(36) PRIMARY KEY,
-  shop_uuid VARCHAR(36) REFERENCES public.shop (uuid)   NOT NULL,
-  gift_uuid VARCHAR(36) REFERENCES public.gift (uuid)   NOT NULL,
-  price     DECIMAL                                     NOT NULL,
-  discount  INT DEFAULT 0
+    id       SERIAL  PRIMARY KEY
+  , fileId   INT     REFERENCES public.file(id) NOT NULL
+  , goalUuid UUID REFERENCES public.goal(uuid) NOT NULL
 );
 
-CREATE TABLE public.gift_files
+-- пользовательские цели
+CREATE TABLE public.user_goal
 (
-  id        SERIAL PRIMARY KEY,
-  file_id   INT REFERENCES public.file (id)       NOT NULL,
-  gift_uuid VARCHAR REFERENCES public.gift (uuid) NOT NULL
+    uuid     UUID PRIMARY KEY DEFAULT gen_random_uuid()
+  , userUuid UUID REFERENCES public.users(uuid) NOT NULL
+  , goalUuid UUID REFERENCES public.goal(uuid) NOT NULL
 );
 
-CREATE TABLE public.user_gift_url
+-- избранные пользовательские цели
+CREATE TABLE public.user_favorite_goal
 (
-  id        INT8 PRIMARY KEY,
-  short_url VARCHAR(255) NOT NULL,
-  url       VARCHAR(255) NOT NULL,
-  CONSTRAINT user_gift_url_unique UNIQUE (id, short_url)
+    uuid     UUID PRIMARY KEY DEFAULT gen_random_uuid()
+  , userUuid UUID REFERENCES public.users(uuid) NOT NULL
+  , goalUuid UUID REFERENCES public.goal(uuid) NOT NULL
 );
 
-CREATE TABLE public.user_gifts
-(
-  uuid           VARCHAR(36) PRIMARY KEY,
-  user_uuid      VARCHAR(36) REFERENCES public.users (uuid)                NOT NULL,
-  gift_shop_uuid VARCHAR(36) REFERENCES public.gift_shop (uuid)            NOT NULL,
-  moneyCollect   INT                                                       NOT NULL,
-  endDate        TIMESTAMP                                                 NOT NULL,
-  url_id         INT8 UNIQUE REFERENCES public.user_gift_url (id)          NOT NULL
-);
-
-CREATE TABLE public.gift_category
-(
-  id          SERIAL PRIMARY KEY,
-  code        VARCHAR                         NOT NULL,
-  name        VARCHAR(255)                    NOT NULL,
-  description VARCHAR(255)                    NOT NULL,
-  file_id     INT REFERENCES public.file (id) NOT NULL
-);
-
-
-CREATE TABLE public.conversation
-(
-  uuid           VARCHAR(36) PRIMARY KEY,
-  user_from_uuid VARCHAR(36) REFERENCES public.users (uuid)    NOT NULL,
-  user_to_uuid   VARCHAR(36) REFERENCES public.users (uuid)    NOT NULL
-);
-
-CREATE TABLE public.message
-(
-  uuid              VARCHAR(36) PRIMARY KEY,
-  user_uuid         VARCHAR(36) REFERENCES public.users (uuid)         NOT NULL,
-  message           VARCHAR                                            NOT NULL,
-  date              TIMESTAMP                                          NOT NULL,
-  conversation_uuid VARCHAR(36) REFERENCES public.conversation (uuid)  NOT NULL,
-  status_id         INT REFERENCES public.message_status (id)          NOT NULL
-);
