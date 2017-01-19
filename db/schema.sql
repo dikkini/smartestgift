@@ -11,9 +11,12 @@ SET default_with_oids = FALSE;
 -- CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 DROP TABLE IF EXISTS public.users CASCADE;
+DROP TABLE IF EXISTS public.privilege CASCADE;
+DROP TABLE IF EXISTS public.roles_privileges CASCADE;
 DROP TABLE IF EXISTS public.user_social_social_networks CASCADE;
 DROP TABLE IF EXISTS public.user_goals CASCADE;
 DROP TABLE IF EXISTS public.user_goal CASCADE;
+DROP TABLE IF EXISTS public.social_network CASCADE;
 DROP TABLE IF EXISTS public.user_favorite_goals CASCADE;
 DROP TABLE IF EXISTS public.user_favorite_goal CASCADE;
 DROP TABLE IF EXISTS public.social_networks CASCADE;
@@ -23,29 +26,35 @@ DROP TABLE IF EXISTS public.goal_ref_urls CASCADE;
 DROP TABLE IF EXISTS public.goal_ref_personal_url CASCADE;
 DROP TABLE IF EXISTS public.goal_files CASCADE;
 DROP TABLE IF EXISTS public.goal CASCADE;
-DROP TABLE IF EXISTS public.file_type CASCADE;
 DROP TABLE IF EXISTS public.file CASCADE;
 DROP TABLE IF EXISTS public.currency CASCADE;
 DROP TABLE IF EXISTS public.auth_providers CASCADE;
 
 CREATE TABLE public.role
 (
-    id   SERIAL PRIMARY KEY
-  , role UUID NOT NULL
+      id   SERIAL PRIMARY KEY
+    , name VARCHAR(30)
 );
 
-CREATE TABLE public.file_type
+CREATE TABLE public.privilege
 (
     id   SERIAL PRIMARY KEY
-  , name VARCHAR NOT NULL
-  , path VARCHAR NOT NULL
+  , name VARCHAR(36) NOT NULL
+);
+
+CREATE TABLE public.roles_privileges
+(
+    roleId      INT REFERENCES public.role(id)    NOT NULL
+  , privilegeId INT REFERENCES public.privilege(id) NOT NULL
 );
 
 CREATE TABLE public.file
 (
     id     SERIAL PRIMARY KEY
   , name   VARCHAR NOT NULL
-  , typeId INT REFERENCES public.file_type (id) NOT NULL
+  , extension VARCHAR(10) NOT NULL
+  , mimeType VARCHAR(100) NOT NULL
+  , size INT NOT NULL
 );
 
 CREATE TABLE public.auth_providers
@@ -60,30 +69,32 @@ CREATE TABLE public.currency
   , name VARCHAR(50)      NOT NULL
 );
 
-
 CREATE TABLE public.users
 (
-    uuid             UUID PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL
-  , username         VARCHAR(45) UNIQUE
-  , email            VARCHAR     UNIQUE
-  , firstName        VARCHAR(255)
-  , lastName         VARCHAR(255)
-  , middleName       VARCHAR(255)
-  , birthDate        TIMESTAMP
-  , gender           BOOLEAN
-  , roleId           INT REFERENCES public.role(id)
-  , address          TEXT
-  , addressVisible   BOOLEAN NOT NULL
-  , profileVisible   BOOLEAN NOT NULL
-  , cellphone        VARCHAR(255)
-  , cellphoneVisible BOOLEAN NOT NULL
-  , photoId          INT REFERENCES public.file(id) NOT NULL
-  , registrationDate TIMESTAMP NOT NULL
-  , password         TEXT
-  , enabled          BOOLEAN NOT NULL
+    uuid UUID PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL
+  , username VARCHAR(45) UNIQUE
+  , email VARCHAR(255) UNIQUE
+  , firstName VARCHAR(255)
+  , lastName VARCHAR(255)
+  , middleName VARCHAR(255)
+  , birthDate DATE
+  , gender BOOLEAN
+  , roleId INT REFERENCES public.role(id)
+  , address TEXT
+  , addressVisible BOOLEAN
+  , profileVisible BOOLEAN
+  , cellphone VARCHAR(255)
+  , cellphoneVisible BOOLEAN
+  , photoId INT REFERENCES public.file(id) DEFAULT 0
+  , registrationDate TIMESTAMP
+  , password TEXT
+  , enabled BOOLEAN NOT NULL
+  , accountNonExpired BOOLEAN NOT NULL
+  , accountNonLocked  BOOLEAN NOT NULL
+  , credentialsNonExpired BOOLEAN NOT NULL
 );
 
-CREATE TABLE public.social_networks
+CREATE TABLE public.social_network
 (
     uuid           UUID PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL
   , socialId       VARCHAR(255)
@@ -93,7 +104,7 @@ CREATE TABLE public.social_networks
 
 CREATE TABLE public.user_social_social_networks
 (
-    socialNetworkUuid UUID REFERENCES public.social_networks(uuid) NOT NULL
+    socialNetworkUuid UUID REFERENCES public.social_network(uuid) NOT NULL
   , userUuid          UUID REFERENCES public.users(uuid) NOT NULL
 );
 
