@@ -7,52 +7,59 @@ import com.paymybill.dao.model.Role;
 import com.paymybill.dao.model.User;
 import com.paymybill.exception.EmailExistException;
 import com.paymybill.exception.UsernameExistException;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import javax.persistence.NoResultException;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
+    private Logger logger = Logger.getLogger(this.getClass());
+
     private UserDAO userDAO;
-
-    @Autowired
     private RoleDAO roleDAO;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
-
-    @Autowired
     private ApplicationContext context;
 
-    @Override
-    public User findBySocialId(String socialId) {
-        return null;
+    @Autowired
+    public UserServiceImpl(UserDAO userDAO, RoleDAO roleDAO, PasswordEncoder passwordEncoder, ApplicationContext context) {
+        logger.trace("UserServiceImpl constructor");
+        this.userDAO = userDAO;
+        this.roleDAO = roleDAO;
+        this.passwordEncoder = passwordEncoder;
+        this.context = context;
     }
 
     @Override
     public User findByUsername(String username) {
+        logger.trace("findByUsername method with arguments {username:" + username + "}");
+        Assert.notNull(username, "username can't be null");
         User user;
         try {
             user = userDAO.findByUsername(username);
         } catch (NoResultException e) {
             user = null;
+            logger.warn("User with username " + username + " not found.");
         }
         return user;
     }
 
     @Override
     public User findByEmail(String email) {
+        logger.trace("findByEmail method with arguments {email:" + email + "}");
+        Assert.notNull(email, "email can't be null");
         User user;
         try {
             user = userDAO.findByEmail(email);
         } catch (NoResultException e) {
+            logger.warn("User with email " + email + " not found.");
             user = null;
         }
         return user;
@@ -60,19 +67,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean isUsernameBusy(String username) {
+        Assert.notNull(username, "username can't be null");
+        logger.trace("isUsernameBusy method with arguments {username:" + username + "}");
         User user = this.findByUsername(username);
         return user != null;
     }
 
     @Override
-    public boolean isEmailBusy(String username) {
-        User user = this.findByEmail(username);
+    public boolean isEmailBusy(String email) {
+        Assert.notNull(email, "email can't be null");
+        logger.trace("isEmailBusy method with arguments {email:" + email + "}");
+        User user = this.findByEmail(email);
         return user != null;
     }
 
     @Transactional
     @Override
     public User registerUser(UserDTO userDTO) throws UsernameExistException, EmailExistException {
+        Assert.notNull(userDTO, "userDTO can't be null");
+        logger.trace("registerUser method with arguments = " + userDTO.toString());
 
         String username = userDTO.getUsername();
         boolean usernameBusy = isUsernameBusy(username);
@@ -111,10 +124,5 @@ public class UserServiceImpl implements UserService {
 
 
         return userDAO.create(user);
-    }
-
-    @Override
-    public User update(User user) {
-        return userDAO.update(user);
     }
 }

@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.UUID;
 
 @Entity
-@Table(name = "users", catalog = "paymybilldb", schema = "public")
+@Table(name = "user", catalog = "paymybilldb", schema = "public")
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1325687088267757690L;
@@ -87,6 +87,10 @@ public class User implements Serializable {
 
     public UUID getUuid() {
         return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
     }
 
     public String getUsername() {

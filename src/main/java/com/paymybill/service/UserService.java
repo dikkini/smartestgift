@@ -10,51 +10,37 @@ public interface UserService {
 
     /**
      *
-     * @param socialId
-     * @return
-     */
-    User findBySocialId(String socialId);
-
-    /**
-     *
-     * @param userDTO
-     * @return
+     * @param userDTO {@link UserDTO}
+     * @return {@link User}
      */
     User registerUser(final UserDTO userDTO) throws UsernameExistException, EmailExistException;
 
     /**
      *
-     * @param user
-     * @return
-     */
-    User update(final User user);
-
-    /**
-     *
-     * @param username
-     * @return
+     * @param username {@link User#username}
+     * @return {@link User}
      */
     User findByUsername(String username);
 
 
     /**
      *
-     * @param email
-     * @return
+     * @param email {@link User#email}
+     * @return {@link User}
      */
     User findByEmail(String email);
 
     /**
      *
-     * @param username
-     * @return
+     * @param username {@link User#username}
+     * @return true if busy, false if not
      */
     boolean isUsernameBusy(String username);
 
     /**
      *
-     * @param username
-     * @return
+     * @param email {@link User#email}
+     * @return true if busy, false if not
      */
-    boolean isEmailBusy(String username);
+    boolean isEmailBusy(String email);
 }

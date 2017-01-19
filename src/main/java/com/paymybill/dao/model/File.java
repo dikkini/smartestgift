@@ -6,10 +6,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 import java.io.Serializable;
 
-/**
- * Created by dikkini on 19.11.13.
- * Email: dikkini@gmail.com
- */
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table (name = "file")
@@ -20,8 +16,57 @@ public class File implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "file_seq_gen")
     @SequenceGenerator(name = "file_seq_gen", sequenceName = "file_id_seq")
-    protected Long id;
+    private Long id;
 
     @Column(name = "name")
-    protected String name;
+    private String name;
+
+    @Column(name = "extension")
+    private String extension;
+
+    @Column(name = "mimetype")
+    private String mimeType;
+
+    @Column(name = "size")
+    private Float size;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getExtension() {
+        return extension;
+    }
+
+    public void setExtension(String extension) {
+        this.extension = extension;
+    }
+
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
+    }
+
+    public Float getSize() {
+        return size;
+    }
+
+    public void setSize(Float size) {
+        this.size = size;
+    }
 }

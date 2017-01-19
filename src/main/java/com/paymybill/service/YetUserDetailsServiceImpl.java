@@ -20,14 +20,14 @@ import java.util.Set;
 @Service("userDetailsService")
 public class YetUserDetailsServiceImpl implements UserDetailsService {
 
-    @Autowired
     private UserDAO userDAO;
 
-    @Autowired
     private LoginAttemptService loginAttemptService;
 
-    public YetUserDetailsServiceImpl() {
-        super();
+    @Autowired
+    public YetUserDetailsServiceImpl(UserDAO userDAO, LoginAttemptService loginAttemptService) {
+        this.userDAO = userDAO;
+        this.loginAttemptService = loginAttemptService;
     }
 
     @Override

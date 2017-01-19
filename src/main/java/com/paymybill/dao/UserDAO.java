@@ -8,26 +8,26 @@ import java.util.UUID;
 public interface UserDAO extends GenericDAO<User, UUID> {
 
     /**
-     * Поиск пользователя по username
+     * Search user by username
      *
-     * @param username username
-     * @return модель пользователя с деталями
+     * @param username {@link User#username}
+     * @return {@link User}
      */
     User findByUsername(String username) throws NoResultException;
 
     /**
-     * Поиск пользователя по email
+     * Search user by email
      *
-     * @param email email
-     * @return
+     * @param email {@link User#email}
+     * @return {@link User}
      */
     User findByEmail(String email) throws NoResultException;
 
     /**
-     * Поиск пользователя по мобильному телефону
+     * Search user by cell phone
      *
-     * @param cellPhone
-     * @return
+     * @param cellPhone {@link User#cellPhone}
+     * @return {@link User}
      */
     User findByCellPhone(String cellPhone) throws NoResultException;
 }

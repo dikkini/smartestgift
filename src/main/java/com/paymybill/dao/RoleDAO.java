@@ -1,12 +1,16 @@
 package com.paymybill.dao;
 
 import com.paymybill.dao.model.Role;
+import com.paymybill.dao.model.User;
 
-public interface RoleDAO {
+import java.util.UUID;
+
+public interface RoleDAO extends GenericDAO<Role, Long> {
 
     /**
+     * Get user role
      *
-     * @return
+     * @return {@link Role}
      */
     Role findUserRole();
 }

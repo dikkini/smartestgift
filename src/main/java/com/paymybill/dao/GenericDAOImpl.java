@@ -16,8 +16,12 @@ import java.util.List;
 @Component
 public class GenericDAOImpl<T, PK extends Serializable> implements GenericDAO<T, PK> {
 
+    private SessionFactory sessionFactory;
+
     @Autowired
-    public SessionFactory sessionFactory;
+    public GenericDAOImpl(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     @Override
     public <T> T findOne(final Class<T> type, final PK id) {

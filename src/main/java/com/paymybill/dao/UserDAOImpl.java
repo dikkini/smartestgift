@@ -1,6 +1,7 @@
 package com.paymybill.dao;
 
 import com.paymybill.dao.model.User;
+import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -10,7 +11,12 @@ import java.util.UUID;
 @Repository
 public class UserDAOImpl extends GenericDAOImpl<User, UUID> implements UserDAO {
 
-    private static final long serialVersionUID = 3345985470213455641L;
+    private SessionFactory sessionFactory;
+
+    public UserDAOImpl(SessionFactory sessionFactory) {
+        super(sessionFactory);
+        this.sessionFactory = sessionFactory;
+    }
 
     @Override
     public User findByUsername(String username) throws NoResultException {
