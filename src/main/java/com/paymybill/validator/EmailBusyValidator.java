@@ -7,10 +7,6 @@ import org.springframework.stereotype.Service;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-/**
- * // TODO fill it
- */
-
 @Service
 public class EmailBusyValidator implements ConstraintValidator<EmailBusy, String> {
 
@@ -18,8 +14,7 @@ public class EmailBusyValidator implements ConstraintValidator<EmailBusy, String
     private UserService userService;
 
     @Override
-    public void initialize(EmailBusy emailBusy) {
-    }
+    public void initialize(EmailBusy emailBusy) {}
 
     @Override
     public boolean isValid(String username, ConstraintValidatorContext constraintValidatorContext) {
@@ -28,10 +23,6 @@ public class EmailBusyValidator implements ConstraintValidator<EmailBusy, String
         }
 
         boolean usernameBusy = userService.isEmailBusy(username);
-        if (usernameBusy) {
-            return false;
-        }
-
-        return true;
+        return !usernameBusy;
     }
 }

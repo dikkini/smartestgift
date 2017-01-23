@@ -22,10 +22,15 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/ext/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/main/css/main.css">
 
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
 
     <script src="${pageContext.request.contextPath}/assets/ext/jquery/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="${pageContext.request.contextPath}/assets/ext/jquery/jquery.form.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="${pageContext.request.contextPath}/assets/ext/jquery/jquery.validate.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="${pageContext.request.contextPath}/assets/ext/jquery/jquery-validate.bootstrap-tooltip.min.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
     <script src="${pageContext.request.contextPath}/assets/ext/bootstrap/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="${pageContext.request.contextPath}/assets/ext/moment/moment.min.js" type="text/javascript"></script>
@@ -33,16 +38,16 @@
     <script src="${pageContext.request.contextPath}/assets/ext/modernizr.min.js" type="text/javascript" charset="utf-8"></script>
 
     <title><fmt:message key="label.title"/></title>
-
     <script type="text/javascript">
         var validationMessages = [];
         validationMessages['validate.required'] = "<spring:message code='validate.required' javaScriptEscape='true' />";
         validationMessages['validate.equalTo'] = "<spring:message code='validate.equalTo' javaScriptEscape='true' />";
         validationMessages['validate.email'] = "<spring:message code='validate.email' javaScriptEscape='true' />";
-        validationMessages['validate.maxlength'] = "<spring:message code='validate.maxlength' javaScriptEscape='true' />";
-        validationMessages['validate.minlength'] = "<spring:message code='validate.minlength' javaScriptEscape='true' />";
+        validationMessages['validate.maxlength'] = "<spring:message code='validate.maxSize' javaScriptEscape='true' />";
+        validationMessages['validate.minlength'] = "<spring:message code='validate.minSize' javaScriptEscape='true' />";
 
-        var javascriptStrings = [];
+        var jsLocaleStrings = [];
+        jsLocaleStrings['dateformat'] = "<spring:message code='label.dateformat' javaScriptEscape='true' />";
 
     </script>
     <script type="text/javascript">

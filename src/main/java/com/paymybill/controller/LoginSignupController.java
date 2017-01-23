@@ -63,7 +63,7 @@ public class LoginSignupController {
 
         if (errorCount != 0) {
             mav.setViewName("signup");
-            mav.addObject("SIGNUP_ERROR", context.getMessage("validate.common", null, LocaleContextHolder.getLocale()));
+                mav.addObject("SIGNUP_ERROR", context.getMessage("validate.common", null, LocaleContextHolder.getLocale()));
             mav.addObject("registerUser", userDTO);
             return mav;
         }

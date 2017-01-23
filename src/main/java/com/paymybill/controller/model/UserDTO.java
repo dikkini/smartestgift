@@ -1,28 +1,35 @@
 package com.paymybill.controller.model;
 
+import com.paymybill.validator.EmailBusy;
+import com.paymybill.validator.PasswordsEqualConstraint;
+import com.paymybill.validator.UsernameBusy;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+@PasswordsEqualConstraint(message = "{validate.passwordEquals}")
 public class UserDTO {
 
-    @NotNull
-    @Size(min = 3, max = 30)
+    @NotNull(message = "{validate.required}")
+    @Size(min = 3, max = 30, message = "{validate.range}")
+    @UsernameBusy(message = "{validate.usernameBusy}")
     private String username;
 
-    @NotNull
-    @Size(min = 3, max = 30)
+    @NotNull(message = "{validate.required}")
+    @Size(min = 3, max = 30, message = "{validate.range}")
     private String firstName;
 
-    @NotNull
-    @Size(min = 6, max = 30)
+    @NotNull(message = "{validate.required}")
+    @Size(min = 6, max = 30, message = "{validate.range}")
     private String password;
 
-    @NotNull
-    @Size(min = 6, max = 30)
+    @NotNull(message = "{validate.required}")
+    @Size(min = 6, max = 30, message = "{validate.range}")
     private String repeatPassword;
 
-    @NotNull
-    @Size(min = 3, max = 30)
+    @NotNull(message = "{validate.required}")
+    @Size(min = 3, max = 30, message = "{validate.range}")
+    @EmailBusy(message = "{validate.emailBusy}")
     private String email;
 
     public String getUsername() {
@@ -67,7 +74,7 @@ public class UserDTO {
 
     @Override
     public String toString() {
-        return "UserDTO{" +
+        return "{validate{" +
                 "username='" + username + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", password='" + password + '\'' +

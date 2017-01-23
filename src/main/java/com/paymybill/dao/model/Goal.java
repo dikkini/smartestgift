@@ -1,10 +1,16 @@
 package com.paymybill.dao.model;
 
+import com.paymybill.controller.model.GoalNoTargetDTO;
+import com.paymybill.controller.model.GoalTargetDTO;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
@@ -53,6 +59,9 @@ public class Goal implements Serializable {
     @JoinColumn(name = "targetuuid")
     private Target target;
 
+    @Column(name = "isPrivate")
+    private Boolean isPrivate;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "goal_file", joinColumns = @JoinColumn(name = "goaluuid", referencedColumnName = "uuid"),
             inverseJoinColumns = @JoinColumn(name = "fileid", referencedColumnName = "id"))
@@ -65,18 +74,14 @@ public class Goal implements Serializable {
     @OneToMany(mappedBy="goal")
     private Collection<GoalRefPersonalURL> goalRefPersonalURLCollection;
 
-    public Goal(UUID billNumber, Date startDate, Date endDate, BigDecimal startSum, BigDecimal endSum, String name,
-                String description, BigDecimal price, Currency currency, Target target) {
-        this.billNumber = billNumber;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.startSum = startSum;
-        this.endSum = endSum;
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.currency = currency;
-        this.target = target;
+    public Goal() {}
+
+    public Goal(GoalNoTargetDTO goal) {
+        this.name = goal.getName();
+        this.description = goal.getDescription();
+    }
+
+    public Goal(GoalTargetDTO goalTargetDTO) {
     }
 
     public UUID getUuid() {
@@ -165,6 +170,14 @@ public class Goal implements Serializable {
 
     public void setTarget(Target target) {
         this.target = target;
+    }
+
+    public Boolean getPrivate() {
+        return isPrivate;
+    }
+
+    public void setPrivate(Boolean aPrivate) {
+        isPrivate = aPrivate;
     }
 
     public Collection<File> getFileCollection() {

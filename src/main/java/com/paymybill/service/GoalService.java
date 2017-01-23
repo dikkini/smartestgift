@@ -1,30 +1,33 @@
 package com.paymybill.service;
 
+import com.paymybill.controller.model.GoalNoTargetDTO;
+import com.paymybill.controller.model.GoalTargetDTO;
 import com.paymybill.dao.model.Currency;
 import com.paymybill.dao.model.Goal;
-import com.paymybill.dao.model.Target;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.UUID;
+import java.util.Collection;
 
 public interface GoalService {
 
 
     /**
-     * Register new goal require existed Target object, so it needs targetUuid.
      *
-     * @param billNumber {@link Goal#billNumber}
-     * @param endDate {@link Goal#endDate}
-     * @param startSum {@link Goal#startSum}
-     * @param endSum {@link Goal#endSum}
-     * @param name {@link Goal#name}
-     * @param description {@link Goal#description}
-     * @param price {@link Goal#price}
-     * @param currencyId {@link Currency#id}
-     * @param targetUuid {@link Target#uuid}
+     * @param goalNoTargetDTO {@link GoalNoTargetDTO}
      * @return {@link Goal}
      */
-    Goal registerNewGoal(UUID billNumber, Date endDate, BigDecimal startSum, BigDecimal endSum,
-                         String name, String description, BigDecimal price, Long currencyId, UUID targetUuid);
+    Goal registerNewGoal(GoalNoTargetDTO goalNoTargetDTO);
+
+    /**
+     *
+     * @param goalTargetDTO {@link GoalTargetDTO}
+     * @return {@link Goal}
+     */
+    public Goal registerNewGoal(GoalTargetDTO goalTargetDTO);
+
+    /**
+     * Get all available currencies as a collection
+     *
+     * @return {@link Collection<Currency>}
+     */
+    Collection<Currency> getAllCurrencies();
 }

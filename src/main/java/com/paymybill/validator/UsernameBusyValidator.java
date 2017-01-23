@@ -7,10 +7,6 @@ import org.springframework.stereotype.Service;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-/**
- * // TODO fill it
- */
-
 @Service
 public class UsernameBusyValidator implements ConstraintValidator<UsernameBusy, String> {
 
@@ -28,10 +24,6 @@ public class UsernameBusyValidator implements ConstraintValidator<UsernameBusy, 
         }
 
         boolean usernameBusy = userService.isUsernameBusy(username);
-        if (usernameBusy) {
-            return false;
-        }
-
-        return true;
+        return !usernameBusy;
     }
 }

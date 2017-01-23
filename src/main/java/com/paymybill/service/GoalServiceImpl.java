@@ -1,5 +1,7 @@
 package com.paymybill.service;
 
+import com.paymybill.controller.model.GoalNoTargetDTO;
+import com.paymybill.controller.model.GoalTargetDTO;
 import com.paymybill.dao.CurrencyDAO;
 import com.paymybill.dao.GoalDAO;
 import com.paymybill.dao.TargetDAO;
@@ -9,12 +11,8 @@ import com.paymybill.dao.model.Target;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
-import javax.persistence.NoResultException;
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.UUID;
+import java.util.Collection;
 
 @Service
 public class GoalServiceImpl implements GoalService {
@@ -34,33 +32,39 @@ public class GoalServiceImpl implements GoalService {
     }
 
     @Override
-    public Goal registerNewGoal(UUID billNumber, Date endDate, BigDecimal startSum, BigDecimal endSum,
-                                String name, String description, BigDecimal price, Long currencyId, UUID targetUuid) {
-        Assert.notNull(billNumber, "billNumber can't be null");
-        Assert.notNull(targetUuid, "targetUuid can't be null");
-        Assert.notNull(currencyId, "currencyId can't be null");
-        Assert.notNull(price, "price can't be null");
-        Assert.notNull(startSum, "startSum can't be null");
+    public Goal registerNewGoal(GoalNoTargetDTO goalNoTargetDTO) {
+        logger.trace("registerNewGoal method with arguments " + goalNoTargetDTO.toString());
 
-        logger.trace("registerNewGoal method with arguments {billNumber=" + billNumber.toString() + ","
-                + "endDate=" + endDate + ", "
-                + "startSum=" + startSum + ", "
-                + "endSum=" + endSum + ", "
-                + "name=" + name + ", "
-                + "description=" + description + ", "
-                + "price=" + price + ", "
-                + "currencyId=" + currencyId + ", "
-                + "targetUuid=" + targetUuid + ", "
-                + "}");
+        int currencyId = goalNoTargetDTO.getCurrencyId();
 
-        Target goalTarget = targetDAO.findOne(Target.class, targetUuid);
-        Currency goalCurrency = currencyDAO.findOne(Currency.class, currencyId);
+        //Currency goalCurrency = currencyDAO.findOne(Currency.class, currencyId);
 
-        Goal goal = new Goal(billNumber, new Date(), endDate, startSum, endSum, name, description, price, goalCurrency,
-                goalTarget);
+        //Goal goal = new Goal(goalNoTargetDTO);
 
-        goalDAO.create(goal);
+        //goalDAO.create(goal);
 
-        return goal;
+        return new Goal();
+    }
+
+    @Override
+    public Goal registerNewGoal(GoalTargetDTO goalTargetDTO) {
+        logger.trace("registerNewGoal method with arguments " + goalTargetDTO.toString());
+
+        int currencyId = goalTargetDTO.getCurrencyId();
+
+
+        //Target goalTarget = targetDAO.findOne(Target.class, targetUuid);
+        //Currency goalCurrency = currencyDAO.findOne(Currency.class, currencyId);
+
+        //Goal goal = new Goal(goalTargetDTO);
+
+        //goalDAO.create(goal);
+
+        return new Goal();
+    }
+
+    @Override
+    public Collection<Currency> getAllCurrencies() {
+        return currencyDAO.findAll(Currency.class);
     }
 }

@@ -18,8 +18,8 @@ public class Currency implements Serializable {
     @SequenceGenerator(name = "currency_seq_gen", sequenceName = "currency_id_seq")
     private Long id;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "sign")
+    private String sign;
 
     public Long getId() {
         return id;
@@ -29,11 +29,11 @@ public class Currency implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getSign() {
+        return sign;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setSign(String sign) {
+        this.sign = sign;
     }
 }

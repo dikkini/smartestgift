@@ -1,24 +1,23 @@
 package com.paymybill.validator;
 
+
 import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
-@Documented
-@Constraint(validatedBy = UsernameBusyValidator.class)
-@Target( { ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE })
+@Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface UsernameBusy {
-
-    String message() default "{UsernameBusy.message}";
+@Documented
+@Constraint(validatedBy = PasswordsEqualConstraintValidator.class)
+public @interface PasswordsEqualConstraint {
+    String message();
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
-
 }

@@ -57,7 +57,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         http.exceptionHandling().accessDeniedPage("/403");
         http.formLogin()
                 .loginPage("/login")
-                .defaultSuccessUrl("/profile")
+                .defaultSuccessUrl("/goal/create")
                 .loginProcessingUrl("/security_check")
                 .usernameParameter("username")
                 .passwordParameter("password");

@@ -1,19 +1,18 @@
 package com.paymybill.validator;
 
+
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
 
-@Documented
-@Constraint(validatedBy = EmailBusyValidator.class)
-@Target( { ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE })
+@Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface EmailBusy {
-
-    String message() default "{EmailBusy.message}";
+@Documented
+@Constraint(validatedBy = GoalDatesConstraintValidator.class)
+public @interface GoalDatesConstraint {
+    String message();
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
-
 }

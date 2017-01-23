@@ -5,11 +5,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.http.HttpMethod;
@@ -33,6 +35,8 @@ import org.springframework.web.servlet.view.JstlView;
 
 import java.lang.reflect.Modifier;
 import java.nio.charset.Charset;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -46,6 +50,9 @@ public class ApplicationConfig extends WebMvcConfigurerAdapter {
 
     @Autowired
     private SessionFactory sessionFactory;
+
+    @Autowired
+    private ApplicationContext context;
 
     private static final Charset UTF8 = Charset.forName("UTF-8");
 
@@ -95,7 +102,7 @@ public class ApplicationConfig extends WebMvcConfigurerAdapter {
     @Bean
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource ret = new ReloadableResourceBundleMessageSource();
-        ret.setBasenames("/WEB-INF/labels", "/WEB-INF/classes/ValidationMessages", "/WEB-INF/exceptions");
+        ret.setBasenames("/WEB-INF/labels", "/WEB-INF/classes/validationMessages", "/WEB-INF/exceptions");
         ret.setDefaultEncoding(UTF8.name());
         return ret;
     }
@@ -194,5 +201,10 @@ public class ApplicationConfig extends WebMvcConfigurerAdapter {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new StandardPasswordEncoder();
+    }
+
+    @Bean
+    public DateFormat simpleDateFormat() {
+        return new SimpleDateFormat(context.getMessage("label.dateformat", null, LocaleContextHolder.getLocale()));
     }
 }
