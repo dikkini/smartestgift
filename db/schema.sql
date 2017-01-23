@@ -17,7 +17,7 @@ DROP TABLE IF EXISTS public.user_social_social_network CASCADE;
 DROP TABLE IF EXISTS public.user_goals CASCADE;
 DROP TABLE IF EXISTS public.user_goal CASCADE;
 DROP TABLE IF EXISTS public.social_network CASCADE;
-DROP TABLE IF EXISTS public.user_favorite_goals CASCADE;
+DROP TABLE IF EXISTS public.user_pay_to_goal CASCADE;
 DROP TABLE IF EXISTS public.user_favorite_goal CASCADE;
 DROP TABLE IF EXISTS public.social_networks CASCADE;
 DROP TABLE IF EXISTS public.role CASCADE;
@@ -66,7 +66,7 @@ CREATE TABLE public.auth_provider
 CREATE TABLE public.currency
 (
     id SERIAL PRIMARY KEY
-  , name VARCHAR(50)      NOT NULL
+  , sign VARCHAR(3) NOT NULL
 );
 
 CREATE TABLE public.user
@@ -132,11 +132,12 @@ CREATE TABLE public.goal
   , startSum    DECIMAL NOT NULL
   , endSum      DECIMAL
   , name        VARCHAR(255)
-  , description VARCHAR(255)
+  , description VARCHAR(4000)
   , price       DECIMAL NOT NULL
   , currencyId  INT  REFERENCES public.currency(id) NOT NULL
   , goalRefURLUuid UUID REFERENCES public.goal_ref_url(uuid)
   , targetUuid  UUID REFERENCES public.target(uuid) NOT NULL -- ради чего цель, айфон, бабло - в случае бабла - таргет пустой (?)
+  , isPrivate     BOOLEAN
 );
 
 CREATE TABLE goal_ref_personal_url -- таблица с персонифицрованными ref ссылками на цель для друзей из соц сети
@@ -162,6 +163,16 @@ CREATE TABLE public.user_goal
     uuid     UUID PRIMARY KEY DEFAULT gen_random_uuid()
   , userUuid UUID REFERENCES public.user(uuid) NOT NULL
   , goalUuid UUID REFERENCES public.goal(uuid) NOT NULL
+);
+
+CREATE TABLE public.user_pay_to_goal
+(
+    uuid     UUID PRIMARY KEY DEFAULT gen_random_uuid()
+  , userUuid UUID REFERENCES public.user(uuid) NOT NULL
+  , goalUuid UUID REFERENCES public.goal(uuid) NOT NULL
+  , moneySum DECIMAL NOT NULL
+  , currencyId  INT  REFERENCES public.currency(id) NOT NULL
+  , comment VARCHAR(3000)
 );
 
 -- избранные пользовательские цели
