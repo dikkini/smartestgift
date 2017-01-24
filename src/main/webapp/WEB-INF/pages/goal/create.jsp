@@ -25,9 +25,9 @@
     <p><fmt:message key="label.goal.enddate"/><input id="goal-end-date" type="text" name="endDate" class="datepicker"></p>
     <input id="goal-endsum-input" type="number" name="endSum" onkeypress='return event.charCode >= 48 && event.charCode <= 57' placeholder="<fmt:message key="label.goal.endsum"/>" min="1" value="123"/>
     <input id="goal-price-input" type="number" name="price" onkeypress='return event.charCode >= 48 && event.charCode <= 57' placeholder="<fmt:message key="label.goal.price"/>" min="1" required value="123"/>
-    <select>
+    <select name="currencyId">
         <c:forEach items="${allCurrencies}" var="currency">
-            <option name="currencyId" value="${currency.id}">${currency.sign}</option>
+            <option value="${currency.id}">${currency.sign}</option>
         </c:forEach>
     </select>
     <c:if test="${not empty param.targetUuid}">

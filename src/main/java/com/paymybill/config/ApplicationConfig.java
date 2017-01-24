@@ -202,9 +202,4 @@ public class ApplicationConfig extends WebMvcConfigurerAdapter {
     public PasswordEncoder passwordEncoder() {
         return new StandardPasswordEncoder();
     }
-
-    @Bean
-    public DateFormat simpleDateFormat() {
-        return new SimpleDateFormat(context.getMessage("label.dateformat", null, LocaleContextHolder.getLocale()));
-    }
 }

@@ -23,10 +23,13 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/main/css/main.css">
 
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/ext/jquery/jquery.datetimepicker.full.min.css">
 
 
     <script src="${pageContext.request.contextPath}/assets/ext/jquery/jquery.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="${pageContext.request.contextPath}/assets/ext/jquery/jquery.form.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="${pageContext.request.contextPath}/assets/ext/jquery/jquery.datetimepicker.full.js" type="text/javascript" charset="utf-8"></script>
+
     <script src="${pageContext.request.contextPath}/assets/ext/jquery/jquery.validate.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="${pageContext.request.contextPath}/assets/ext/jquery/jquery-validate.bootstrap-tooltip.min.js" type="text/javascript" charset="utf-8"></script>
 
@@ -47,7 +50,8 @@
         validationMessages['validate.minlength'] = "<spring:message code='validate.minSize' javaScriptEscape='true' />";
 
         var jsLocaleStrings = [];
-        jsLocaleStrings['dateformat'] = "<spring:message code='label.dateformat' javaScriptEscape='true' />";
+        jsLocaleStrings['datetimeformat'] = "<spring:message code='label.frontend.datetimeformat' javaScriptEscape='true' />";
+        jsLocaleStrings['timeformat'] = "<spring:message code='label.frontend.timeformat' javaScriptEscape='true' />";
 
     </script>
     <script type="text/javascript">

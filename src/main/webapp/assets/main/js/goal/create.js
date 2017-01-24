@@ -12,7 +12,12 @@ $(document).ready(function () {
 
     /* инициализация выбора дат */
     $( function() {
-        $(".datepicker").datepicker({ dateFormat: jsLocaleStrings['dateformat'] });
+        $(".datepicker").datetimepicker({
+            minDate: 0,
+            format: jsLocaleStrings['datetimeformat'],
+            formatTime: jsLocaleStrings['timeformat']
+        });
+        $.datetimepicker.setLocale(language);
     });
 
     var $createGoalForm = $('#goal-create-form');

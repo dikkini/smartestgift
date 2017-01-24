@@ -7,14 +7,16 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.Date;
 
 @GoalDatesConstraint(message = "{validate.goalDatesConstraint}")
 public class GoalNoTargetDTO {
 
     @NotNull(message = "{validate.required}")
-    private String startDate;
+    private Date startDate;
 
-    private String endDate;
+    private Date endDate;
 
     @NotNull(message = "{validate.required}")
     @DecimalMin(value = "0.0", message = "{validate.minSize}")
@@ -39,20 +41,19 @@ public class GoalNoTargetDTO {
     @NotNull(message = "{validate.required}")
     private int currencyId;
 
-
-    public String getStartDate() {
+    public Date getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(String startDate) {
+    public void setStartDate(Date startDate) {
         this.startDate = startDate;
     }
 
-    public String getEndDate() {
+    public Date getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(String endDate) {
+    public void setEndDate(Date endDate) {
         this.endDate = endDate;
     }
 

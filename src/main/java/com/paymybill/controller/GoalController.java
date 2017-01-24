@@ -8,7 +8,10 @@ import com.paymybill.dao.model.Goal;
 import com.paymybill.service.GoalService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -18,7 +21,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.security.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.UUID;
 
 @Controller
@@ -27,16 +33,25 @@ public class GoalController {
 
     private Logger logger = Logger.getLogger(this.getClass());
 
-    private GoalService goalService;
+    private final GoalService goalService;
+
+    private final ApplicationContext context;
 
     @Autowired
-    public GoalController(GoalService goalService) {
+    public GoalController(GoalService goalService, ApplicationContext context) {
         this.goalService = goalService;
+        this.context = context;
     }
 
-    @InitBinder     /* Converts empty strings into null when a form is submitted */
+    @InitBinder
     public void initBinder(WebDataBinder binder) {
+        // Converts empty strings into null when a form is submitted
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+
+        // Converts text from frontend to Date object in DTO objects
+        SimpleDateFormat sdf = new SimpleDateFormat(context.getMessage("label.backend.datetimeformat", null, LocaleContextHolder.getLocale()));
+        sdf.setLenient(true);
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(sdf, true));
     }
 
     @GetMapping("/create")
