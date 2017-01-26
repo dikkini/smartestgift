@@ -1,7 +1,7 @@
 package com.paymybill.service;
 
 import com.paymybill.controller.model.GoalNoTargetDTO;
-import com.paymybill.controller.model.GoalTargetDTO;
+import com.paymybill.controller.model.GoalDTO;
 import com.paymybill.dao.model.Currency;
 import com.paymybill.dao.model.Goal;
 
@@ -19,10 +19,10 @@ public interface GoalService {
 
     /**
      *
-     * @param goalTargetDTO {@link GoalTargetDTO}
+     * @param goalDTO {@link GoalDTO}
      * @return {@link Goal}
      */
-    public Goal registerNewGoal(GoalTargetDTO goalTargetDTO);
+    Goal registerNewGoal(GoalDTO goalDTO);
 
     /**
      * Get all available currencies as a collection

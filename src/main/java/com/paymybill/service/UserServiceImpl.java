@@ -3,6 +3,7 @@ package com.paymybill.service;
 import com.paymybill.controller.model.UserDTO;
 import com.paymybill.dao.RoleDAO;
 import com.paymybill.dao.UserDAO;
+import com.paymybill.dao.model.Goal;
 import com.paymybill.dao.model.Role;
 import com.paymybill.dao.model.User;
 import com.paymybill.exception.EmailExistException;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import javax.persistence.NoResultException;
+import java.util.Collection;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -79,6 +81,13 @@ public class UserServiceImpl implements UserService {
         logger.trace("isEmailBusy method with arguments {email:" + email + "}");
         User user = this.findByEmail(email);
         return user != null;
+    }
+
+    @Override
+    public void addUserGoal(User user, Goal goal) {
+        Collection<Goal> goalCollection = user.getGoalCollection();
+        goalCollection.add(goal);
+        userDAO.update(user);
     }
 
     @Transactional

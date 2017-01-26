@@ -112,6 +112,7 @@ CREATE TABLE target -- таблица с товарами/услугами на 
 (
     uuid UUID UNIQUE PRIMARY KEY NOT NULL
   , name VARCHAR(255) NOT NULL
+  , description TEXT NOT NULL
   -- пока не понятно какие еще поля могут быть у конечного товара/услуги для цели
 );
 
@@ -129,6 +130,7 @@ CREATE TABLE public.goal
   , billNumber  UUID UNIQUE NOT NULL
   , startDate   TIMESTAMP NOT NULL
   , endDate     TIMESTAMP
+  , timeZone    VARCHAR(100)
   , startSum    DECIMAL NOT NULL
   , endSum      DECIMAL
   , name        VARCHAR(255)

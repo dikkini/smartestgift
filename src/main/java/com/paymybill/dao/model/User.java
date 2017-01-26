@@ -4,6 +4,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
 
@@ -84,6 +85,11 @@ public class User implements Serializable {
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "photoId")
     private File photo;
+
+    @ManyToMany
+    @JoinTable(name = "user_goal", joinColumns = @JoinColumn(name = "useruuid", referencedColumnName = "uuid"),
+            inverseJoinColumns = @JoinColumn(name = "goaluuid", referencedColumnName = "uuid"))
+    private Collection<Goal> goalCollection;
 
     public UUID getUuid() {
         return uuid;
@@ -251,5 +257,13 @@ public class User implements Serializable {
 
     public void setPhoto(File photo) {
         this.photo = photo;
+    }
+
+    public Collection<Goal> getGoalCollection() {
+        return goalCollection;
+    }
+
+    public void setGoalCollection(Collection<Goal> goalCollection) {
+        this.goalCollection = goalCollection;
     }
 }

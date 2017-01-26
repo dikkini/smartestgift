@@ -1,11 +1,13 @@
 package com.paymybill.controller;
 
 import com.paymybill.controller.model.GenericResponse;
+import com.paymybill.controller.model.GoalDTO;
 import com.paymybill.controller.model.GoalNoTargetDTO;
-import com.paymybill.controller.model.GoalTargetDTO;
 import com.paymybill.dao.model.Currency;
 import com.paymybill.dao.model.Goal;
+import com.paymybill.dao.model.User;
 import com.paymybill.service.GoalService;
+import com.paymybill.service.UserService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -21,8 +23,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
-import java.security.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
@@ -34,12 +36,14 @@ public class GoalController {
     private Logger logger = Logger.getLogger(this.getClass());
 
     private final GoalService goalService;
+    private final UserService userService;
 
     private final ApplicationContext context;
 
     @Autowired
-    public GoalController(GoalService goalService, ApplicationContext context) {
+    public GoalController(GoalService goalService, UserService userService, ApplicationContext context) {
         this.goalService = goalService;
+        this.userService = userService;
         this.context = context;
     }
 
@@ -49,7 +53,8 @@ public class GoalController {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
 
         // Converts text from frontend to Date object in DTO objects
-        SimpleDateFormat sdf = new SimpleDateFormat(context.getMessage("label.backend.datetimeformat", null, LocaleContextHolder.getLocale()));
+        SimpleDateFormat sdf = new SimpleDateFormat(context.getMessage("label.backend.datetimeformat", null,
+                LocaleContextHolder.getLocale()));
         sdf.setLenient(true);
         binder.registerCustomEditor(Date.class, new CustomDateEditor(sdf, true));
     }
@@ -63,7 +68,7 @@ public class GoalController {
 
         // TODO think about UUID format check
         if (targetUuid != null) {
-            goalCreatePage.addObject("goalTargetDTO", new GoalTargetDTO());
+            goalCreatePage.addObject("goalTargetDTO", new GoalDTO());
         } else {
             goalCreatePage.addObject("goalNoTargetDTO", new GoalNoTargetDTO());
         }
@@ -73,26 +78,30 @@ public class GoalController {
 
     @PostMapping("/create")
     public ResponseEntity createGoalNoTargetAction(@Valid @ModelAttribute("goalNoTargetDTO") GoalNoTargetDTO goalNoTargetDTO,
-                                                    BindingResult result, Authentication authentication) {
+                                                   BindingResult result, Authentication authentication) {
         int errorCount = result.getErrorCount();
         if (errorCount != 0) {
             return ResponseEntity.ok(GenericResponse.createResponse(false, result.getAllErrors()));
         }
 
         Goal goal = goalService.registerNewGoal(goalNoTargetDTO);
+        User user = (User) authentication.getPrincipal();
+        userService.addUserGoal(user, goal);
 
         return ResponseEntity.ok(GenericResponse.createResponse(true, goal));
     }
 
     @PostMapping("/createWithTarget")
-    public ResponseEntity createGoalTargetAction(@Valid @ModelAttribute("goalTargetDTO") GoalTargetDTO goalTargetDTO,
-                                                BindingResult result, Authentication authentication) {
+    public ResponseEntity createGoalTargetAction(@Valid @ModelAttribute("goalTargetDTO") GoalDTO goalDTO,
+                                                 BindingResult result, Authentication authentication) {
         int errorCount = result.getErrorCount();
         if (errorCount != 0) {
             return ResponseEntity.ok(GenericResponse.createResponse(false, result.getAllErrors()));
         }
 
-        Goal goal = goalService.registerNewGoal(goalTargetDTO);
+        Goal goal = goalService.registerNewGoal(goalDTO);
+        User user = (User) authentication.getPrincipal();
+        userService.addUserGoal(user, goal);
 
         return ResponseEntity.ok(GenericResponse.createResponse(true, goal));
     }

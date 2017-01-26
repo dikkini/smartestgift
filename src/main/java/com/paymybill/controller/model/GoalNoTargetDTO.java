@@ -18,11 +18,13 @@ public class GoalNoTargetDTO {
 
     private Date endDate;
 
+    @NotNull
+    private String timeZone;
+
     @NotNull(message = "{validate.required}")
     @DecimalMin(value = "0.0", message = "{validate.minSize}")
     private BigDecimal startSum;
 
-    @NotNull(message = "{validate.required}")
     @DecimalMin(value = "1.0", message = "{validate.minSize}")
     private BigDecimal endSum;
 
@@ -39,7 +41,7 @@ public class GoalNoTargetDTO {
     private BigDecimal price;
 
     @NotNull(message = "{validate.required}")
-    private int currencyId;
+    private Long currencyId;
 
     public Date getStartDate() {
         return startDate;
@@ -55,6 +57,14 @@ public class GoalNoTargetDTO {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+    public String getTimeZone() {
+        return timeZone;
+    }
+
+    public void setTimeZone(String timeZone) {
+        this.timeZone = timeZone;
     }
 
     public BigDecimal getStartSum() {
@@ -97,11 +107,11 @@ public class GoalNoTargetDTO {
         this.price = price;
     }
 
-    public int getCurrencyId() {
+    public Long getCurrencyId() {
         return currencyId;
     }
 
-    public void setCurrencyId(int currencyId) {
+    public void setCurrencyId(Long currencyId) {
         this.currencyId = currencyId;
     }
 }

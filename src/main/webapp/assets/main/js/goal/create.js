@@ -10,7 +10,6 @@ $(document).ready(function () {
         minlength: $.validator.format(validationMessages['validate.minlength'])
     });
 
-    /* инициализация выбора дат */
     $( function() {
         $(".datepicker").datetimepicker({
             minDate: 0,
@@ -18,6 +17,11 @@ $(document).ready(function () {
             formatTime: jsLocaleStrings['timeformat']
         });
         $.datetimepicker.setLocale(language);
+
+        var tz = jstz.determine();
+        var timeZone = tz.name();
+
+        $("input#client-timezone").val(timeZone);
     });
 
     var $createGoalForm = $('#goal-create-form');

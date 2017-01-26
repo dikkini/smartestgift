@@ -9,9 +9,8 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 @GoalDatesConstraint(message = "{validate.goalDatesConstraint}")
-public class GoalTargetDTO extends GoalNoTargetDTO {
+public class GoalDTO extends GoalNoTargetDTO {
 
-    @NotNull
     private String targetUuid;
 
     public String getTargetUuid() {

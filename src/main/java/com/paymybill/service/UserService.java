@@ -2,6 +2,7 @@ package com.paymybill.service;
 
 
 import com.paymybill.controller.model.UserDTO;
+import com.paymybill.dao.model.Goal;
 import com.paymybill.dao.model.User;
 import com.paymybill.exception.EmailExistException;
 import com.paymybill.exception.UsernameExistException;
@@ -43,4 +44,11 @@ public interface UserService {
      * @return true if busy, false if not
      */
     boolean isEmailBusy(String email);
+
+    /**
+     *
+     * @param user {@link User}
+     * @param goal {@link Goal}
+     */
+    void addUserGoal(User user, Goal goal);
 }

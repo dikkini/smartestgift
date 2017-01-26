@@ -1,16 +1,12 @@
 package com.paymybill.dao.model;
 
+import com.paymybill.controller.model.GoalDTO;
 import com.paymybill.controller.model.GoalNoTargetDTO;
-import com.paymybill.controller.model.GoalTargetDTO;
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
@@ -35,6 +31,9 @@ public class Goal implements Serializable {
 
     @Column(name = "enddate")
     private Date endDate;
+
+    @Column(name = "timeZone")
+    private String timeZone;
 
     @Column(name = "startsum")
     private BigDecimal startSum;
@@ -76,12 +75,17 @@ public class Goal implements Serializable {
 
     public Goal() {}
 
-    public Goal(GoalNoTargetDTO goal) {
-        this.name = goal.getName();
-        this.description = goal.getDescription();
-    }
-
-    public Goal(GoalTargetDTO goalTargetDTO) {
+    public Goal(GoalNoTargetDTO goalDTO, Target target, Currency currency) {
+        this.name = goalDTO.getName();
+        this.description = goalDTO.getDescription();
+        this.startDate = goalDTO.getStartDate();
+        this.endDate = goalDTO.getEndDate();
+        this.startSum = goalDTO.getStartSum();
+        this.endSum = goalDTO.getEndSum();
+        this.price = goalDTO.getPrice();
+        this.timeZone = goalDTO.getTimeZone();
+        this.target = target;
+        this.currency = currency;
     }
 
     public UUID getUuid() {
@@ -114,6 +118,14 @@ public class Goal implements Serializable {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+    public String getTimeZone() {
+        return timeZone;
+    }
+
+    public void setTimeZone(String timeZone) {
+        this.timeZone = timeZone;
     }
 
     public BigDecimal getStartSum() {
